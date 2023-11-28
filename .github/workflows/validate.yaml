@@ -1,0 +1,37 @@
+name: validate terraform
+on:
+  push:
+    branches: [main]
+  pull_request:
+    paths:
+      - modules/**/*
+jobs:
+  validate:
+    name: "Validates terraform"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        directory:
+          - modules/redis
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Get git status
+      run: git status
+    
+    - name: Setup terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: "1.5.7"
+
+    - name: Terraform init
+      run: terraform -chdir=${{ matrix.directory }} init
+
+    - name: Terraform validate
+      run: terraform -chdir=${{ matrix.directory }} validate
+
+    - name: Terraform lint check
+      run: terraform -chdir=${{ matrix.directory }} fmt -check
+
