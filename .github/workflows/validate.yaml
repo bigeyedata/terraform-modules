@@ -44,3 +44,28 @@ jobs:
     - name: Terraform lint check
       run: terraform -chdir=${{ matrix.directory }} fmt -check
 
+  publish:
+    name: Publish
+    needs: [validate]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: set up branch
+        run: |
+          git branch "release-from-${{ github.sha }}" "${{ github.sha }}"
+          git checkout "release-from-${{ github.sha }}"
+      - name: build changelog
+        id: changelog
+        with:
+          skip-version-file: true
+          git-branch: "release-from-${{ github.sha }}"
+          create-summary: true
+          skip-git-pull: true
+      - name: Check a few things
+        run: |
+          git status
+          git diff | cat
+          git diff HEAD~1 | cat
+
