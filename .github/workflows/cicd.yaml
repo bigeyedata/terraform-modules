@@ -58,6 +58,7 @@ jobs:
           git checkout "release-from-${{ github.sha }}"
       - name: build changelog
         id: changelog
+        uses: TriPSs/conventional-changelog-action@v3
         with:
           skip-version-file: true
           git-branch: "release-from-${{ github.sha }}"
