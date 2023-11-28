@@ -70,9 +70,30 @@ jobs:
           git-branch: "release-from-${{ github.sha }}"
           create-summary: true
           skip-git-pull: true
-      - name: Check a few things
+      - name: inspect git status
         run: |
           git status
           git diff | cat
           git diff HEAD~1 | cat
+      - name: create PR with release
+        if: steps.changelog.outputs.skipped == 'false'
+        id: create-pr
+        run: gh pr create --base main --head release-from-${{ github.sha }} --title 'Merge new release docs into main' --body 'Created by action'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: merge PR with release info
+        if: steps.changelog.outputs.skipped == 'false'
+        id: merge-pr
+        run: gh pr merge --admin --rebase --subject 'Merge release info' --delete-branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: create release with last commit
+        if: steps.changelog.outputs.skipped == 'false'
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.changelog.outputs.tag }}
+          name: ${{ steps.changelog.outputs.tag }}
+          body: ${{ steps.changelog.outputs.clean_changelog }}
+
 
