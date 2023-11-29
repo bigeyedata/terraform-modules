@@ -95,5 +95,23 @@ jobs:
           tag: ${{ steps.changelog.outputs.tag }}
           name: ${{ steps.changelog.outputs.tag }}
           body: ${{ steps.changelog.outputs.clean_changelog }}
+      - name: notify slack
+        uses: slackapi/slack-github-action@v1.23.0
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+        with:
+          channel-id: ${{ secrets.SRE_SLACK_CHANNEL_ID }}
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": ":shipitparrot: terraform-modules successfully published version ${{ steps.changelog.outputs.tag }}. [<${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ steps.changelog.outputs.tag }}|GH Action>]"
+                  }
+                }
+              ]
+            }
 
 
