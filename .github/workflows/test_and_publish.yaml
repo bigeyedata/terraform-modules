@@ -54,6 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
         with:
@@ -76,19 +77,19 @@ jobs:
           git diff | cat
           git diff HEAD~1 | cat
       - name: create PR with release
-        if: steps.changelog.outputs.skipped == 'false'
+        if: ${{ success() && steps.changelog.outputs.skipped == 'false' }}
         id: create-pr
         run: gh pr create --base main --head release-from-${{ github.sha }} --title "Add release notes for ${{ steps.changelog.outputs.tag }}" --body "Created by action ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: merge PR with release info
-        if: steps.changelog.outputs.skipped == 'false'
+        if: ${{ success() && steps.changelog.outputs.skipped == 'false' }}
         id: merge-pr
         run: gh pr merge "release-from-${{ github.sha }}" --admin --rebase --subject "Merge release notes for ${{ steps.changelog.outputs.tag }}" --delete-branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: create release with last commit
-        if: steps.changelog.outputs.skipped == 'false'
+        if: ${{ success() && steps.changelog.outputs.skipped == 'false' }}
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -96,6 +97,7 @@ jobs:
           name: ${{ steps.changelog.outputs.tag }}
           body: ${{ steps.changelog.outputs.clean_changelog }}
       - name: notify slack
+        if: ${{ success() && steps.changelog.outputs.skipped == 'false' }}
         uses: slackapi/slack-github-action@v1.23.0
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
@@ -113,18 +115,8 @@ jobs:
                 }
               ]
             }
-
-  cleanup:
-    name: Clean up
-    needs: [publish]
-    if: ${{ always() && github.event_name == 'push' && github.ref_name == 'main' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Delete remote branch if exists
-        run: |
-          git push -d origin "release-from-${{ github.sha }}" || echo "remote branch not found"
-      - name: notify failure
-        if: ${{ failure() }}
+      - name: failure - notify
+        if: ${{ failure() && steps.changelog.outputs.skipped == 'false' }}
         uses: slackapi/slack-github-action@v1.23.0
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
@@ -142,4 +134,8 @@ jobs:
                 }
               ]
             }
+      - name: failure - Delete remote branch if exists
+        if: ${{ failure() && steps.changelog.outputs.skipped == 'false' }}
+        run: |
+          git push -d origin "release-from-${{ github.sha }}" || echo "remote branch not found"
 
