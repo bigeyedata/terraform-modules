@@ -1,4 +1,4 @@
-name: validate terraform
+name: test and publish
 permissions:
   contents: write
   issues: write
