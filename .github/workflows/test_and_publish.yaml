@@ -114,4 +114,32 @@ jobs:
               ]
             }
 
+  cleanup:
+    name: Clean up
+    needs: [publish]
+    if: ${{ always() && github.event_name == 'push' && github.ref_name == 'main' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete remote branch if exists
+        run: |
+          git push -d origin "release-from-${{ github.sha }}" || echo "remote branch not found"
+      - name: notify failure
+        if: ${{ failure() }}
+        uses: slackapi/slack-github-action@v1.23.0
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+        with:
+          channel-id: ${{ secrets.SRE_SLACK_CHANNEL_ID }}
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": ":sadparrot: terraform-modules publish version ${{ steps.changelog.outputs.tag }} failed. [<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}| GH Action>]"
+                  }
+                }
+              ]
+            }
 
