@@ -11,7 +11,7 @@ on:
       - modules/**/*
 jobs:
   directories:
-    name: "List directories"
+    name: List directories
     runs-on: ubuntu-latest
     outputs:
       dir: ${{ steps.setdirs.outputs.dir }}
@@ -20,7 +20,7 @@ jobs:
       - id: setdirs
         run: echo "dir=$(ls -d modules/* | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
   validate:
-    name: "TF Check"
+    name: TF Check
     runs-on: ubuntu-latest
     needs: [directories]
     timeout-minutes: 5
