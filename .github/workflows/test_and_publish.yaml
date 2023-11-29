@@ -84,7 +84,8 @@ jobs:
       - name: merge PR with release info
         if: ${{ steps.changelog.outputs.skipped == 'false' }}
         id: merge-pr
-        run: gh pr merge "release-from-${{ github.sha }}" --admin --rebase --delete-branch
+        run: |
+          gh pr merge "release-from-${{ github.sha }}" --admin --merge --delete-branch --subject "chore: merge release docs for ${{ steps.changelog.outputs.tag }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: create release with last commit
