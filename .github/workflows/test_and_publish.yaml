@@ -134,8 +134,9 @@ jobs:
                 }
               ]
             }
-      - name: failure - Delete remote branch if exists
+      - name: failure - delete branch and tag
         if: ${{ failure() && steps.changelog.outputs.skipped == 'false' }}
         run: |
-          git push -d origin "release-from-${{ github.sha }}" || echo "remote branch not found"
+          git push -d origin release-from-${{ github.sha }} || echo "failed to delete branch"
+          git push -d origin ${{ steps.changelog.outputs.tag }} || echo "failed to delete tag"
 
