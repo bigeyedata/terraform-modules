@@ -54,7 +54,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
         with:
@@ -77,19 +76,19 @@ jobs:
           git diff | cat
           git diff HEAD~1 | cat
       - name: create PR with release
-        if: ${{ success() && steps.changelog.outputs.skipped == 'false' }}
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
         id: create-pr
         run: gh pr create --base main --head release-from-${{ github.sha }} --title "Add release notes for ${{ steps.changelog.outputs.tag }}" --body "Created by action ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: merge PR with release info
-        if: ${{ success() && steps.changelog.outputs.skipped == 'false' }}
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
         id: merge-pr
         run: gh pr merge "release-from-${{ github.sha }}" --admin --rebase --delete-branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: create release with last commit
-        if: ${{ success() && steps.changelog.outputs.skipped == 'false' }}
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -97,7 +96,7 @@ jobs:
           name: ${{ steps.changelog.outputs.tag }}
           body: ${{ steps.changelog.outputs.clean_changelog }}
       - name: notify slack
-        if: ${{ success() && steps.changelog.outputs.skipped == 'false' }}
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
         uses: slackapi/slack-github-action@v1.23.0
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
