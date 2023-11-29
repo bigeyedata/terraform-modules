@@ -78,13 +78,13 @@ jobs:
       - name: create PR with release
         if: steps.changelog.outputs.skipped == 'false'
         id: create-pr
-        run: gh pr create --base main --head release-from-${{ github.sha }} --title 'Merge new release docs into main' --body 'Created by action'
+        run: gh pr create --base main --head release-from-${{ github.sha }} --title "Add release notes for ${{ steps.changelog.outputs.tag }}" --body "Created by action ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: merge PR with release info
         if: steps.changelog.outputs.skipped == 'false'
         id: merge-pr
-        run: gh pr merge --admin --rebase --subject 'Merge release info' --delete-branch
+        run: gh pr merge "release-from-${{ github.sha }}" --admin --rebase --subject "Merge release notes for ${{ steps.changelog.outputs.tag }}" --delete-branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: create release with last commit
