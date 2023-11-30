@@ -86,7 +86,7 @@ jobs:
         run: |
           gh pr review "release-from-${{ github.sha }}" --approve
         env:
-          GITHUB_TOKEN: ${{ secrets.BIGEYE_SRE_BOT_GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.BIGEYE_SRE_BOT_GH_TOKEN }}
       - name: merge PR with release info
         if: ${{ steps.changelog.outputs.skipped == 'false' }}
         id: merge-pr
