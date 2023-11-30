@@ -116,7 +116,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": ":shipitparrot: terraform-modules successfully published version ${{ steps.changelog.outputs.tag }}. [<${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ steps.changelog.outputs.tag }}|GH Action>]"
+                    "text": ":shipitparrot: terraform-modules successfully published version ${{ steps.changelog.outputs.tag }}. [<${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ steps.changelog.outputs.tag }}|Release>]"
                   }
                 }
               ]
