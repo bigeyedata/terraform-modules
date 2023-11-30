@@ -81,6 +81,12 @@ jobs:
         run: gh pr create --base main --head release-from-${{ github.sha }} --title "Add release notes for ${{ steps.changelog.outputs.tag }}" --body "Created by action ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: approve pr
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        run: |
+          gh pr review "release-from-${{ github.sha }}" --approve
+        env:
+          GITHUB_TOKEN: ${{ secrets.BIGEYE_SRE_BOT_GH_TOKEN }}
       - name: merge PR with release info
         if: ${{ steps.changelog.outputs.skipped == 'false' }}
         id: merge-pr
