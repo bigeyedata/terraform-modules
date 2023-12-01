@@ -144,6 +144,10 @@ variable "create_dns_records" {
 variable "top_level_dns_name" {
   description = "The top-level dns name. DNS records will be created in this Route53 hosted zone. The wildcard TLS certificate will be created for this dns name. All other dns names will be created as subdomains of this dns name"
   type        = string
+  validation {
+    condition     = length(var.top_level_dns_name) > 0
+    error_message = "top_level_dns_name must be specified"
+  }
 }
 
 variable "vanity_alias" {
@@ -163,11 +167,19 @@ variable "ecs_enable_container_insights" {
 variable "image_registry" {
   description = "The hostname of the image registry to pull from"
   type        = string
+  validation {
+    condition     = length(var.image_registry) > 0
+    error_message = "image_registry must be specified"
+  }
 }
 
 variable "image_tag" {
   description = "The image tag to use"
   type        = string
+  validation {
+    condition     = length(var.image_tag) > 0
+    error_message = "image_tag must be specified"
+  }
 }
 
 variable "fargate_version" {
