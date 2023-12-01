@@ -168,10 +168,6 @@ variable "image_registry" {
   description = "The hostname of the image registry to pull from"
   type        = string
   default     = ""
-  validation {
-    condition     = length(var.image_registry) > 0
-    error_message = "image_registry must be specified"
-  }
 }
 
 variable "image_tag" {
