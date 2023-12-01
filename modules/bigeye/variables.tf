@@ -336,31 +336,37 @@ variable "auth0_domain" {
   description = "domain for the Auth0 OAuth flow"
   type        = string
   default     = ""
+  default = ""
 }
 
 variable "auth0_client_id_secretsmanager_arn" {
   description = "secrets manager ARN for the Auth0 client ID"
   type        = string
+  default = ""
 }
 
 variable "auth0_client_secret_secretsmanager_arn" {
   description = "secrets manager ARN for the Auth0 client secret"
   type        = string
+  default = ""
 }
 
 variable "slack_client_id_secretsmanager_arn" {
   description = "secrets manager ARN for the slack client ID"
   type        = string
+  default = ""
 }
 
 variable "slack_client_secret_secretsmanager_arn" {
   description = "secrets manager ARN for the slack client secret"
   type        = string
+  default = ""
 }
 
 variable "slack_client_signing_secret_secretsmanager_arn" {
   description = "secrets manager ARN for the slack client signing secret"
   type        = string
+  default = ""
 }
 
 variable "stitch_api_token_secretsmanager_arn" {
@@ -627,7 +633,7 @@ variable "temporal_rds_engine_version" {
 variable "temporal_rds_enable_performance_insights" {
   description = "Whether to enable performance insights"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "temporal_rds_backup_retention_period" {
@@ -726,7 +732,7 @@ variable "datawatch_rds_engine_version" {
 variable "datawatch_rds_enable_performance_insights" {
   description = "Whether to enable performance insights"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "datawatch_rds_enhanced_monitoring_interval" {
