@@ -27,6 +27,12 @@ For the standard install, you will need the following:
 
 To install the stack, run the following:
 
+### Get Bigeye Container Images
+
+The Bigeye stack will launch a number of containers into ECS.
+Speak with someone in sales at Bigeye to request your account
+be given access to these container images.
+
 ### Set up the directory that will hold your terraform.
 
 ```sh
@@ -54,8 +60,7 @@ wget https://github.com/bigeyedata/terraform-modules/tree/main/docs/examples/sta
 Replace the following variables in `main.tf`.
 
 * `top_level_dns_name` - replace this with your Route53 hosted zone that we'll create DNS records in.
-* `image_registry` - get from Bigeye
-* `image_tag` - get from Bigeye
+* `image_tag` - get the container image tag to use from Bigeye
 
 ### Configure AWS (optional)
 
