@@ -57,6 +57,20 @@ Replace the following variables in `main.tf`.
 * `image_registry` - get from Bigeye
 * `image_tag` - get from Bigeye
 
+### Configure AWS (optional)
+
+The AWS provider will use your default AWS CLI profile if it's present.
+If not, you may need to configure the AWS provider with something like:
+
+```hcl
+provider "aws" {
+    profile = "testaccount - REPLACE WITH YOUR INFO"
+    region = "us-east-2 - REPLACE WITH YOUR INFO"
+}
+```
+
+You can see the various configuration values for the AWS provider [here](https://registry.terraform.io/providers/hashicorp/aws/latest/docs).
+
 ### Run Terraform
 
 ```sh
