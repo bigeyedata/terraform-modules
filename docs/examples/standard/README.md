@@ -51,11 +51,11 @@ wget https://github.com/bigeyedata/terraform-modules/tree/main/docs/examples/sta
 
 ### Configure your stack
 
-Replace the following variables in `main.tf`. You will need to get the docker images from Bigeye
+Replace the following variables in `main.tf`.
 
-* `top_level_dns_name`
-* `image_registry`
-* `image_tag`
+* `top_level_dns_name` - replace this with your Route53 hosted zone that we'll create DNS records in.
+* `image_registry` - get from Bigeye
+* `image_tag` - get from Bigeye
 
 ### Run Terraform
 
