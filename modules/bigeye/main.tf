@@ -615,7 +615,7 @@ module "haproxy" {
   memory                    = var.haproxy_memory
   execution_role_arn        = aws_iam_role.ecs.arn
   task_role_arn             = null
-  image_registry            = var.image_registry
+  image_registry            = local.image_registry
   image_repository          = "haproxy"
   image_tag                 = var.image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
@@ -690,7 +690,7 @@ module "web" {
   memory                    = var.web_memory
   execution_role_arn        = aws_iam_role.ecs.arn
   task_role_arn             = null
-  image_registry            = var.image_registry
+  image_registry            = local.image_registry
   image_repository          = "web"
   image_tag                 = var.image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
@@ -859,14 +859,14 @@ resource "aws_ecs_task_definition" "temporal" {
       name        = "${local.name}-temporal"
       cpu         = var.temporal_cpu
       memory      = var.temporal_memory
-      image       = "${var.image_registry}/temporal:${var.image_tag}"
+      image       = "${local.image_registry}/temporal:${var.image_tag}"
       environment = [for k, v in local.temporal_environment_variables : { Name = k, Value = v }]
       secrets     = [for k, v in local.temporal_secret_arns : { Name = k, ValueFrom = v }]
       logConfiguration = {
         logDriver = "awslogs"
         options = {
           "awslogs-group"         = aws_cloudwatch_log_group.temporal.name
-          "awslogs-region"        = data.aws_region.current.name
+          "awslogs-region"        = local.aws_region
           "awslogs-stream-prefix" = "${local.name}-temporal"
         }
       }
@@ -1031,7 +1031,7 @@ module "temporalui" {
   memory                    = var.temporalui_memory
   execution_role_arn        = aws_iam_role.ecs.arn
   task_role_arn             = null
-  image_registry            = var.image_registry
+  image_registry            = local.image_registry
   image_repository          = "temporalui"
   image_tag                 = var.image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
@@ -1137,7 +1137,7 @@ module "monocle" {
   memory                    = var.monocle_memory
   execution_role_arn        = aws_iam_role.ecs.arn
   task_role_arn             = aws_iam_role.monocle.arn
-  image_registry            = var.image_registry
+  image_registry            = local.image_registry
   image_repository          = "monocle"
   image_tag                 = var.image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
@@ -1213,7 +1213,7 @@ module "toretto" {
   memory                    = var.toretto_memory
   execution_role_arn        = aws_iam_role.ecs.arn
   task_role_arn             = aws_iam_role.monocle.arn
-  image_registry            = var.image_registry
+  image_registry            = local.image_registry
   image_repository          = "toretto"
   image_tag                 = var.image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
@@ -1289,7 +1289,7 @@ module "scheduler" {
   memory                    = var.scheduler_memory
   execution_role_arn        = aws_iam_role.ecs.arn
   task_role_arn             = null
-  image_registry            = var.image_registry
+  image_registry            = local.image_registry
   image_repository          = "scheduler"
   image_tag                 = var.image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
@@ -1382,7 +1382,7 @@ resource "aws_iam_role_policy" "datawatch_temporalsecrets" {
           "secretsmanager:TagResource"
         ]
         Resource = [
-          "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:bigeye/${local.name}/temporal/client/public/*"
+          "arn:aws:secretsmanager:${local.aws_region}:${local.aws_account_id}:secret:bigeye/${local.name}/temporal/client/public/*"
         ]
       },
       {
@@ -1393,9 +1393,9 @@ resource "aws_iam_role_policy" "datawatch_temporalsecrets" {
           "secretsmanager:GetSecretValue"
         ]
         Resource = [
-          "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:bigeye/${local.name}/temporal/client/public/*",
-          "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:bigeye/${local.name}/temporal/*/*",
-          "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:bigeye/datawatch-temporal/*"
+          "arn:aws:secretsmanager:${local.aws_region}:${local.aws_account_id}:secret:bigeye/${local.name}/temporal/client/public/*",
+          "arn:aws:secretsmanager:${local.aws_region}:${local.aws_account_id}:secret:bigeye/${local.name}/temporal/*/*",
+          "arn:aws:secretsmanager:${local.aws_region}:${local.aws_account_id}:secret:bigeye/datawatch-temporal/*"
         ]
 
       }
@@ -1434,8 +1434,8 @@ resource "aws_iam_role_policy" "datawatch_secrets" {
           "secretsmanager:TagResource"
         ]
         Resource = [
-          "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:bigeye/${local.name}/agent/*",
-          "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:bigeye/${local.name}/datawatch/*"
+          "arn:aws:secretsmanager:${local.aws_region}:${local.aws_account_id}:secret:bigeye/${local.name}/agent/*",
+          "arn:aws:secretsmanager:${local.aws_region}:${local.aws_account_id}:secret:bigeye/${local.name}/datawatch/*"
         ]
       },
       {
@@ -1446,8 +1446,8 @@ resource "aws_iam_role_policy" "datawatch_secrets" {
           "secretsmanager:GetSecretValue"
         ]
         Resource = [
-          "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:bigeye/${local.name}/agent/*",
-          "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:bigeye/${local.name}/datawatch/*"
+          "arn:aws:secretsmanager:${local.aws_region}:${local.aws_account_id}:secret:bigeye/${local.name}/agent/*",
+          "arn:aws:secretsmanager:${local.aws_region}:${local.aws_account_id}:secret:bigeye/${local.name}/datawatch/*"
         ]
 
       }
@@ -1654,7 +1654,7 @@ module "datawatch" {
   memory                    = var.datawatch_memory
   execution_role_arn        = aws_iam_role.ecs.arn
   task_role_arn             = aws_iam_role.datawatch.arn
-  image_registry            = var.image_registry
+  image_registry            = local.image_registry
   image_repository          = "datawatch"
   image_tag                 = var.image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
@@ -1709,7 +1709,7 @@ module "datawatch" {
       MAX_RAM_PERCENTAGE    = var.datawatch_jvm_max_ram_pct
       DEMO_ENDPOINT_ENABLED = var.is_demo
       SENTRY_DSN            = var.sentry_dsn
-      AWS_REGION            = data.aws_region.current.name
+      AWS_REGION            = local.aws_region
     }
   )
 
@@ -1751,7 +1751,7 @@ module "datawork" {
   memory                    = var.datawork_memory
   execution_role_arn        = aws_iam_role.ecs.arn
   task_role_arn             = aws_iam_role.datawatch.arn
-  image_registry            = var.image_registry
+  image_registry            = local.image_registry
   image_repository          = "datawatch"
   image_tag                 = var.image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
@@ -1809,7 +1809,7 @@ module "datawork" {
       MAX_RAM_PERCENTAGE                         = var.datawatch_jvm_max_ram_pct
       DEMO_ENDPOINT_ENABLED                      = var.is_demo
       SENTRY_DSN                                 = var.sentry_dsn
-      AWS_REGION                                 = data.aws_region.current.name
+      AWS_REGION                                 = local.aws_region
     }
   )
 
@@ -1850,7 +1850,7 @@ module "metricwork" {
   memory                    = var.metricwork_memory
   execution_role_arn        = aws_iam_role.ecs.arn
   task_role_arn             = aws_iam_role.datawatch.arn
-  image_registry            = var.image_registry
+  image_registry            = local.image_registry
   image_repository          = "datawatch"
   image_tag                 = var.image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
@@ -1908,7 +1908,7 @@ module "metricwork" {
       MAX_RAM_PERCENTAGE                         = var.datawatch_jvm_max_ram_pct
       DEMO_ENDPOINT_ENABLED                      = var.is_demo
       SENTRY_DSN                                 = var.sentry_dsn
-      AWS_REGION                                 = data.aws_region.current.name
+      AWS_REGION                                 = local.aws_region
     }
   )
 
