@@ -167,6 +167,7 @@ variable "ecs_enable_container_insights" {
 variable "image_registry" {
   description = "The hostname of the image registry to pull from"
   type        = string
+  default     = ""
   validation {
     condition     = length(var.image_registry) > 0
     error_message = "image_registry must be specified"
@@ -176,6 +177,7 @@ variable "image_registry" {
 variable "image_tag" {
   description = "The image tag to use"
   type        = string
+  default     = "latest"
   validation {
     condition     = length(var.image_tag) > 0
     error_message = "image_tag must be specified"
