@@ -19,7 +19,7 @@ installed and configured with credentials for your AWS account.
 
 ## Getting Started
 
-Check out one of [examples](./docs/examples/) to get started with your Bigeye stack!
+Check out one of [examples](./examples/) to get started with your Bigeye stack!
 
 ## Upgrading
 
