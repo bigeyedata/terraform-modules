@@ -336,37 +336,36 @@ variable "auth0_domain" {
   description = "domain for the Auth0 OAuth flow"
   type        = string
   default     = ""
-  default = ""
 }
 
 variable "auth0_client_id_secretsmanager_arn" {
   description = "secrets manager ARN for the Auth0 client ID"
   type        = string
-  default = ""
+  default     = ""
 }
 
 variable "auth0_client_secret_secretsmanager_arn" {
   description = "secrets manager ARN for the Auth0 client secret"
   type        = string
-  default = ""
+  default     = ""
 }
 
 variable "slack_client_id_secretsmanager_arn" {
   description = "secrets manager ARN for the slack client ID"
   type        = string
-  default = ""
+  default     = ""
 }
 
 variable "slack_client_secret_secretsmanager_arn" {
   description = "secrets manager ARN for the slack client secret"
   type        = string
-  default = ""
+  default     = ""
 }
 
 variable "slack_client_signing_secret_secretsmanager_arn" {
   description = "secrets manager ARN for the slack client signing secret"
   type        = string
-  default = ""
+  default     = ""
 }
 
 variable "stitch_api_token_secretsmanager_arn" {
