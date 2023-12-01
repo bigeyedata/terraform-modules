@@ -38,7 +38,9 @@ cd bigeye-stack
 
 Create a `main.tf` file with the contents of the sample in this folder.
 
-[main.tf](./main.tf)
+You can copy the contents directly from the repository here - [main.tf](./main.tf)
+
+Or you can download the file manually using curl/wget.
 
 ```sh
 curl https://github.com/bigeyedata/terraform-modules/tree/main/docs/examples/standard/main.tf
