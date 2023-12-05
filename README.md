@@ -19,7 +19,11 @@ installed and configured with credentials for your AWS account.
 
 ## Getting Started
 
-Check out one of [examples](./examples/) to get started with your Bigeye stack!
+Check out the [standard example](./examples/standard/) to get started with
+a Bigeye stack. Other common configurations are also in the examples directory.
+
+For a full list of the configuration options, please review the
+[variables.tf](./modules/bigeye/variables.tf) in the main bigeye module.
 
 ## Upgrading
 
