@@ -50,8 +50,8 @@ done
 
 # Replace text. Unfortunately need to check system since Mac sed is different
 if [ "$(uname -s)" = "Darwin" ]; then
-    find ./docs -name \*.tf -print0 | xargs -I '{}' sed -i '' "s/${OLD_VERSION}/${NEW_VERSION}/g" "{}"
+    find ./examples -name \*.tf -print0 | xargs -I '{}' sed -i '' "s/${OLD_VERSION}/${NEW_VERSION}/g" "{}"
 else
-    find ./docs -name \*.tf -print0 | xargs -I '{}' sed -i "s/${OLD_VERSION}/${NEW_VERSION}/g" "{}"
+    find ./examples -name \*.tf -print0 | xargs -I '{}' sed -i "s/${OLD_VERSION}/${NEW_VERSION}/g" "{}"
 fi
 
