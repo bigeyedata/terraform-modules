@@ -97,37 +97,37 @@ variable "byovpc_vpc_id" {
 }
 
 variable "byovpc_rabbitmq_subnet_ids" {
-  description = "List of subnet IDs to launch RabbitMQ in"
+  description = "List of subnet IDs to launch RabbitMQ in. These do not need internet access."
   type        = list(string)
   default     = []
 }
 
 variable "byovpc_internal_subnet_ids" {
-  description = "List of subnet IDs where internal load balancers will go"
+  description = "List of subnet IDs where internal load balancers will go. These do not need internet access."
   type        = list(string)
   default     = []
 }
 
 variable "byovpc_application_subnet_ids" {
-  description = "List of subnet IDs where applications will operate"
+  description = "List of subnet IDs where applications will operate. These should have egress to the internet."
   type        = list(string)
   default     = []
 }
 
 variable "byovpc_public_subnet_ids" {
-  description = "List of subnet IDs to put web ALB"
+  description = "List of subnet IDs to put web ALB. These should be internet-facing."
   type        = list(string)
   default     = []
 }
 
 variable "byovpc_redis_subnet_group_name" {
-  description = "The name of the subnet group to house Redis"
+  description = "The name of the subnet group to launch Redis"
   type        = string
   default     = ""
 }
 
 variable "byovpc_database_subnet_group_name" {
-  description = "The name of the database subnet group to place databases"
+  description = "The name of the database subnet group to launch databases"
   type        = string
   default     = ""
 }
