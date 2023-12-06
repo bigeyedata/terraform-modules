@@ -49,10 +49,10 @@ You can copy the contents directly from the repository here - [main.tf](./main.t
 Or you can download the file manually using curl/wget.
 
 ```sh
-curl https://github.com/bigeyedata/terraform-modules/tree/main/docs/examples/standard/main.tf
+curl https://github.com/bigeyedata/terraform-modules/tree/main/examples/standard/main.tf
 
 # Or using wget
-wget https://github.com/bigeyedata/terraform-modules/tree/main/docs/examples/standard/main.tf
+wget https://github.com/bigeyedata/terraform-modules/tree/main/examples/standard/main.tf
 ```
 
 ### Configure your stack
