@@ -60,7 +60,7 @@ jobs:
           fetch-depth: 0
       - name: fetch current version
         id: prevversion
-        run: echo "PREVIOUS_VERSION=v$(grep version package.json | awk '{print $2}' | tr -d '",')" >> "$GITHUB_OUTPUT"
+        run: echo "PREVIOUS_VERSION=v$(jq -r .version package.json)" >> "$GITHUB_OUTPUT"
       - name: print previous version
         run: echo "${{ steps.prevversion.outputs.PREVIOUS_VERSION }}"
       - name: set up branch
