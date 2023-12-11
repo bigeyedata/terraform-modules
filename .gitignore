@@ -1,3 +1,4 @@
 node_modules
 .terraform
 modules/**/.terraform.lock.hcl
+.idea
