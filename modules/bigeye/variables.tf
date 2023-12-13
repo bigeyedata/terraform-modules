@@ -687,6 +687,18 @@ variable "temporal_additional_secret_arns" {
   default     = {}
 }
 
+variable "temporal_per_namespace_worker_count" {
+  description = "Controls number of per-ns (scheduler, batcher, etc.) workers to run per namespace"
+  type        = string
+  default     = null
+}
+
+variable "temporal_max_concurrent_workflow_task_pollers" {
+  description = "Number of pollers performing poll requests waiting on Workflow / Activity task queue and delivering the tasks to the executors"
+  type        = string
+  default     = null
+}
+
 #======================================================
 # Application Variables - Datawatch
 #======================================================

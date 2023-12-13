@@ -109,6 +109,9 @@ locals {
     }
   )
 
+  temporal_per_namespace_worker_count           = coalesce(var.temporal_per_namespace_worker_count, var.temporal_desired_count * 3)
+  temporal_max_concurrent_workflow_task_pollers = coalesce(var.temporal_max_concurrent_workflow_task_pollers, local.temporal_per_namespace_worker_count * 3)
+
   #======================================================
   # Datadog specs
   #======================================================
