@@ -835,6 +835,8 @@ locals {
       TEMPORAL_TLS_INTERNODE_DISABLE_HOST_VERIFICATION = var.temporal_use_default_certificates ? "true" : "false"
       TEMPORAL_TLS_INTERNODE_SERVER_NAME               = local.temporal_dns_name
       TEMPORAL_TLS_FRONTEND_SERVER_NAME                = local.temporal_dns_name
+      TEMPORAL_PER_NAMESPACE_WORKER_COUNT              = local.temporal_per_namespace_worker_count
+      TEMPORAL_MAX_CONCURRENT_WORKFLOW_TASK_POLLERS    = local.temporal_max_concurrent_workflow_task_pollers
       TEMPORAL_CLI_TLS_ENABLE_HOST_VERIFICATION        = var.temporal_use_default_certificates ? "false" : "true"
       TEMPORAL_CLI_TLS_SERVER_NAME                     = local.temporal_dns_name
       SQL_MAX_IDLE_CONNS                               = "10"
@@ -1700,6 +1702,7 @@ module "datawatch" {
       REQUEST_BODY_LOGGING_ENABLED    = var.datawatch_request_body_logging_enabled
       REQUEST_AUTH_LOGGING_ENABLED    = var.datawatch_request_auth_logging_enabled
 
+      TEMPORAL_ENABLED                           = true
       TEMPORAL_TARGET                            = "${local.temporal_dns_name}:443"
       TEMPORAL_NAMESPACE                         = var.temporal_namespace
       TEMPORAL_SSL_HOSTNAME_VERIFICATION_ENABLED = var.temporal_use_default_certificates ? "false" : "true"
@@ -1801,6 +1804,7 @@ module "datawork" {
       ACTIONABLE_NOTIFICATION_ENABLED            = "false"
       REQUEST_BODY_LOGGING_ENABLED               = var.datawatch_request_body_logging_enabled
       REQUEST_AUTH_LOGGING_ENABLED               = var.datawatch_request_auth_logging_enabled
+      TEMPORAL_ENABLED                           = true
       TEMPORAL_TARGET                            = "${local.temporal_dns_name}:443"
       TEMPORAL_NAMESPACE                         = var.temporal_namespace
       TEMPORAL_SSL_HOSTNAME_VERIFICATION_ENABLED = var.temporal_use_default_certificates ? "false" : "true"
@@ -1900,6 +1904,7 @@ module "metricwork" {
       ACTIONABLE_NOTIFICATION_ENABLED            = "false"
       REQUEST_BODY_LOGGING_ENABLED               = var.datawatch_request_body_logging_enabled
       REQUEST_AUTH_LOGGING_ENABLED               = var.datawatch_request_auth_logging_enabled
+      TEMPORAL_ENABLED                           = true
       TEMPORAL_TARGET                            = "${local.temporal_dns_name}:443"
       TEMPORAL_NAMESPACE                         = var.temporal_namespace
       TEMPORAL_SSL_HOSTNAME_VERIFICATION_ENABLED = var.temporal_use_default_certificates ? "false" : "true"
