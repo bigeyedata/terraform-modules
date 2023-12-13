@@ -52,6 +52,6 @@ done
 if [ "$(uname -s)" = "Darwin" ]; then
     find ./examples -name \*.tf -print0 | xargs -I '{}' sed -i '' "s/${OLD_VERSION}/${NEW_VERSION}/g" "{}"
 else
-    find ./examples -name \*.tf -print0 | xargs -I '{}' sed -i "s/${OLD_VERSION}/${NEW_VERSION}/g" "{}"
+    find ./examples -name \*.tf -print0 | xargs --null -I '{}' sed -i "s/${OLD_VERSION}/${NEW_VERSION}/g" "{}"
 fi
 
