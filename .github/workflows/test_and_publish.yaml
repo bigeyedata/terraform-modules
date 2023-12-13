@@ -114,7 +114,7 @@ jobs:
         run: |
           gh workflow run "Bump TF Module Version" -R "bigeyedata/semantic-data-platform" --field "previousVersion=${{ steps.prevversion.outputs.PREVIOUS_VERSION }}" --field "version=${{ steps.changelog.outputs.tag }}" --field "environment=test"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.BIGEYE_SRE_BOT_GH_PAT }}
       - name: notify slack
         if: ${{ steps.changelog.outputs.skipped == 'false' }}
         uses: slackapi/slack-github-action@v1.23.0
