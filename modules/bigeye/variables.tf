@@ -198,7 +198,7 @@ variable "datadog_agent_enabled" {
 variable "datadog_agent_image" {
   description = "The fully qualified image for the datadog agent"
   type        = string
-  default     = "021451147547.dkr.ecr.us-west-2.amazonaws.com/external/datadog/agent:latest"
+  default     = "public.ecr.aws/bigeye/datadog/agent:7.49.0"
 }
 
 variable "datadog_agent_cpu" {
