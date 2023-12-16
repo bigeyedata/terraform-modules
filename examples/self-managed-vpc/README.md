@@ -5,6 +5,8 @@ Bigeye in an existing VPC. This example shows the necessary
 configuration of variables to accomplish a Bigeye stack
 install within an existing VPC environment.
 
+See the "Standard" example for more details on general Bigeye stack configuration
+
 ## Prerequisites
 
 You will need all the same prerequisites as the standard
