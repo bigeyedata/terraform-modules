@@ -837,8 +837,8 @@ locals {
       TEMPORAL_TLS_FRONTEND_SERVER_NAME                = local.temporal_dns_name
       TEMPORAL_PER_NAMESPACE_WORKER_COUNT              = local.temporal_per_namespace_worker_count
       TEMPORAL_MAX_CONCURRENT_WORKFLOW_TASK_POLLERS    = local.temporal_max_concurrent_workflow_task_pollers
-      TEMPORAL_CLI_TLS_ENABLE_HOST_VERIFICATION        = var.temporal_use_default_certificates ? "false" : "true"
-      TEMPORAL_CLI_TLS_SERVER_NAME                     = local.temporal_dns_name
+      TEMPORAL_TLS_DISABLE_HOST_VERIFICATION           = var.temporal_use_default_certificates ? "true" : "false"
+      TEMPORAL_TLS_SERVER_NAME                         = local.temporal_dns_name
       SQL_MAX_IDLE_CONNS                               = "10"
     }
   )
