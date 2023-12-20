@@ -48,6 +48,7 @@ locals {
     DD_SERVICE      = var.app
     DD_TAGS         = "app:${var.app} instance:${var.instance} stack:${var.name}"
     DD_ENV          = var.name
+    DD_API_KEY      = var.datadog_agent_api_key
     } : {
     DATADOG_ENABLED = "false"
   }
