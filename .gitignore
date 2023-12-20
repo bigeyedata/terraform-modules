@@ -1,4 +1,11 @@
+# Node
 node_modules
+
+# Terraform
 .terraform
 modules/**/.terraform.lock.hcl
+
+# Intellij
 .idea
+*.iml
+
