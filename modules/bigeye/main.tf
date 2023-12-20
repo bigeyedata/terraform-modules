@@ -616,7 +616,7 @@ module "haproxy" {
   execution_role_arn        = aws_iam_role.ecs.arn
   task_role_arn             = null
   image_registry            = local.image_registry
-  image_repository          = "haproxy"
+  image_repository          = format("%s%s", "haproxy", var.image_repository_suffix)
   image_tag                 = var.image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
 
@@ -691,7 +691,7 @@ module "web" {
   execution_role_arn        = aws_iam_role.ecs.arn
   task_role_arn             = null
   image_registry            = local.image_registry
-  image_repository          = "web"
+  image_repository          = format("%s%s", "web", var.image_repository_suffix)
   image_tag                 = var.image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
 
@@ -861,7 +861,7 @@ resource "aws_ecs_task_definition" "temporal" {
       name        = "${local.name}-temporal"
       cpu         = var.temporal_cpu
       memory      = var.temporal_memory
-      image       = "${local.image_registry}/temporal:${var.image_tag}"
+      image       = format("%s/%s%s:%s", local.image_registry, "temporal", var.image_repository_suffix, var.image_tag)
       environment = [for k, v in local.temporal_environment_variables : { Name = k, Value = v }]
       secrets     = [for k, v in local.temporal_secret_arns : { Name = k, ValueFrom = v }]
       logConfiguration = {
@@ -1034,7 +1034,7 @@ module "temporalui" {
   execution_role_arn        = aws_iam_role.ecs.arn
   task_role_arn             = null
   image_registry            = local.image_registry
-  image_repository          = "temporalui"
+  image_repository          = format("%s%s", "temporalui", var.image_repository_suffix)
   image_tag                 = var.image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
 
@@ -1140,7 +1140,7 @@ module "monocle" {
   execution_role_arn        = aws_iam_role.ecs.arn
   task_role_arn             = aws_iam_role.monocle.arn
   image_registry            = local.image_registry
-  image_repository          = "monocle"
+  image_repository          = format("%s%s", "monocle", var.image_repository_suffix)
   image_tag                 = var.image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
 
@@ -1216,7 +1216,7 @@ module "toretto" {
   execution_role_arn        = aws_iam_role.ecs.arn
   task_role_arn             = aws_iam_role.monocle.arn
   image_registry            = local.image_registry
-  image_repository          = "toretto"
+  image_repository          = format("%s%s", "toretto", var.image_repository_suffix)
   image_tag                 = var.image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
 
@@ -1292,7 +1292,7 @@ module "scheduler" {
   execution_role_arn        = aws_iam_role.ecs.arn
   task_role_arn             = null
   image_registry            = local.image_registry
-  image_repository          = "scheduler"
+  image_repository          = format("%s%s", "scheduler", var.image_repository_suffix)
   image_tag                 = var.image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
 
@@ -1657,7 +1657,7 @@ module "datawatch" {
   execution_role_arn        = aws_iam_role.ecs.arn
   task_role_arn             = aws_iam_role.datawatch.arn
   image_registry            = local.image_registry
-  image_repository          = "datawatch"
+  image_repository          = format("%s%s", "datawatch", var.image_repository_suffix)
   image_tag                 = var.image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
 
@@ -1755,7 +1755,7 @@ module "datawork" {
   execution_role_arn        = aws_iam_role.ecs.arn
   task_role_arn             = aws_iam_role.datawatch.arn
   image_registry            = local.image_registry
-  image_repository          = "datawatch"
+  image_repository          = format("%s%s", "datawatch", var.image_repository_suffix)
   image_tag                 = var.image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
 
@@ -1855,7 +1855,7 @@ module "metricwork" {
   execution_role_arn        = aws_iam_role.ecs.arn
   task_role_arn             = aws_iam_role.datawatch.arn
   image_registry            = local.image_registry
-  image_repository          = "datawatch"
+  image_repository          = format("%s%s", "datawatch", var.image_repository_suffix)
   image_tag                 = var.image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
 

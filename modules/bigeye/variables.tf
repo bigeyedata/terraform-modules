@@ -180,6 +180,12 @@ variable "image_tag" {
   }
 }
 
+variable "image_repository_suffix" {
+  description = "The repository suffix. For example if the repository is datawatch/test, the suffix is /test"
+  type        = string
+  default     = ""
+}
+
 variable "fargate_version" {
   description = "The ECS fargate version"
   type        = string
