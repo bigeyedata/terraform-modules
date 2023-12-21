@@ -1518,7 +1518,7 @@ module "datawatch_rds" {
   name   = "${local.name}-datawatch"
 
   # Connection Info
-  db_name                       = "toro"
+  db_name                       = var.datawatch_rds_db_name
   root_user_name                = "bigeye"
   root_user_password_secret_arn = local.datawatch_rds_password_secret_arn
   snapshot_identifier           = var.datawatch_rds_snapshot_identifier
