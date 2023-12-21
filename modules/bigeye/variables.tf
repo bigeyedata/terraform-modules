@@ -720,6 +720,12 @@ variable "datawatch_robot_password_secret_arn" {
   default     = ""
 }
 
+variable "datawatch_rds_db_name" {
+  description = "The database name for Datawatch's application DB"
+  type        = string
+  default     = "bigeye"
+}
+
 variable "datawatch_rds_snapshot_identifier" {
   description = "The snapshot identifier of the snapshot to create the database from"
   type        = string
