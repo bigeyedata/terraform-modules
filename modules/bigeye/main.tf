@@ -773,9 +773,9 @@ module "temporal_rds" {
 
 resource "aws_lb" "temporal" {
   name                             = "${local.name}-temporal"
-  internal                         = false
+  internal                         = var.temporal_internet_facing ? false : true
   load_balancer_type               = "network"
-  subnets                          = local.public_alb_subnet_ids
+  subnets                          = var.temporal_internet_facing ? local.public_alb_subnet_ids : local.internal_service_alb_subnet_ids
   enable_cross_zone_load_balancing = true
   tags                             = local.tags
 

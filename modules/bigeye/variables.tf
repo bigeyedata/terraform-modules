@@ -705,6 +705,12 @@ variable "temporal_max_concurrent_workflow_task_pollers" {
   default     = null
 }
 
+variable "temporal_internet_facing" {
+  description = "Whether the temporal network load balancer needs to be public facing or not. Only necessary when using agent"
+  type        = bool
+  default     = false
+}
+
 #======================================================
 # Application Variables - Datawatch
 #======================================================
