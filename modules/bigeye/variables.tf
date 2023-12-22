@@ -693,6 +693,18 @@ variable "temporal_additional_secret_arns" {
   default     = {}
 }
 
+variable "temporal_extra_security_group_ids" {
+  description = "Additional security group IDs to give to temporal"
+  type        = list(string)
+  default     = []
+}
+
+variable "temporal_lb_extra_security_group_ids" {
+  description = "Additional security group IDs to give to temporal LB"
+  type        = list(string)
+  default     = []
+}
+
 variable "temporal_per_namespace_worker_count" {
   description = "Controls number of per-ns (scheduler, batcher, etc.) workers to run per namespace"
   type        = string
