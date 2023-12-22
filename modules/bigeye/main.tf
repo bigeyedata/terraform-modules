@@ -1091,13 +1091,21 @@ resource "aws_iam_role_policy" "monocle" {
     Version = "2012-10-17"
     Statement = [
       {
+        Sid    = "AllowListBucket"
+        Effect = "Allow"
+        Action = [
+          "s3:ListBucket",
+        ]
+        Resource = aws_s3_bucket.models.arn
+      },
+      {
+        Sid    = "AllowGetPutObjects"
         Effect = "Allow"
         Action = [
           "s3:GetObject",
-          "s3:ListBucket",
           "s3:PutObject"
         ]
-        Resource = aws_s3_bucket.models.arn
+        Resource = format("%s/*", aws_s3_bucket.models.arn)
       }
     ]
   })
