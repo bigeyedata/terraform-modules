@@ -586,24 +586,26 @@ module "haproxy" {
   name     = "${local.name}-haproxy"
   tags     = merge(local.tags, { app = "haproxy" })
 
-  internet_facing        = var.internet_facing
-  vpc_id                 = local.vpc_id
-  vpc_cidr_block         = var.vpc_cidr_block
-  subnet_ids             = local.application_subnet_ids
-  create_security_groups = var.create_security_groups
-  traffic_port           = var.haproxy_port
-  ecs_cluster_id         = aws_ecs_cluster.this.id
-  fargate_version        = var.fargate_version
+  internet_facing               = var.internet_facing
+  vpc_id                        = local.vpc_id
+  vpc_cidr_block                = var.vpc_cidr_block
+  subnet_ids                    = local.application_subnet_ids
+  create_security_groups        = var.create_security_groups
+  additional_security_group_ids = var.haproxy_extra_security_group_ids
+  traffic_port                  = var.haproxy_port
+  ecs_cluster_id                = aws_ecs_cluster.this.id
+  fargate_version               = var.fargate_version
 
   # Load balancer
-  healthcheck_path        = "/haproxy-health"
-  healthcheck_interval    = 15
-  ssl_policy              = var.alb_ssl_policy
-  acm_certificate_arn     = local.acm_certificate_arn
-  lb_idle_timeout         = 900
-  lb_subnet_ids           = var.internet_facing ? local.public_alb_subnet_ids : local.internal_service_alb_subnet_ids
-  lb_stickiness_enabled   = true
-  lb_deregistration_delay = 900
+  healthcheck_path                 = "/haproxy-health"
+  healthcheck_interval             = 15
+  ssl_policy                       = var.alb_ssl_policy
+  acm_certificate_arn              = local.acm_certificate_arn
+  lb_idle_timeout                  = 900
+  lb_subnet_ids                    = var.internet_facing ? local.public_alb_subnet_ids : local.internal_service_alb_subnet_ids
+  lb_additional_security_group_ids = var.haproxy_lb_extra_security_group_ids
+  lb_stickiness_enabled            = true
+  lb_deregistration_delay          = 900
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -662,23 +664,25 @@ module "web" {
   name     = "${local.name}-web"
   tags     = merge(local.tags, { app = "web" })
 
-  vpc_id                 = local.vpc_id
-  vpc_cidr_block         = var.vpc_cidr_block
-  subnet_ids             = local.application_subnet_ids
-  create_security_groups = var.create_security_groups
-  traffic_port           = var.web_port
-  ecs_cluster_id         = aws_ecs_cluster.this.id
-  fargate_version        = var.fargate_version
+  vpc_id                        = local.vpc_id
+  vpc_cidr_block                = var.vpc_cidr_block
+  subnet_ids                    = local.application_subnet_ids
+  create_security_groups        = var.create_security_groups
+  additional_security_group_ids = var.web_extra_security_group_ids
+  traffic_port                  = var.web_port
+  ecs_cluster_id                = aws_ecs_cluster.this.id
+  fargate_version               = var.fargate_version
 
   # Load balancer
-  healthcheck_path        = "/next-status"
-  healthcheck_interval    = 15
-  ssl_policy              = var.alb_ssl_policy
-  acm_certificate_arn     = local.acm_certificate_arn
-  lb_idle_timeout         = 180
-  lb_subnet_ids           = local.internal_service_alb_subnet_ids
-  lb_stickiness_enabled   = true
-  lb_deregistration_delay = 120
+  healthcheck_path                 = "/next-status"
+  healthcheck_interval             = 15
+  ssl_policy                       = var.alb_ssl_policy
+  acm_certificate_arn              = local.acm_certificate_arn
+  lb_idle_timeout                  = 180
+  lb_subnet_ids                    = local.internal_service_alb_subnet_ids
+  lb_additional_security_group_ids = var.web_lb_extra_security_group_ids
+  lb_stickiness_enabled            = true
+  lb_deregistration_delay          = 120
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -1035,21 +1039,23 @@ module "temporalui" {
   name     = "${local.name}-temporalui"
   tags     = merge(local.tags, { app = "temporalui" })
 
-  vpc_id                 = local.vpc_id
-  vpc_cidr_block         = var.vpc_cidr_block
-  subnet_ids             = local.application_subnet_ids
-  create_security_groups = var.create_security_groups
-  traffic_port           = var.temporalui_port
-  ecs_cluster_id         = aws_ecs_cluster.this.id
-  fargate_version        = var.fargate_version
+  vpc_id                        = local.vpc_id
+  vpc_cidr_block                = var.vpc_cidr_block
+  subnet_ids                    = local.application_subnet_ids
+  create_security_groups        = var.create_security_groups
+  additional_security_group_ids = var.temporalui_extra_security_group_ids
+  traffic_port                  = var.temporalui_port
+  ecs_cluster_id                = aws_ecs_cluster.this.id
+  fargate_version               = var.fargate_version
 
   # Load balancer
-  healthcheck_path        = "/health"
-  healthcheck_interval    = 15
-  ssl_policy              = var.alb_ssl_policy
-  acm_certificate_arn     = local.acm_certificate_arn
-  lb_subnet_ids           = local.internal_service_alb_subnet_ids
-  lb_deregistration_delay = 120
+  healthcheck_path                 = "/health"
+  healthcheck_interval             = 15
+  ssl_policy                       = var.alb_ssl_policy
+  acm_certificate_arn              = local.acm_certificate_arn
+  lb_subnet_ids                    = local.internal_service_alb_subnet_ids
+  lb_additional_security_group_ids = var.temporalui_lb_extra_security_group_ids
+  lb_deregistration_delay          = 120
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -1151,19 +1157,20 @@ module "monocle" {
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
-  additional_security_group_ids = [module.rabbitmq.client_security_group_id]
+  additional_security_group_ids = concat([module.rabbitmq.client_security_group_id], var.monocle_extra_security_group_ids)
   traffic_port                  = var.monocle_port
   ecs_cluster_id                = aws_ecs_cluster.this.id
   fargate_version               = var.fargate_version
 
   # Load balancer
-  healthcheck_path        = "/health"
-  healthcheck_interval    = 60
-  ssl_policy              = var.alb_ssl_policy
-  acm_certificate_arn     = local.acm_certificate_arn
-  lb_idle_timeout         = 900
-  lb_subnet_ids           = local.internal_service_alb_subnet_ids
-  lb_deregistration_delay = 300
+  healthcheck_path                 = "/health"
+  healthcheck_interval             = 60
+  ssl_policy                       = var.alb_ssl_policy
+  acm_certificate_arn              = local.acm_certificate_arn
+  lb_idle_timeout                  = 900
+  lb_subnet_ids                    = local.internal_service_alb_subnet_ids
+  lb_additional_security_group_ids = var.monocle_lb_extra_security_group_ids
+  lb_deregistration_delay          = 300
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -1229,17 +1236,18 @@ module "toretto" {
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
-  additional_security_group_ids = [module.rabbitmq.client_security_group_id]
+  additional_security_group_ids = concat([module.rabbitmq.client_security_group_id], var.toretto_extra_security_group_ids)
   traffic_port                  = var.toretto_port
   ecs_cluster_id                = aws_ecs_cluster.this.id
   fargate_version               = var.fargate_version
 
   # Load balancer
-  healthcheck_path    = "/health"
-  ssl_policy          = var.alb_ssl_policy
-  acm_certificate_arn = local.acm_certificate_arn
-  lb_idle_timeout     = 900
-  lb_subnet_ids       = local.internal_service_alb_subnet_ids
+  healthcheck_path                 = "/health"
+  ssl_policy                       = var.alb_ssl_policy
+  acm_certificate_arn              = local.acm_certificate_arn
+  lb_idle_timeout                  = 900
+  lb_subnet_ids                    = local.internal_service_alb_subnet_ids
+  lb_additional_security_group_ids = var.toretto_lb_extra_security_group_ids
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -1305,17 +1313,18 @@ module "scheduler" {
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
-  additional_security_group_ids = [module.redis.client_security_group_id]
+  additional_security_group_ids = concat([module.redis.client_security_group_id], var.scheduler_extra_security_group_ids)
   traffic_port                  = var.scheduler_port
   ecs_cluster_id                = aws_ecs_cluster.this.id
   fargate_version               = var.fargate_version
 
   # Load balancer
-  healthcheck_path    = "/health"
-  ssl_policy          = var.alb_ssl_policy
-  acm_certificate_arn = local.acm_certificate_arn
-  lb_idle_timeout     = 900
-  lb_subnet_ids       = local.internal_service_alb_subnet_ids
+  healthcheck_path                 = "/health"
+  ssl_policy                       = var.alb_ssl_policy
+  acm_certificate_arn              = local.acm_certificate_arn
+  lb_idle_timeout                  = 900
+  lb_subnet_ids                    = local.internal_service_alb_subnet_ids
+  lb_additional_security_group_ids = var.scheduler_lb_extra_security_group_ids
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -1668,19 +1677,20 @@ module "datawatch" {
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
-  additional_security_group_ids = local.datawatch_additional_security_groups
+  additional_security_group_ids = concat(local.datawatch_additional_security_groups, var.datawatch_extra_security_group_ids)
   traffic_port                  = var.datawatch_port
   ecs_cluster_id                = aws_ecs_cluster.this.id
   fargate_version               = var.fargate_version
 
   # Load balancer
-  healthcheck_path         = "/health"
-  healthcheck_grace_period = 300
-  ssl_policy               = var.alb_ssl_policy
-  acm_certificate_arn      = local.acm_certificate_arn
-  lb_idle_timeout          = 900
-  lb_subnet_ids            = local.internal_service_alb_subnet_ids
-  lb_deregistration_delay  = 900
+  healthcheck_path                 = "/health"
+  healthcheck_grace_period         = 300
+  ssl_policy                       = var.alb_ssl_policy
+  acm_certificate_arn              = local.acm_certificate_arn
+  lb_idle_timeout                  = 900
+  lb_subnet_ids                    = local.internal_service_alb_subnet_ids
+  lb_additional_security_group_ids = var.datawatch_lb_extra_security_group_ids
+  lb_deregistration_delay          = 900
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -1767,18 +1777,19 @@ module "datawork" {
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
-  additional_security_group_ids = local.datawatch_additional_security_groups
+  additional_security_group_ids = concat(local.datawatch_additional_security_groups, var.datawork_extra_security_group_ids)
   traffic_port                  = var.datawork_port
   ecs_cluster_id                = aws_ecs_cluster.this.id
   fargate_version               = var.fargate_version
 
   # Load balancer
-  healthcheck_path     = "/health"
-  healthcheck_interval = 90
-  ssl_policy           = var.alb_ssl_policy
-  acm_certificate_arn  = local.acm_certificate_arn
-  lb_idle_timeout      = 900
-  lb_subnet_ids        = local.internal_service_alb_subnet_ids
+  healthcheck_path                 = "/health"
+  healthcheck_interval             = 90
+  ssl_policy                       = var.alb_ssl_policy
+  acm_certificate_arn              = local.acm_certificate_arn
+  lb_idle_timeout                  = 900
+  lb_subnet_ids                    = local.internal_service_alb_subnet_ids
+  lb_additional_security_group_ids = var.datawork_lb_extra_security_group_ids
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -1868,17 +1879,18 @@ module "metricwork" {
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
-  additional_security_group_ids = local.datawatch_additional_security_groups
+  additional_security_group_ids = concat(local.datawatch_additional_security_groups, var.metricwork_extra_security_group_ids)
   traffic_port                  = var.metricwork_port
   ecs_cluster_id                = aws_ecs_cluster.this.id
 
   # Load balancer
-  healthcheck_path     = "/health"
-  healthcheck_interval = 90
-  ssl_policy           = var.alb_ssl_policy
-  acm_certificate_arn  = local.acm_certificate_arn
-  lb_idle_timeout      = 900
-  lb_subnet_ids        = local.internal_service_alb_subnet_ids
+  healthcheck_path                 = "/health"
+  healthcheck_interval             = 90
+  ssl_policy                       = var.alb_ssl_policy
+  acm_certificate_arn              = local.acm_certificate_arn
+  lb_idle_timeout                  = 900
+  lb_subnet_ids                    = local.internal_service_alb_subnet_ids
+  lb_additional_security_group_ids = var.metricwork_lb_extra_security_group_ids
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket

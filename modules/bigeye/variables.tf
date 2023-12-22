@@ -429,6 +429,18 @@ variable "monocle_additional_secret_arns" {
   default     = {}
 }
 
+variable "monocle_extra_security_group_ids" {
+  description = "Additional security group ids to monocle"
+  type        = list(string)
+  default     = []
+}
+
+variable "monocle_lb_extra_security_group_ids" {
+  description = "Additional security group ids to monocle ALB"
+  type        = list(string)
+  default     = []
+}
+
 #======================================================
 # Application Variables - Toretto
 #======================================================
@@ -466,6 +478,18 @@ variable "toretto_additional_secret_arns" {
   description = "Additional secret arns to give the application"
   type        = map(string)
   default     = {}
+}
+
+variable "toretto_extra_security_group_ids" {
+  description = "Additional security group ids to toretto"
+  type        = list(string)
+  default     = []
+}
+
+variable "toretto_lb_extra_security_group_ids" {
+  description = "Additional security group ids to toretto ALB"
+  type        = list(string)
+  default     = []
 }
 
 #======================================================
@@ -528,6 +552,18 @@ variable "haproxy_additional_secret_arns" {
   default     = {}
 }
 
+variable "haproxy_extra_security_group_ids" {
+  description = "Additional security group ids to haproxy"
+  type        = list(string)
+  default     = []
+}
+
+variable "haproxy_lb_extra_security_group_ids" {
+  description = "Additional security group ids to haproxy ALB"
+  type        = list(string)
+  default     = []
+}
+
 #======================================================
 # Application Variables - Web
 #======================================================
@@ -567,6 +603,18 @@ variable "web_additional_secret_arns" {
   default     = {}
 }
 
+variable "web_extra_security_group_ids" {
+  description = "Additional security group ids to web"
+  type        = list(string)
+  default     = []
+}
+
+variable "web_lb_extra_security_group_ids" {
+  description = "Additional security group ids to web ALB"
+  type        = list(string)
+  default     = []
+}
+
 #======================================================
 # Application Variables - TemporalUI
 #======================================================
@@ -604,6 +652,18 @@ variable "temporalui_additional_secret_arns" {
   description = "Additional secret arns to give the application"
   type        = map(string)
   default     = {}
+}
+
+variable "temporalui_extra_security_group_ids" {
+  description = "Additional security group ids to temporalui"
+  type        = list(string)
+  default     = []
+}
+
+variable "temporalui_lb_extra_security_group_ids" {
+  description = "Additional security group ids to temporalui ALB"
+  type        = list(string)
+  default     = []
 }
 
 #======================================================
@@ -864,6 +924,18 @@ variable "datawatch_additional_secret_arns" {
   default     = {}
 }
 
+variable "datawatch_extra_security_group_ids" {
+  description = "Additional security group ids to datawatch"
+  type        = list(string)
+  default     = []
+}
+
+variable "datawatch_lb_extra_security_group_ids" {
+  description = "Additional security group ids to datawatch ALB"
+  type        = list(string)
+  default     = []
+}
+
 variable "datawatch_mysql_maxsize" {
   description = "Max size for mysql"
   type        = number
@@ -945,6 +1017,18 @@ variable "datawork_additional_environment_vars" {
   default     = {}
 }
 
+variable "datawork_extra_security_group_ids" {
+  description = "Additional security group ids to datawork"
+  type        = list(string)
+  default     = []
+}
+
+variable "datawork_lb_extra_security_group_ids" {
+  description = "Additional security group ids to datawork ALB"
+  type        = list(string)
+  default     = []
+}
+
 #======================================================
 # Application Variables - Metricwork
 #======================================================
@@ -976,6 +1060,18 @@ variable "metricwork_additional_environment_vars" {
   description = "Additional enviromnent variables to give the application"
   type        = map(string)
   default     = {}
+}
+
+variable "metricwork_extra_security_group_ids" {
+  description = "Additional security group ids to metricwork"
+  type        = list(string)
+  default     = []
+}
+
+variable "metricwork_lb_extra_security_group_ids" {
+  description = "Additional security group ids to metricwork ALB"
+  type        = list(string)
+  default     = []
 }
 
 #======================================================
@@ -1021,5 +1117,17 @@ variable "scheduler_additional_secret_arns" {
   description = "Additional secret arns to give the application"
   type        = map(string)
   default     = {}
+}
+
+variable "scheduler_extra_security_group_ids" {
+  description = "Additional security group ids to scheduler"
+  type        = list(string)
+  default     = []
+}
+
+variable "scheduler_lb_extra_security_group_ids" {
+  description = "Additional security group ids to scheduler ALB"
+  type        = list(string)
+  default     = []
 }
 
