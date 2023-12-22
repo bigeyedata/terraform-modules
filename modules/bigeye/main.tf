@@ -405,7 +405,7 @@ resource "aws_iam_role_policy" "ecs_secrets" {
     Version = "2012-10-17"
     Statement = [
       {
-        Sid      = "AllowSecrets"
+        Sid      = "AllowGetSecrets"
         Action   = "secretsmanager:GetSecretValue"
         Effect   = "Allow"
         Resource = "*"
@@ -1086,7 +1086,7 @@ resource "aws_iam_role" "monocle" {
 
 resource "aws_iam_role_policy" "monocle" {
   role = aws_iam_role.monocle.id
-  name = "MonocleS3Policy"
+  name = "AllowAccessModelsBucket"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -1354,18 +1354,18 @@ resource "aws_iam_role" "datawatch" {
 
 resource "aws_iam_role_policy" "datawatch_s3" {
   role = aws_iam_role.datawatch.id
-  name = "S3Access"
+  name = "AllowAccessLargePayloadBucket"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Sid      = "ListBucket"
+        Sid      = "AllowListBucket"
         Effect   = "Allow"
         Action   = "s3:ListBucket"
         Resource = aws_s3_bucket.large_payload.arn
       },
       {
-        Sid    = "S3GetPut"
+        Sid    = "AllowGetPutObjects"
         Effect = "Allow"
         Action = [
           "s3:GetObject",
@@ -1379,7 +1379,7 @@ resource "aws_iam_role_policy" "datawatch_s3" {
 
 resource "aws_iam_role_policy" "datawatch_temporalsecrets" {
   role = aws_iam_role.datawatch.id
-  name = "GrantTemporalSecretsAccess"
+  name = "AllowTemporalSecretsAccess"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -1415,7 +1415,7 @@ resource "aws_iam_role_policy" "datawatch_temporalsecrets" {
 
 resource "aws_iam_role_policy" "datawatch_listsecrets" {
   role = aws_iam_role.datawatch.id
-  name = "GrantListSecrets"
+  name = "AllowListSecrets"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -1431,7 +1431,7 @@ resource "aws_iam_role_policy" "datawatch_listsecrets" {
 
 resource "aws_iam_role_policy" "datawatch_secrets" {
   role = aws_iam_role.datawatch.id
-  name = "GrantSecretsAccess"
+  name = "AllowSecretsAccess"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
