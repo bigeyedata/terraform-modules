@@ -590,7 +590,7 @@ module "haproxy" {
   vpc_id                 = local.vpc_id
   vpc_cidr_block         = var.vpc_cidr_block
   subnet_ids             = local.application_subnet_ids
-  create_security_groups = true
+  create_security_groups = var.create_security_groups
   traffic_port           = var.haproxy_port
   ecs_cluster_id         = aws_ecs_cluster.this.id
   fargate_version        = var.fargate_version
@@ -665,7 +665,7 @@ module "web" {
   vpc_id                 = local.vpc_id
   vpc_cidr_block         = var.vpc_cidr_block
   subnet_ids             = local.application_subnet_ids
-  create_security_groups = true
+  create_security_groups = var.create_security_groups
   traffic_port           = var.web_port
   ecs_cluster_id         = aws_ecs_cluster.this.id
   fargate_version        = var.fargate_version
@@ -1038,7 +1038,7 @@ module "temporalui" {
   vpc_id                 = local.vpc_id
   vpc_cidr_block         = var.vpc_cidr_block
   subnet_ids             = local.application_subnet_ids
-  create_security_groups = true
+  create_security_groups = var.create_security_groups
   traffic_port           = var.temporalui_port
   ecs_cluster_id         = aws_ecs_cluster.this.id
   fargate_version        = var.fargate_version
@@ -1150,7 +1150,7 @@ module "monocle" {
   vpc_id                        = local.vpc_id
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
-  create_security_groups        = true
+  create_security_groups        = var.create_security_groups
   additional_security_group_ids = [module.rabbitmq.client_security_group_id]
   traffic_port                  = var.monocle_port
   ecs_cluster_id                = aws_ecs_cluster.this.id
@@ -1228,7 +1228,7 @@ module "toretto" {
   vpc_id                        = local.vpc_id
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
-  create_security_groups        = true
+  create_security_groups        = var.create_security_groups
   additional_security_group_ids = [module.rabbitmq.client_security_group_id]
   traffic_port                  = var.toretto_port
   ecs_cluster_id                = aws_ecs_cluster.this.id
@@ -1304,7 +1304,7 @@ module "scheduler" {
   vpc_id                        = local.vpc_id
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
-  create_security_groups        = true
+  create_security_groups        = var.create_security_groups
   additional_security_group_ids = [module.redis.client_security_group_id]
   traffic_port                  = var.scheduler_port
   ecs_cluster_id                = aws_ecs_cluster.this.id
@@ -1667,7 +1667,7 @@ module "datawatch" {
   vpc_id                        = local.vpc_id
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
-  create_security_groups        = true
+  create_security_groups        = var.create_security_groups
   additional_security_group_ids = local.datawatch_additional_security_groups
   traffic_port                  = var.datawatch_port
   ecs_cluster_id                = aws_ecs_cluster.this.id
@@ -1766,7 +1766,7 @@ module "datawork" {
   vpc_id                        = local.vpc_id
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
-  create_security_groups        = true
+  create_security_groups        = var.create_security_groups
   additional_security_group_ids = local.datawatch_additional_security_groups
   traffic_port                  = var.datawork_port
   ecs_cluster_id                = aws_ecs_cluster.this.id
@@ -1867,7 +1867,7 @@ module "metricwork" {
   vpc_id                        = local.vpc_id
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
-  create_security_groups        = true
+  create_security_groups        = var.create_security_groups
   additional_security_group_ids = local.datawatch_additional_security_groups
   traffic_port                  = var.metricwork_port
   ecs_cluster_id                = aws_ecs_cluster.this.id
