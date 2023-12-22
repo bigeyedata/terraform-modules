@@ -905,49 +905,58 @@ resource "aws_ecs_task_definition" "temporal" {
         }
       }
       portMappings = [
-        {
-          containerPort = 6939
-          hostPort      = 6939
-          protocol      = "tcp"
-        },
-        {
-          containerPort = 7233
-          hostPort      = 7233
-          protocol      = "tcp"
-        },
-        {
-          containerPort = 7235
-          hostPort      = 7235
-          protocol      = "tcp"
-        },
-        {
-          containerPort = 7239
-          hostPort      = 7239
-          protocol      = "tcp"
-        },
-        {
-          containerPort = 9091
-          hostPort      = 9091
-          protocol      = "tcp"
-        },
-        {
-          containerPort = 6934
-          hostPort      = 6934
-          protocol      = "tcp"
-        },
+        # Frontend service membership
         {
           containerPort = 6933
           hostPort      = 6933
           protocol      = "tcp"
         },
+        # History service membership
+        {
+          containerPort = 6934
+          hostPort      = 6934
+          protocol      = "tcp"
+        },
+        # Matching service membership
         {
           containerPort = 6935
           hostPort      = 6935
           protocol      = "tcp"
         },
+        # Worker service membership
+        {
+          containerPort = 6939
+          hostPort      = 6939
+          protocol      = "tcp"
+        },
+        # Frontend service handler (API)
+        {
+          containerPort = 7233
+          hostPort      = 7233
+          protocol      = "tcp"
+        },
+        # History service handler
         {
           containerPort = 7234
           hostPort      = 7234
+          protocol      = "tcp"
+        },
+        # Matching service handler
+        {
+          containerPort = 7235
+          hostPort      = 7235
+          protocol      = "tcp"
+        },
+        # Worker service handler
+        {
+          containerPort = 7239
+          hostPort      = 7239
+          protocol      = "tcp"
+        },
+        # Prometheus
+        {
+          containerPort = 9091
+          hostPort      = 9091
           protocol      = "tcp"
         },
       ]
