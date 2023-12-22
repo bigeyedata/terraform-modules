@@ -771,12 +771,40 @@ module "temporal_rds" {
   tags                                  = local.tags
 }
 
+resource "aws_security_group" "temporal_lb" {
+  count       = var.create_security_groups ? 1 : 0
+  name        = "${local.name}-temporal-lb"
+  description = "Allows traffic to the temporal load balancer"
+  vpc_id      = local.vpc_id
+  tags = merge(local.tags, {
+    Name = "${local.name}-temporal-lb"
+  })
+
+  ingress {
+    description = "Traffic port open to anywhere"
+    from_port   = 7233
+    to_port     = 7233
+    protocol    = "TCP"
+    cidr_blocks = var.temporal_internet_facing ? ["0.0.0.0/0"] : [var.vpc_cidr_block]
+  }
+
+  egress {
+    description      = "Allow outbound"
+    from_port        = 0
+    to_port          = local.max_port
+    protocol         = "TCP"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+}
+
 resource "aws_lb" "temporal" {
   name                             = "${local.name}-temporal"
   internal                         = var.temporal_internet_facing ? false : true
   load_balancer_type               = "network"
   subnets                          = var.temporal_internet_facing ? local.public_alb_subnet_ids : local.internal_service_alb_subnet_ids
   enable_cross_zone_load_balancing = true
+  security_groups                  = var.create_security_groups ? concat([aws_security_group.temporal_lb[0].id], []) : []
   tags                             = local.tags
 
   access_logs {
