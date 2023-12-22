@@ -786,8 +786,8 @@ resource "aws_security_group" "temporal_lb" {
 
   ingress {
     description = "Traffic port open to anywhere"
-    from_port   = 7233
-    to_port     = 7233
+    from_port   = 443
+    to_port     = 443
     protocol    = "TCP"
     cidr_blocks = var.temporal_internet_facing ? ["0.0.0.0/0"] : [var.vpc_cidr_block]
   }
