@@ -804,7 +804,7 @@ resource "aws_lb" "temporal" {
   load_balancer_type               = "network"
   subnets                          = var.temporal_internet_facing ? local.public_alb_subnet_ids : local.internal_service_alb_subnet_ids
   enable_cross_zone_load_balancing = true
-  security_groups                  = var.create_security_groups ? concat([aws_security_group.temporal_lb[0].id], []) : []
+  security_groups                  = var.create_security_groups ? concat([aws_security_group.temporal_lb[0].id], var.temporal_lb_extra_security_group_ids) : var.temporal_lb_extra_security_group_ids
   tags                             = local.tags
 
   access_logs {
@@ -979,7 +979,7 @@ resource "aws_ecs_service" "temporal" {
   network_configuration {
     subnets          = local.application_subnet_ids
     assign_public_ip = false
-    security_groups  = [aws_security_group.temporal.id, module.temporal_rds.client_security_group_id]
+    security_groups  = var.create_security_groups ? concat([aws_security_group.temporal[0].id, module.temporal_rds.client_security_group_id], var.temporal_extra_security_group_ids) : var.temporal_extra_security_group_ids
   }
 
   load_balancer {
@@ -990,6 +990,7 @@ resource "aws_ecs_service" "temporal" {
 }
 
 resource "aws_security_group" "temporal" {
+  count       = var.create_security_groups ? 1 : 0
   name        = "${local.name}-temporal"
   description = "Allows traffic for temporal"
   vpc_id      = local.vpc_id
@@ -1006,12 +1007,11 @@ resource "aws_security_group" "temporal" {
   }
 
   ingress {
-    from_port        = 7233
-    to_port          = 7233
-    protocol         = "TCP"
-    description      = "Allow traffic from anywhere on traffic port"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
+    from_port       = 7233
+    to_port         = 7233
+    protocol        = "TCP"
+    description     = "Allow traffic from anywhere on traffic port"
+    security_groups = [aws_security_group.temporal_lb[0].id]
   }
 
   egress {
