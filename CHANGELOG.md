@@ -1,3 +1,12 @@
+## [1.0.1](https://github.com/bigeyedata/terraform-modules/compare/v1.0.0...v1.0.1) (2023-12-27)
+
+
+### Bug Fixes
+
+* update temporal LB SG to allow 443 ([d994113](https://github.com/bigeyedata/terraform-modules/commit/d994113007a5868ec5815aded6fcda1fd8cf30ca))
+
+
+
 # [1.0.0](https://github.com/bigeyedata/terraform-modules/compare/v0.5.1...v1.0.0) (2023-12-22)
 
 
@@ -21,47 +30,24 @@
 
 ### BREAKING CHANGES
 
-#### IMPORTANT - Database Name Change
+* This change updates the required AWS Terraform
+provider, and requires re-initializing terraform in your directory.
 
-A new variable `datawatch_rds_db_name` was added with a
-default value of `bigeye`. In existing installations, this is a breaking
-change. In order to avoid destroying your database (and data!), please
-set the following variable: `datawatch_rds_db_name = "toro"`.
-
-#### Upgrade AWS Terraform Provider
-
-The required AWS Terraform provider was updated to 5.31.0. This requires
-running the following command:
-
-```sh
-terraform init -upgrade
-```
-
-#### Temporal LB changes
-
-Two breaking changes were added for the Temporal LB. Applying these
-will cause the Temporal LB to be destroyed and created.
-
-While the LB is offline, no workers will be able to start new work,
-and no new work (e.g. metric runs) will be scheduled. Work already in
-queue will remain there and be picked up when the LB is up and service
-is restored.
-
-Simply run the normal `terraform apply` commands to update the
-Load Blaancer. Note, due to the recency of Security Group support, this
-encounters a bug in the AWS Terraform Provider, and you will have to run
-the `terraform apply` command twice.
-
-##### Add Security Group to Temporal LB
-
-By default, a security group has been added to the
+Steps: Run `terraform init -upgrade` to install the new
+AWS Terraform provider
+* By default, a security group is added to the
 Network Load Balancer for the Temporal service. AWS does not support
 modifying Security Groups on Network Load Balancers at this time, so
 this change requires the NLB to be destroyed and recreated.
 
-##### Modify default visibility for Temporal LB
+Downtime: Yes. There will be downtime while Terraform destroys and
+recreates the NLB. While the NLB is offline, no workers will be able
+to start new work, and no new work (e.g. metric runs) will be scheduled.
+Work already in queue will remain there and be picked up when the LB
+is up and service is restored.
 
-A new variable `temporal_internet_facing`
+Steps: Upgrade the terraform module version and run terraform apply.
+* A new variable `temporal_internet_facing`
 has been introduced to control whether the Temporal LB is internet
 facing. The default is `false`, which is a breaking change causing
 the LB to be destroyed and recreated.
@@ -69,6 +55,23 @@ the LB to be destroyed and recreated.
 Recommendation: accept the new default and migrate to an internal
 temporal LB. This is more secure since it avoids unnecessary public
 access to the Temporal LB.
+
+Downtime: Yes. There will be a service interruption for this change.
+While the service is offline, workers will not be able to retrieve work
+and no new work (i.e. metric runs) will be able to be published to the
+work queue. Work already in queue will remain there and get picked up
+as soon as the Temporal service is restored.
+
+Steps: Upgrade the terraform module version and run terraform apply.
+Terraform will destroy and recreate the load balancer if necessary.
+For customers who do not wish to make this change, or wish to make this
+change at a later date, set the `temporal_internet_facing`
+variable to `true`.
+* Existing installs will need to set the
+`datawatch_rds_db_name = 'toro'` variable or the upgrade will
+destroy the application database will all application settings
+(including users etc).
+
 
 
 ## [0.5.1](https://github.com/bigeyedata/terraform-modules/compare/v0.5.0...v0.5.1) (2023-12-21)
@@ -100,15 +103,6 @@ access to the Temporal LB.
 ### Features
 
 * update temporal env vars to latest CLI ([1821dbb](https://github.com/bigeyedata/terraform-modules/commit/1821dbb895ad82f3641ce571596e888ecd23f633))
-
-
-
-# [0.3.0](https://github.com/bigeyedata/terraform-modules/compare/v0.2.2...v0.3.0) (2023-12-20)
-
-
-### Features
-
-* update temporal env vars to latest CLI ([9799cc9](https://github.com/bigeyedata/terraform-modules/commit/9799cc99af406a61d946176fa5007748c84238bc))
 
 
 
