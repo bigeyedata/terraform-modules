@@ -137,6 +137,56 @@ data "aws_vpc" "this" {
       condition     = var.create_security_groups || length(var.rabbitmq_extra_security_group_ids) > 0
       error_message = "If create_security_groups is false, you must provide RabbitMQ a security group using rabbitmq_extra_security_group_ids (port 5671)"
     }
+
+    postcondition {
+      condition     = var.create_security_groups || length(var.haproxy_lb_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide a security group for the HAProxy lb using haproxy_lb_extra_security_group_ids (ports 80/443)"
+    }
+
+    postcondition {
+      condition     = var.create_security_groups || length(var.web_lb_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide a security group for the web lb using web_lb_extra_security_group_ids (ports 80/443)"
+    }
+
+    postcondition {
+      condition     = var.create_security_groups || length(var.monocle_lb_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide a security group for the monocle lb using monocle_lb_extra_security_group_ids (ports 80/443)"
+    }
+
+    postcondition {
+      condition     = var.create_security_groups || length(var.toretto_lb_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide a security group for the toretto lb using toretto_lb_extra_security_group_ids (ports 80/443)"
+    }
+
+    postcondition {
+      condition     = var.create_security_groups || length(var.temporalui_lb_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide a security group for the temporalui lb using temporalui_lb_extra_security_group_ids (ports 80/443)"
+    }
+
+    postcondition {
+      condition     = var.create_security_groups || length(var.temporal_lb_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide a security group for the temporal lb using temporal_lb_extra_security_group_ids (port 443)"
+    }
+
+    postcondition {
+      condition     = var.create_security_groups || length(var.scheduler_lb_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide a security group for the scheduler lb using scheduler_lb_extra_security_group_ids (ports 80/443)"
+    }
+
+    postcondition {
+      condition     = var.create_security_groups || length(var.datawatch_lb_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide a security group for the datawatch lb using datawatch_lb_extra_security_group_ids (ports 80/443)"
+    }
+
+    postcondition {
+      condition     = var.create_security_groups || length(var.datawork_lb_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide a security group for the datawork lb using datawork_lb_extra_security_group_ids (ports 80/443)"
+    }
+
+    postcondition {
+      condition     = var.create_security_groups || length(var.metricwork_lb_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide a security group for the metricwork lb using metricwork_lb_extra_security_group_ids (ports 80/443)"
+    }
   }
 }
 
