@@ -817,6 +817,7 @@ module "temporal_rds" {
   max_allocated_storage                 = var.temporal_rds_max_allocated_storage
   storage_type                          = "gp3"
   db_subnet_group_name                  = local.database_subnet_group_name
+  create_security_groups                = var.create_security_groups
   extra_security_group_ids              = var.temporal_rds_extra_security_group_ids
   instance_class                        = var.temporal_rds_instance_type
   backup_window                         = var.rds_backup_window
@@ -1635,6 +1636,7 @@ module "datawatch_rds" {
   #Networking
   vpc_id                   = local.vpc_id
   db_subnet_group_name     = local.database_subnet_group_name
+  create_security_groups   = var.create_security_groups
   extra_security_group_ids = var.datawatch_rds_extra_security_group_ids
   enable_multi_az          = var.redundant_infrastructure ? true : false
 

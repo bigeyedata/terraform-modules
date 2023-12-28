@@ -91,7 +91,7 @@ module "this" {
   create_db_subnet_group = false
   db_subnet_group_name   = var.db_subnet_group_name
   multi_az               = var.enable_multi_az
-  vpc_security_group_ids = concat([aws_security_group.db[0].id], var.extra_security_group_ids)
+  vpc_security_group_ids = var.create_security_groups ? concat([aws_security_group.db[0].id], var.extra_security_group_ids) : var.extra_security_group_ids
 
   allocated_storage     = var.allocated_storage
   max_allocated_storage = var.max_allocated_storage
@@ -141,7 +141,7 @@ module "replica" {
   port                   = 3306
   create_db_subnet_group = false
   multi_az               = false
-  vpc_security_group_ids = concat([aws_security_group.db_replica[0].id], var.extra_security_group_ids)
+  vpc_security_group_ids = var.create_security_groups ? concat([aws_security_group.db_replica[0].id], var.extra_security_group_ids) : var.extra_security_group_ids
 
   allocated_storage     = var.allocated_storage
   max_allocated_storage = var.max_allocated_storage
