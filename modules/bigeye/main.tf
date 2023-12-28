@@ -132,6 +132,11 @@ data "aws_vpc" "this" {
       condition     = (!local.create_vpc && length(var.byovpc_database_subnet_group_name) > 0) || (local.create_vpc && length(var.byovpc_database_subnet_group_name) == 0)
       error_message = "if byovpc_vpc_id is specified, byovpc_database_subnet_group_name must be specified, otherwise it must be empty"
     }
+
+    postcondition {
+      condition     = var.create_security_groups || length(var.rabbitmq_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide RabbitMQ a security group using rabbitmq_extra_security_group_ids (port 5671)"
+    }
   }
 }
 
