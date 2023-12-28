@@ -187,6 +187,56 @@ data "aws_vpc" "this" {
       condition     = var.create_security_groups || length(var.metricwork_lb_extra_security_group_ids) > 0
       error_message = "If create_security_groups is false, you must provide a security group for the metricwork lb using metricwork_lb_extra_security_group_ids (ports 80/443)"
     }
+
+    postcondition {
+      condition     = var.create_security_groups || length(var.haproxy_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide a security group for the HAProxy ECS tasks using haproxy_extra_security_group_ids (ports ${var.haproxy_port})"
+    }
+
+    postcondition {
+      condition     = var.create_security_groups || length(var.web_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide a security group for the web ECS tasks using web_extra_security_group_ids (ports ${var.web_port})"
+    }
+
+    postcondition {
+      condition     = var.create_security_groups || length(var.monocle_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide a security group for the monocle ECS tasks using monocle_extra_security_group_ids (ports ${var.monocle_port})"
+    }
+
+    postcondition {
+      condition     = var.create_security_groups || length(var.toretto_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide a security group for the toretto ECS tasks using toretto_extra_security_group_ids (ports ${var.toretto_port})"
+    }
+
+    postcondition {
+      condition     = var.create_security_groups || length(var.temporalui_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide a security group for the temporalui ECS tasks using temporalui_extra_security_group_ids (ports ${var.temporalui_port})"
+    }
+
+    postcondition {
+      condition     = var.create_security_groups || length(var.temporal_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide a security group for the temporal ECS tasks using temporal_extra_security_group_ids (port 7233)"
+    }
+
+    postcondition {
+      condition     = var.create_security_groups || length(var.scheduler_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide a security group for the scheduler ECS tasks using scheduler_extra_security_group_ids (ports ${var.scheduler_port})"
+    }
+
+    postcondition {
+      condition     = var.create_security_groups || length(var.datawatch_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide a security group for the datawatch ECS tasks using datawatch_extra_security_group_ids (ports ${var.datawatch_port})"
+    }
+
+    postcondition {
+      condition     = var.create_security_groups || length(var.datawork_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide a security group for the datawork ECS tasks using datawork_extra_security_group_ids (port ${var.datawork_port})"
+    }
+
+    postcondition {
+      condition     = var.create_security_groups || length(var.metricwork_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide a security group for the metricwork ECS tasks using metricwork_extra_security_group_ids (port ${var.metricwork_port})"
+    }
   }
 }
 
