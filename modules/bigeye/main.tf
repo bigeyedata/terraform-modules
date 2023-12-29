@@ -139,6 +139,21 @@ data "aws_vpc" "this" {
     }
 
     postcondition {
+      condition     = var.create_security_groups || length(var.redis_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide Redis a security group using redis_extra_security_group_ids (port 6379)"
+    }
+
+    postcondition {
+      condition     = var.create_security_groups || length(var.datawatch_rds_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide the Datawatch RDS instance a security group using datawatch_rds_extra_security_group_ids (port 3306)"
+    }
+
+    postcondition {
+      condition     = var.create_security_groups || length(var.temporal_rds_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide the Temporal RDS instance a security group using temporal_rds_extra_security_group_ids (port 3306)"
+    }
+
+    postcondition {
       condition     = var.create_security_groups || length(var.haproxy_lb_extra_security_group_ids) > 0
       error_message = "If create_security_groups is false, you must provide a security group for the HAProxy lb using haproxy_lb_extra_security_group_ids (ports 80/443)"
     }
