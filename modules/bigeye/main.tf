@@ -1287,7 +1287,7 @@ module "monocle" {
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
-  additional_security_group_ids = concat([module.rabbitmq.client_security_group_id], var.monocle_extra_security_group_ids)
+  additional_security_group_ids = var.create_security_groups ? concat([module.rabbitmq.client_security_group_id], var.monocle_extra_security_group_ids) : var.monocle_extra_security_group_ids
   traffic_port                  = var.monocle_port
   ecs_cluster_id                = aws_ecs_cluster.this.id
   fargate_version               = var.fargate_version
@@ -1366,7 +1366,7 @@ module "toretto" {
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
-  additional_security_group_ids = concat([module.rabbitmq.client_security_group_id], var.toretto_extra_security_group_ids)
+  additional_security_group_ids = var.create_security_groups ? concat([module.rabbitmq.client_security_group_id], var.toretto_extra_security_group_ids) : var.toretto_extra_security_group_ids
   traffic_port                  = var.toretto_port
   ecs_cluster_id                = aws_ecs_cluster.this.id
   fargate_version               = var.fargate_version
@@ -1443,7 +1443,7 @@ module "scheduler" {
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
-  additional_security_group_ids = concat([module.redis.client_security_group_id], var.scheduler_extra_security_group_ids)
+  additional_security_group_ids = var.create_security_groups ? concat([module.redis.client_security_group_id], var.scheduler_extra_security_group_ids) : var.scheduler_extra_security_group_ids
   traffic_port                  = var.scheduler_port
   ecs_cluster_id                = aws_ecs_cluster.this.id
   fargate_version               = var.fargate_version
