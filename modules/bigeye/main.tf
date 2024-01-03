@@ -1486,6 +1486,7 @@ module "scheduler" {
     DEPLOY_TYPE           = "AWS"
     DATAWATCH_ADDRESS     = "https://${local.datawatch_dns_name}"
     MAX_RAM_PERCENTAGE    = "85"
+    SCHEDULER_ADDRESS     = "http://localhost:${var.scheduler_port}"
     SCHEDULER_THREADS     = var.scheduler_threads
     SENTRY_DSN            = var.sentry_dsn
     REDIS_PRIMARY_ADDRESS = module.redis.primary_endpoint_dns_name
