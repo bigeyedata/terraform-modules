@@ -27,5 +27,12 @@ For a full list of the configuration options, please review the
 
 ## Upgrading
 
-TODO
+### Upgrading to 1.0.0
+
+**IMPORTANT**
+
+There are a few breaking changes in this release.
+
+Please refer to the [changelog](./CHANGELOG.md#100-2023-12-22)
+for more instructions.
 
