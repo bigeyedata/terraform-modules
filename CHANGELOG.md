@@ -50,24 +50,47 @@
 
 ### BREAKING CHANGES
 
-* This change updates the required AWS Terraform
-provider, and requires re-initializing terraform in your directory.
+#### IMPORTANT - Database Name Change
 
-Steps: Run `terraform init -upgrade` to install the new
-AWS Terraform provider
-* By default, a security group is added to the
+A new variable `datawatch_rds_db_name` was added with a
+default value of `bigeye`. In existing installations, this is a breaking
+change. In order to avoid destroying your database (and data!), please
+set the following variable: `datawatch_rds_db_name = "toro"`.
+
+#### Upgrade AWS Terraform Provider
+
+The required AWS Terraform provider was updated to 5.31.0. This requires
+running the following command:
+
+```sh
+terraform init -upgrade
+```
+
+#### Temporal LB changes
+
+Two breaking changes were added for the Temporal LB. Applying these
+will cause the Temporal LB to be destroyed and created.
+
+While the LB is offline, no workers will be able to start new work,
+and no new work (e.g. metric runs) will be scheduled. Work already in
+queue will remain there and be picked up when the LB is up and service
+is restored.
+
+Simply run the normal `terraform apply` commands to update the
+Load Blaancer. Note, due to the recency of Security Group support, this
+encounters a bug in the AWS Terraform Provider, and you will have to run
+the `terraform apply` command twice.
+
+##### Add Security Group to Temporal LB
+
+By default, a security group has been added to the
 Network Load Balancer for the Temporal service. AWS does not support
 modifying Security Groups on Network Load Balancers at this time, so
 this change requires the NLB to be destroyed and recreated.
 
-Downtime: Yes. There will be downtime while Terraform destroys and
-recreates the NLB. While the NLB is offline, no workers will be able
-to start new work, and no new work (e.g. metric runs) will be scheduled.
-Work already in queue will remain there and be picked up when the LB
-is up and service is restored.
+##### Modify default visibility for Temporal LB
 
-Steps: Upgrade the terraform module version and run terraform apply.
-* A new variable `temporal_internet_facing`
+A new variable `temporal_internet_facing`
 has been introduced to control whether the Temporal LB is internet
 facing. The default is `false`, which is a breaking change causing
 the LB to be destroyed and recreated.
@@ -75,22 +98,6 @@ the LB to be destroyed and recreated.
 Recommendation: accept the new default and migrate to an internal
 temporal LB. This is more secure since it avoids unnecessary public
 access to the Temporal LB.
-
-Downtime: Yes. There will be a service interruption for this change.
-While the service is offline, workers will not be able to retrieve work
-and no new work (i.e. metric runs) will be able to be published to the
-work queue. Work already in queue will remain there and get picked up
-as soon as the Temporal service is restored.
-
-Steps: Upgrade the terraform module version and run terraform apply.
-Terraform will destroy and recreate the load balancer if necessary.
-For customers who do not wish to make this change, or wish to make this
-change at a later date, set the `temporal_internet_facing`
-variable to `true`.
-* Existing installs will need to set the
-`datawatch_rds_db_name = 'toro'` variable or the upgrade will
-destroy the application database will all application settings
-(including users etc).
 
 
 
