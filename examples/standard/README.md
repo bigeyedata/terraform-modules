@@ -19,9 +19,10 @@ The module includes:
 
 For the standard install, you will need the following:
 
-* A Route53 Hosted Zone
-* The AWS ECR registry URL (get from Bigeye)
+* [Terraform prerequisites](https://github.com/bigeyedata/terraform-modules/blob/main/README.md#prerequisites)
+* Access to an ECR registry with container images (get from Bigeye)
 * An image tag (get from Bigeye)
+* An AWS account with a Route53 Hosted Zone where Terraform will write DNS records
 
 ## Steps
 
