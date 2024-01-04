@@ -79,6 +79,8 @@ jobs:
           git-branch: "release-from-${{ github.sha }}"
           create-summary: true
           skip-git-pull: true
+          release-count: 0
+          input-file: CHANGELOG.md
       - name: replace tf release version in scripts
         if: ${{ steps.changelog.outputs.skipped == 'false' }}
         run: ./scripts/replace-terraform-version.sh "${{ steps.prevversion.outputs.PREVIOUS_VERSION }}" "${{ steps.changelog.outputs.tag }}"
