@@ -74,7 +74,7 @@ jobs:
           git checkout "release-from-${{ github.sha }}"
       - name: build changelog
         id: changelog
-        uses: TriPSs/conventional-changelog-action@v3
+        uses: TriPSs/conventional-changelog-action@v5
         with:
           git-branch: "release-from-${{ github.sha }}"
           create-summary: true
