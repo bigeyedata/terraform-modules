@@ -88,14 +88,17 @@ locals {
     STITCH_API_TOKEN = var.stitch_api_token_secretsmanager_arn
   }
 
+  troubleshooting_module_security_group_ids = var.enable_troubleshooting_module ? [module.troubleshooting[0].client_security_group_id] : []
+
   datawatch_additional_security_groups = var.create_security_groups ? concat(
     [
       module.redis.client_security_group_id,
       module.rabbitmq.client_security_group_id,
       module.datawatch_rds.client_security_group_id
     ],
-    var.datawatch_rds_replica_enabled ? [module.datawatch_rds.replica_client_security_group_id] : []
-  ) : []
+    var.datawatch_rds_replica_enabled ? [module.datawatch_rds.replica_client_security_group_id] : [],
+    local.troubleshooting_module_security_group_ids
+  ) : local.troubleshooting_module_security_group_ids
 
   datawatch_secret_arns = merge(
     local.auth0_secrets_map,
