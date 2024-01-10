@@ -488,6 +488,12 @@ resource "aws_ecs_cluster" "this" {
     value = var.ecs_enable_container_insights ? "enabled" : "disabled"
   }
 
+  configuration {
+    execute_command_configuration {
+      logging = "DEFAULT"
+    }
+  }
+
   tags = local.tags
 }
 
