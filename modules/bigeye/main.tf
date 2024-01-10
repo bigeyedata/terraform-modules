@@ -555,6 +555,23 @@ resource "aws_cloudwatch_log_group" "temporal" {
 }
 
 #======================================================
+# Troubleshooting container
+#======================================================
+module "troubleshooting" {
+  count                     = var.enable_troubleshooting_module ? 1 : 0
+  source                    = "../troubleshooting"
+  name                      = "${local.name}-troubleshooting"
+  vpc_id                    = local.vpc_id
+  subnet_ids                = local.application_subnet_ids
+  ingress_cidr              = var.troubleshooting_module_ingress_cidr
+  tags                      = local.tags
+  cluster_name              = local.name
+  cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
+  execution_role_arn        = aws_iam_role.ecs.arn
+  fargate_version           = var.fargate_version
+}
+
+#======================================================
 # RabbitMQ
 #======================================================
 resource "random_password" "rabbitmq_user_password" {
