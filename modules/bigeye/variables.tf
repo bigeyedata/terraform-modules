@@ -32,6 +32,18 @@ variable "deletion_protection" {
   default     = true
 }
 
+variable "enable_troubleshooting_module" {
+  description = "Whether to enable the troubleshooting module"
+  type        = bool
+  default     = false
+}
+
+variable "troubleshooting_module_ingress_cidr" {
+  description = "The CIDR range to allow ingress from for the troubleshooting module, i.e. 'YOUR IP/32'"
+  type        = string
+  default     = ""
+}
+
 #======================================================
 # Access Logs
 #======================================================
