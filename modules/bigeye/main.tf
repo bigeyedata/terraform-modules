@@ -578,6 +578,22 @@ module "troubleshooting" {
 }
 
 #======================================================
+# Datadog
+#======================================================
+resource "aws_secretsmanager_secret" "datadog_agent_api_key" {
+  count                   = local.create_datadog_secret ? 1 : 0
+  name                    = format("bigeye/%s/datadog/apikey", local.name)
+  recovery_window_in_days = local.secret_retention_days
+  tags                    = local.tags
+}
+
+resource "aws_secretsmanager_secret_version" "datadog_agent_api_key" {
+  count         = local.create_datadog_secret ? 1 : 0
+  secret_id     = aws_secretsmanager_secret.datadog_agent_api_key[0].id
+  secret_string = var.datadog_agent_api_key
+}
+
+#======================================================
 # RabbitMQ
 #======================================================
 resource "random_password" "rabbitmq_user_password" {
@@ -767,11 +783,11 @@ module "haproxy" {
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
 
   # Datadog
-  datadog_agent_enabled = var.datadog_agent_enabled
-  datadog_agent_image   = var.datadog_agent_image
-  datadog_agent_cpu     = var.datadog_agent_cpu
-  datadog_agent_memory  = var.datadog_agent_memory
-  datadog_agent_api_key = var.datadog_agent_api_key
+  datadog_agent_enabled            = var.datadog_agent_enabled
+  datadog_agent_image              = var.datadog_agent_image
+  datadog_agent_cpu                = var.datadog_agent_cpu
+  datadog_agent_memory             = var.datadog_agent_memory
+  datadog_agent_api_key_secret_arn = local.datadog_agent_api_key_secret_arn
 
 
   environment_variables = merge(var.haproxy_additional_environment_vars, {
@@ -844,11 +860,11 @@ module "web" {
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
 
   # Datadog
-  datadog_agent_enabled = var.datadog_agent_enabled
-  datadog_agent_image   = var.datadog_agent_image
-  datadog_agent_cpu     = var.datadog_agent_cpu
-  datadog_agent_memory  = var.datadog_agent_memory
-  datadog_agent_api_key = var.datadog_agent_api_key
+  datadog_agent_enabled            = var.datadog_agent_enabled
+  datadog_agent_image              = var.datadog_agent_image
+  datadog_agent_cpu                = var.datadog_agent_cpu
+  datadog_agent_memory             = var.datadog_agent_memory
+  datadog_agent_api_key_secret_arn = local.datadog_agent_api_key_secret_arn
 
 
   environment_variables = merge(
@@ -1227,11 +1243,11 @@ module "temporalui" {
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
 
   # Datadog
-  datadog_agent_enabled = var.datadog_agent_enabled
-  datadog_agent_image   = var.datadog_agent_image
-  datadog_agent_cpu     = var.datadog_agent_cpu
-  datadog_agent_memory  = var.datadog_agent_memory
-  datadog_agent_api_key = var.datadog_agent_api_key
+  datadog_agent_enabled            = var.datadog_agent_enabled
+  datadog_agent_image              = var.datadog_agent_image
+  datadog_agent_cpu                = var.datadog_agent_cpu
+  datadog_agent_memory             = var.datadog_agent_memory
+  datadog_agent_api_key_secret_arn = local.datadog_agent_api_key_secret_arn
 
 
   environment_variables = merge(
@@ -1342,15 +1358,14 @@ module "monocle" {
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
 
   # Datadog
-  datadog_agent_enabled = var.datadog_agent_enabled
-  datadog_agent_image   = var.datadog_agent_image
-  datadog_agent_cpu     = var.datadog_agent_cpu
-  datadog_agent_memory  = var.datadog_agent_memory
-  datadog_agent_api_key = var.datadog_agent_api_key
+  datadog_agent_enabled            = var.datadog_agent_enabled
+  datadog_agent_image              = var.datadog_agent_image
+  datadog_agent_cpu                = var.datadog_agent_cpu
+  datadog_agent_memory             = var.datadog_agent_memory
+  datadog_agent_api_key_secret_arn = local.datadog_agent_api_key_secret_arn
 
 
   environment_variables = merge(
-    local.monocle_dd_env_vars,
     var.monocle_additional_environment_vars,
     {
       ENVIRONMENT                = var.environment
@@ -1366,13 +1381,28 @@ module "monocle" {
       TIMEOUT                    = "900"
       DATAWATCH_ADDRESS          = "https://${local.datawatch_dns_name}"
       SENTRY_DSN                 = var.sentry_dsn
-    }
+    },
+    var.datadog_agent_enabled ? {
+      DD_PROFILING_ENABLED     = "true"
+      DD_PROFILING_CAPTURE_PCT = "2"
+      DD_CALL_BASIC_CONFIG     = "false"
+      DD_TRACE_STARTUP_LOGS    = "true"
+      DD_TRACE_DEBUG           = "false"
+      DD_LOGS_INJECTION        = "true"
+    } : {},
   )
 
-  secret_arns = merge(var.monocle_additional_secret_arns, local.stitch_secrets_map, {
-    MQ_BROKER_PASSWORD = local.rabbitmq_user_password_secret_arn
-    ROBOT_PASSWORD     = local.robot_password_secret_arn
-  })
+  secret_arns = merge(
+    var.monocle_additional_secret_arns,
+    local.stitch_secrets_map,
+    {
+      MQ_BROKER_PASSWORD = local.rabbitmq_user_password_secret_arn
+      ROBOT_PASSWORD     = local.robot_password_secret_arn
+    },
+    var.datadog_agent_enabled ? {
+      DATADOG_API_KEY = local.datadog_agent_api_key_secret_arn
+    } : {}
+  )
 }
 
 #======================================================
@@ -1419,15 +1449,14 @@ module "toretto" {
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
 
   # Datadog
-  datadog_agent_enabled = var.datadog_agent_enabled
-  datadog_agent_image   = var.datadog_agent_image
-  datadog_agent_cpu     = var.datadog_agent_cpu
-  datadog_agent_memory  = var.datadog_agent_memory
-  datadog_agent_api_key = var.datadog_agent_api_key
+  datadog_agent_enabled            = var.datadog_agent_enabled
+  datadog_agent_image              = var.datadog_agent_image
+  datadog_agent_cpu                = var.datadog_agent_cpu
+  datadog_agent_memory             = var.datadog_agent_memory
+  datadog_agent_api_key_secret_arn = local.datadog_agent_api_key_secret_arn
 
 
   environment_variables = merge(
-    local.toretto_dd_env_vars,
     var.toretto_additional_environment_vars,
     {
       ENVIRONMENT                = var.environment
@@ -1446,10 +1475,15 @@ module "toretto" {
     }
   )
 
-  secret_arns = merge(var.toretto_additional_secret_arns, local.stitch_secrets_map, {
-    MQ_BROKER_PASSWORD = local.rabbitmq_user_password_secret_arn
-    ROBOT_PASSWORD     = local.robot_password_secret_arn
-  })
+  secret_arns = merge(
+    var.toretto_additional_secret_arns,
+    local.stitch_secrets_map,
+    {
+      MQ_BROKER_PASSWORD = local.rabbitmq_user_password_secret_arn
+      ROBOT_PASSWORD     = local.robot_password_secret_arn
+    },
+    var.datadog_agent_enabled ? { DATADOG_API_KEY = local.datadog_agent_api_key_secret_arn } : {}
+  )
 }
 
 #======================================================
@@ -1496,11 +1530,11 @@ module "scheduler" {
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
 
   # Datadog
-  datadog_agent_enabled = var.datadog_agent_enabled
-  datadog_agent_image   = var.datadog_agent_image
-  datadog_agent_cpu     = var.datadog_agent_cpu
-  datadog_agent_memory  = var.datadog_agent_memory
-  datadog_agent_api_key = var.datadog_agent_api_key
+  datadog_agent_enabled            = var.datadog_agent_enabled
+  datadog_agent_image              = var.datadog_agent_image
+  datadog_agent_cpu                = var.datadog_agent_cpu
+  datadog_agent_memory             = var.datadog_agent_memory
+  datadog_agent_api_key_secret_arn = local.datadog_agent_api_key_secret_arn
 
 
   environment_variables = merge(var.scheduler_additional_environment_vars, {
@@ -1864,11 +1898,11 @@ module "datawatch" {
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
 
   # Datadog
-  datadog_agent_enabled = var.datadog_agent_enabled
-  datadog_agent_image   = var.datadog_agent_image
-  datadog_agent_cpu     = var.datadog_agent_cpu
-  datadog_agent_memory  = var.datadog_agent_memory
-  datadog_agent_api_key = var.datadog_agent_api_key
+  datadog_agent_enabled            = var.datadog_agent_enabled
+  datadog_agent_image              = var.datadog_agent_image
+  datadog_agent_cpu                = var.datadog_agent_cpu
+  datadog_agent_memory             = var.datadog_agent_memory
+  datadog_agent_api_key_secret_arn = local.datadog_agent_api_key_secret_arn
 
   environment_variables = merge(
     local.datawatch_dd_env_vars,
@@ -1963,11 +1997,11 @@ module "datawork" {
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
 
   # Datadog
-  datadog_agent_enabled = var.datadog_agent_enabled
-  datadog_agent_image   = var.datadog_agent_image
-  datadog_agent_cpu     = var.datadog_agent_cpu
-  datadog_agent_memory  = var.datadog_agent_memory
-  datadog_agent_api_key = var.datadog_agent_api_key
+  datadog_agent_enabled            = var.datadog_agent_enabled
+  datadog_agent_image              = var.datadog_agent_image
+  datadog_agent_cpu                = var.datadog_agent_cpu
+  datadog_agent_memory             = var.datadog_agent_memory
+  datadog_agent_api_key_secret_arn = local.datadog_agent_api_key_secret_arn
 
   environment_variables = merge(
     local.datawatch_dd_env_vars,
@@ -2064,11 +2098,11 @@ module "metricwork" {
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
 
   # Datadog
-  datadog_agent_enabled = var.datadog_agent_enabled
-  datadog_agent_image   = var.datadog_agent_image
-  datadog_agent_cpu     = var.datadog_agent_cpu
-  datadog_agent_memory  = var.datadog_agent_memory
-  datadog_agent_api_key = var.datadog_agent_api_key
+  datadog_agent_enabled            = var.datadog_agent_enabled
+  datadog_agent_image              = var.datadog_agent_image
+  datadog_agent_cpu                = var.datadog_agent_cpu
+  datadog_agent_memory             = var.datadog_agent_memory
+  datadog_agent_api_key_secret_arn = local.datadog_agent_api_key_secret_arn
 
   environment_variables = merge(
     local.datawatch_dd_env_vars,

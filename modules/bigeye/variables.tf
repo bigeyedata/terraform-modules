@@ -238,6 +238,12 @@ variable "datadog_agent_api_key" {
   default     = ""
 }
 
+variable "datadog_agent_api_key_secret_arn" {
+  description = "Secret ARN holding the datadog agent API Key"
+  type        = string
+  default     = ""
+}
+
 #======================================================
 # Redis
 #======================================================
