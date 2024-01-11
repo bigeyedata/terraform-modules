@@ -183,10 +183,9 @@ variable "datadog_agent_memory" {
   default     = 512
 }
 
-variable "datadog_agent_api_key" {
-  description = "The DataDog API key to use for the datadog agent"
+variable "datadog_agent_api_key_secret_arn" {
+  description = "The secret ARN for the datadog agent API key"
   type        = string
-  sensitive   = true
   default     = ""
 }
 

@@ -119,18 +119,8 @@ locals {
   #======================================================
   # Datadog specs
   #======================================================
-  monocle_dd_env_vars = var.datadog_agent_enabled ? {
-    DD_PROFILING_ENABLED     = "true"
-    DD_PROFILING_CAPTURE_PCT = "2"
-    DD_CALL_BASIC_CONFIG     = "false"
-    DD_TRACE_STARTUP_LOGS    = "true"
-    DD_TRACE_DEBUG           = "false"
-    DD_LOGS_INJECTION        = "true"
-    DATADOG_API_KEY          = var.datadog_agent_api_key
-  } : {}
-  toretto_dd_env_vars = var.datadog_agent_enabled ? {
-    DATADOG_API_KEY = var.datadog_agent_api_key
-  } : {}
+  create_datadog_secret            = var.datadog_agent_enabled && var.datadog_agent_api_key != "" && var.datadog_agent_api_key_secret_arn == ""
+  datadog_agent_api_key_secret_arn = local.create_datadog_secret ? aws_secretsmanager_secret.datadog_agent_api_key[0].arn : var.datadog_agent_api_key_secret_arn
   web_dd_env_vars = var.datadog_agent_enabled ? {
     DD_TRACE_DISABLED_PLUGINS = "dns"
   } : {}
