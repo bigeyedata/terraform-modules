@@ -10,11 +10,18 @@ locals {
   container_environment_secrets   = [for k, v in var.secret_arns : { Name = k, ValueFrom = v }]
 
   primary_container_definition = {
-    name         = var.name,
-    cpu          = local.container_cpu
-    memory       = local.container_memory
-    image        = local.container_image
-    portMappings = [{ containerPort = var.traffic_port }]
+    name   = var.name,
+    cpu    = local.container_cpu
+    memory = local.container_memory
+    image  = local.container_image
+    portMappings = [{
+      containerPort = var.traffic_port
+      hostPort      = var.traffic_port
+      protocol      = "tcp"
+    }]
+    essential    = true
+    mountPoints  = []
+    volumesFrom  = []
     dockerLabels = merge(local.datadog_docker_labels, var.docker_labels)
     environment  = local.container_environment_variables
     secrets      = local.container_environment_secrets
