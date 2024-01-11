@@ -29,7 +29,6 @@ variable "root_user_name" {
 variable "root_user_password_secret_arn" {
   description = "Secrets manager ARN for the root user password"
   type        = string
-  sensitive   = true
 }
 
 variable "max_allocated_storage" {
