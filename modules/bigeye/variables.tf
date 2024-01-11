@@ -412,6 +412,12 @@ variable "stitch_api_token_secretsmanager_arn" {
 #======================================================
 # Application Variables - Monocle
 #======================================================
+variable "monocle_image_tag" {
+  description = "The image tag to use for monocle, defaults to the global `image_tag` if not specified"
+  type        = string
+  default     = ""
+}
+
 variable "monocle_desired_count" {
   description = "The desired number of replicas"
   type        = number
@@ -463,6 +469,12 @@ variable "monocle_lb_extra_security_group_ids" {
 #======================================================
 # Application Variables - Toretto
 #======================================================
+variable "toretto_image_tag" {
+  description = "The image tag to use for toretto, defaults to the global `image_tag` if not specified"
+  type        = string
+  default     = ""
+}
+
 variable "toretto_desired_count" {
   description = "The desired number of replicas"
   type        = number
@@ -535,6 +547,12 @@ variable "rds_performance_insights_retention_period" {
 #======================================================
 # Application Variables - HAProxy
 #======================================================
+variable "haproxy_image_tag" {
+  description = "The image tag to use for haproxy, defaults to the global `image_tag` if not specified"
+  type        = string
+  default     = ""
+}
+
 variable "haproxy_desired_count" {
   description = "The desired number of replicas"
   type        = number
@@ -586,6 +604,12 @@ variable "haproxy_lb_extra_security_group_ids" {
 #======================================================
 # Application Variables - Web
 #======================================================
+variable "web_image_tag" {
+  description = "The image tag to use for web, defaults to the global `image_tag` if not specified"
+  type        = string
+  default     = ""
+}
+
 variable "web_desired_count" {
   description = "The desired number of replicas"
   type        = number
@@ -637,6 +661,12 @@ variable "web_lb_extra_security_group_ids" {
 #======================================================
 # Application Variables - TemporalUI
 #======================================================
+variable "temporalui_image_tag" {
+  description = "The image tag to use for temporalui, defaults to the global `image_tag` if not specified"
+  type        = string
+  default     = ""
+}
+
 variable "temporalui_desired_count" {
   description = "The desired number of replicas"
   type        = number
@@ -688,6 +718,12 @@ variable "temporalui_lb_extra_security_group_ids" {
 #======================================================
 # Application Variables - Temporal
 #======================================================
+variable "temporal_image_tag" {
+  description = "The image tag to use for temporal, defaults to the global `image_tag` if not specified"
+  type        = string
+  default     = ""
+}
+
 variable "temporal_rds_snapshot_identifier" {
   description = "The snapshot identifier of the snapshot to create the database from"
   type        = string
@@ -805,6 +841,12 @@ variable "temporal_internet_facing" {
 #======================================================
 # Application Variables - Datawatch
 #======================================================
+variable "datawatch_image_tag" {
+  description = "The image tag to use for datawatch, defaults to the global `image_tag` if not specified"
+  type        = string
+  default     = ""
+}
+
 variable "adminpages_password_secret_arn" {
   description = "Secret arn holding the password for the adminpages. One will be created if not provided"
   type        = string
@@ -1006,6 +1048,12 @@ variable "datawatch_jvm_max_ram_pct" {
 #======================================================
 # Application Variables - Datawork
 #======================================================
+variable "datawork_image_tag" {
+  description = "The image tag to use for datawork, defaults to the global `image_tag` if not specified"
+  type        = string
+  default     = ""
+}
+
 variable "datawork_desired_count" {
   description = "The desired number of replicas"
   type        = number
@@ -1051,6 +1099,12 @@ variable "datawork_lb_extra_security_group_ids" {
 #======================================================
 # Application Variables - Metricwork
 #======================================================
+variable "metricwork_image_tag" {
+  description = "The image tag to use for metricwork, defaults to the global `image_tag` if not specified"
+  type        = string
+  default     = ""
+}
+
 variable "metricwork_desired_count" {
   description = "The desired number of replicas"
   type        = number
@@ -1096,6 +1150,12 @@ variable "metricwork_lb_extra_security_group_ids" {
 #======================================================
 # Application Variables - Scheduler
 #======================================================
+variable "scheduler_image_tag" {
+  description = "The image tag to use for scheduler, defaults to the global `image_tag` if not specified"
+  type        = string
+  default     = ""
+}
+
 variable "scheduler_desired_count" {
   description = "The desired number of replicas"
   type        = number
@@ -1148,5 +1208,14 @@ variable "scheduler_lb_extra_security_group_ids" {
   description = "Additional security group ids to scheduler ALB"
   type        = list(string)
   default     = []
+}
+
+#======================================================
+# Application Variables - Troubleshooting module
+#======================================================
+variable "troubleshooting_image_tag" {
+  description = "The image tag to use for the troubleshooting module, defaults to the global `image_tag` if not specified"
+  type        = string
+  default     = ""
 }
 
