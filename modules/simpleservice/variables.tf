@@ -55,14 +55,12 @@ variable "traffic_port" {
 variable "environment_variables" {
   description = "A map of environment variables to pass into the task"
   type        = map(string)
-  sensitive   = true
   default     = {}
 }
 
 variable "secret_arns" {
   description = "A map of secret names and their respective ASM Secret name"
   type        = map(string)
-  sensitive   = true
   default     = {}
 }
 
