@@ -89,6 +89,12 @@ jobs:
           git status
           git diff | cat
           git diff HEAD~1 | cat
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        with:
+          commit_message: "Update example docs to use new version ${{ steps.changelog.outputs.tag }}"
+          file_pattern: examples/**/*
+          skip_fetch: true
       - name: create PR with release
         if: ${{ steps.changelog.outputs.skipped == 'false' }}
         id: create-pr
