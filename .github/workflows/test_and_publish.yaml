@@ -92,6 +92,8 @@ jobs:
       - uses: stefanzweifel/git-auto-commit-action@v5
         if: ${{ steps.changelog.outputs.skipped == 'false' }}
         with:
+          create_branch: false
+          branch: "release-from-${{ github.sha }}"
           commit_message: "Update example docs to use new version ${{ steps.changelog.outputs.tag }}"
           file_pattern: examples/**/*
           skip_fetch: true
