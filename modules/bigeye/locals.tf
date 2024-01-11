@@ -73,6 +73,19 @@ locals {
 
   max_port = 65535
 
+  # Docker image tags
+  haproxy_image_tag         = coalesce(var.haproxy_image_tag, var.image_tag)
+  web_image_tag             = coalesce(var.web_image_tag, var.image_tag)
+  monocle_image_tag         = coalesce(var.monocle_image_tag, var.image_tag)
+  toretto_image_tag         = coalesce(var.toretto_image_tag, var.image_tag)
+  temporalui_image_tag      = coalesce(var.temporalui_image_tag, var.image_tag)
+  temporal_image_tag        = coalesce(var.temporal_image_tag, var.image_tag)
+  datawatch_image_tag       = coalesce(var.datawatch_image_tag, var.image_tag)
+  datawork_image_tag        = coalesce(var.datawork_image_tag, var.image_tag)
+  metricwork_image_tag      = coalesce(var.metricwork_image_tag, var.image_tag)
+  scheduler_image_tag       = coalesce(var.scheduler_image_tag, var.image_tag)
+  troubleshooting_image_tag = coalesce(var.troubleshooting_image_tag, var.image_tag)
+
   auth0_secrets_map = var.auth0_client_id_secretsmanager_arn == "" ? {} : {
     AUTH0_CLIENT_ID     = var.auth0_client_id_secretsmanager_arn
     AUTH0_CLIENT_SECRET = var.auth0_client_secret_secretsmanager_arn
