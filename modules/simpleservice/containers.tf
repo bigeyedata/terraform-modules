@@ -7,7 +7,7 @@ locals {
   container_image  = "${var.image_registry}/${var.image_repository}:${var.image_tag}"
 
   container_environment_variables = [for k, v in merge(local.datadog_service_environment_variables, var.environment_variables) : { Name = k, Value = v }]
-  container_environment_secrets   = [for k, v in var.secret_arns : { Name = k, ValueFrom = v }]
+  container_environment_secrets   = [for k, v in merge(local.datadog_service_secret_arns, var.secret_arns) : { Name = k, ValueFrom = v }]
 
   primary_container_definition = {
     name   = var.name,
@@ -39,7 +39,6 @@ locals {
     ECS_FARGATE                    = "true"
     DD_DOGSTATSD_TAG_CARDINALITY   = "orchestrator"
     DD_APM_ENABLED                 = "true"
-    DD_API_KEY                     = var.datadog_agent_api_key
     DD_DOGSTATSD_NON_LOCAL_TRAFFIC = "true"
   }
 
@@ -55,10 +54,13 @@ locals {
     DD_SERVICE      = var.app
     DD_TAGS         = "app:${var.app} instance:${var.instance} stack:${var.name}"
     DD_ENV          = var.name
-    DD_API_KEY      = var.datadog_agent_api_key
     } : {
     DATADOG_ENABLED = "false"
   }
+
+  datadog_service_secret_arns = var.datadog_agent_enabled ? {
+    DD_API_KEY = var.datadog_agent_api_key_secret_arn
+  } : {}
 
   datadog_agent_container_definition = {
     name   = "datadog-agent"
@@ -70,6 +72,7 @@ locals {
       { containerPort = 8125 }
     ]
     environment = [for k, v in local.datadog_agent_environment_vars : { name = k, value = v }]
+    secrets     = [for k, v in local.datadog_service_secret_arns : { Name = k, ValueFrom = v }]
   }
 
   container_definition_options = {
