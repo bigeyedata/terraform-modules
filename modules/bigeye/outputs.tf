@@ -191,3 +191,11 @@ output "web_load_balancer_zone_id" {
   value       = module.web.zone_id
 }
 
+#======================================================
+# Networking bits
+#======================================================
+
+output "nat_public_ips" {
+  description = "IP addresses for the NAT gateway on the NAT subnet.  This will return an empty list for BYO VPC installs regardless of if the BYO VPC has a NAT or not."
+  value       = one(module.vpc) == null ? [] : module.vpc[0].nat_public_ips
+}
