@@ -313,6 +313,15 @@ module "vpc_endpoints" {
         module.vpc[0].public_route_table_ids
       )
     }
+    ecr_api = {
+      service             = "ecr.api"
+      service_type        = "Interface"
+      subnet_ids          = local.application_subnet_ids
+      private_dns_enabled = true
+      tags = merge(local.tags, {
+        Name = "${local.name}-ecrapi-endpoint"
+      })
+    }
     ecr_dkr = {
       service             = "ecr.dkr"
       service_type        = "Interface"
@@ -320,6 +329,24 @@ module "vpc_endpoints" {
       private_dns_enabled = true
       tags = merge(local.tags, {
         Name = "${local.name}-ecrdkr-endpoint"
+      })
+    }
+    logs = {
+      service             = "logs"
+      service_type        = "Interface"
+      subnet_ids          = local.application_subnet_ids
+      private_dns_enabled = true
+      tags = merge(local.tags, {
+        Name = "${local.name}-logs-endpoint"
+      })
+    }
+    secretsmanager = {
+      service             = "secretsmanager"
+      service_type        = "Interface"
+      subnet_ids          = local.application_subnet_ids
+      private_dns_enabled = true
+      tags = merge(local.tags, {
+        Name = "${local.name}-secretsmanager-endpoint"
       })
     }
   }
