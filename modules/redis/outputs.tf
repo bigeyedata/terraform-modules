@@ -3,6 +3,11 @@ output "primary_endpoint_dns_name" {
   value       = aws_elasticache_replication_group.this.primary_endpoint_address
 }
 
+output "auth_token_secret_arn" {
+  description = "Secret ARN for auth token"
+  value       = var.auth_token_secret_arn
+}
+
 output "port" {
   description = "Port for the redis cache endpoint"
   value       = aws_elasticache_replication_group.this.port
