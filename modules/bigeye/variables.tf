@@ -32,16 +32,10 @@ variable "deletion_protection" {
   default     = true
 }
 
-variable "enable_troubleshooting_module" {
-  description = "Whether to enable the troubleshooting module"
+variable "enable_bigeye_admin_module" {
+  description = "Whether to enable the bigeye-admin container"
   type        = bool
   default     = false
-}
-
-variable "troubleshooting_module_ingress_cidr" {
-  description = "The CIDR range to allow ingress from for the troubleshooting module, i.e. 'YOUR IP/32'"
-  type        = string
-  default     = ""
 }
 
 #======================================================
@@ -1205,10 +1199,10 @@ variable "scheduler_lb_extra_security_group_ids" {
 }
 
 #======================================================
-# Application Variables - Troubleshooting module
+# Application Variables - Bigeye Admin
 #======================================================
-variable "troubleshooting_image_tag" {
-  description = "The image tag to use for the troubleshooting module, defaults to the global `image_tag` if not specified"
+variable "bigeye_admin_image_tag" {
+  description = "The image tag to use for the bigeye-admin app, defaults to the global `image_tag` if not specified"
   type        = string
   default     = ""
 }

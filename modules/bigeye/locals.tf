@@ -74,17 +74,17 @@ locals {
   max_port = 65535
 
   # Docker image tags
-  haproxy_image_tag         = coalesce(var.haproxy_image_tag, var.image_tag)
-  web_image_tag             = coalesce(var.web_image_tag, var.image_tag)
-  monocle_image_tag         = coalesce(var.monocle_image_tag, var.image_tag)
-  toretto_image_tag         = coalesce(var.toretto_image_tag, var.image_tag)
-  temporalui_image_tag      = coalesce(var.temporalui_image_tag, var.image_tag)
-  temporal_image_tag        = coalesce(var.temporal_image_tag, var.image_tag)
-  datawatch_image_tag       = coalesce(var.datawatch_image_tag, var.image_tag)
-  datawork_image_tag        = coalesce(var.datawork_image_tag, var.image_tag)
-  metricwork_image_tag      = coalesce(var.metricwork_image_tag, var.image_tag)
-  scheduler_image_tag       = coalesce(var.scheduler_image_tag, var.image_tag)
-  troubleshooting_image_tag = coalesce(var.troubleshooting_image_tag, var.image_tag)
+  haproxy_image_tag      = coalesce(var.haproxy_image_tag, var.image_tag)
+  web_image_tag          = coalesce(var.web_image_tag, var.image_tag)
+  monocle_image_tag      = coalesce(var.monocle_image_tag, var.image_tag)
+  toretto_image_tag      = coalesce(var.toretto_image_tag, var.image_tag)
+  temporalui_image_tag   = coalesce(var.temporalui_image_tag, var.image_tag)
+  temporal_image_tag     = coalesce(var.temporal_image_tag, var.image_tag)
+  datawatch_image_tag    = coalesce(var.datawatch_image_tag, var.image_tag)
+  datawork_image_tag     = coalesce(var.datawork_image_tag, var.image_tag)
+  metricwork_image_tag   = coalesce(var.metricwork_image_tag, var.image_tag)
+  scheduler_image_tag    = coalesce(var.scheduler_image_tag, var.image_tag)
+  bigeye_admin_image_tag = coalesce(var.bigeye_admin_image_tag, var.image_tag)
 
   auth0_secrets_map = var.auth0_client_id_secretsmanager_arn == "" ? {} : {
     AUTH0_CLIENT_ID     = var.auth0_client_id_secretsmanager_arn
@@ -101,7 +101,7 @@ locals {
     STITCH_API_TOKEN = var.stitch_api_token_secretsmanager_arn
   }
 
-  troubleshooting_module_security_group_ids = var.enable_troubleshooting_module ? [module.troubleshooting[0].client_security_group_id] : []
+  bigeye_admin_client_security_group_ids = var.enable_bigeye_admin_module ? [module.bigeye_admin[0].client_security_group_id] : []
 
   datawatch_additional_security_groups = var.create_security_groups ? concat(
     [
@@ -110,8 +110,8 @@ locals {
       module.datawatch_rds.client_security_group_id
     ],
     var.datawatch_rds_replica_enabled ? [module.datawatch_rds.replica_client_security_group_id] : [],
-    local.troubleshooting_module_security_group_ids
-  ) : local.troubleshooting_module_security_group_ids
+    local.bigeye_admin_client_security_group_ids
+  ) : local.bigeye_admin_client_security_group_ids
 
   datawatch_secret_arns = merge(
     local.auth0_secrets_map,

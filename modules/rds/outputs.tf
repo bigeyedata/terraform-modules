@@ -1,3 +1,23 @@
+output "identifier" {
+  description = "Database identifier"
+  value       = var.name
+}
+
+output "database_name" {
+  description = "Database name"
+  value       = var.db_name
+}
+
+output "master_user_name" {
+  description = "Master user name"
+  value       = var.root_user_name
+}
+
+output "master_user_password_secret_arn" {
+  description = "Secret ARN for master password"
+  value       = var.root_user_password_secret_arn
+}
+
 output "client_security_group_id" {
   description = "Security group id for clients"
   value       = var.create_security_groups ? aws_security_group.db_clients[0].id : ""
