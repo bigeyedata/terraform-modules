@@ -44,7 +44,7 @@ module "vpc" {
   ]
   public_subnet_suffix = "dmz"
   public_subnet_tags = merge(local.tags, {
-    Duty   = "dmz"
+    Duty   = "public"
     Public = "true"
   })
 
@@ -54,9 +54,9 @@ module "vpc" {
     "${local.vpc_cidr_prefix}.4.0/24",
     "${local.vpc_cidr_prefix}.6.0/24",
   ]
-  intra_subnet_suffix = "internal-dmz"
+  intra_subnet_suffix = "internal"
   intra_subnet_tags = merge(local.tags, {
-    Duty   = "internaldmz"
+    Duty   = "internal"
     Public = "false"
   })
 
@@ -66,7 +66,7 @@ module "vpc" {
     "${local.vpc_cidr_prefix}.128.0/18",
     "${local.vpc_cidr_prefix}.192.0/18",
   ]
-  private_subnet_suffix = "general"
+  private_subnet_suffix = "application"
   private_subnet_tags = merge(local.tags, {
     Duty   = "application"
     Public = "false"
