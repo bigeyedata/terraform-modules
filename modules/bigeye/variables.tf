@@ -343,12 +343,6 @@ variable "acm_certificate_arn" {
 #======================================================
 # Application Variables - General
 #======================================================
-variable "is_demo" {
-  description = "whether or not this is a demo app"
-  type        = bool
-  default     = false
-}
-
 variable "sentry_dsn" {
   description = ""
   type        = string
