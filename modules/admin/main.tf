@@ -124,6 +124,34 @@ resource "aws_iam_role_policy" "this" {
           "logs:PutLogEvents"
         ],
         "Resource" : "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:${var.cloudwatch_log_group_name}:*"
+      },
+      {
+        "Sid" : "GrantGlobalAccess",
+        "Effect" : "Allow",
+        "Action" : [
+          "ec2:DescribeSecurityGroups",
+          "elasticloadbalancing:DescribeLoadBalancers",
+          "elasticloadbalancing:DescribeListeners",
+          "elasticloadbalancing:DescribeTargetGroups",
+          "elasticloadbalancing:DescribeTargetHealth",
+        ],
+        "Resource" : "*"
+      },
+      {
+        "Sid" : "GrantSpecificAccess",
+        "Effect" : "Allow",
+        "Action" : [
+          "rds:DescribeDBInstances",
+          "ecs:DescribeServices",
+          "elasticache:DescribeReplicationGroups",
+          "elasticache:DescribeCacheClusters",
+        ],
+        "Resource" : [
+          "arn:aws:rds:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:db:${var.stack_name}*",
+          "arn:aws:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:service/${var.stack_name}/*",
+          "arn:aws:elasticache:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:replicationgroup:${var.stack_name}",
+          "arn:aws:elasticache:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:cluster:${var.stack_name}*",
+        ]
       }
     ]
   })
