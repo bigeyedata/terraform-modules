@@ -591,7 +591,7 @@ resource "aws_cloudwatch_log_group" "temporal" {
 # Admin container
 #======================================================
 module "bigeye_admin" {
-  count                     = var.enable_bigeye_admin_module ? 1 : 0
+  enabled                   = var.enable_bigeye_admin_module
   source                    = "../admin"
   image                     = format("%s/%s%s:%s", local.image_registry, "bigeye-admin", var.image_repository_suffix, local.bigeye_admin_image_tag)
   vpc_id                    = local.vpc_id
@@ -686,7 +686,7 @@ module "rabbitmq" {
   vpc_id                 = local.vpc_id
   deployment_mode        = var.redundant_infrastructure ? "CLUSTER_MULTI_AZ" : "SINGLE_INSTANCE"
   create_security_groups = var.create_security_groups
-  # TODO add local.bigeye_admin_client_security_group_ids to the list of extra_security_groups when AWS MQ supports modifying security groups
+  # TODO add module.bigeye_admin.client_security_group_id to the list of extra_security_groups when AWS MQ supports modifying security groups
   extra_security_groups    = var.rabbitmq_extra_security_group_ids
   subnet_ids               = local.rabbitmq_subnet_group_ids
   instance_type            = var.rabbitmq_instance_type
@@ -818,7 +818,7 @@ module "haproxy" {
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
-  additional_security_group_ids = concat(var.haproxy_extra_security_group_ids, local.bigeye_admin_client_security_group_ids)
+  additional_security_group_ids = concat(var.haproxy_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   traffic_port                  = var.haproxy_port
   ecs_cluster_id                = aws_ecs_cluster.this.id
   fargate_version               = var.fargate_version
@@ -830,7 +830,7 @@ module "haproxy" {
   acm_certificate_arn              = local.acm_certificate_arn
   lb_idle_timeout                  = 900
   lb_subnet_ids                    = var.internet_facing ? local.public_alb_subnet_ids : local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids = concat(var.haproxy_lb_extra_security_group_ids, local.bigeye_admin_client_security_group_ids)
+  lb_additional_security_group_ids = concat(var.haproxy_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_stickiness_enabled            = true
   lb_deregistration_delay          = 900
 
@@ -895,7 +895,7 @@ module "web" {
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
-  additional_security_group_ids = concat(var.web_extra_security_group_ids, local.bigeye_admin_client_security_group_ids)
+  additional_security_group_ids = concat(var.web_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   traffic_port                  = var.web_port
   ecs_cluster_id                = aws_ecs_cluster.this.id
   fargate_version               = var.fargate_version
@@ -907,7 +907,7 @@ module "web" {
   acm_certificate_arn              = local.acm_certificate_arn
   lb_idle_timeout                  = 180
   lb_subnet_ids                    = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids = concat(var.web_lb_extra_security_group_ids, local.bigeye_admin_client_security_group_ids)
+  lb_additional_security_group_ids = concat(var.web_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_stickiness_enabled            = true
   lb_deregistration_delay          = 120
 
@@ -990,7 +990,7 @@ module "temporal_rds" {
   storage_type                          = "gp3"
   db_subnet_group_name                  = local.database_subnet_group_name
   create_security_groups                = var.create_security_groups
-  extra_security_group_ids              = concat(var.temporal_rds_extra_security_group_ids, local.bigeye_admin_client_security_group_ids)
+  extra_security_group_ids              = concat(var.temporal_rds_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   instance_class                        = var.temporal_rds_instance_type
   backup_window                         = var.rds_backup_window
   backup_retention_period               = var.temporal_rds_backup_retention_period
@@ -1036,7 +1036,7 @@ resource "aws_lb" "temporal" {
   load_balancer_type               = "network"
   subnets                          = var.temporal_internet_facing ? local.public_alb_subnet_ids : local.internal_service_alb_subnet_ids
   enable_cross_zone_load_balancing = true
-  security_groups                  = var.create_security_groups ? concat([aws_security_group.temporal_lb[0].id], var.temporal_lb_extra_security_group_ids, local.bigeye_admin_client_security_group_ids) : concat(var.temporal_lb_extra_security_group_ids, local.bigeye_admin_client_security_group_ids)
+  security_groups                  = concat(aws_security_group.temporal_lb[*].id, var.temporal_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   tags                             = local.tags
 
   access_logs {
@@ -1220,7 +1220,14 @@ resource "aws_ecs_service" "temporal" {
   network_configuration {
     subnets          = local.application_subnet_ids
     assign_public_ip = false
-    security_groups  = var.create_security_groups ? concat([aws_security_group.temporal[0].id, module.temporal_rds.client_security_group_id], var.temporal_extra_security_group_ids, local.bigeye_admin_client_security_group_ids) : concat(var.temporal_extra_security_group_ids, local.bigeye_admin_client_security_group_ids)
+    security_groups = concat(
+      aws_security_group.temporal[*].id,
+      [
+        module.temporal_rds.client_security_group_id,
+        module.bigeye_admin.client_security_group_id,
+      ],
+      var.temporal_extra_security_group_ids
+    )
   }
 
   load_balancer {
@@ -1280,7 +1287,7 @@ module "temporalui" {
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
-  additional_security_group_ids = concat(var.temporalui_extra_security_group_ids, local.bigeye_admin_client_security_group_ids)
+  additional_security_group_ids = concat(var.temporalui_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   traffic_port                  = var.temporalui_port
   ecs_cluster_id                = aws_ecs_cluster.this.id
   fargate_version               = var.fargate_version
@@ -1291,7 +1298,7 @@ module "temporalui" {
   ssl_policy                       = var.alb_ssl_policy
   acm_certificate_arn              = local.acm_certificate_arn
   lb_subnet_ids                    = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids = concat(var.temporalui_lb_extra_security_group_ids, local.bigeye_admin_client_security_group_ids)
+  lb_additional_security_group_ids = concat(var.temporalui_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_deregistration_delay          = 120
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
@@ -1390,14 +1397,19 @@ module "monocle" {
   name     = "${local.name}-monocle"
   tags     = merge(local.tags, { app = "monocle" })
 
-  vpc_id                        = local.vpc_id
-  vpc_cidr_block                = var.vpc_cidr_block
-  subnet_ids                    = local.application_subnet_ids
-  create_security_groups        = var.create_security_groups
-  additional_security_group_ids = var.create_security_groups ? concat([module.rabbitmq.client_security_group_id], var.monocle_extra_security_group_ids, local.bigeye_admin_client_security_group_ids) : concat(var.monocle_extra_security_group_ids, local.bigeye_admin_client_security_group_ids)
-  traffic_port                  = var.monocle_port
-  ecs_cluster_id                = aws_ecs_cluster.this.id
-  fargate_version               = var.fargate_version
+  vpc_id                 = local.vpc_id
+  vpc_cidr_block         = var.vpc_cidr_block
+  subnet_ids             = local.application_subnet_ids
+  create_security_groups = var.create_security_groups
+  additional_security_group_ids = concat(
+    var.monocle_extra_security_group_ids,
+    [module.bigeye_admin.client_security_group_id],
+    var.create_security_groups ? [module.rabbitmq.client_security_group_id] : [],
+
+  )
+  traffic_port    = var.monocle_port
+  ecs_cluster_id  = aws_ecs_cluster.this.id
+  fargate_version = var.fargate_version
 
   # Load balancer
   healthcheck_path                 = "/health"
@@ -1406,7 +1418,7 @@ module "monocle" {
   acm_certificate_arn              = local.acm_certificate_arn
   lb_idle_timeout                  = 900
   lb_subnet_ids                    = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids = concat(var.monocle_lb_extra_security_group_ids, local.bigeye_admin_client_security_group_ids)
+  lb_additional_security_group_ids = concat(var.monocle_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_deregistration_delay          = 300
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
@@ -1483,14 +1495,18 @@ module "toretto" {
   name     = "${local.name}-toretto"
   tags     = merge(local.tags, { app = "toretto" })
 
-  vpc_id                        = local.vpc_id
-  vpc_cidr_block                = var.vpc_cidr_block
-  subnet_ids                    = local.application_subnet_ids
-  create_security_groups        = var.create_security_groups
-  additional_security_group_ids = var.create_security_groups ? concat([module.rabbitmq.client_security_group_id], var.toretto_extra_security_group_ids, local.bigeye_admin_client_security_group_ids) : concat(var.toretto_extra_security_group_ids, local.bigeye_admin_client_security_group_ids)
-  traffic_port                  = var.toretto_port
-  ecs_cluster_id                = aws_ecs_cluster.this.id
-  fargate_version               = var.fargate_version
+  vpc_id                 = local.vpc_id
+  vpc_cidr_block         = var.vpc_cidr_block
+  subnet_ids             = local.application_subnet_ids
+  create_security_groups = var.create_security_groups
+  additional_security_group_ids = concat(
+    var.toretto_extra_security_group_ids,
+    [module.bigeye_admin.client_security_group_id],
+    var.create_security_groups ? [module.rabbitmq.client_security_group_id] : [],
+  )
+  traffic_port    = var.toretto_port
+  ecs_cluster_id  = aws_ecs_cluster.this.id
+  fargate_version = var.fargate_version
 
   # Load balancer
   healthcheck_path                 = "/health"
@@ -1498,7 +1514,7 @@ module "toretto" {
   acm_certificate_arn              = local.acm_certificate_arn
   lb_idle_timeout                  = 900
   lb_subnet_ids                    = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids = concat(var.toretto_lb_extra_security_group_ids, local.bigeye_admin_client_security_group_ids)
+  lb_additional_security_group_ids = concat(var.toretto_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -1564,14 +1580,18 @@ module "scheduler" {
   name     = "${local.name}-scheduler"
   tags     = merge(local.tags, { app = "scheduler" })
 
-  vpc_id                        = local.vpc_id
-  vpc_cidr_block                = var.vpc_cidr_block
-  subnet_ids                    = local.application_subnet_ids
-  create_security_groups        = var.create_security_groups
-  additional_security_group_ids = var.create_security_groups ? concat([module.redis.client_security_group_id], var.scheduler_extra_security_group_ids, local.bigeye_admin_client_security_group_ids) : concat(var.scheduler_extra_security_group_ids, local.bigeye_admin_client_security_group_ids)
-  traffic_port                  = var.scheduler_port
-  ecs_cluster_id                = aws_ecs_cluster.this.id
-  fargate_version               = var.fargate_version
+  vpc_id                 = local.vpc_id
+  vpc_cidr_block         = var.vpc_cidr_block
+  subnet_ids             = local.application_subnet_ids
+  create_security_groups = var.create_security_groups
+  additional_security_group_ids = concat(
+    var.scheduler_extra_security_group_ids,
+    [module.bigeye_admin.client_security_group_id],
+    var.create_security_groups ? [module.redis.client_security_group_id] : [],
+  )
+  traffic_port    = var.scheduler_port
+  ecs_cluster_id  = aws_ecs_cluster.this.id
+  fargate_version = var.fargate_version
 
   # Load balancer
   healthcheck_path                 = "/health"
@@ -1579,7 +1599,7 @@ module "scheduler" {
   acm_certificate_arn              = local.acm_certificate_arn
   lb_idle_timeout                  = 900
   lb_subnet_ids                    = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids = concat(var.scheduler_lb_extra_security_group_ids, local.bigeye_admin_client_security_group_ids)
+  lb_additional_security_group_ids = concat(var.scheduler_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -1785,7 +1805,7 @@ module "redis" {
   vpc_id                   = local.vpc_id
   create_security_groups   = var.create_security_groups
   subnet_group_name        = local.elasticache_subnet_group_name
-  extra_security_group_ids = concat(var.redis_extra_security_group_ids, local.bigeye_admin_client_security_group_ids)
+  extra_security_group_ids = concat(var.redis_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   auth_token_secret_arn    = local.redis_auth_token_secret_arn
   instance_type            = var.redis_instance_type
   instance_count           = var.redundant_infrastructure ? 2 : 1
@@ -1828,7 +1848,7 @@ module "datawatch_rds" {
   vpc_id                   = local.vpc_id
   db_subnet_group_name     = local.database_subnet_group_name
   create_security_groups   = var.create_security_groups
-  extra_security_group_ids = concat(var.datawatch_rds_extra_security_group_ids, local.bigeye_admin_client_security_group_ids)
+  extra_security_group_ids = concat(var.datawatch_rds_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   enable_multi_az          = var.redundant_infrastructure ? true : false
 
   # Settings
@@ -1946,7 +1966,7 @@ module "datawatch" {
   acm_certificate_arn              = local.acm_certificate_arn
   lb_idle_timeout                  = 900
   lb_subnet_ids                    = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids = concat(var.datawatch_lb_extra_security_group_ids, local.bigeye_admin_client_security_group_ids)
+  lb_additional_security_group_ids = concat(var.datawatch_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_deregistration_delay          = 900
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
@@ -2045,7 +2065,7 @@ module "datawork" {
   acm_certificate_arn              = local.acm_certificate_arn
   lb_idle_timeout                  = 900
   lb_subnet_ids                    = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids = concat(var.datawork_lb_extra_security_group_ids, local.bigeye_admin_client_security_group_ids)
+  lb_additional_security_group_ids = concat(var.datawork_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -2145,7 +2165,7 @@ module "metricwork" {
   acm_certificate_arn              = local.acm_certificate_arn
   lb_idle_timeout                  = 900
   lb_subnet_ids                    = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids = concat(var.metricwork_lb_extra_security_group_ids, local.bigeye_admin_client_security_group_ids)
+  lb_additional_security_group_ids = concat(var.metricwork_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
