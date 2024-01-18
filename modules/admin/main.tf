@@ -14,6 +14,11 @@ locals {
   environment_variables = {
     STACK_NAME = var.stack_name
 
+    # These two are required by the CLI, but not used anymore.
+    # Subsequent release will remove these env vars
+    PARENT_DOMAIN_NAME = "deprecated"
+    BASE_DNS_ALIAS     = "deprecated"
+
     HAPROXY_DOMAIN_NAME    = var.haproxy_domain_name
     WEB_DOMAIN_NAME        = var.web_domain_name
     MONOCLE_DOMAIN_NAME    = var.monocle_domain_name
