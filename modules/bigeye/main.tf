@@ -1970,12 +1970,11 @@ module "datawatch" {
       TEMPORAL_NAMESPACE                         = var.temporal_namespace
       TEMPORAL_SSL_HOSTNAME_VERIFICATION_ENABLED = var.temporal_use_default_certificates ? "false" : "true"
 
-      MTLS_KEY_PATH         = "/temporal/mtls.key"
-      MTLS_CERT_PATH        = "/temporal/mtls.pem"
-      MAX_RAM_PERCENTAGE    = var.datawatch_jvm_max_ram_pct
-      DEMO_ENDPOINT_ENABLED = var.is_demo
-      SENTRY_DSN            = var.sentry_dsn
-      AWS_REGION            = local.aws_region
+      MTLS_KEY_PATH      = "/temporal/mtls.key"
+      MTLS_CERT_PATH     = "/temporal/mtls.pem"
+      MAX_RAM_PERCENTAGE = var.datawatch_jvm_max_ram_pct
+      SENTRY_DSN         = var.sentry_dsn
+      AWS_REGION         = local.aws_region
     }
   )
 
@@ -2075,7 +2074,6 @@ module "datawork" {
       MTLS_KEY_PATH                              = "/temporal/mtls.key"
       MTLS_CERT_PATH                             = "/temporal/mtls.pem"
       MAX_RAM_PERCENTAGE                         = var.datawatch_jvm_max_ram_pct
-      DEMO_ENDPOINT_ENABLED                      = var.is_demo
       SENTRY_DSN                                 = var.sentry_dsn
       AWS_REGION                                 = local.aws_region
     }
@@ -2176,7 +2174,6 @@ module "metricwork" {
       MTLS_KEY_PATH                              = "/temporal/mtls.key"
       MTLS_CERT_PATH                             = "/temporal/mtls.pem"
       MAX_RAM_PERCENTAGE                         = var.datawatch_jvm_max_ram_pct
-      DEMO_ENDPOINT_ENABLED                      = var.is_demo
       SENTRY_DSN                                 = var.sentry_dsn
       AWS_REGION                                 = local.aws_region
     }
