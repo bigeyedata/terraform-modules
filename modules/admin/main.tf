@@ -130,41 +130,46 @@ resource "aws_iam_role_policy" "this" {
 }
 
 resource "aws_security_group" "this" {
+  count       = var.enabled ? 1 : 0
   name        = local.name
   vpc_id      = var.vpc_id
   description = "Used for validating networking"
   tags = merge(var.tags, {
     Name = local.name
   })
+}
 
-  egress {
-    description      = "Allow outbound"
-    from_port        = 0
-    to_port          = local.max_port
-    protocol         = "TCP"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
+resource "aws_vpc_security_group_egress_rule" "this" {
+  count             = var.enabled ? 1 : 0
+  security_group_id = aws_security_group.this[0].id
+  description       = "Allow outbound"
+  from_port         = 0
+  to_port           = local.max_port
+  ip_protocol       = "TCP"
+  cidr_ipv4         = "0.0.0.0/0"
 }
 
 resource "aws_security_group" "client" {
   name        = "${local.name}-client"
   vpc_id      = var.vpc_id
-  description = "allows ingress on all ports from troubleshooting instance"
+  description = "allows ingress on all ports from bigeye-admin"
   tags = merge(var.tags, {
     Name = "${local.name}-client"
   })
+}
 
-  ingress {
-    description     = "Allow all traffic"
-    from_port       = 0
-    to_port         = local.max_port
-    protocol        = "TCP"
-    security_groups = [aws_security_group.this.id]
-  }
+resource "aws_vpc_security_group_ingress_rule" "client_from_main" {
+  count                        = var.enabled ? 1 : 0
+  security_group_id            = aws_security_group.client.id
+  description                  = "Allow all traffic"
+  from_port                    = 0
+  to_port                      = local.max_port
+  ip_protocol                  = "TCP"
+  referenced_security_group_id = aws_security_group.this[0].id
 }
 
 resource "aws_ecs_task_definition" "this" {
+  count                    = var.enabled ? 1 : 0
   family                   = local.name
   cpu                      = 1024
   memory                   = 2048
@@ -197,9 +202,10 @@ resource "aws_ecs_task_definition" "this" {
 }
 
 resource "aws_ecs_service" "this" {
+  count                  = var.enabled ? 1 : 0
   name                   = local.name
   cluster                = var.cluster_name
-  task_definition        = aws_ecs_task_definition.this.arn
+  task_definition        = aws_ecs_task_definition.this[0].arn
   enable_execute_command = true
   desired_count          = 1
   capacity_provider_strategy {
@@ -212,7 +218,7 @@ resource "aws_ecs_service" "this" {
   network_configuration {
     subnets          = var.subnet_ids
     assign_public_ip = false
-    security_groups  = [aws_security_group.this.id]
+    security_groups  = [aws_security_group.this[0].id]
   }
 
   platform_version = var.fargate_version

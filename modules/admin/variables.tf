@@ -1,3 +1,8 @@
+variable "enabled" {
+  description = "Whether to enable the admin container"
+  type        = bool
+}
+
 variable "stack_name" {
   description = "The stack name"
   type        = string
