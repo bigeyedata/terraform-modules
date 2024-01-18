@@ -87,4 +87,90 @@ root@ip-10-100-193-204:/#
 
 ## Troubleshooting Steps
 
-TODO
+The bigeye-admin container contains a CLI tool (`bigeye-admin`) that exercises several
+components required for the bigeye stack to work correctly.
+
+```sh
+# bigeye-admin --help
+Usage: bigeye-admin [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --version   Show the version and exit.
+  -h, --help  Show this message and exit.
+
+Commands:
+  test
+```
+
+### DNS
+
+```sh
+# Test datawatch's DNS config
+bigeye-admin test dns -a datawatch
+
+# Test all DNS config
+bigeye-admin test dns --all
+```
+
+This will verify that all the expected DNS records are present, and
+that they resolve to some address.
+
+### ECS
+
+```sh
+# Test datawatch's ECS resources
+bigeye-admin test ecs -a datawatch
+
+
+# Test all apps ECS resources
+bigeye-admin test ecs --all
+```
+
+There are a number of components that have to work together for traffic
+to successfully be handled by ECS. This test checks that:
+
+* ECS service is ready
+* ECS service has tasks
+* ECS service tasks are listening on the health check port
+* Load balancer is ready 
+* Load balancer is listening on the correct ports
+* ELB target group has targets
+* ELB target group health checks are configured correctly
+
+Due to the number of validations this command performs, this may
+take a minute or two to complete.
+
+### RDS
+
+```sh
+# Test the datawatch database
+bigeye-admin test rds -a datawatch
+
+# Test the temporal database
+bigeye-admin test rds -a temporal
+
+# Test both RDS databases
+bigeye-admin test rds --all
+```
+
+These two RDS databases are necessary for datawatch and temporal to start.
+This command tests that the databases are available, that they can listen
+on the correct port, and that login succeeds.
+
+### Redis
+
+```sh
+bigeye-admin test redis
+```
+
+This checks that redis is up, it can listen on the correct port, and that
+login succeeds with the correct auth code.
+
+### Temporal
+
+```sh
+bigeye-admin test temporal
+```
+
+This verifies that the temporal service is available and that a connection
+can be made.
