@@ -641,7 +641,7 @@ module "bigeye_admin" {
   redis_domain_name         = module.redis.primary_endpoint_dns_name
   redis_password_secret_arn = module.redis.auth_token_secret_arn
 
-  temporal_port = 7233
+  temporal_port = local.temporal_lb_port
 }
 
 #======================================================
@@ -1014,8 +1014,8 @@ resource "aws_security_group" "temporal_lb" {
 
   ingress {
     description = "Traffic port open to anywhere"
-    from_port   = 443
-    to_port     = 443
+    from_port   = local.temporal_lb_port
+    to_port     = local.temporal_lb_port
     protocol    = "TCP"
     cidr_blocks = var.temporal_internet_facing ? ["0.0.0.0/0"] : [var.vpc_cidr_block]
   }
@@ -1068,7 +1068,7 @@ resource "aws_lb_target_group" "temporal" {
 resource "aws_lb_listener" "temporal" {
   depends_on        = [aws_lb.temporal, aws_lb_target_group.temporal]
   load_balancer_arn = aws_lb.temporal.arn
-  port              = "443"
+  port              = tostring(local.temporal_lb_port)
   protocol          = "TCP"
   default_action {
     type             = "forward"
@@ -1330,9 +1330,9 @@ module "temporalui" {
     {
       ENVIRONMENT                           = var.environment
       INSTANCE                              = var.instance
-      TEMPORAL_ADDRESS                      = "${local.temporal_dns_name}:443"
+      TEMPORAL_ADDRESS                      = "${local.temporal_dns_name}:${local.temporal_lb_port}"
       TEMPORAL_UI_PORT                      = var.temporalui_port
-      TEMPORAL_CORS_ORIGINS                 = "https://${local.temporal_dns_name}:443"
+      TEMPORAL_CORS_ORIGINS                 = "https://${local.temporal_dns_name}:${local.temporal_lb_port}"
       TEMPORAL_TLS_ENABLE_HOST_VERIFICATION = var.temporal_use_default_certificates ? "false" : "true"
       TEMPORAL_TLS_SERVER_NAME              = local.temporal_dns_name
     }
@@ -2026,7 +2026,7 @@ module "datawatch" {
       REQUEST_AUTH_LOGGING_ENABLED    = var.datawatch_request_auth_logging_enabled
 
       TEMPORAL_ENABLED                           = true
-      TEMPORAL_TARGET                            = "${local.temporal_dns_name}:443"
+      TEMPORAL_TARGET                            = "${local.temporal_dns_name}:${local.temporal_lb_port}"
       TEMPORAL_NAMESPACE                         = var.temporal_namespace
       TEMPORAL_SSL_HOSTNAME_VERIFICATION_ENABLED = var.temporal_use_default_certificates ? "false" : "true"
 
@@ -2128,7 +2128,7 @@ module "datawork" {
       REQUEST_BODY_LOGGING_ENABLED               = var.datawatch_request_body_logging_enabled
       REQUEST_AUTH_LOGGING_ENABLED               = var.datawatch_request_auth_logging_enabled
       TEMPORAL_ENABLED                           = true
-      TEMPORAL_TARGET                            = "${local.temporal_dns_name}:443"
+      TEMPORAL_TARGET                            = "${local.temporal_dns_name}:${local.temporal_lb_port}"
       TEMPORAL_NAMESPACE                         = var.temporal_namespace
       TEMPORAL_SSL_HOSTNAME_VERIFICATION_ENABLED = var.temporal_use_default_certificates ? "false" : "true"
       MTLS_KEY_PATH                              = "/temporal/mtls.key"
@@ -2228,7 +2228,7 @@ module "metricwork" {
       REQUEST_BODY_LOGGING_ENABLED               = var.datawatch_request_body_logging_enabled
       REQUEST_AUTH_LOGGING_ENABLED               = var.datawatch_request_auth_logging_enabled
       TEMPORAL_ENABLED                           = true
-      TEMPORAL_TARGET                            = "${local.temporal_dns_name}:443"
+      TEMPORAL_TARGET                            = "${local.temporal_dns_name}:${local.temporal_lb_port}"
       TEMPORAL_NAMESPACE                         = var.temporal_namespace
       TEMPORAL_SSL_HOSTNAME_VERIFICATION_ENABLED = var.temporal_use_default_certificates ? "false" : "true"
       MTLS_KEY_PATH                              = "/temporal/mtls.key"
