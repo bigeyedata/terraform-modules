@@ -191,6 +191,7 @@ resource "aws_ecs_service" "this" {
   }
   deployment_maximum_percent         = 200
   deployment_minimum_healthy_percent = 100
+  enable_ecs_managed_tags            = true
   health_check_grace_period_seconds  = var.healthcheck_grace_period
   network_configuration {
     subnets          = var.subnet_ids
@@ -215,6 +216,8 @@ resource "aws_ecs_service" "this" {
   deployment_controller {
     type = "ECS"
   }
+
+  propagate_tags = "SERVICE"
 
   tags = var.tags
 }
