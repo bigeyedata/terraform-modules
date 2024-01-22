@@ -1,3 +1,8 @@
+output "stack_name" {
+  description = "Top level stack name for the Bigeye app resources.  This is used in tags, for AWS secrets manager access etc."
+  value       = local.stack_name
+}
+
 output "vpc_id" {
   description = "The VPC ID holding resources"
   value       = local.vpc_id
@@ -191,6 +196,10 @@ output "web_load_balancer_zone_id" {
   value       = module.web.zone_id
 }
 
+output "ecs_task_role_id" {
+  description = "Id of the ECS Task execution role.  This is useful for granting ECS access to secrets manager secrets."
+  value       = aws_iam_role.ecs.id
+}
 #======================================================
 # Networking bits
 #======================================================
