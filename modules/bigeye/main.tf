@@ -1038,7 +1038,7 @@ resource "aws_lb" "temporal" {
   subnets                          = var.temporal_internet_facing ? local.public_alb_subnet_ids : local.internal_service_alb_subnet_ids
   enable_cross_zone_load_balancing = true
   security_groups                  = concat(aws_security_group.temporal_lb[*].id, var.temporal_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
-  tags                             = local.tags
+  tags                             = merge(local.tags, { app = "temporal" })
 
   access_logs {
     enabled = var.elb_access_logs_enabled
@@ -1054,7 +1054,7 @@ resource "aws_lb_target_group" "temporal" {
   vpc_id               = local.vpc_id
   target_type          = "ip"
   deregistration_delay = 300
-  tags                 = local.tags
+  tags                 = merge(local.tags, { app = "temporal" })
 
   health_check {
     enabled             = true
