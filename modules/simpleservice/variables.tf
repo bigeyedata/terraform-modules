@@ -215,6 +215,24 @@ variable "healthcheck_interval" {
   default     = 30
 }
 
+variable "healthcheck_healthy_threshold" {
+  description = "Number of successful healthchecks required to mark app as healthy"
+  type        = number
+  default     = 2
+}
+
+variable "healthcheck_unhealthy_threshold" {
+  description = "Number of failed healthchecks required to mark app as unhealthy"
+  type        = number
+  default     = 10
+}
+
+variable "healthcheck_timeout" {
+  description = "Timeout in seconds for healthcheck"
+  type        = number
+  default     = 10
+}
+
 variable "ssl_policy" {
   description = "The SSL Policy to use for TLS termination"
   type        = string
