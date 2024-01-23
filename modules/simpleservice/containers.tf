@@ -44,7 +44,7 @@ locals {
 
   datadog_docker_labels = var.datadog_agent_enabled ? {
     "com.datadoghq.tags.app"      = var.app
-    "com.datadoghq.tags.env"      = var.name
+    "com.datadoghq.tags.env"      = var.stack
     "com.datadoghq.tags.instance" = var.instance
     "com.datadoghq.tags.service"  = var.app
     "com.datadoghq.tags.stack"    = var.stack
@@ -52,8 +52,8 @@ locals {
   datadog_service_environment_variables = var.datadog_agent_enabled ? {
     DATADOG_ENABLED = "true"
     DD_SERVICE      = var.app
-    DD_TAGS         = "app:${var.app} instance:${var.instance} stack:${var.name}"
-    DD_ENV          = var.name
+    DD_TAGS         = "app:${var.app} instance:${var.instance} stack:${var.stack}"
+    DD_ENV          = var.stack
     } : {
     DATADOG_ENABLED = "false"
   }
