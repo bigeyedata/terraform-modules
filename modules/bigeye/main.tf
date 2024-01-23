@@ -836,7 +836,7 @@ module "haproxy" {
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
-  lb_access_logs_bucket_prefix = "${var.elb_access_logs_prefix}/haproxy"
+  lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "haproxy")
 
   # Task settings
   desired_count             = var.haproxy_desired_count
@@ -913,7 +913,7 @@ module "web" {
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
-  lb_access_logs_bucket_prefix = "${var.elb_access_logs_prefix}/web"
+  lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "web")
 
   # Task settings
   desired_count             = var.web_desired_count
@@ -1042,7 +1042,7 @@ resource "aws_lb" "temporal" {
   access_logs {
     enabled = var.elb_access_logs_enabled
     bucket  = var.elb_access_logs_bucket
-    prefix  = "${var.elb_access_logs_prefix}/temporal"
+    prefix  = format("%s-%s", local.elb_access_logs_prefix, "temporal")
   }
 }
 
@@ -1303,7 +1303,7 @@ module "temporalui" {
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
-  lb_access_logs_bucket_prefix = "${var.elb_access_logs_prefix}/temporalui"
+  lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "temporalui")
 
   # Task settings
   desired_count             = var.temporalui_desired_count
@@ -1423,7 +1423,7 @@ module "monocle" {
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
-  lb_access_logs_bucket_prefix = "${var.elb_access_logs_prefix}/monocle"
+  lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "monocle")
 
   # Task settings
   desired_count             = var.monocle_desired_count
@@ -1518,7 +1518,7 @@ module "toretto" {
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
-  lb_access_logs_bucket_prefix = "${var.elb_access_logs_prefix}/toretto"
+  lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "toretto")
 
   # Task settings
   desired_count             = var.toretto_desired_count
@@ -1603,7 +1603,7 @@ module "scheduler" {
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
-  lb_access_logs_bucket_prefix = "${var.elb_access_logs_prefix}/scheduler"
+  lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "scheduler")
 
   # Task settings
   desired_count             = var.scheduler_desired_count
@@ -1971,7 +1971,7 @@ module "datawatch" {
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
-  lb_access_logs_bucket_prefix = "${var.elb_access_logs_prefix}/datawatch"
+  lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "datawatch")
 
   # Task settings
   desired_count             = var.datawatch_desired_count
@@ -2069,7 +2069,7 @@ module "datawork" {
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
-  lb_access_logs_bucket_prefix = "${var.elb_access_logs_prefix}/datawork"
+  lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "datawork")
 
   # Task settings
   desired_count             = var.datawork_desired_count
@@ -2169,7 +2169,7 @@ module "metricwork" {
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
-  lb_access_logs_bucket_prefix = "${var.elb_access_logs_prefix}/metricwork"
+  lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "metricwork")
 
   # Task settings
   desired_count             = var.metricwork_desired_count
