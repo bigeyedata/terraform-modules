@@ -1,3 +1,12 @@
+# [1.9.0](https://github.com/bigeyedata/terraform-modules/compare/v1.8.1...v1.9.0) (2024-01-23)
+
+
+### Features
+
+* add BYO mTLS certs example ([3e207b1](https://github.com/bigeyedata/terraform-modules/commit/3e207b1c1363b72942fdb3d898ba05402e616851))
+
+
+
 ## [1.8.1](https://github.com/bigeyedata/terraform-modules/compare/v1.8.0...v1.8.1) (2024-01-19)
 
 
