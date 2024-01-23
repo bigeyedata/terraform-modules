@@ -86,10 +86,10 @@ resource "aws_lb_target_group" "this" {
   health_check {
     enabled             = true
     protocol            = "HTTP"
-    healthy_threshold   = 2
-    unhealthy_threshold = 10
+    healthy_threshold   = var.healthcheck_healthy_threshold
+    unhealthy_threshold = var.healthcheck_unhealthy_threshold
     interval            = var.healthcheck_interval
-    timeout             = 10
+    timeout             = var.healthcheck_timeout
     path                = var.healthcheck_path
   }
 }
