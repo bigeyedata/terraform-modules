@@ -903,6 +903,7 @@ module "web" {
   # Load balancer
   healthcheck_path                 = "/next-status"
   healthcheck_interval             = 15
+  healthcheck_unhealthy_threshold  = 3
   ssl_policy                       = var.alb_ssl_policy
   acm_certificate_arn              = local.acm_certificate_arn
   lb_idle_timeout                  = 180
