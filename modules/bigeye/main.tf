@@ -1000,7 +1000,7 @@ module "temporal_rds" {
   enable_multi_az                       = var.redundant_infrastructure ? true : false
   create_option_group                   = false
   create_parameter_group                = false
-  tags                                  = local.tags
+  tags                                  = merge(local.tags, var.temporal_rds_additional_tags)
 }
 
 resource "aws_security_group" "temporal_lb" {
@@ -1919,7 +1919,7 @@ module "datawatch_rds" {
   replica_instance_class          = var.datawatch_rds_replica_instance_type
   replica_backup_retention_period = var.datawatch_rds_replica_backup_retention_period
 
-  tags = local.tags
+  tags = merge(local.tags, var.datawatch_rds_additional_tags)
 }
 
 #======================================================

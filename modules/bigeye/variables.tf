@@ -766,6 +766,12 @@ variable "temporal_rds_extra_security_group_ids" {
   default     = []
 }
 
+variable "temporal_rds_additional_tags" {
+  description = "Additional tags to apply to the temporal RDS resources"
+  type        = map(string)
+  default     = {}
+}
+
 variable "temporal_desired_count" {
   description = "The desired number of replicas"
   type        = number
@@ -935,6 +941,12 @@ variable "datawatch_rds_extra_security_group_ids" {
   description = "Extra security groups to put on the RDS instance"
   type        = list(string)
   default     = []
+}
+
+variable "datawatch_rds_additional_tags" {
+  description = "Additional tags to apply to the datawatch RDS resources"
+  type        = map(string)
+  default     = {}
 }
 
 variable "datawatch_desired_count" {
