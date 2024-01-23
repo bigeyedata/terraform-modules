@@ -153,4 +153,6 @@ locals {
     DATADOG_ENABLED = "true"
     DD_ENV          = local.name
   } : {}
+
+  elb_access_logs_prefix = var.elb_access_logs_prefix == "" ? local.name : format("%s/%s", var.elb_access_logs_prefix, local.name)
 }
