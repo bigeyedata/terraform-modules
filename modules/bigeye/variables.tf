@@ -278,7 +278,6 @@ variable "redis_maintenance_window" {
 #======================================================
 variable "rabbitmq_user_name" {
   description = "The user name to log into RabbitMQ with"
-  sensitive   = true
   type        = string
   default     = "bigeye"
 }
