@@ -157,6 +157,15 @@ These two RDS databases are necessary for datawatch and temporal to start.
 This command tests that the databases are available, that they can listen
 on the correct port, and that login succeeds.
 
+### RabbitMQ
+
+```sh
+bigeye-admin test rabbitmq
+```
+
+This checks that rabbitmq is up, it can listen on the correct port, and that
+login succeeds with the correct auth code.
+
 ### Redis
 
 ```sh
