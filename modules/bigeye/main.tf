@@ -642,6 +642,10 @@ module "bigeye_admin" {
   redis_password_secret_arn = module.redis.auth_token_secret_arn
 
   temporal_port = local.temporal_lb_port
+
+  rabbitmq_endpoint            = module.rabbitmq.endpoint
+  rabbitmq_username            = var.rabbitmq_user_name
+  rabbitmq_password_secret_arn = local.rabbitmq_user_password_secret_arn
 }
 
 #======================================================
