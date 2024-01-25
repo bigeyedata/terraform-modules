@@ -460,7 +460,7 @@ resource "aws_route53_record" "scheduler" {
 resource "aws_route53_record" "temporalui" {
   count   = var.create_dns_records ? 1 : 0
   zone_id = data.aws_route53_zone.this.zone_id
-  name    = local.temporal_admin_dns_name
+  name    = local.temporalui_dns_name
   type    = "CNAME"
   ttl     = 300
   records = [module.temporalui.dns_name]
@@ -614,7 +614,7 @@ module "bigeye_admin" {
   monocle_domain_name    = local.monocle_dns_name
   toretto_domain_name    = local.toretto_dns_name
   temporal_domain_name   = local.temporal_dns_name
-  temporalui_domain_name = local.temporal_admin_dns_name
+  temporalui_domain_name = local.temporalui_dns_name
   datawatch_domain_name  = local.datawatch_dns_name
   datawork_domain_name   = local.datawork_dns_name
   metricwork_domain_name = local.metricwork_dns_name

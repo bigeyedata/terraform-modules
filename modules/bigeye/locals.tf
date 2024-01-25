@@ -60,7 +60,7 @@ locals {
   datawork_dns_name                = "${local.base_dns_alias}-datawork.${var.top_level_dns_name}"
   metricwork_dns_name              = "${local.base_dns_alias}-metricwork.${var.top_level_dns_name}"
   temporal_dns_name                = "${local.base_dns_alias}-workflows.${var.top_level_dns_name}"
-  temporal_admin_dns_name          = "${local.base_dns_alias}-workflows-admin.${var.top_level_dns_name}"
+  temporalui_dns_name              = "${local.base_dns_alias}-workflows-admin.${var.top_level_dns_name}"
   temporal_mysql_dns_name          = "${local.base_dns_alias}-temporal-mysql.${var.top_level_dns_name}"
   monocle_dns_name                 = "${local.base_dns_alias}-monocle.${var.top_level_dns_name}"
   toretto_dns_name                 = "${local.base_dns_alias}-toretto.${var.top_level_dns_name}"
