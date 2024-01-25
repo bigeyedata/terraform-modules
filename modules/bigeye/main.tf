@@ -388,7 +388,7 @@ resource "aws_route53_record" "datawatch" {
 resource "aws_route53_record" "datawatch_mysql" {
   count   = var.create_dns_records ? 1 : 0
   zone_id = data.aws_route53_zone.this.zone_id
-  name    = local.datawatch_mysql_dns_name
+  name    = local.datawatch_mysql_vanity_dns_name
   type    = "CNAME"
   ttl     = 300
   records = [module.datawatch_rds.primary_dns_name]
@@ -397,7 +397,7 @@ resource "aws_route53_record" "datawatch_mysql" {
 resource "aws_route53_record" "datawatch_mysql_replica" {
   count   = var.create_dns_records && var.datawatch_rds_replica_enabled ? 1 : 0
   zone_id = data.aws_route53_zone.this.zone_id
-  name    = local.datawatch_mysql_replica_dns_name
+  name    = local.datawatch_mysql_replica_vanity_dns_name
   type    = "CNAME"
   ttl     = 300
   records = [module.datawatch_rds.replica_dns_name]
@@ -478,7 +478,7 @@ resource "aws_route53_record" "temporal" {
 resource "aws_route53_record" "temporal_mysql" {
   count   = var.create_dns_records ? 1 : 0
   zone_id = data.aws_route53_zone.this.zone_id
-  name    = local.temporal_mysql_dns_name
+  name    = local.temporal_mysql_vanity_dns_name
   type    = "CNAME"
   ttl     = 300
   records = [module.temporal_rds.primary_dns_name]
@@ -1096,7 +1096,7 @@ locals {
       DB                                               = "mysql8"
       DB_PORT                                          = "3306"
       DBNAME                                           = "temporal"
-      MYSQL_SEEDS                                      = local.temporal_mysql_dns_name
+      MYSQL_SEEDS                                      = local.temporal_mysql_vanity_dns_name
       MYSQL_USER                                       = "bigeye"
       NUM_HISTORY_SHARDS                               = "512"
       PROMETHEUS_ENDPOINT                              = "0.0.0.0:9091"
@@ -2009,7 +2009,7 @@ module "datawatch" {
       INSTANCE                        = var.instance
       PORT                            = var.datawatch_port
       APP                             = "datawatch"
-      MYSQL_JDBC                      = "jdbc:mysql://${local.datawatch_mysql_dns_name}:3306/${var.datawatch_rds_db_name}?serverTimezone=UTC"
+      MYSQL_JDBC                      = "jdbc:mysql://${local.datawatch_mysql_vanity_dns_name}:3306/${var.datawatch_rds_db_name}?serverTimezone=UTC"
       MYSQL_USER                      = "bigeye"
       MYSQL_MAXSIZE                   = var.datawatch_mysql_maxsize
       MYSQL_TRANSACTION_ISOLATION     = "default"
@@ -2107,7 +2107,7 @@ module "datawork" {
       INSTANCE                     = var.instance
       PORT                         = var.datawork_port
       APP                          = "datawork"
-      MYSQL_JDBC                   = "jdbc:mysql://${local.datawatch_mysql_dns_name}:3306/${var.datawatch_rds_db_name}?serverTimezone=UTC"
+      MYSQL_JDBC                   = "jdbc:mysql://${local.datawatch_mysql_vanity_dns_name}:3306/${var.datawatch_rds_db_name}?serverTimezone=UTC"
       MYSQL_USER                   = "bigeye"
       MYSQL_MAXSIZE                = var.datawatch_mysql_maxsize
       MYSQL_TRANSACTION_ISOLATION  = "default"
@@ -2207,7 +2207,7 @@ module "metricwork" {
       INSTANCE                     = var.instance
       PORT                         = var.metricwork_port
       APP                          = "metricwork"
-      MYSQL_JDBC                   = "jdbc:mysql://${local.datawatch_mysql_dns_name}:3306/${var.datawatch_rds_db_name}?serverTimezone=UTC"
+      MYSQL_JDBC                   = "jdbc:mysql://${local.datawatch_mysql_vanity_dns_name}:3306/${var.datawatch_rds_db_name}?serverTimezone=UTC"
       MYSQL_USER                   = "bigeye"
       MYSQL_MAXSIZE                = var.datawatch_mysql_maxsize
       MYSQL_TRANSACTION_ISOLATION  = "default"
