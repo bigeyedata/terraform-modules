@@ -3,11 +3,6 @@ output "stack_name" {
   value       = local.stack_name
 }
 
-output "vpc_id" {
-  description = "The VPC ID holding resources"
-  value       = local.vpc_id
-}
-
 #======================================================
 # DNS - Top level
 #======================================================
@@ -200,11 +195,32 @@ output "ecs_task_role_id" {
   description = "Id of the ECS Task execution role.  This is useful for granting ECS access to secrets manager secrets."
   value       = aws_iam_role.ecs.id
 }
+
 #======================================================
 # Networking bits
 #======================================================
+output "vpc_id" {
+  description = "The VPC ID holding resources"
+  value       = local.vpc_id
+}
+
+output "vpc_cidr_block" {
+  description = "The CIDR block of the vpc"
+  value       = one(module.vpc) == null ? "" : module.vpc[0].vpc_cidr_block
+}
 
 output "nat_public_ips" {
   description = "IP addresses for the NAT gateway on the NAT subnet.  This will return an empty list for BYO VPC installs regardless of if the BYO VPC has a NAT or not."
   value       = one(module.vpc) == null ? [] : module.vpc[0].nat_public_ips
 }
+
+output "all_route_table_ids" {
+  value = one(module.vpc) == null ? [] : concat(
+    module.vpc[0].database_route_table_ids,
+    module.vpc[0].elasticache_route_table_ids,
+    module.vpc[0].intra_route_table_ids,
+    module.vpc[0].private_route_table_ids,
+    module.vpc[0].public_route_table_ids,
+  )
+}
+
