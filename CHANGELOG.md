@@ -1,3 +1,17 @@
+# [1.11.0](https://github.com/bigeyedata/terraform-modules/compare/v1.10.0...v1.11.0) (2024-01-25)
+
+
+### Bug Fixes
+
+* mark rabbit username as not sensitive ([57f8791](https://github.com/bigeyedata/terraform-modules/commit/57f879118a7fd25fd23ae461ba2c5e2aa751e8ee))
+
+
+### Features
+
+* add rabbitmq configuration data to bigeye-admin ([9346e23](https://github.com/bigeyedata/terraform-modules/commit/9346e2358cbaa1b64844c8e6e2727338662b5c79))
+
+
+
 # [1.10.0](https://github.com/bigeyedata/terraform-modules/compare/v1.9.0...v1.10.0) (2024-01-25)
 
 
