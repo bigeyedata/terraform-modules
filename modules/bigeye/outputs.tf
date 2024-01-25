@@ -26,7 +26,7 @@ output "haproxy_load_balancer_zone_id" {
 #======================================================
 output "datawatch_database_vanity_dns_name" {
   description = "The vanity dns name for the datawatch RDS instance"
-  value       = local.datawatch_mysql_dns_name
+  value       = local.datawatch_mysql_vanity_dns_name
 }
 
 output "datawatch_database_dns_name" {
@@ -36,7 +36,7 @@ output "datawatch_database_dns_name" {
 
 output "datawatch_database_replica_vanity_dns_name" {
   description = "The vanity dns name for the datawatch RDS replica instance"
-  value       = local.datawatch_mysql_replica_dns_name
+  value       = local.datawatch_mysql_replica_vanity_dns_name
 }
 
 output "datawatch_database_replica_dns_name" {
@@ -46,7 +46,7 @@ output "datawatch_database_replica_dns_name" {
 
 output "temporal_database_vanity_dns_name" {
   description = "The vanity domain for the temporal RDS instance"
-  value       = local.temporal_mysql_dns_name
+  value       = local.temporal_mysql_vanity_dns_name
 }
 
 output "temporal_database_dns_name" {
