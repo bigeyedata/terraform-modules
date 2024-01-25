@@ -50,7 +50,7 @@ output "temporal_database_vanity_dns_name" {
 }
 
 output "temporal_database_dns_name" {
-  value = module.datawatch_rds.primary_dns_name
+  value = module.temporal_rds.primary_dns_name
 }
 
 #======================================================
