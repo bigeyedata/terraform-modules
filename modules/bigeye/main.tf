@@ -1096,7 +1096,7 @@ locals {
       DB                                               = "mysql8"
       DB_PORT                                          = "3306"
       DBNAME                                           = "temporal"
-      MYSQL_SEEDS                                      = local.temporal_mysql_vanity_dns_name
+      MYSQL_SEEDS                                      = local.temporal_mysql_dns_name
       MYSQL_USER                                       = "bigeye"
       NUM_HISTORY_SHARDS                               = "512"
       PROMETHEUS_ENDPOINT                              = "0.0.0.0:9091"
@@ -2009,7 +2009,7 @@ module "datawatch" {
       INSTANCE                        = var.instance
       PORT                            = var.datawatch_port
       APP                             = "datawatch"
-      MYSQL_JDBC                      = "jdbc:mysql://${local.datawatch_mysql_vanity_dns_name}:3306/${var.datawatch_rds_db_name}?serverTimezone=UTC"
+      MYSQL_JDBC                      = "jdbc:mysql://${local.datawatch_mysql_dns_name}:3306/${var.datawatch_rds_db_name}?serverTimezone=UTC"
       MYSQL_USER                      = "bigeye"
       MYSQL_MAXSIZE                   = var.datawatch_mysql_maxsize
       MYSQL_TRANSACTION_ISOLATION     = "default"
@@ -2107,7 +2107,7 @@ module "datawork" {
       INSTANCE                     = var.instance
       PORT                         = var.datawork_port
       APP                          = "datawork"
-      MYSQL_JDBC                   = "jdbc:mysql://${local.datawatch_mysql_vanity_dns_name}:3306/${var.datawatch_rds_db_name}?serverTimezone=UTC"
+      MYSQL_JDBC                   = "jdbc:mysql://${local.datawatch_mysql_dns_name}:3306/${var.datawatch_rds_db_name}?serverTimezone=UTC"
       MYSQL_USER                   = "bigeye"
       MYSQL_MAXSIZE                = var.datawatch_mysql_maxsize
       MYSQL_TRANSACTION_ISOLATION  = "default"
@@ -2207,7 +2207,7 @@ module "metricwork" {
       INSTANCE                     = var.instance
       PORT                         = var.metricwork_port
       APP                          = "metricwork"
-      MYSQL_JDBC                   = "jdbc:mysql://${local.datawatch_mysql_vanity_dns_name}:3306/${var.datawatch_rds_db_name}?serverTimezone=UTC"
+      MYSQL_JDBC                   = "jdbc:mysql://${local.datawatch_mysql_dns_name}:3306/${var.datawatch_rds_db_name}?serverTimezone=UTC"
       MYSQL_USER                   = "bigeye"
       MYSQL_MAXSIZE                = var.datawatch_mysql_maxsize
       MYSQL_TRANSACTION_ISOLATION  = "default"
