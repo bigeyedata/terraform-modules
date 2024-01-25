@@ -711,6 +711,12 @@ variable "temporal_image_tag" {
   default     = ""
 }
 
+variable "temporal_rds_db_name" {
+  description = "The database name for Temporal's application DB"
+  type        = string
+  default     = "temporal"
+}
+
 variable "temporal_rds_snapshot_identifier" {
   description = "The snapshot identifier of the snapshot to create the database from"
   type        = string

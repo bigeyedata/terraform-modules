@@ -983,7 +983,7 @@ resource "aws_secretsmanager_secret_version" "temporal_rds_password" {
 module "temporal_rds" {
   source                                = "../rds"
   name                                  = "${local.name}-temporal"
-  db_name                               = "temporal"
+  db_name                               = var.temporal_rds_db_name
   root_user_name                        = "bigeye"
   root_user_password_secret_arn         = local.temporal_rds_password_secret_arn
   deletion_protection                   = var.deletion_protection
