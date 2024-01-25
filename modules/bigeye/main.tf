@@ -252,6 +252,11 @@ data "aws_vpc" "this" {
       condition     = var.create_security_groups || length(var.metricwork_extra_security_group_ids) > 0
       error_message = "If create_security_groups is false, you must provide a security group for the metricwork ECS tasks using metricwork_extra_security_group_ids (port ${var.metricwork_port})"
     }
+
+    postcondition {
+      condition     = (var.create_dns_records == false && var.acm_certificate_arn != "") || var.create_dns_records == true
+      error_message = "If create_dns_records is false, then you must specify acm_certificate_arn, this should be a wildcard certificate for '*.${var.top_level_dns_name}'"
+    }
   }
 }
 
