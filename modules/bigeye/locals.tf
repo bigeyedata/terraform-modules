@@ -67,7 +67,7 @@ locals {
   scheduler_dns_name               = "${local.base_dns_alias}-scheduler.${var.top_level_dns_name}"
   web_dns_name                     = "${local.base_dns_alias}-web.${var.top_level_dns_name}"
 
-  create_acm_cert           = var.acm_certificate_arn == "" ? true : false
+  create_acm_cert           = var.acm_certificate_arn == "" && var.create_dns_records == false ? true : false
   domain_validation_options = local.create_acm_cert ? aws_acm_certificate.wildcard[0].domain_validation_options : []
   acm_certificate_arn       = local.create_acm_cert ? aws_acm_certificate.wildcard[0].arn : var.acm_certificate_arn
 
