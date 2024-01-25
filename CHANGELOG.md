@@ -1,3 +1,22 @@
+# [1.10.0](https://github.com/bigeyedata/terraform-modules/compare/v1.9.0...v1.10.0) (2024-01-25)
+
+
+### Bug Fixes
+
+* add missing tags to temporal resources ([89f514e](https://github.com/bigeyedata/terraform-modules/commit/89f514e462d2c0ae8e0e9d038b67ee49427c2452))
+* clean up environment variables ([b20aaf1](https://github.com/bigeyedata/terraform-modules/commit/b20aaf1ab8419069cd1136b1bd70e182e4d50148))
+* update datadog parameters for containers ([b4000ba](https://github.com/bigeyedata/terraform-modules/commit/b4000baf8c13eea9520ba2d4b68317453f7050fa))
+
+
+### Features
+
+* add variable for additional rds tags ([54775ea](https://github.com/bigeyedata/terraform-modules/commit/54775ea4bdede60af67055250a7dfed97ed1cd92))
+* plumb through healthcheck config into simple service ([abd5686](https://github.com/bigeyedata/terraform-modules/commit/abd56866f10cfe360fbb6dd7363bc0e3c30b2a93))
+* refactor plumbing for elb logs ([a83b51b](https://github.com/bigeyedata/terraform-modules/commit/a83b51bc58936a0a629fee4e49940d8a1d964ccb))
+* update web service unhealthy target ([b4b8baf](https://github.com/bigeyedata/terraform-modules/commit/b4b8baf75847e3190691f80dd6d1492050237c8c))
+
+
+
 # [1.9.0](https://github.com/bigeyedata/terraform-modules/compare/v1.8.1...v1.9.0) (2024-01-23)
 
 
