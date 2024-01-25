@@ -1,3 +1,12 @@
+# [1.12.0](https://github.com/bigeyedata/terraform-modules/compare/v1.11.0...v1.12.0) (2024-01-25)
+
+
+### Features
+
+* add ability to change temporal db name ([5722963](https://github.com/bigeyedata/terraform-modules/commit/572296317a21e0bd5419faf6aa976cb9d700eae5))
+
+
+
 # [1.11.0](https://github.com/bigeyedata/terraform-modules/compare/v1.10.0...v1.11.0) (2024-01-25)
 
 
