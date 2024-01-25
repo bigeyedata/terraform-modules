@@ -1,3 +1,12 @@
+# [1.13.0](https://github.com/bigeyedata/terraform-modules/compare/v1.12.0...v1.13.0) (2024-01-25)
+
+
+### Features
+
+* add additional networking resources to module outputs ([ca3feb5](https://github.com/bigeyedata/terraform-modules/commit/ca3feb56396a4c83d131dae6df5c209d4fc793ee))
+
+
+
 # [1.12.0](https://github.com/bigeyedata/terraform-modules/compare/v1.11.0...v1.12.0) (2024-01-25)
 
 
