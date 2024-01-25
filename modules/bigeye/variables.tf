@@ -328,7 +328,7 @@ variable "alb_ssl_policy" {
 }
 
 variable "acm_certificate_arn" {
-  description = "If you are bringing your own certificate, specify its arn here"
+  description = "If you are bringing your own certificate, specify its arn here. It should be a wildcard certificate for '*.{top_level_dns_name}'"
   type        = string
   default     = ""
 }
