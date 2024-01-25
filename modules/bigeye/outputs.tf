@@ -146,18 +146,33 @@ output "temporal_load_balancer_zone_id" {
   value       = aws_lb.temporal.zone_id
 }
 
+output "temporalui_dns_name" {
+  description = "DNS name for the temporal user interface"
+  value       = local.temporalui_dns_name
+}
+
+output "temporalui_load_balancer_dns_name" {
+  description = "The dns name of the temporal user interface service load balancer"
+  value       = module.temporalui.dns_name
+}
+
+output "temporalui_load_balancer_zone_id" {
+  description = "The Route53 Zone ID of the temporal user interface service load balancer"
+  value       = module.temporalui.zone_id
+}
+
 output "temporal_admin_dns_name" {
-  description = "DNS name for the temporal admin service"
-  value       = local.temporal_admin_dns_name
+  description = "DEPRECATED - DNS name for the temporal admin service"
+  value       = local.temporalui_dns_name
 }
 
 output "temporal_admin_load_balancer_dns_name" {
-  description = "The dns name of the temporal admin load balancer"
+  description = "DEPRECATED - The dns name of the temporal admin load balancer"
   value       = module.temporalui.dns_name
 }
 
 output "temporal_admin_load_balancer_zone_id" {
-  description = "The Route53 Zone ID of the temporal admin load balancer"
+  description = "DEPRECATED - The Route53 Zone ID of the temporal admin load balancer"
   value       = module.temporalui.zone_id
 }
 
