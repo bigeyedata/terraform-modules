@@ -52,20 +52,25 @@ locals {
   adminpages_password_secret_arn       = local.create_adminpages_password_secret ? aws_secretsmanager_secret.adminpages_password[0].arn : var.adminpages_password_secret_arn
 
   # DNS
-  base_dns_alias                   = coalesce(var.vanity_alias, local.name)
-  vanity_dns_name                  = "${local.base_dns_alias}.${var.top_level_dns_name}"
-  datawatch_dns_name               = "${local.base_dns_alias}-datawatch.${var.top_level_dns_name}"
+  base_dns_alias                          = coalesce(var.vanity_alias, local.name)
+  vanity_dns_name                         = "${local.base_dns_alias}.${var.top_level_dns_name}"
+  datawatch_dns_name                      = "${local.base_dns_alias}-datawatch.${var.top_level_dns_name}"
   datawatch_mysql_vanity_dns_name         = "${local.base_dns_alias}-mysql.${var.top_level_dns_name}"
   datawatch_mysql_replica_vanity_dns_name = "${local.base_dns_alias}-mysql-ro.${var.top_level_dns_name}"
-  datawork_dns_name                = "${local.base_dns_alias}-datawork.${var.top_level_dns_name}"
-  metricwork_dns_name              = "${local.base_dns_alias}-metricwork.${var.top_level_dns_name}"
-  temporal_dns_name                = "${local.base_dns_alias}-workflows.${var.top_level_dns_name}"
-  temporalui_dns_name              = "${local.base_dns_alias}-workflows-admin.${var.top_level_dns_name}"
+  datawork_dns_name                       = "${local.base_dns_alias}-datawork.${var.top_level_dns_name}"
+  metricwork_dns_name                     = "${local.base_dns_alias}-metricwork.${var.top_level_dns_name}"
+  temporal_dns_name                       = "${local.base_dns_alias}-workflows.${var.top_level_dns_name}"
+  temporalui_dns_name                     = "${local.base_dns_alias}-workflows-admin.${var.top_level_dns_name}"
   temporal_mysql_vanity_dns_name          = "${local.base_dns_alias}-temporal-mysql.${var.top_level_dns_name}"
-  monocle_dns_name                 = "${local.base_dns_alias}-monocle.${var.top_level_dns_name}"
-  toretto_dns_name                 = "${local.base_dns_alias}-toretto.${var.top_level_dns_name}"
-  scheduler_dns_name               = "${local.base_dns_alias}-scheduler.${var.top_level_dns_name}"
-  web_dns_name                     = "${local.base_dns_alias}-web.${var.top_level_dns_name}"
+  monocle_dns_name                        = "${local.base_dns_alias}-monocle.${var.top_level_dns_name}"
+  toretto_dns_name                        = "${local.base_dns_alias}-toretto.${var.top_level_dns_name}"
+  scheduler_dns_name                      = "${local.base_dns_alias}-scheduler.${var.top_level_dns_name}"
+  web_dns_name                            = "${local.base_dns_alias}-web.${var.top_level_dns_name}"
+
+  # RDS DNS - if create_dns_records is disabled, using the RDS-provided DNS name is a more reliable way of getting up and running
+  use_rds_vanity_names     = var.create_dns_records ? true : false
+  datawatch_mysql_dns_name = local.use_rds_vanity_names ? local.datawatch_mysql_vanity_dns_name : module.datawatch_rds.primary_dns_name
+  temporal_mysql_dns_name  = local.use_rds_vanity_names ? local.temporal_mysql_vanity_dns_name : module.temporal_rds.primary_dns_name
 
   create_acm_cert           = var.acm_certificate_arn == "" && var.create_dns_records == false ? true : false
   domain_validation_options = local.create_acm_cert ? aws_acm_certificate.wildcard[0].domain_validation_options : []
