@@ -1,3 +1,19 @@
+# [1.14.0](https://github.com/bigeyedata/terraform-modules/compare/v1.13.0...v1.14.0) (2024-01-26)
+
+
+### Bug Fixes
+
+* fixed output for temporal RDS hostname ([736d504](https://github.com/bigeyedata/terraform-modules/commit/736d5043aab77ed11546b776494f8b30d560ebdb))
+
+
+### Features
+
+* add outputs temporalui_* to replace temporal_admin ([0284d57](https://github.com/bigeyedata/terraform-modules/commit/0284d570446f391d0ca81ded289bcfd5a0295841))
+* add validation message for BYO DNS and ACM certificate ([54c31e7](https://github.com/bigeyedata/terraform-modules/commit/54c31e7a58bc639a8aee35e3dd2cd3811f8cc577))
+* use RDS dns for app when create_dns_records is false ([ef34b46](https://github.com/bigeyedata/terraform-modules/commit/ef34b46c2f968bd0d9d8c6cd9ab93e2476ad142f))
+
+
+
 # [1.13.0](https://github.com/bigeyedata/terraform-modules/compare/v1.12.0...v1.13.0) (2024-01-25)
 
 
