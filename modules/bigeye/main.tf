@@ -866,6 +866,11 @@ module "haproxy" {
   datadog_agent_cpu                = var.datadog_agent_cpu
   datadog_agent_memory             = var.datadog_agent_memory
   datadog_agent_api_key_secret_arn = local.datadog_agent_api_key_secret_arn
+  datadog_additional_docker_labels = {
+    "com.datadoghq.ad.check_names"  = "[\"haproxy\"]"
+    "com.datadoghq.ad.init_configs" = "[{\"service\":\"haproxy\"}]"
+    "com.datadoghq.ad.instances"    = "[{\"url\":\"http://%%host%%:${var.haproxy_port}/haproxy-status;csv;norefresh\", \"username\":\"bigeyesupport\", \"password\":\"%%env_BIGEYE_ADMIN_PAGES_PASSWORD%%\", \"tags\":[\"app:haproxy\", \"env:${local.name}\", \"instance:${var.instance}\", \"stack:${local.name}\"]}]"
+  }
 
 
   environment_variables = merge(var.haproxy_additional_environment_vars, {
