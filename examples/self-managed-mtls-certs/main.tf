@@ -19,6 +19,10 @@ module "bigeye" {
   environment = "test"
   instance    = "bigeye"
 
+  # This is domain name of the domain that you have already set up in route53.  This terraform will create DNS entries
+  # in that domain for the application.
+  top_level_dns_name = "example.com"
+
   # Bigeye app version.  You can list the tags available in the image_registry (using the latest is always recommended).
   image_tag = "1.35.0"
 
