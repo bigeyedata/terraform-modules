@@ -106,6 +106,16 @@ locals {
     STITCH_API_TOKEN = var.stitch_api_token_secretsmanager_arn
   }
 
+  sentry_dsn_environment_variable = var.sentry_dsn != "" ? {
+    SENTRY_DSN = var.sentry_dsn
+  } : {}
+  sentry_event_level_env_variable = var.sentry_event_level != "" ? {
+    SENTRY_EVENT_LEVEL = var.sentry_event_level
+  } : {}
+  sentry_dsn_secret_arn = var.sentry_dsn_secret_arn != "" ? {
+    SENTRY_DSN = var.sentry_dsn_secret_arn
+  } : {}
+
   datawatch_additional_security_groups = var.create_security_groups ? concat(
     [
       module.redis.client_security_group_id,
@@ -120,6 +130,7 @@ locals {
     local.auth0_secrets_map,
     local.slack_secrets_map,
     local.stitch_secrets_map,
+    local.sentry_dsn_secret_arn,
     var.datawatch_additional_secret_arns,
     {
       REDIS_PRIMARY_PASSWORD = local.redis_auth_token_secret_arn

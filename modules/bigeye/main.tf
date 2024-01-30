@@ -1478,8 +1478,9 @@ module "monocle" {
       WORKERS                    = "2"
       TIMEOUT                    = "900"
       DATAWATCH_ADDRESS          = "https://${local.datawatch_dns_name}"
-      SENTRY_DSN                 = var.sentry_dsn
     },
+    local.sentry_dsn_environment_variable,
+    local.sentry_event_level_env_variable,
     var.datadog_agent_enabled ? {
       DD_PROFILING_ENABLED     = "true"
       DD_PROFILING_CAPTURE_PCT = "2"
@@ -1492,6 +1493,7 @@ module "monocle" {
 
   secret_arns = merge(
     var.monocle_additional_secret_arns,
+    local.sentry_dsn_secret_arn,
     local.stitch_secrets_map,
     {
       MQ_BROKER_PASSWORD = local.rabbitmq_user_password_secret_arn
@@ -1573,12 +1575,14 @@ module "toretto" {
       WORKERS                    = "1"
       TIMEOUT                    = "900"
       DATAWATCH_ADDRESS          = "https://${local.datawatch_dns_name}"
-      SENTRY_DSN                 = var.sentry_dsn
-    }
+    },
+    local.sentry_dsn_environment_variable,
+    local.sentry_event_level_env_variable,
   )
 
   secret_arns = merge(
     var.toretto_additional_secret_arns,
+    local.sentry_dsn_secret_arn,
     local.stitch_secrets_map,
     {
       MQ_BROKER_PASSWORD = local.rabbitmq_user_password_secret_arn
@@ -1643,24 +1647,31 @@ module "scheduler" {
   datadog_agent_api_key_secret_arn = local.datadog_agent_api_key_secret_arn
 
 
-  environment_variables = merge(var.scheduler_additional_environment_vars, {
-    ENVIRONMENT           = var.environment
-    INSTANCE              = var.instance
-    PORT                  = var.scheduler_port
-    DEPLOY_TYPE           = "AWS"
-    DATAWATCH_ADDRESS     = "https://${local.datawatch_dns_name}"
-    MAX_RAM_PERCENTAGE    = "85"
-    SCHEDULER_ADDRESS     = "http://localhost:${var.scheduler_port}"
-    SCHEDULER_THREADS     = var.scheduler_threads
-    SENTRY_DSN            = var.sentry_dsn
-    REDIS_PRIMARY_ADDRESS = module.redis.primary_endpoint_dns_name
-    REDIS_PRIMARY_PORT    = module.redis.port
-  })
+  environment_variables = merge(
+    var.scheduler_additional_environment_vars,
+    {
+      ENVIRONMENT           = var.environment
+      INSTANCE              = var.instance
+      PORT                  = var.scheduler_port
+      DEPLOY_TYPE           = "AWS"
+      DATAWATCH_ADDRESS     = "https://${local.datawatch_dns_name}"
+      MAX_RAM_PERCENTAGE    = "85"
+      SCHEDULER_ADDRESS     = "http://localhost:${var.scheduler_port}"
+      SCHEDULER_THREADS     = var.scheduler_threads
+      REDIS_PRIMARY_ADDRESS = module.redis.primary_endpoint_dns_name
+      REDIS_PRIMARY_PORT    = module.redis.port
+    },
+    local.sentry_dsn_environment_variable,
+  )
 
-  secret_arns = merge(var.scheduler_additional_secret_arns, {
-    REDIS_PRIMARY_PASSWORD = local.redis_auth_token_secret_arn
-    ROBOT_PASSWORD         = local.robot_password_secret_arn
-  })
+  secret_arns = merge(
+    var.scheduler_additional_secret_arns,
+    {
+      REDIS_PRIMARY_PASSWORD = local.redis_auth_token_secret_arn
+      ROBOT_PASSWORD         = local.robot_password_secret_arn
+    },
+    local.sentry_dsn_secret_arn,
+  )
 }
 
 #======================================================
@@ -2012,6 +2023,7 @@ module "datawatch" {
 
   environment_variables = merge(
     local.datawatch_dd_env_vars,
+    local.sentry_dsn_environment_variable,
     var.datawatch_additional_environment_vars,
     {
       ENVIRONMENT                     = var.environment
@@ -2052,7 +2064,6 @@ module "datawatch" {
       MTLS_KEY_PATH      = "/temporal/mtls.key"
       MTLS_CERT_PATH     = "/temporal/mtls.pem"
       MAX_RAM_PERCENTAGE = var.datawatch_jvm_max_ram_pct
-      SENTRY_DSN         = var.sentry_dsn
       AWS_REGION         = local.aws_region
     }
   )
@@ -2110,6 +2121,7 @@ module "datawork" {
 
   environment_variables = merge(
     local.datawatch_dd_env_vars,
+    local.sentry_dsn_environment_variable,
     var.datawork_additional_environment_vars,
     {
       ENVIRONMENT                  = var.environment
@@ -2153,7 +2165,6 @@ module "datawork" {
       MTLS_KEY_PATH                              = "/temporal/mtls.key"
       MTLS_CERT_PATH                             = "/temporal/mtls.pem"
       MAX_RAM_PERCENTAGE                         = var.datawatch_jvm_max_ram_pct
-      SENTRY_DSN                                 = var.sentry_dsn
       AWS_REGION                                 = local.aws_region
     }
   )
@@ -2210,6 +2221,7 @@ module "metricwork" {
 
   environment_variables = merge(
     local.datawatch_dd_env_vars,
+    local.sentry_dsn_environment_variable,
     var.metricwork_additional_environment_vars,
     {
       ENVIRONMENT                  = var.environment
@@ -2253,7 +2265,6 @@ module "metricwork" {
       MTLS_KEY_PATH                              = "/temporal/mtls.key"
       MTLS_CERT_PATH                             = "/temporal/mtls.pem"
       MAX_RAM_PERCENTAGE                         = var.datawatch_jvm_max_ram_pct
-      SENTRY_DSN                                 = var.sentry_dsn
       AWS_REGION                                 = local.aws_region
     }
   )
