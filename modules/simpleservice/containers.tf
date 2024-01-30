@@ -25,6 +25,7 @@ locals {
     dockerLabels = merge(local.datadog_docker_labels, var.docker_labels)
     environment  = local.container_environment_variables
     secrets      = local.container_environment_secrets
+    stopTimeout  = var.stop_timeout
     logConfiguration = {
       logDriver = "awslogs"
       options = {
