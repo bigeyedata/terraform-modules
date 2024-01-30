@@ -79,6 +79,12 @@ variable "memory" {
   type        = number
 }
 
+variable "stop_timeout" {
+  description = "Duration in seconds to wait before container is killed if it doesn't exit on its own. Max is 120"
+  type        = number
+  default     = null
+}
+
 variable "task_role_arn" {
   description = "The ARN of the role the task should use"
   type        = string
