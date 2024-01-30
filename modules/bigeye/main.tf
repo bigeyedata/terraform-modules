@@ -835,6 +835,8 @@ module "haproxy" {
   # Load balancer
   healthcheck_path                 = "/haproxy-health"
   healthcheck_interval             = 15
+  healthcheck_timeout              = 5
+  healthcheck_unhealthy_threshold  = 3
   ssl_policy                       = var.alb_ssl_policy
   acm_certificate_arn              = local.acm_certificate_arn
   lb_idle_timeout                  = 900
@@ -1305,6 +1307,7 @@ module "temporalui" {
   # Load balancer
   healthcheck_path                 = "/health"
   healthcheck_interval             = 15
+  healthcheck_unhealthy_threshold  = 3
   ssl_policy                       = var.alb_ssl_policy
   acm_certificate_arn              = local.acm_certificate_arn
   lb_subnet_ids                    = local.internal_service_alb_subnet_ids
@@ -1424,6 +1427,7 @@ module "monocle" {
   # Load balancer
   healthcheck_path                 = "/health"
   healthcheck_interval             = 60
+  healthcheck_timeout              = 20
   ssl_policy                       = var.alb_ssl_policy
   acm_certificate_arn              = local.acm_certificate_arn
   lb_idle_timeout                  = 900
