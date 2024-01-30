@@ -42,13 +42,16 @@ locals {
     DD_DOGSTATSD_NON_LOCAL_TRAFFIC = "true"
   }
 
-  datadog_docker_labels = var.datadog_agent_enabled ? {
-    "com.datadoghq.tags.app"      = var.app
-    "com.datadoghq.tags.env"      = var.stack
-    "com.datadoghq.tags.instance" = var.instance
-    "com.datadoghq.tags.service"  = var.app
-    "com.datadoghq.tags.stack"    = var.stack
-  } : {}
+  datadog_docker_labels = var.datadog_agent_enabled ? merge(
+    var.datadog_additional_docker_labels,
+    {
+      "com.datadoghq.tags.app"      = var.app
+      "com.datadoghq.tags.env"      = var.stack
+      "com.datadoghq.tags.instance" = var.instance
+      "com.datadoghq.tags.service"  = var.app
+      "com.datadoghq.tags.stack"    = var.stack
+    },
+  ) : {}
   datadog_service_environment_variables = var.datadog_agent_enabled ? {
     DATADOG_ENABLED = "true"
     DD_SERVICE      = var.app
