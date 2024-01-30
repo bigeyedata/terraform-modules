@@ -2091,7 +2091,7 @@ module "datawatch" {
       MONOCLE_ADDRESS                 = "https://${local.monocle_dns_name}"
       SCHEDULER_ADDRESS               = "https://${local.scheduler_dns_name}"
       TORETTO_ADDRESS                 = "https://${local.toretto_dns_name}"
-      FF_SEND_ANALYTICS_ENABLED       = "true"
+      FF_SEND_ANALYTICS_ENABLED       = var.datawatch_feature_analytics_send_enabled
       MQ_BROKER_HOST                  = module.rabbitmq.endpoint
       MQ_BROKER_USERNAME              = var.rabbitmq_user_name
       DEPLOY_TYPE                     = "AWS"
@@ -2191,7 +2191,7 @@ module "datawork" {
       SCHEDULER_ADDRESS            = "https://${local.scheduler_dns_name}"
       TORETTO_ADDRESS              = "https://${local.toretto_dns_name}"
       DATAWATCH_ADDRESS            = "http://localhost:${var.datawork_port}"
-      FF_SEND_ANALYTICS_ENABLED    = "true"
+      FF_SEND_ANALYTICS_ENABLED    = var.datawatch_feature_analytics_send_enabled
       MQ_BROKER_HOST               = module.rabbitmq.endpoint
       MQ_BROKER_USERNAME           = var.rabbitmq_user_name
       DEPLOY_TYPE                  = "AWS"
@@ -2292,7 +2292,7 @@ module "metricwork" {
       SCHEDULER_ADDRESS            = "https://${local.scheduler_dns_name}"
       TORETTO_ADDRESS              = "https://${local.toretto_dns_name}"
       DATAWATCH_ADDRESS            = "http://localhost:${var.metricwork_port}"
-      FF_SEND_ANALYTICS_ENABLED    = "true"
+      FF_SEND_ANALYTICS_ENABLED    = var.datawatch_feature_analytics_send_enabled
       MQ_BROKER_HOST               = module.rabbitmq.endpoint
       MQ_BROKER_USERNAME           = var.rabbitmq_user_name
       DEPLOY_TYPE                  = "AWS"

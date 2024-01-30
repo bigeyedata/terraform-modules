@@ -1028,6 +1028,12 @@ variable "datawatch_feature_analytics_logging_enabled" {
   default     = false
 }
 
+variable "datawatch_feature_analytics_send_enabled" {
+  description = "Whether feature analytics logs are sent"
+  type        = bool
+  default     = false
+}
+
 variable "datawatch_request_body_logging_enabled" {
   description = "Whether request body logs are enabled"
   type        = bool
