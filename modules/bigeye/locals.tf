@@ -154,8 +154,8 @@ locals {
   } : {}
   datawatch_dd_env_vars = var.datadog_agent_enabled ? {
     DD_TRACE_DISABLED_PLUGINS        = "dns"
-    DD_LOG_INJECTION                 = "true"
-    DD_TRACE_SAMPLE_RATE             = "1.00"
+    DD_LOGS_INJECTION                = "true"
+    DD_TRACE_SAMPLE_RATE             = "1.0"
     DD_INTEGRATION_HIBERNATE_ENABLED = "false"
     DD_INTEGRATION_JDBC_ENABLED      = "false"
   } : {}
