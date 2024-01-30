@@ -1552,6 +1552,9 @@ module "toretto" {
   image_tag                 = local.toretto_image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
 
+  # This can be removed when toretto handles sigterm better 
+  stop_timeout = 10
+
   # Datadog
   datadog_agent_enabled            = var.datadog_agent_enabled
   datadog_agent_image              = var.datadog_agent_image
@@ -2111,6 +2114,7 @@ module "datawork" {
   image_repository          = format("%s%s", "datawatch", var.image_repository_suffix)
   image_tag                 = local.datawork_image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
+  stop_timeout              = 120
 
   # Datadog
   datadog_agent_enabled            = var.datadog_agent_enabled
@@ -2211,6 +2215,7 @@ module "metricwork" {
   image_repository          = format("%s%s", "datawatch", var.image_repository_suffix)
   image_tag                 = local.metricwork_image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
+  stop_timeout              = 120
 
   # Datadog
   datadog_agent_enabled            = var.datadog_agent_enabled
