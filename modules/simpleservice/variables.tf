@@ -189,6 +189,11 @@ variable "datadog_agent_api_key_secret_arn" {
   default     = ""
 }
 
+variable "datadog_additional_docker_labels" {
+  description = "Additional docker labels to use if datadog is enabled"
+  type        = map(string)
+  default     = {}
+}
 #======================================================
 # Load balancer settings
 #======================================================
