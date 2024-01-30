@@ -342,6 +342,18 @@ variable "sentry_dsn" {
   default     = ""
 }
 
+variable "sentry_event_level" {
+  description = "The event level for sentry"
+  type        = string
+  default     = ""
+}
+
+variable "sentry_dsn_secret_arn" {
+  description = "ARN for secret holding sentry DSN"
+  type        = string
+  default     = ""
+}
+
 variable "temporal_namespace" {
   description = ""
   type        = string
