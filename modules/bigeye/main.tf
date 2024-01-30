@@ -957,8 +957,8 @@ module "web" {
     {
       ENVIRONMENT       = var.environment
       INSTANCE          = var.instance
-      DOCKER_ENV        = "test"
-      APP_ENVIRONMENT   = "test"
+      DOCKER_ENV        = var.environment
+      APP_ENVIRONMENT   = var.environment
       NODE_ENV          = "production"
       PORT              = var.web_port
       INTERCOM_APP_ID   = ""
