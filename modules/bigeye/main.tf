@@ -1094,6 +1094,45 @@ resource "aws_lb_listener" "temporal" {
 }
 
 locals {
+  temporal_datadog_container_def = {
+    name   = "datadog-agent"
+    image  = var.datadog_agent_image
+    cpu    = var.datadog_agent_cpu
+    memory = var.datadog_agent_memory
+    dockerLabels = {
+      "com.datadoghq.ad.check_names" : "[\"temporal\"]",
+      "com.datadoghq.ad.init_configs" : "[{}]",
+      "com.datadoghq.ad.instances" : "[\n    {\n      \"openmetrics_endpoint\": \"http://localhost:9091/metrics\",\n      \"collect_histogram_buckets\": true,\n      \"histogram_buckets_as_distributions\": true,\n      \"collect_counters_with_distributions\": true,\n      \"tags\": [\n        \"app:temporal\",\n        \"instance:${var.instance}\",\n        \"stack:${local.name}\"\n      ]\n    }\n  ]\n",
+      "com.datadoghq.tags.app" : "temporal",
+      "com.datadoghq.tags.env" : local.name
+      "com.datadoghq.tags.instance" : var.instance
+      "com.datadoghq.tags.service" : "temporal"
+      "com.datadoghq.tags.stack" : local.name
+    }
+    portMappings = [
+      { containerPort = 8126 },
+      { containerPort = 8126 }
+    ]
+    environment = [for k, v in local.temporal_datadog_environment_variables : { name = k, value = v }]
+    secrets     = [for k, v in local.temporal_datadog_secret_arns : { Name = k, ValueFrom = v }]
+  }
+  temporal_datadog_secret_arns = {
+    DD_API_KEY = local.datadog_agent_api_key_secret_arn
+  }
+  temporal_datadog_environment_variables = {
+    DD_APM_ENABLED                 = "true"
+    DD_DOGSTATSD_NON_LOCAL_TRAFFIC = "true"
+    DD_DOGSTATSD_TAG_CARDINALITY   = "orchestrator"
+    ECS_FARGATE                    = "true"
+  }
+  temporal_datadog_docker_labels = var.datadog_agent_enabled ? {
+    "com.datadoghq.tags.app"      = "temporal"
+    "com.datadoghq.tags.env"      = local.name
+    "com.datadoghq.tags.instance" = var.instance
+    "com.datadoghq.tags.service"  = "temporal"
+    "com.datadoghq.tags.stack"    = local.name
+  } : {}
+
   temporal_environment_variables = merge(
     local.temporal_dd_env_vars,
     var.temporal_additional_environment_vars,
@@ -1123,6 +1162,79 @@ locals {
   temporal_secret_arns = merge(var.temporal_additional_secret_arns, {
     "MYSQL_PWD" = local.temporal_rds_password_secret_arn
   })
+  temporal_container_def = {
+    name         = "${local.name}-temporal"
+    cpu          = var.datadog_agent_enabled ? var.temporal_cpu - var.datadog_agent_cpu : var.temporal_cpu
+    memory       = var.datadog_agent_enabled ? var.temporal_memory - var.datadog_agent_memory : var.temporal_memory
+    dockerLabels = local.temporal_datadog_docker_labels
+    image        = format("%s/%s%s:%s", local.image_registry, "temporal", var.image_repository_suffix, local.temporal_image_tag)
+    environment  = [for k, v in local.temporal_environment_variables : { Name = k, Value = v }]
+    secrets      = [for k, v in local.temporal_secret_arns : { Name = k, ValueFrom = v }]
+    logConfiguration = {
+      logDriver = "awslogs"
+      options = {
+        "awslogs-group"         = aws_cloudwatch_log_group.temporal.name
+        "awslogs-region"        = local.aws_region
+        "awslogs-stream-prefix" = "${local.name}-temporal"
+      }
+    }
+    portMappings = [
+      # Frontend service membership
+      {
+        containerPort = 6933
+        hostPort      = 6933
+        protocol      = "tcp"
+      },
+      # History service membership
+      {
+        containerPort = 6934
+        hostPort      = 6934
+        protocol      = "tcp"
+      },
+      # Matching service membership
+      {
+        containerPort = 6935
+        hostPort      = 6935
+        protocol      = "tcp"
+      },
+      # Worker service membership
+      {
+        containerPort = 6939
+        hostPort      = 6939
+        protocol      = "tcp"
+      },
+      # Frontend service handler (API)
+      {
+        containerPort = 7233
+        hostPort      = 7233
+        protocol      = "tcp"
+      },
+      # History service handler
+      {
+        containerPort = 7234
+        hostPort      = 7234
+        protocol      = "tcp"
+      },
+      # Matching service handler
+      {
+        containerPort = 7235
+        hostPort      = 7235
+        protocol      = "tcp"
+      },
+      # Worker service handler
+      {
+        containerPort = 7239
+        hostPort      = 7239
+        protocol      = "tcp"
+      },
+      # Prometheus
+      {
+        containerPort = 9091
+        hostPort      = 9091
+        protocol      = "tcp"
+      },
+    ]
+  }
 }
 
 resource "aws_ecs_task_definition" "temporal" {
@@ -1133,80 +1245,7 @@ resource "aws_ecs_task_definition" "temporal" {
   requires_compatibilities = ["FARGATE"]
   tags                     = local.tags
   execution_role_arn       = aws_iam_role.ecs.arn
-  container_definitions = jsonencode([
-    {
-      name        = "${local.name}-temporal"
-      cpu         = var.temporal_cpu
-      memory      = var.temporal_memory
-      image       = format("%s/%s%s:%s", local.image_registry, "temporal", var.image_repository_suffix, local.temporal_image_tag)
-      environment = [for k, v in local.temporal_environment_variables : { Name = k, Value = v }]
-      secrets     = [for k, v in local.temporal_secret_arns : { Name = k, ValueFrom = v }]
-      logConfiguration = {
-        logDriver = "awslogs"
-        options = {
-          "awslogs-group"         = aws_cloudwatch_log_group.temporal.name
-          "awslogs-region"        = local.aws_region
-          "awslogs-stream-prefix" = "${local.name}-temporal"
-        }
-      }
-      portMappings = [
-        # Frontend service membership
-        {
-          containerPort = 6933
-          hostPort      = 6933
-          protocol      = "tcp"
-        },
-        # History service membership
-        {
-          containerPort = 6934
-          hostPort      = 6934
-          protocol      = "tcp"
-        },
-        # Matching service membership
-        {
-          containerPort = 6935
-          hostPort      = 6935
-          protocol      = "tcp"
-        },
-        # Worker service membership
-        {
-          containerPort = 6939
-          hostPort      = 6939
-          protocol      = "tcp"
-        },
-        # Frontend service handler (API)
-        {
-          containerPort = 7233
-          hostPort      = 7233
-          protocol      = "tcp"
-        },
-        # History service handler
-        {
-          containerPort = 7234
-          hostPort      = 7234
-          protocol      = "tcp"
-        },
-        # Matching service handler
-        {
-          containerPort = 7235
-          hostPort      = 7235
-          protocol      = "tcp"
-        },
-        # Worker service handler
-        {
-          containerPort = 7239
-          hostPort      = 7239
-          protocol      = "tcp"
-        },
-        # Prometheus
-        {
-          containerPort = 9091
-          hostPort      = 9091
-          protocol      = "tcp"
-        },
-      ]
-    }
-  ])
+  container_definitions    = var.datadog_agent_enabled ? jsonencode([local.temporal_container_def, local.temporal_datadog_container_def]) : jsonencode([local.temporal_container_def])
 }
 
 resource "aws_ecs_service" "temporal" {
@@ -1216,24 +1255,20 @@ resource "aws_ecs_service" "temporal" {
   task_definition = aws_ecs_task_definition.temporal.arn
   desired_count   = var.temporal_desired_count
 
-  deployment_maximum_percent         = 200
-  deployment_minimum_healthy_percent = 100
-  health_check_grace_period_seconds  = 300
-  platform_version                   = "1.4.0"
-  tags                               = local.tags
-
   capacity_provider_strategy {
     capacity_provider = "FARGATE"
     base              = 1
     weight            = 1
   }
-
   capacity_provider_strategy {
     capacity_provider = "FARGATE_SPOT"
     base              = 0
-    weight            = 1
+    weight            = 0
   }
 
+  deployment_maximum_percent         = 200
+  deployment_minimum_healthy_percent = 100
+  enable_ecs_managed_tags            = true
   network_configuration {
     subnets          = local.application_subnet_ids
     assign_public_ip = false
@@ -1252,6 +1287,21 @@ resource "aws_ecs_service" "temporal" {
     container_port   = 7233
     target_group_arn = aws_lb_target_group.temporal.arn
   }
+
+  platform_version = "1.4.0"
+
+  deployment_circuit_breaker {
+    enable   = false
+    rollback = false
+  }
+
+  deployment_controller {
+    type = "ECS"
+  }
+
+  propagate_tags = "SERVICE"
+
+  tags = local.tags
 }
 
 resource "aws_security_group" "temporal" {
