@@ -1382,7 +1382,7 @@ module "temporalui" {
   image_registry            = local.image_registry
   image_repository          = format("%s%s", "temporalui", var.image_repository_suffix)
   image_tag                 = local.temporalui_image_tag
-  cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
+  cloudwatch_log_group_name = aws_cloudwatch_log_group.temporal.name
 
   # Datadog
   datadog_agent_enabled            = var.datadog_agent_enabled
