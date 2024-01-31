@@ -1,3 +1,30 @@
+# [1.16.0](https://github.com/bigeyedata/terraform-modules/compare/v1.15.0...v1.16.0) (2024-01-31)
+
+
+### Bug Fixes
+
+* align declared container def with deployed ([3d24a89](https://github.com/bigeyedata/terraform-modules/commit/3d24a89c4fb7ef9aa84ddee25f80da6be49abfe6))
+* healthcheck for temporalui ([64b3557](https://github.com/bigeyedata/terraform-modules/commit/64b355762771d79d9b5941cdcf3396d853884b75))
+* remove environment vars that can just be injected ([f28a3d0](https://github.com/bigeyedata/terraform-modules/commit/f28a3d0021cd28e0a265bfba8cbc6021df168045))
+* send temporalui logs to temporal log group ([b5bbec3](https://github.com/bigeyedata/terraform-modules/commit/b5bbec3c45666fd8fab31fb57eb49816b47c48e5))
+* typo in datadog environment variables ([d4d89f9](https://github.com/bigeyedata/terraform-modules/commit/d4d89f90f459b2d63c22786c8653ff379752429c))
+* update healthcheck parameters ([a553a5c](https://github.com/bigeyedata/terraform-modules/commit/a553a5c50ff1276cccba9791e8fa8f2fdedd0a50))
+* update web environment variables to respect env ([8022483](https://github.com/bigeyedata/terraform-modules/commit/8022483fd6f1861b7e699624bbf299c5b36957c8))
+* updated temporal configuration to match other services ([41a9fb9](https://github.com/bigeyedata/terraform-modules/commit/41a9fb96fc3cbc1a60d8d93a5a739c3f0b92f8d5))
+
+
+### Features
+
+* add ability for additional docker labels if using datadog ([3f14589](https://github.com/bigeyedata/terraform-modules/commit/3f1458986349d277a4207b508c9ecff488427144))
+* add datadog AD checks for haproxy ([861ac9b](https://github.com/bigeyedata/terraform-modules/commit/861ac9bb48dc44fad2c49e07f777bfa0fe760215))
+* add rds_apply_immediately variable to control RDS changes ([fc5971e](https://github.com/bigeyedata/terraform-modules/commit/fc5971e02846d253f3dad02d37262c083a623db7))
+* add sentry configuration variables ([84a2e1a](https://github.com/bigeyedata/terraform-modules/commit/84a2e1a73a84c1e19cb137da53542d90244054d6))
+* add stopTimeout setting on ECS task ([1c5db22](https://github.com/bigeyedata/terraform-modules/commit/1c5db22652912bb182dafd9f1de922c03d4f22be))
+* add variable for feature send enabled ([2acacbc](https://github.com/bigeyedata/terraform-modules/commit/2acacbca17961aa68fef8417d51f879e9cb46eb9))
+* configure stop_timeout for toretto and dw workers ([8d5c2f0](https://github.com/bigeyedata/terraform-modules/commit/8d5c2f0d619cba3123e323fbd46f4ff0ebe1026e))
+
+
+
 # [1.15.0](https://github.com/bigeyedata/terraform-modules/compare/v1.14.0...v1.15.0) (2024-01-31)
 
 
