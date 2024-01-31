@@ -147,8 +147,6 @@ locals {
   #======================================================
   # Datadog specs
   #======================================================
-  create_datadog_secret            = var.datadog_agent_enabled && var.datadog_agent_api_key != "" && var.datadog_agent_api_key_secret_arn == ""
-  datadog_agent_api_key_secret_arn = local.create_datadog_secret ? aws_secretsmanager_secret.datadog_agent_api_key[0].arn : var.datadog_agent_api_key_secret_arn
   web_dd_env_vars = var.datadog_agent_enabled ? {
     DD_TRACE_DISABLED_PLUGINS = "dns"
   } : {}
