@@ -113,15 +113,11 @@ locals {
     SENTRY_DSN = var.sentry_dsn_secret_arn
   } : {}
 
-  datawatch_additional_security_groups = var.create_security_groups ? concat(
-    [
-      module.redis.client_security_group_id,
-      module.rabbitmq.client_security_group_id,
-      module.datawatch_rds.client_security_group_id,
-      module.bigeye_admin.client_security_group_id,
-    ],
-    var.datawatch_rds_replica_enabled ? [module.datawatch_rds.replica_client_security_group_id] : [],
-  ) : []
+  datawatch_additional_security_groups = var.create_security_groups ? [
+    module.redis.client_security_group_id,
+    module.rabbitmq.client_security_group_id,
+    module.bigeye_admin.client_security_group_id,
+  ] : []
 
   datawatch_secret_arns = merge(
     local.auth0_secrets_map,
