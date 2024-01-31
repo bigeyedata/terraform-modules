@@ -961,8 +961,6 @@ module "web" {
       APP_ENVIRONMENT   = var.environment
       NODE_ENV          = "production"
       PORT              = var.web_port
-      INTERCOM_APP_ID   = ""
-      HEAP_API_KEY      = ""
       DROPWIZARD_HOST   = "https://${local.datawatch_dns_name}"
       DATAWATCH_ADDRESS = "https://${local.datawatch_dns_name}"
       MAX_NODE_MEM_MB   = "4096"
