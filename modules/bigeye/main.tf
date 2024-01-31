@@ -991,6 +991,7 @@ module "temporal_rds" {
   db_subnet_group_name                  = local.database_subnet_group_name
   create_security_groups                = var.create_security_groups
   extra_security_group_ids              = concat(var.temporal_rds_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
+  allowed_client_security_group_ids     = var.create_security_groups ? [aws_security_group.temporal[0].id] : []
   instance_class                        = var.temporal_rds_instance_type
   backup_window                         = var.rds_backup_window
   backup_retention_period               = var.temporal_rds_backup_retention_period
@@ -1269,7 +1270,6 @@ resource "aws_ecs_service" "temporal" {
     security_groups = concat(
       aws_security_group.temporal[*].id,
       [
-        module.temporal_rds.client_security_group_id,
         module.bigeye_admin.client_security_group_id,
       ],
       var.temporal_extra_security_group_ids
@@ -1924,6 +1924,12 @@ module "datawatch_rds" {
   create_security_groups   = var.create_security_groups
   extra_security_group_ids = concat(var.datawatch_rds_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   enable_multi_az          = var.redundant_infrastructure ? true : false
+
+  allowed_client_security_group_ids = var.create_security_groups ? [
+    module.datawatch.security_group_id,
+    module.datawork.security_group_id,
+    module.metricwork.security_group_id,
+  ] : []
 
   # Settings
   instance_class = var.datawatch_rds_instance_type
