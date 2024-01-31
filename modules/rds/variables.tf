@@ -198,6 +198,12 @@ variable "create_security_groups" {
   default     = true
 }
 
+variable "allowed_client_security_group_ids" {
+  description = "A list of security groups to allow ingress from"
+  type        = list(string)
+  default     = []
+}
+
 variable "vpc_id" {
   description = "the VPC ID to create the security groups in"
   type        = string
