@@ -53,6 +53,12 @@ variable "extra_security_group_ids" {
   default     = []
 }
 
+variable "allowed_client_security_group_ids" {
+  description = "A list of security groups to allow ingress from"
+  type        = list(string)
+  default     = []
+}
+
 variable "maintenance_window" {
   description = "The window of time to do maintenance, e.g. wed:01:00-wed:02:00"
   type        = string
