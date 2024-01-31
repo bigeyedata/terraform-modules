@@ -654,22 +654,6 @@ module "bigeye_admin" {
 }
 
 #======================================================
-# Datadog
-#======================================================
-resource "aws_secretsmanager_secret" "datadog_agent_api_key" {
-  count                   = local.create_datadog_secret ? 1 : 0
-  name                    = format("bigeye/%s/datadog/apikey", local.name)
-  recovery_window_in_days = local.secret_retention_days
-  tags                    = local.tags
-}
-
-resource "aws_secretsmanager_secret_version" "datadog_agent_api_key" {
-  count         = local.create_datadog_secret ? 1 : 0
-  secret_id     = aws_secretsmanager_secret.datadog_agent_api_key[0].id
-  secret_string = var.datadog_agent_api_key
-}
-
-#======================================================
 # RabbitMQ
 #======================================================
 resource "random_password" "rabbitmq_user_password" {
@@ -865,7 +849,7 @@ module "haproxy" {
   datadog_agent_image              = var.datadog_agent_image
   datadog_agent_cpu                = var.datadog_agent_cpu
   datadog_agent_memory             = var.datadog_agent_memory
-  datadog_agent_api_key_secret_arn = local.datadog_agent_api_key_secret_arn
+  datadog_agent_api_key_secret_arn = var.datadog_agent_api_key_secret_arn
   datadog_additional_docker_labels = {
     "com.datadoghq.ad.check_names"  = "[\"haproxy\"]"
     "com.datadoghq.ad.init_configs" = "[{\"service\":\"haproxy\"}]"
@@ -948,7 +932,7 @@ module "web" {
   datadog_agent_image              = var.datadog_agent_image
   datadog_agent_cpu                = var.datadog_agent_cpu
   datadog_agent_memory             = var.datadog_agent_memory
-  datadog_agent_api_key_secret_arn = local.datadog_agent_api_key_secret_arn
+  datadog_agent_api_key_secret_arn = var.datadog_agent_api_key_secret_arn
 
 
   environment_variables = merge(
@@ -1127,7 +1111,7 @@ locals {
     secrets     = [for k, v in local.temporal_datadog_secret_arns : { Name = k, ValueFrom = v }]
   }
   temporal_datadog_secret_arns = {
-    DD_API_KEY = local.datadog_agent_api_key_secret_arn
+    DD_API_KEY = var.datadog_agent_api_key_secret_arn
   }
   temporal_datadog_environment_variables = {
     DD_APM_ENABLED                 = "true"
@@ -1399,7 +1383,7 @@ module "temporalui" {
   datadog_agent_image              = var.datadog_agent_image
   datadog_agent_cpu                = var.datadog_agent_cpu
   datadog_agent_memory             = var.datadog_agent_memory
-  datadog_agent_api_key_secret_arn = local.datadog_agent_api_key_secret_arn
+  datadog_agent_api_key_secret_arn = var.datadog_agent_api_key_secret_arn
 
 
   environment_variables = merge(
@@ -1520,7 +1504,7 @@ module "monocle" {
   datadog_agent_image              = var.datadog_agent_image
   datadog_agent_cpu                = var.datadog_agent_cpu
   datadog_agent_memory             = var.datadog_agent_memory
-  datadog_agent_api_key_secret_arn = local.datadog_agent_api_key_secret_arn
+  datadog_agent_api_key_secret_arn = var.datadog_agent_api_key_secret_arn
 
 
   environment_variables = merge(
@@ -1560,7 +1544,7 @@ module "monocle" {
       ROBOT_PASSWORD     = local.robot_password_secret_arn
     },
     var.datadog_agent_enabled ? {
-      DATADOG_API_KEY = local.datadog_agent_api_key_secret_arn
+      DATADOG_API_KEY = var.datadog_agent_api_key_secret_arn
     } : {}
   )
 }
@@ -1620,7 +1604,7 @@ module "toretto" {
   datadog_agent_image              = var.datadog_agent_image
   datadog_agent_cpu                = var.datadog_agent_cpu
   datadog_agent_memory             = var.datadog_agent_memory
-  datadog_agent_api_key_secret_arn = local.datadog_agent_api_key_secret_arn
+  datadog_agent_api_key_secret_arn = var.datadog_agent_api_key_secret_arn
 
 
   environment_variables = merge(
@@ -1651,7 +1635,7 @@ module "toretto" {
       MQ_BROKER_PASSWORD = local.rabbitmq_user_password_secret_arn
       ROBOT_PASSWORD     = local.robot_password_secret_arn
     },
-    var.datadog_agent_enabled ? { DATADOG_API_KEY = local.datadog_agent_api_key_secret_arn } : {}
+    var.datadog_agent_enabled ? { DATADOG_API_KEY = var.datadog_agent_api_key_secret_arn } : {}
   )
 }
 
@@ -1707,7 +1691,7 @@ module "scheduler" {
   datadog_agent_image              = var.datadog_agent_image
   datadog_agent_cpu                = var.datadog_agent_cpu
   datadog_agent_memory             = var.datadog_agent_memory
-  datadog_agent_api_key_secret_arn = local.datadog_agent_api_key_secret_arn
+  datadog_agent_api_key_secret_arn = var.datadog_agent_api_key_secret_arn
 
 
   environment_variables = merge(
@@ -2083,7 +2067,7 @@ module "datawatch" {
   datadog_agent_image              = var.datadog_agent_image
   datadog_agent_cpu                = var.datadog_agent_cpu
   datadog_agent_memory             = var.datadog_agent_memory
-  datadog_agent_api_key_secret_arn = local.datadog_agent_api_key_secret_arn
+  datadog_agent_api_key_secret_arn = var.datadog_agent_api_key_secret_arn
 
   environment_variables = merge(
     local.datawatch_dd_env_vars,
@@ -2182,7 +2166,7 @@ module "datawork" {
   datadog_agent_image              = var.datadog_agent_image
   datadog_agent_cpu                = var.datadog_agent_cpu
   datadog_agent_memory             = var.datadog_agent_memory
-  datadog_agent_api_key_secret_arn = local.datadog_agent_api_key_secret_arn
+  datadog_agent_api_key_secret_arn = var.datadog_agent_api_key_secret_arn
 
   environment_variables = merge(
     local.datawatch_dd_env_vars,
@@ -2283,7 +2267,7 @@ module "metricwork" {
   datadog_agent_image              = var.datadog_agent_image
   datadog_agent_cpu                = var.datadog_agent_cpu
   datadog_agent_memory             = var.datadog_agent_memory
-  datadog_agent_api_key_secret_arn = local.datadog_agent_api_key_secret_arn
+  datadog_agent_api_key_secret_arn = var.datadog_agent_api_key_secret_arn
 
   environment_variables = merge(
     local.datawatch_dd_env_vars,
