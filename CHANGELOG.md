@@ -1,3 +1,12 @@
+# [1.15.0](https://github.com/bigeyedata/terraform-modules/compare/v1.14.0...v1.15.0) (2024-01-31)
+
+
+### Features
+
+* set mysql transaction isolation to read-committed ([efd1e74](https://github.com/bigeyedata/terraform-modules/commit/efd1e74434281ab4307cbfcef651f2016afdf0ec))
+
+
+
 # [1.14.0](https://github.com/bigeyedata/terraform-modules/compare/v1.13.0...v1.14.0) (2024-01-26)
 
 
