@@ -328,14 +328,6 @@ variable "acm_certificate_arn" {
 #======================================================
 # Application Variables - General
 #======================================================
-
-# Deprecated - use sentry_dsn_secret_arn
-variable "sentry_dsn" {
-  description = ""
-  type        = string
-  default     = ""
-}
-
 variable "sentry_event_level" {
   description = "The event level for sentry"
   type        = string
