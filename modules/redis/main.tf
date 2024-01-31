@@ -60,16 +60,31 @@ resource "aws_security_group" "this" {
   count  = var.create_security_groups ? 1 : 0
   name   = "${var.name}-redis-cache"
   vpc_id = var.vpc_id
-
-  ingress {
-    from_port       = 6379
-    to_port         = 6379
-    protocol        = "TCP"
-    security_groups = [aws_security_group.client[0].id]
-  }
-
   tags = merge(var.tags, {
     Duty = "redis"
     Name = "${var.name}-redis-cache"
   })
 }
+
+resource "aws_vpc_security_group_ingress_rule" "client_sg" {
+  count             = var.create_security_groups ? 1 : 0
+  security_group_id = aws_security_group.this[0].id
+
+  from_port                    = 6379
+  to_port                      = 6379
+  ip_protocol                  = "TCP"
+  description                  = "Allows redis port from client sg"
+  referenced_security_group_id = aws_security_group.client[0].id
+}
+
+resource "aws_vpc_security_group_ingress_rule" "other_sgs" {
+  count             = var.create_security_groups ? length(var.allowed_client_security_group_ids) : 0
+  security_group_id = aws_security_group.this[0].id
+
+  from_port                    = 6379
+  to_port                      = 6379
+  ip_protocol                  = "TCP"
+  description                  = "Allows redis port from ${var.allowed_client_security_group_ids[count.index]}"
+  referenced_security_group_id = var.allowed_client_security_group_ids[count.index]
+}
+
