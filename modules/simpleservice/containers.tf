@@ -67,13 +67,24 @@ locals {
   } : {}
 
   datadog_agent_container_definition = {
-    name   = "datadog-agent"
-    image  = var.datadog_agent_image
-    cpu    = var.datadog_agent_cpu
-    memory = var.datadog_agent_memory
+    name        = "datadog-agent"
+    image       = var.datadog_agent_image
+    cpu         = var.datadog_agent_cpu
+    memory      = var.datadog_agent_memory
+    essential   = true
+    mountPoints = []
+    volumesFrom = []
     portMappings = [
-      { containerPort = 8126 },
-      { containerPort = 8125 }
+      {
+        containerPort = 8126
+        hostPort      = 8126
+        protocol      = "tcp"
+      },
+      {
+        containerPort = 8125
+        hostPort      = 8125
+        protocol      = "tcp"
+      }
     ]
     environment = [for k, v in local.datadog_agent_environment_vars : { name = k, value = v }]
     secrets     = [for k, v in local.datadog_service_secret_arns : { Name = k, ValueFrom = v }]

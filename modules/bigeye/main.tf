@@ -1107,9 +1107,20 @@ locals {
       "com.datadoghq.tags.service" : "temporal"
       "com.datadoghq.tags.stack" : local.name
     }
+    essential   = true
+    mountPoints = []
+    volumesFrom = []
     portMappings = [
-      { containerPort = 8126 },
-      { containerPort = 8126 }
+      {
+        containerPort = 8126
+        hostPort      = 8126
+        protocol      = "tcp"
+      },
+      {
+        containerPort = 8125
+        hostPort      = 8125
+        protocol      = "tcp"
+      }
     ]
     environment = [for k, v in local.temporal_datadog_environment_variables : { name = k, value = v }]
     secrets     = [for k, v in local.temporal_datadog_secret_arns : { Name = k, ValueFrom = v }]
