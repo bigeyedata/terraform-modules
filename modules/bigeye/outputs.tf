@@ -161,21 +161,6 @@ output "temporalui_load_balancer_zone_id" {
   value       = module.temporalui.zone_id
 }
 
-output "temporal_admin_dns_name" {
-  description = "DEPRECATED - DNS name for the temporal admin service"
-  value       = local.temporalui_dns_name
-}
-
-output "temporal_admin_load_balancer_dns_name" {
-  description = "DEPRECATED - The dns name of the temporal admin load balancer"
-  value       = module.temporalui.dns_name
-}
-
-output "temporal_admin_load_balancer_zone_id" {
-  description = "DEPRECATED - The Route53 Zone ID of the temporal admin load balancer"
-  value       = module.temporalui.zone_id
-}
-
 output "toretto_dns_name" {
   description = "DNS name for the toretto service"
   value       = local.toretto_dns_name
