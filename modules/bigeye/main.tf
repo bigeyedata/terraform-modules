@@ -1370,7 +1370,7 @@ module "temporalui" {
   fargate_version               = var.fargate_version
 
   # Load balancer
-  healthcheck_path                 = "/health"
+  healthcheck_path                 = "/"
   healthcheck_interval             = 15
   healthcheck_unhealthy_threshold  = 3
   ssl_policy                       = var.alb_ssl_policy
