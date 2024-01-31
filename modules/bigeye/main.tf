@@ -1655,7 +1655,6 @@ module "scheduler" {
   additional_security_group_ids = concat(
     var.scheduler_extra_security_group_ids,
     [module.bigeye_admin.client_security_group_id],
-    var.create_security_groups ? [module.redis.client_security_group_id] : [],
   )
   traffic_port    = var.scheduler_port
   ecs_cluster_id  = aws_ecs_cluster.this.id
@@ -1880,6 +1879,12 @@ module "redis" {
   create_security_groups   = var.create_security_groups
   subnet_group_name        = local.elasticache_subnet_group_name
   extra_security_group_ids = concat(var.redis_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
+  allowed_client_security_group_ids = var.create_security_groups ? [
+    module.scheduler.security_group_id,
+    module.datawatch.security_group_id,
+    module.datawork.security_group_id,
+    module.metricwork.security_group_id,
+  ] : []
   auth_token_secret_arn    = local.redis_auth_token_secret_arn
   instance_type            = var.redis_instance_type
   instance_count           = var.redundant_infrastructure ? 2 : 1
