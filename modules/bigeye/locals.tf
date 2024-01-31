@@ -114,7 +114,6 @@ locals {
   } : {}
 
   datawatch_additional_security_groups = var.create_security_groups ? [
-    module.redis.client_security_group_id,
     module.rabbitmq.client_security_group_id,
     module.bigeye_admin.client_security_group_id,
   ] : []
