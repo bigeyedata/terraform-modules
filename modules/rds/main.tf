@@ -73,6 +73,7 @@ module "this" {
   source  = "terraform-aws-modules/rds/aws"
   version = "6.1.1"
 
+  apply_immediately                   = var.apply_immediately
   snapshot_identifier                 = var.snapshot_identifier
   identifier                          = var.name
   engine                              = "mysql"
@@ -127,6 +128,7 @@ module "replica" {
   count      = var.create_replica ? 1 : 0
   depends_on = [module.this.db_instance_identifier]
 
+  apply_immediately                   = var.apply_immediately
   identifier                          = "${var.name}-ro"
   engine                              = "mysql"
   engine_version                      = var.engine_version
