@@ -9,6 +9,12 @@ variable "allocated_storage" {
   default     = 20
 }
 
+variable "apply_immediately" {
+  description = "Whether to apply changes immediately"
+  type        = bool
+  default     = false
+}
+
 variable "deletion_protection" {
   description = "Whether to enable deletion protection on the database"
   type        = bool

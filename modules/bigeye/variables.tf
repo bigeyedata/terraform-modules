@@ -545,6 +545,13 @@ variable "rds_performance_insights_retention_period" {
   default     = 7
 }
 
+variable "rds_apply_immediately" {
+  description = "Whether to apply changes immediately"
+  type        = bool
+  default     = false
+}
+
+
 #======================================================
 # Application Variables - HAProxy
 #======================================================

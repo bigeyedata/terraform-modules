@@ -997,6 +997,7 @@ module "temporal_rds" {
   root_user_name                        = "bigeye"
   root_user_password_secret_arn         = local.temporal_rds_password_secret_arn
   deletion_protection                   = var.deletion_protection
+  apply_immediately                     = var.rds_apply_immediately
   snapshot_identifier                   = var.temporal_rds_snapshot_identifier
   vpc_id                                = local.vpc_id
   engine_version                        = var.temporal_rds_engine_version
@@ -1953,6 +1954,7 @@ module "datawatch_rds" {
   storage_type          = "gp3"
 
   # Ops
+  apply_immediately                     = var.rds_apply_immediately
   deletion_protection                   = var.deletion_protection
   backup_window                         = var.rds_backup_window
   backup_retention_period               = var.datawatch_rds_backup_retention_period
