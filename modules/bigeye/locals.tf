@@ -106,9 +106,6 @@ locals {
     STITCH_API_TOKEN = var.stitch_api_token_secretsmanager_arn
   }
 
-  sentry_dsn_environment_variable = var.sentry_dsn != "" ? {
-    SENTRY_DSN = var.sentry_dsn
-  } : {}
   sentry_event_level_env_variable = var.sentry_event_level != "" ? {
     SENTRY_EVENT_LEVEL = var.sentry_event_level
   } : {}
