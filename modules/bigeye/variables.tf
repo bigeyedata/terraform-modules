@@ -225,14 +225,6 @@ variable "datadog_agent_memory" {
   default     = 512
 }
 
-# DEPRECATED - Use datadog_agent_api_key_secret_arn
-variable "datadog_agent_api_key" {
-  description = "The DataDog API key to use for the datadog agent"
-  type        = string
-  sensitive   = true
-  default     = ""
-}
-
 variable "datadog_agent_api_key_secret_arn" {
   description = "Secret ARN holding the datadog agent API Key"
   type        = string
