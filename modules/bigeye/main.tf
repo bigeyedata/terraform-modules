@@ -1539,7 +1539,6 @@ module "monocle" {
       TIMEOUT                    = "900"
       DATAWATCH_ADDRESS          = "https://${local.datawatch_dns_name}"
     },
-    local.sentry_dsn_environment_variable,
     local.sentry_event_level_env_variable,
     var.datadog_agent_enabled ? {
       DD_PROFILING_ENABLED     = "true"
@@ -1639,7 +1638,6 @@ module "toretto" {
       TIMEOUT                    = "900"
       DATAWATCH_ADDRESS          = "https://${local.datawatch_dns_name}"
     },
-    local.sentry_dsn_environment_variable,
     local.sentry_event_level_env_variable,
   )
 
@@ -1724,7 +1722,6 @@ module "scheduler" {
       REDIS_PRIMARY_ADDRESS = module.redis.primary_endpoint_dns_name
       REDIS_PRIMARY_PORT    = module.redis.port
     },
-    local.sentry_dsn_environment_variable,
   )
 
   secret_arns = merge(
@@ -2087,7 +2084,6 @@ module "datawatch" {
 
   environment_variables = merge(
     local.datawatch_dd_env_vars,
-    local.sentry_dsn_environment_variable,
     var.datawatch_additional_environment_vars,
     {
       ENVIRONMENT                     = var.environment
@@ -2186,7 +2182,6 @@ module "datawork" {
 
   environment_variables = merge(
     local.datawatch_dd_env_vars,
-    local.sentry_dsn_environment_variable,
     var.datawork_additional_environment_vars,
     {
       ENVIRONMENT                  = var.environment
@@ -2287,7 +2282,6 @@ module "metricwork" {
 
   environment_variables = merge(
     local.datawatch_dd_env_vars,
-    local.sentry_dsn_environment_variable,
     var.metricwork_additional_environment_vars,
     {
       ENVIRONMENT                  = var.environment
