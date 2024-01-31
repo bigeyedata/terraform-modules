@@ -2012,7 +2012,7 @@ module "datawatch" {
       MYSQL_JDBC                      = "jdbc:mysql://${local.datawatch_mysql_dns_name}:3306/${var.datawatch_rds_db_name}?serverTimezone=UTC"
       MYSQL_USER                      = "bigeye"
       MYSQL_MAXSIZE                   = var.datawatch_mysql_maxsize
-      MYSQL_TRANSACTION_ISOLATION     = "default"
+      MYSQL_TRANSACTION_ISOLATION     = "read-committed"
       REDIRECT_ADDRESS                = "https://${local.vanity_dns_name}"
       MONOCLE_ADDRESS                 = "https://${local.monocle_dns_name}"
       SCHEDULER_ADDRESS               = "https://${local.scheduler_dns_name}"
@@ -2110,7 +2110,7 @@ module "datawork" {
       MYSQL_JDBC                   = "jdbc:mysql://${local.datawatch_mysql_dns_name}:3306/${var.datawatch_rds_db_name}?serverTimezone=UTC"
       MYSQL_USER                   = "bigeye"
       MYSQL_MAXSIZE                = var.datawatch_mysql_maxsize
-      MYSQL_TRANSACTION_ISOLATION  = "default"
+      MYSQL_TRANSACTION_ISOLATION  = "read-committed"
       REDIRECT_ADDRESS             = "https://${local.vanity_dns_name}"
       MONOCLE_ADDRESS              = "https://${local.monocle_dns_name}"
       SCHEDULER_ADDRESS            = "https://${local.scheduler_dns_name}"
@@ -2210,7 +2210,7 @@ module "metricwork" {
       MYSQL_JDBC                   = "jdbc:mysql://${local.datawatch_mysql_dns_name}:3306/${var.datawatch_rds_db_name}?serverTimezone=UTC"
       MYSQL_USER                   = "bigeye"
       MYSQL_MAXSIZE                = var.datawatch_mysql_maxsize
-      MYSQL_TRANSACTION_ISOLATION  = "default"
+      MYSQL_TRANSACTION_ISOLATION  = "read-committed"
       REDIRECT_ADDRESS             = "https://${local.vanity_dns_name}"
       MONOCLE_ADDRESS              = "https://${local.monocle_dns_name}"
       SCHEDULER_ADDRESS            = "https://${local.scheduler_dns_name}"
