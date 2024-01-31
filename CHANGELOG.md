@@ -1,41 +1,34 @@
 # [2.0.0](https://github.com/bigeyedata/terraform-modules/compare/v1.16.0...v2.0.0) (2024-01-31)
 
-
-### Bug Fixes
-
-* remove redis client sg from services ([a8acd87](https://github.com/bigeyedata/terraform-modules/commit/a8acd875517fa35cf4a46f0d5d1a1bbf492fdd0d))
-* update services to not require db client sg ([5cb71be](https://github.com/bigeyedata/terraform-modules/commit/5cb71be4fec84c6706b4acf72ad1e6e8debd97d8))
-
-
-* feat!: update how RDS/Redis modules manage ingress from services ([10d1f4a](https://github.com/bigeyedata/terraform-modules/commit/10d1f4aa1822e4f73ab193e421ceb4c88d300b32))
-* fix!: remove sentry_dsn variable ([9e2dce8](https://github.com/bigeyedata/terraform-modules/commit/9e2dce86e747f01b4a7ff3992884ea9b15cfd133))
-* fix!: remove deprecated temporal_admin outputs ([a4906b5](https://github.com/bigeyedata/terraform-modules/commit/a4906b581c7a056fc20ac3dde2134e2c5264ff3f))
-* fix!: remove datadog_agent_api_key variable ([bc62730](https://github.com/bigeyedata/terraform-modules/commit/bc6273025d853bb953e75e1596c9560488be6864))
-
-
-### Features
-
-* add security_group_id as output from simpleservice ([99f612a](https://github.com/bigeyedata/terraform-modules/commit/99f612a05dbe5c02c5ef36a84f7d43902eee4caf))
-
-
 ### BREAKING CHANGES
 
-* `terraform apply` commands will get stuck trying to
-apply a security group rule when that rule already exists. This is
-a result of moving from using an `ingress` block inside an
+#### Security Group Changes
+
+A change was made to the security groups, which will result
+in `terraform apply` getting stuck trying to
+apply a security group rule when that rule already exists.
+
+This is a result of moving from using an `ingress` block inside an
 `aws_security_group` resource to a separate resource for the
 `aws_vpc_security_group_ingress_rule`. This affects installations
 unless you have `create_security_groups = false`.
 
-Recommendation: You may either delete or import the conflicting
+##### Recommendation
+
+You may either delete or import the conflicting
 security group rule. The RDS security groups and Redis security groups
 are affected. These have the names `-datawatch-db`, `-datawatch-db-replica`,
 `-temporal-db`, `-temporal-db-replica`, and `-redis-cache`.
 
-Downtime: "Yes" if you delete the security group rule. "No" if you import it.
+##### Downtime
 
-Steps: To import the security group rule run: `terraform import [ADDR] [id]`.
+"Yes" if you delete the security group rule. "No" if you import it.
+
+##### Steps
+
+To import the security group rule run: `terraform import [ADDR] [id]`.
 The ADDR for each of the resources will be
+
 * `module.bigeye.module.datawatch_rds.aws_vpc_security_group_ingress_rule.client_sg[0]`
 * `module.bigeye.module.datawatch_rds.aws_vpc_security_group_ingress_rule.replica_client_sg[0]`
 * `module.bigeye.module.temporal_rds.aws_vpc_security_group_ingress_rule.client_sg[0]`
@@ -44,30 +37,48 @@ The ADDR for each of the resources will be
 
 Make sure to wrap the ADDR with quotes, or the shell command will fail. Get the `[id]` for
 each of the security groups from the AWS console.
-* The `sentry_dsn` variable was removed
 
-Recommendation: Use the `sentry_dsn_secret_arn` variable, passing the
-ARN to an AWS SecretsManager secret.
+For example:
 
-Downtime: No
+```sh
+terraform import "module.bigeye.module.datawatch_rds.aws_vpc_security_group_ingress_rule.client_sg[0]" sgr-1234567890
+```
 
-Steps: Store your Sentry DSN in an AWS SecretsManager secret,
-delete the `sentry_dsn` terraform variable, and use the `sentry_dsn_secret_arn`
-variable instead.
-* Outputs starting with `temporal_admin_` have been
-removed.
+([10d1f4a](https://github.com/bigeyedata/terraform-modules/commit/10d1f4aa1822e4f73ab193e421ceb4c88d300b32))
 
-Recommendation: Use the new outputs starting with `temporalui_`
 
-Downtime: No
-* A new variable `datadog_agent_api_key_secret_arn`
-should be used instead of `datadog_agent_api_key`
+#### Removed Variables
 
-Recommendation: Use an AWS SecretsManager secret to store your API Key
-and pass its ARN into `datadog_agent_api_key_secret_arn`.
+The following two variables have been removed:
 
-Downtime: No
+* `sentry_dsn` ([9e2dce8](https://github.com/bigeyedata/terraform-modules/commit/9e2dce86e747f01b4a7ff3992884ea9b15cfd133))
+* `datadog_agent_api_key` ([bc62730](https://github.com/bigeyedata/terraform-modules/commit/bc6273025d853bb953e75e1596c9560488be6864))
 
+Instead, use the following variables:
+
+* `sentry_dsn_secret_arn`
+* `datadog_agent_api_key_secret_arn`
+
+This allows for better secrets management and makes sure
+that the `terraform plan` output isn't unnecessarily hidden.
+
+#### Removed Outputs
+
+All outputs starting with `temporal_admin_` have been replaced
+with corresponding outputs starting with `temporalui_`.
+
+([a4906b5](https://github.com/bigeyedata/terraform-modules/commit/a4906b581c7a056fc20ac3dde2134e2c5264ff3f))
+
+
+### Bug Fixes
+
+* remove redis client sg from services ([a8acd87](https://github.com/bigeyedata/terraform-modules/commit/a8acd875517fa35cf4a46f0d5d1a1bbf492fdd0d))
+* update services to not require db client sg ([5cb71be](https://github.com/bigeyedata/terraform-modules/commit/5cb71be4fec84c6706b4acf72ad1e6e8debd97d8))
+
+
+### Features
+
+* add security_group_id as output from simpleservice ([99f612a](https://github.com/bigeyedata/terraform-modules/commit/99f612a05dbe5c02c5ef36a84f7d43902eee4caf))
 
 
 # [1.16.0](https://github.com/bigeyedata/terraform-modules/compare/v1.15.0...v1.16.0) (2024-01-31)
