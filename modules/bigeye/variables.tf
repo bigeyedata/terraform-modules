@@ -875,6 +875,12 @@ variable "datawatch_rds_db_name" {
   default     = "bigeye"
 }
 
+variable "datawatch_rds_root_user_name" {
+  description = "The root user name for datawatch"
+  type        = string
+  default     = "bigeye"
+}
+
 variable "datawatch_rds_snapshot_identifier" {
   description = "The snapshot identifier of the snapshot to create the database from"
   type        = string
