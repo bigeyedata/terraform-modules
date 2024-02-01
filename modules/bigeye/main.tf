@@ -674,6 +674,7 @@ resource "aws_secretsmanager_secret_version" "rabbitmq_user_password" {
 }
 
 module "rabbitmq" {
+  depends_on             = [aws_secretsmanager_secret_version.rabbitmq_user_password]
   source                 = "../rabbitmq"
   name                   = local.name
   vpc_id                 = local.vpc_id
@@ -799,12 +800,13 @@ resource "aws_secretsmanager_secret_version" "adminpages_password" {
 }
 
 module "haproxy" {
-  source   = "../simpleservice"
-  app      = "haproxy"
-  instance = var.instance
-  stack    = local.name
-  name     = "${local.name}-haproxy"
-  tags     = merge(local.tags, { app = "haproxy" })
+  depends_on = [aws_secretsmanager_secret_version.adminpages_password]
+  source     = "../simpleservice"
+  app        = "haproxy"
+  instance   = var.instance
+  stack      = local.name
+  name       = "${local.name}-haproxy"
+  tags       = merge(local.tags, { app = "haproxy" })
 
   internet_facing               = var.internet_facing
   vpc_id                        = local.vpc_id
@@ -975,6 +977,7 @@ resource "aws_secretsmanager_secret_version" "temporal_rds_password" {
 }
 
 module "temporal_rds" {
+  depends_on                            = [aws_secretsmanager_secret_version.temporal_rds_password]
   source                                = "../rds"
   name                                  = "${local.name}-temporal"
   db_name                               = var.temporal_rds_db_name
@@ -1914,8 +1917,9 @@ resource "aws_secretsmanager_secret_version" "datawatch_rds_password" {
   secret_string = random_password.datawatch_rds_password[0].result
 }
 module "datawatch_rds" {
-  source = "../rds"
-  name   = "${local.name}-datawatch"
+  depends_on = [aws_secretsmanager_secret_version.datawatch_rds_password]
+  source     = "../rds"
+  name       = "${local.name}-datawatch"
 
   # Connection Info
   db_name                       = var.datawatch_rds_db_name
@@ -2029,12 +2033,13 @@ resource "aws_secretsmanager_secret_version" "robot_password" {
 }
 
 module "datawatch" {
-  source   = "../simpleservice"
-  app      = "datawatch"
-  instance = var.instance
-  stack    = local.name
-  name     = "${local.name}-datawatch"
-  tags     = merge(local.tags, { app = "datawatch" })
+  depends_on = [aws_secretsmanager_secret_version.robot_password]
+  source     = "../simpleservice"
+  app        = "datawatch"
+  instance   = var.instance
+  stack      = local.name
+  name       = "${local.name}-datawatch"
+  tags       = merge(local.tags, { app = "datawatch" })
 
   vpc_id                        = local.vpc_id
   vpc_cidr_block                = var.vpc_cidr_block
@@ -2127,12 +2132,13 @@ module "datawatch" {
 }
 
 module "datawork" {
-  source   = "../simpleservice"
-  app      = "datawork"
-  instance = var.instance
-  stack    = local.name
-  name     = "${local.name}-datawork"
-  tags     = merge(local.tags, { app = "datawork" })
+  depends_on = [aws_secretsmanager_secret_version.robot_password]
+  source     = "../simpleservice"
+  app        = "datawork"
+  instance   = var.instance
+  stack      = local.name
+  name       = "${local.name}-datawork"
+  tags       = merge(local.tags, { app = "datawork" })
 
   vpc_id                        = local.vpc_id
   vpc_cidr_block                = var.vpc_cidr_block
@@ -2228,12 +2234,13 @@ module "datawork" {
 }
 
 module "metricwork" {
-  source   = "../simpleservice"
-  app      = "metricwork"
-  instance = var.instance
-  stack    = local.name
-  name     = "${local.name}-metricwork"
-  tags     = merge(local.tags, { app = "metricwork" })
+  depends_on = [aws_secretsmanager_secret_version.robot_password]
+  source     = "../simpleservice"
+  app        = "metricwork"
+  instance   = var.instance
+  stack      = local.name
+  name       = "${local.name}-metricwork"
+  tags       = merge(local.tags, { app = "metricwork" })
 
   vpc_id                        = local.vpc_id
   vpc_cidr_block                = var.vpc_cidr_block
