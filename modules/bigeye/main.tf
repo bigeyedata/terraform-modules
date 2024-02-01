@@ -1923,7 +1923,7 @@ module "datawatch_rds" {
 
   # Connection Info
   db_name                       = var.datawatch_rds_db_name
-  root_user_name                = "bigeye"
+  root_user_name                = var.datawatch_rds_root_user_name
   root_user_password_secret_arn = local.datawatch_rds_password_secret_arn
   snapshot_identifier           = var.datawatch_rds_snapshot_identifier
 
@@ -2091,7 +2091,7 @@ module "datawatch" {
       PORT                            = var.datawatch_port
       APP                             = "datawatch"
       MYSQL_JDBC                      = "jdbc:mysql://${local.datawatch_mysql_dns_name}:3306/${local.datawatch_jdbc_database_name}?serverTimezone=UTC"
-      MYSQL_USER                      = "bigeye"
+      MYSQL_USER                      = var.datawatch_rds_root_user_name
       MYSQL_MAXSIZE                   = var.datawatch_mysql_maxsize
       MYSQL_TRANSACTION_ISOLATION     = "read-committed"
       REDIRECT_ADDRESS                = "https://${local.vanity_dns_name}"
@@ -2190,7 +2190,7 @@ module "datawork" {
       PORT                         = var.datawork_port
       APP                          = "datawork"
       MYSQL_JDBC                   = "jdbc:mysql://${local.datawatch_mysql_dns_name}:3306/${local.datawatch_jdbc_database_name}?serverTimezone=UTC"
-      MYSQL_USER                   = "bigeye"
+      MYSQL_USER                   = var.datawatch_rds_root_user_name
       MYSQL_MAXSIZE                = var.datawatch_mysql_maxsize
       MYSQL_TRANSACTION_ISOLATION  = "read-committed"
       REDIRECT_ADDRESS             = "https://${local.vanity_dns_name}"
@@ -2291,7 +2291,7 @@ module "metricwork" {
       PORT                         = var.metricwork_port
       APP                          = "metricwork"
       MYSQL_JDBC                   = "jdbc:mysql://${local.datawatch_mysql_dns_name}:3306/${local.datawatch_jdbc_database_name}?serverTimezone=UTC"
-      MYSQL_USER                   = "bigeye"
+      MYSQL_USER                   = var.datawatch_rds_root_user_name
       MYSQL_MAXSIZE                = var.datawatch_mysql_maxsize
       MYSQL_TRANSACTION_ISOLATION  = "read-committed"
       REDIRECT_ADDRESS             = "https://${local.vanity_dns_name}"
