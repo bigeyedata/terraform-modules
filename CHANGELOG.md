@@ -1,3 +1,18 @@
+# [2.1.0](https://github.com/bigeyedata/terraform-modules/compare/v2.0.0...v2.1.0) (2024-02-01)
+
+
+### Bug Fixes
+
+* add datawatch_db_name to handle edge case ([1f510fc](https://github.com/bigeyedata/terraform-modules/commit/1f510fcc39119eb84fdb3757d5079ef36875378b))
+* add depends_on to prevent race condition on initial apply ([68f8ac8](https://github.com/bigeyedata/terraform-modules/commit/68f8ac8768c551abfd75e2106ad4e13466d91ab8))
+
+
+### Features
+
+* add datawatach_rds_root_user_name to configure db ([43ae61b](https://github.com/bigeyedata/terraform-modules/commit/43ae61b5060491f4657f81d4e1c74d1a567d6521))
+
+
+
 # [2.0.0](https://github.com/bigeyedata/terraform-modules/compare/v1.16.0...v2.0.0) (2024-01-31)
 
 ### BREAKING CHANGES
