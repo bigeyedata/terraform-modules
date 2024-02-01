@@ -2085,7 +2085,7 @@ module "datawatch" {
       INSTANCE                        = var.instance
       PORT                            = var.datawatch_port
       APP                             = "datawatch"
-      MYSQL_JDBC                      = "jdbc:mysql://${local.datawatch_mysql_dns_name}:3306/${var.datawatch_rds_db_name}?serverTimezone=UTC"
+      MYSQL_JDBC                      = "jdbc:mysql://${local.datawatch_mysql_dns_name}:3306/${local.datawatch_jdbc_database_name}?serverTimezone=UTC"
       MYSQL_USER                      = "bigeye"
       MYSQL_MAXSIZE                   = var.datawatch_mysql_maxsize
       MYSQL_TRANSACTION_ISOLATION     = "read-committed"
@@ -2183,7 +2183,7 @@ module "datawork" {
       INSTANCE                     = var.instance
       PORT                         = var.datawork_port
       APP                          = "datawork"
-      MYSQL_JDBC                   = "jdbc:mysql://${local.datawatch_mysql_dns_name}:3306/${var.datawatch_rds_db_name}?serverTimezone=UTC"
+      MYSQL_JDBC                   = "jdbc:mysql://${local.datawatch_mysql_dns_name}:3306/${local.datawatch_jdbc_database_name}?serverTimezone=UTC"
       MYSQL_USER                   = "bigeye"
       MYSQL_MAXSIZE                = var.datawatch_mysql_maxsize
       MYSQL_TRANSACTION_ISOLATION  = "read-committed"
@@ -2283,7 +2283,7 @@ module "metricwork" {
       INSTANCE                     = var.instance
       PORT                         = var.metricwork_port
       APP                          = "metricwork"
-      MYSQL_JDBC                   = "jdbc:mysql://${local.datawatch_mysql_dns_name}:3306/${var.datawatch_rds_db_name}?serverTimezone=UTC"
+      MYSQL_JDBC                   = "jdbc:mysql://${local.datawatch_mysql_dns_name}:3306/${local.datawatch_jdbc_database_name}?serverTimezone=UTC"
       MYSQL_USER                   = "bigeye"
       MYSQL_MAXSIZE                = var.datawatch_mysql_maxsize
       MYSQL_TRANSACTION_ISOLATION  = "read-committed"

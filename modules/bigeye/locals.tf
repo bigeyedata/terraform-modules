@@ -113,6 +113,7 @@ locals {
     SENTRY_DSN = var.sentry_dsn_secret_arn
   } : {}
 
+  datawatch_jdbc_database_name = coalesce(var.datawatch_db_name, var.datawatch_rds_db_name)
   datawatch_additional_security_groups = var.create_security_groups ? [
     module.rabbitmq.client_security_group_id,
     module.bigeye_admin.client_security_group_id,

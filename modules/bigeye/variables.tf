@@ -863,6 +863,12 @@ variable "datawatch_robot_password_secret_arn" {
   default     = ""
 }
 
+variable "datawatch_db_name" {
+  description = "The database name to use in the connection string for Datawatch apps. This is here because some RDS instances have been created with a blank DB name, so it can't be assumed the RDS DB name is a valid Database name for the connection string. If not specified, it will default to `datawatch_rds_db_name`"
+  type        = string
+  default     = ""
+}
+
 variable "datawatch_rds_db_name" {
   description = "The database name for Datawatch's application DB"
   type        = string
