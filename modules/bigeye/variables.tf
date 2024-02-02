@@ -782,6 +782,18 @@ variable "temporal_rds_additional_tags" {
   default     = {}
 }
 
+variable "temporal_rds_primary_additional_tags" {
+  description = "Additional tags to apply to the temporal RDS primary DB.  This is merged with temporal_rds_additional_tags for the primary"
+  type        = map(string)
+  default     = {}
+}
+
+variable "temporal_rds_replica_additional_tags" {
+  description = "Additional tags to apply to the temporal RDS replica DB.  This is merged with temporal_rds_additional_tags for the replica"
+  type        = map(string)
+  default     = {}
+}
+
 variable "temporal_desired_count" {
   description = "The desired number of replicas"
   type        = number
@@ -967,6 +979,18 @@ variable "datawatch_rds_extra_security_group_ids" {
 
 variable "datawatch_rds_additional_tags" {
   description = "Additional tags to apply to the datawatch RDS resources"
+  type        = map(string)
+  default     = {}
+}
+
+variable "datawatch_rds_primary_additional_tags" {
+  description = "Additional tags to apply to the datawatch RDS primary DB.  This is merged with datawatch_rds_additional_tags for the primary"
+  type        = map(string)
+  default     = {}
+}
+
+variable "datawatch_rds_replica_additional_tags" {
+  description = "Additional tags to apply to the datawatch RDS replica DB.  This is merged with datawatch_rds_additional_tags for the replica"
   type        = map(string)
   default     = {}
 }
