@@ -148,7 +148,7 @@ module "this" {
   parameter_group_description = "Bigeye RDS parameter group with recommendations"
   parameters                  = var.parameters
 
-  tags = var.tags
+  tags = merge(var.tags, var.primary_additional_tags)
 }
 
 module "replica" {
@@ -194,6 +194,6 @@ module "replica" {
   create_db_option_group    = false
   option_group_name         = module.this.db_option_group_id
 
-  tags = var.tags
+  tags = merge(var.tags, var.replica_additional_tags)
 }
 
