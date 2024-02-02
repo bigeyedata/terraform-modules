@@ -210,7 +210,19 @@ variable "vpc_id" {
 }
 
 variable "tags" {
-  description = "A list of tags to apply to the RDS resources"
+  description = "A list of tags to apply to RDS resources"
+  type        = map(string)
+  default     = {}
+}
+
+variable "primary_additional_tags" {
+  description = "A list of tags to apply to the RDS primary DB.  This is merged with var.tags for the primary db"
+  type        = map(string)
+  default     = {}
+}
+
+variable "replica_additional_tags" {
+  description = "Tags to apply to the RDS replica DB (if a replica is enabled).  This is merged with var.tags for the replica"
   type        = map(string)
   default     = {}
 }
