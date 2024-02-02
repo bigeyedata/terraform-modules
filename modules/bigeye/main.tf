@@ -1967,40 +1967,35 @@ module "datawatch_rds" {
     {
       name  = "log_bin_trust_function_creators"
       value = "1"
-    },
-    {
+      }, {
       name  = "general_log"
       value = 0
-    },
-    {
+      }, {
       name  = "slow_query_log"
       value = 0
-    },
-    {
+      }, {
       name  = "long_query_time"
       value = 120
-    },
-    {
+      }, {
       name         = "performance_schema"
       value        = 1
       apply_method = "pending-reboot"
-    },
-    {
+      }, {
       name         = "skip_name_resolve"
       value        = 1
       apply_method = "pending-reboot"
-    },
-    {
+      }, {
       name  = "character_set_server"
       value = "utf8mb4"
-    },
-    {
+      }, {
       name  = "innodb_lock_wait_timeout"
       value = 300
-    },
-    {
+      }, {
       name  = "lock_wait_timeout"
       value = 300
+      }, {
+      name  = "binlog_format"
+      value = "ROW"
     }
   ]
 
