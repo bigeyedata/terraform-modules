@@ -1,3 +1,12 @@
+# [2.2.0](https://github.com/bigeyedata/terraform-modules/compare/v2.1.0...v2.2.0) (2024-02-02)
+
+
+### Features
+
+* set binlog format to ROW ([c1f4682](https://github.com/bigeyedata/terraform-modules/commit/c1f4682db12b0f91ca813cafb99945d78ceb1ffb))
+
+
+
 # [2.1.0](https://github.com/bigeyedata/terraform-modules/compare/v2.0.0...v2.1.0) (2024-02-01)
 
 
