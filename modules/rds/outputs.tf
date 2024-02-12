@@ -1,6 +1,11 @@
 output "identifier" {
-  description = "Database identifier"
-  value       = var.name
+  description = "RDS identifier of database"
+  value       = module.this.db_instance_identifier
+}
+
+output "replica_identifier" {
+  description = "RDS identifier of database replica"
+  value       = var.create_replica ? module.replica[0].db_instance_identifier : ""
 }
 
 output "database_name" {
