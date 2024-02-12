@@ -22,6 +22,34 @@ output "haproxy_load_balancer_zone_id" {
 }
 
 #======================================================
+# Resource Names
+#======================================================
+output "datawatch_rds_identifier" {
+  description = "RDS identifier for datawatch database"
+  value       = module.datawatch_rds.identifier
+}
+
+output "datawatch_rds_replica_identifier" {
+  description = "RDS identifier for datawatch read replica database"
+  value       = module.datawatch_rds.replica_identifier
+}
+
+output "temporal_rds_identifier" {
+  description = "RDS identifier for temporal database"
+  value       = module.temporal_rds.identifier
+}
+
+output "rabbitmq_name" {
+  description = "Name of the RabbitMQ broker"
+  value       = module.rabbitmq.id
+}
+
+output "redis_cluster_id" {
+  description = "Name of the Redis cluster ID"
+  value       = module.redis.cluster_id
+}
+
+#======================================================
 # DNS - RDS
 #======================================================
 output "datawatch_database_vanity_dns_name" {
