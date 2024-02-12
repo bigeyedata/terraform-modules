@@ -1,3 +1,17 @@
+# [2.3.0](https://github.com/bigeyedata/terraform-modules/compare/v2.2.0...v2.3.0) (2024-02-12)
+
+
+### Bug Fixes
+
+* environment variables for bigeye-admin container ([e64989c](https://github.com/bigeyedata/terraform-modules/commit/e64989c111b6e4cb1e5397783c8f6ba709aeb3e2))
+
+
+### Features
+
+* allow separate optional tags for primary vs replica dbs ([b0e152c](https://github.com/bigeyedata/terraform-modules/commit/b0e152ce6ad8539b47cf7c52fb3bbe4d7b601fe7))
+
+
+
 # [2.2.0](https://github.com/bigeyedata/terraform-modules/compare/v2.1.0...v2.2.0) (2024-02-02)
 
 
