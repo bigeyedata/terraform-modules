@@ -1,3 +1,7 @@
+output "cluster_id" {
+  description = "ID of the redis cluster"
+  value       = aws_elasticache_replication_group.this.id
+}
 output "primary_endpoint_dns_name" {
   description = "DNS name of the primary endpoint"
   value       = aws_elasticache_replication_group.this.primary_endpoint_address
