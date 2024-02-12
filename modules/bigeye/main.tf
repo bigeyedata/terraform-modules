@@ -637,11 +637,11 @@ module "bigeye_admin" {
   datawatch_rds_password_secret_arn = module.datawatch_rds.master_user_password_secret_arn
   datawatch_rds_db_name             = module.datawatch_rds.database_name
 
-  temporal_rds_identifier          = module.datawatch_rds.identifier
-  temporal_rds_hostname            = module.datawatch_rds.primary_dns_name
-  temporal_rds_username            = module.datawatch_rds.master_user_name
-  temporal_rds_password_secret_arn = module.datawatch_rds.master_user_password_secret_arn
-  temporal_rds_db_name             = module.datawatch_rds.database_name
+  temporal_rds_identifier          = module.temporal_rds.identifier
+  temporal_rds_hostname            = module.temporal_rds.primary_dns_name
+  temporal_rds_username            = module.temporal_rds.master_user_name
+  temporal_rds_password_secret_arn = module.temporal_rds.master_user_password_secret_arn
+  temporal_rds_db_name             = module.temporal_rds.database_name
 
   redis_domain_name         = module.redis.primary_endpoint_dns_name
   redis_password_secret_arn = module.redis.auth_token_secret_arn
