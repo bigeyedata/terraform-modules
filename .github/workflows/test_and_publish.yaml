@@ -127,8 +127,7 @@ jobs:
       - name: notify SDP
         if: ${{ steps.changelog.outputs.skipped == 'false' }}
         run: |
-          gh workflow run "Bump TF Module Version" -R "bigeyedata/semantic-data-platform" --field "previousVersion=${{ steps.prevversion.outputs.PREVIOUS_VERSION }}" --field "version=${{ steps.changelog.outputs.tag }}" --field "environment=test"
-          gh workflow run "Bump TF Module Version" -R "bigeyedata/semantic-data-platform" --field "previousVersion=${{ steps.prevversion.outputs.PREVIOUS_VERSION }}" --field "version=${{ steps.changelog.outputs.tag }}" --field "environment=staging"
+          gh workflow run "Bump TF Module Version" -R "bigeyedata/semantic-data-platform" --field "previousVersion=${{ steps.prevversion.outputs.PREVIOUS_VERSION }}" --field "version=${{ steps.changelog.outputs.tag }}"
         env:
           GITHUB_TOKEN: ${{ secrets.BIGEYE_SRE_BOT_GH_PAT }}
       - name: notify slack
