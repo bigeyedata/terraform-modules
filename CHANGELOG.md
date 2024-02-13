@@ -1,3 +1,18 @@
+# [3.1.0](https://github.com/bigeyedata/terraform-modules/compare/v3.0.0...v3.1.0) (2024-02-13)
+
+
+### Bug Fixes
+
+* broker name in bigeye module outputs ([1bb7eec](https://github.com/bigeyedata/terraform-modules/commit/1bb7eeceab7a59e443de07d4ec9f0704d2ed1c20))
+
+
+### Features
+
+* add autoscaling for toretto ([58c4798](https://github.com/bigeyedata/terraform-modules/commit/58c4798c9d9ada358f98befbe94a91644c80ecca))
+* add broker name to outputs ([7ea3fc2](https://github.com/bigeyedata/terraform-modules/commit/7ea3fc2e04b0f2637c34bec973493413f34192a3))
+
+
+
 # [3.0.0](https://github.com/bigeyedata/terraform-modules/compare/v0.1.0...v3.0.0) (2024-02-13)
 
 
