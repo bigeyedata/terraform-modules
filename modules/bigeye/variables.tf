@@ -508,6 +508,48 @@ variable "toretto_lb_extra_security_group_ids" {
   default     = []
 }
 
+variable "toretto_autoscaling_enabled" {
+  description = "Whether to scale toretto based on queue depth"
+  type        = bool
+  default     = false
+}
+
+variable "toretto_autoscaling_threshold_step1" {
+  description = "The first autothreshold metric step"
+  type        = number
+  default     = 20
+}
+
+variable "toretto_autoscaling_threshold_step2" {
+  description = "The second autothreshold metric step"
+  type        = number
+  default     = 500
+}
+
+variable "toretto_autoscaling_threshold_step3" {
+  description = "The third and final autothreshold metric step"
+  type        = number
+  default     = 1000
+}
+
+variable "toretto_desired_count_step1" {
+  description = "How many toretto tasks to run after reaching the first autoscaling step, if not specified it will be twice the toretto_desired_count"
+  type        = number
+  default     = null
+}
+
+variable "toretto_desired_count_step2" {
+  description = "How many toretto tasks to run after reaching the second autoscaling step, if not specified it will be three times the toretto_desired_count"
+  type        = number
+  default     = null
+}
+
+variable "toretto_desired_count_step3" {
+  description = "How many toretto tasks to run after reaching the third and final autoscaling step, if not specified it will be four times the toretto_desired_count"
+  type        = number
+  default     = null
+}
+
 #======================================================
 # RDS Maintenance
 #======================================================

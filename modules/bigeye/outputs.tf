@@ -41,7 +41,7 @@ output "temporal_rds_identifier" {
 
 output "rabbitmq_name" {
   description = "Name of the RabbitMQ broker"
-  value       = module.rabbitmq.id
+  value       = module.rabbitmq.name
 }
 
 output "redis_cluster_id" {

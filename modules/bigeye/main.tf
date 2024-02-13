@@ -1645,6 +1645,78 @@ module "toretto" {
   )
 }
 
+resource "aws_appautoscaling_target" "toretto" {
+  count              = var.toretto_autoscaling_enabled ? 1 : 0
+  min_capacity       = 1
+  max_capacity       = 100
+  resource_id        = format("service/%s/%s-toretto", aws_ecs_cluster.this.id, aws_ecs_cluster.this.id)
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+}
+
+locals {
+  toretto_desired_count_step1 = coalesce(var.toretto_desired_count_step1, var.toretto_desired_count * 2)
+  toretto_desired_count_step2 = coalesce(var.toretto_desired_count_step2, var.toretto_desired_count * 3)
+  toretto_desired_count_step3 = coalesce(var.toretto_desired_count_step3, var.toretto_desired_count * 4)
+}
+
+resource "aws_appautoscaling_policy" "toretto" {
+  count              = var.toretto_autoscaling_enabled ? 1 : 0
+  name               = format("%s-toretto-autoscaling", aws_ecs_cluster.this.id)
+  policy_type        = "StepScaling"
+  resource_id        = aws_appautoscaling_target.toretto[0].resource_id
+  scalable_dimension = aws_appautoscaling_target.toretto[0].scalable_dimension
+  service_namespace  = aws_appautoscaling_target.toretto[0].service_namespace
+  step_scaling_policy_configuration {
+    adjustment_type         = "ExactCapacity"
+    cooldown                = 600
+    metric_aggregation_type = "Average"
+
+    step_adjustment {
+      scaling_adjustment          = var.toretto_desired_count
+      metric_interval_upper_bound = var.toretto_autoscaling_threshold_step1
+    }
+
+    step_adjustment {
+      scaling_adjustment          = local.toretto_desired_count_step1
+      metric_interval_lower_bound = var.toretto_autoscaling_threshold_step1
+      metric_interval_upper_bound = var.toretto_autoscaling_threshold_step2
+    }
+
+    step_adjustment {
+      scaling_adjustment          = local.toretto_desired_count_step2
+      metric_interval_lower_bound = var.toretto_autoscaling_threshold_step2
+      metric_interval_upper_bound = var.toretto_autoscaling_threshold_step3
+    }
+
+    step_adjustment {
+      scaling_adjustment          = local.toretto_desired_count_step3
+      metric_interval_lower_bound = var.toretto_autoscaling_threshold_step3
+    }
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "toretto" {
+  count           = var.toretto_autoscaling_enabled ? 1 : 0
+  alarm_name      = format("%s-toretto autoscaling", aws_ecs_cluster.this.id)
+  actions_enabled = true
+  alarm_actions   = [aws_appautoscaling_policy.toretto[0].arn]
+  metric_name     = "MessageCount"
+  namespace       = "AWS/AmazonMQ"
+  statistic       = "Average"
+  dimensions = {
+    Broker      = module.rabbitmq.name
+    VirtualHost = "/"
+    Queue       = "ml_training_task_queue"
+  }
+  period              = 300
+  evaluation_periods  = 1
+  datapoints_to_alarm = 1
+  threshold           = 0
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  treat_missing_data  = "missing"
+}
+
 #======================================================
 # Scheduler
 #======================================================
