@@ -8,6 +8,11 @@ output "id" {
   value       = aws_mq_broker.queue.id
 }
 
+output "name" {
+  description = "Name of the RabbitMQ broker"
+  value       = aws_mq_broker.queue.broker_name
+}
+
 output "endpoint" {
   description = "The amqps endpoint for the broker"
   value       = aws_mq_broker.queue.instances[0].endpoints[0]
