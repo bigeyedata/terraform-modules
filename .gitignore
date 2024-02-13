@@ -9,3 +9,4 @@ modules/**/.terraform.lock.hcl
 .idea
 *.iml
 
+bigeye_cloudformation_v3.yaml
