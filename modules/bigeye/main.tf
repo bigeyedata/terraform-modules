@@ -1162,22 +1162,25 @@ locals {
   temporal_secret_arns = merge(var.temporal_additional_secret_arns, {
     "MYSQL_PWD" = local.temporal_rds_password_secret_arn
   })
-  temporal_container_def = {
-    name         = "${local.name}-temporal"
-    cpu          = var.datadog_agent_enabled ? var.temporal_cpu - var.datadog_agent_cpu : var.temporal_cpu
-    memory       = var.datadog_agent_enabled ? var.temporal_memory - var.datadog_agent_memory : var.temporal_memory
-    dockerLabels = local.temporal_datadog_docker_labels
-    image        = format("%s/%s%s:%s", local.image_registry, "temporal", var.image_repository_suffix, local.temporal_image_tag)
-    environment  = [for k, v in local.temporal_environment_variables : { Name = k, Value = v }]
-    secrets      = [for k, v in local.temporal_secret_arns : { Name = k, ValueFrom = v }]
-    logConfiguration = {
-      logDriver = "awslogs"
-      options = {
-        "awslogs-group"         = aws_cloudwatch_log_group.temporal.name
-        "awslogs-region"        = local.aws_region
-        "awslogs-stream-prefix" = "${local.name}-temporal"
-      }
+
+  log_configuration_def = var.temporal_logging_enabled ? {
+    logDriver = "awslogs"
+    options = {
+      "awslogs-group"         = aws_cloudwatch_log_group.temporal.name
+      "awslogs-region"        = local.aws_region
+      "awslogs-stream-prefix" = "${local.name}-temporal"
     }
+  } : null
+
+  temporal_container_def = {
+    name             = "${local.name}-temporal"
+    cpu              = var.datadog_agent_enabled ? var.temporal_cpu - var.datadog_agent_cpu : var.temporal_cpu
+    memory           = var.datadog_agent_enabled ? var.temporal_memory - var.datadog_agent_memory : var.temporal_memory
+    dockerLabels     = local.temporal_datadog_docker_labels
+    image            = format("%s/%s%s:%s", local.image_registry, "temporal", var.image_repository_suffix, local.temporal_image_tag)
+    environment      = [for k, v in local.temporal_environment_variables : { Name = k, Value = v }]
+    secrets          = [for k, v in local.temporal_secret_arns : { Name = k, ValueFrom = v }]
+    logConfiguration = local.log_configuration_def
     portMappings = [
       # Frontend service membership
       {
