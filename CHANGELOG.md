@@ -1,3 +1,13 @@
+# [2.5.0](https://github.com/bigeyedata/terraform-modules/compare/v2.4.0...v2.5.0) (2024-02-13)
+
+
+### Features
+
+* add module for cloudwatch alarms ([dee7fb0](https://github.com/bigeyedata/terraform-modules/commit/dee7fb08f454d58705de1a3b82d1cae75b250042))
+* add outputs to bigeye module for databases ([3a3aad9](https://github.com/bigeyedata/terraform-modules/commit/3a3aad9b9e423f0c6bec0ad46075d8fc4939f65d))
+
+
+
 # [2.4.0](https://github.com/bigeyedata/terraform-modules/compare/v2.3.0...v2.4.0) (2024-02-13)
 
 
