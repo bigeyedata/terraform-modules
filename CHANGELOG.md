@@ -1,3 +1,12 @@
+# [2.4.0](https://github.com/bigeyedata/terraform-modules/compare/v2.3.0...v2.4.0) (2024-02-13)
+
+
+### Features
+
+* add flag to control temporal logging ([c08dc57](https://github.com/bigeyedata/terraform-modules/commit/c08dc57caf65a932a5c4c69435fd9f5395218f31))
+
+
+
 # [2.3.0](https://github.com/bigeyedata/terraform-modules/compare/v2.2.0...v2.3.0) (2024-02-12)
 
 
