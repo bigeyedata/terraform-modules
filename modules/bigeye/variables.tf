@@ -854,6 +854,12 @@ variable "temporal_internet_facing" {
   default     = false
 }
 
+variable "temporal_logging_enabled" {
+  description = "Set to false to disable awslogs log driver for the temporal container.  This can be useful to save Cloudwatch logging costs if you never look at the Temporal server logs, which are occasionally for debugging."
+  type        = bool
+  default     = true
+}
+
 #======================================================
 # Application Variables - Datawatch
 #======================================================
