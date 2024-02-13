@@ -1,3 +1,12 @@
+## [3.1.1](https://github.com/bigeyedata/terraform-modules/compare/v3.1.0...v3.1.1) (2024-02-13)
+
+
+### Bug Fixes
+
+* bump GH slack actions version ([9000013](https://github.com/bigeyedata/terraform-modules/commit/9000013c3388e0c8bffb08dc291dff320e08a9b7))
+
+
+
 # [3.1.0](https://github.com/bigeyedata/terraform-modules/compare/v3.0.0...v3.1.0) (2024-02-13)
 
 
