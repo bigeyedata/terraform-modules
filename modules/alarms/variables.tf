@@ -3,6 +3,18 @@ variable "stack" {
   type        = string
 }
 
+variable "low_urgency_sns_topic_arn" {
+  description = "ARN of existing SNS topic to deliver low urgency alerts. If provided, a new one will not be created"
+  default     = ""
+  type        = string
+}
+
+variable "high_urgency_sns_topic_arn" {
+  description = "ARN of existing SNS topic to deliver high urgency alerts. If provided, a new one will not be created"
+  default     = ""
+  type        = string
+}
+
 variable "rabbitmq_name" {
   description = "The name of the rabbitmq broker"
   type        = string
