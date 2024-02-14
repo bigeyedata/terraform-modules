@@ -902,6 +902,42 @@ variable "temporal_logging_enabled" {
   default     = true
 }
 
+variable "temporal_frontend_persistence_max_qps" {
+  description = "Maximum number queries per second that the Frontend Service host can send to the Persistence store."
+  type        = string
+  default     = 2000
+}
+
+variable "temporal_history_persistence_max_qps" {
+  description = "Maximum number queries per second that the History Service host can send to the Persistence store."
+  type        = string
+  default     = 9000
+}
+
+variable "temporal_matching_persistence_max_qps" {
+  description = "Maximum number queries per second that the Matching Service host can send to the Persistence store."
+  type        = string
+  default     = 9000
+}
+
+variable "temporal_worker_persistence_max_qps" {
+  description = "Maximum number queries per second that the Worker Service host can send to the Persistence store."
+  type        = string
+  default     = 1000
+}
+
+variable "temporal_system_visibility_persistence_max_read_qps" {
+  description = "Maximum number queries per second that Visibility database can receive for read operations."
+  type        = string
+  default     = 9000
+}
+
+variable "temporal_system_visibility_persistence_max_write_qps" {
+  description = "Maximum number queries per second that Visibility database can receive for write operations."
+  type        = string
+  default     = 9000
+}
+
 #======================================================
 # Application Variables - Datawatch
 #======================================================

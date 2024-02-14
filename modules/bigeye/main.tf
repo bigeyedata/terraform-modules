@@ -1137,25 +1137,32 @@ locals {
     local.temporal_dd_env_vars,
     var.temporal_additional_environment_vars,
     {
-      ENVIRONMENT                                      = var.environment
-      INSTANCE                                         = var.instance
-      DB                                               = "mysql8"
-      DB_PORT                                          = "3306"
-      DBNAME                                           = "temporal"
-      MYSQL_SEEDS                                      = local.temporal_mysql_dns_name
-      MYSQL_USER                                       = "bigeye"
-      NUM_HISTORY_SHARDS                               = "512"
-      PROMETHEUS_ENDPOINT                              = "0.0.0.0:9091"
-      TEMPORAL_TLS_REQUIRE_CLIENT_AUTH                 = "true"
-      TEMPORAL_TLS_FRONTEND_DISABLE_HOST_VERIFICATION  = var.temporal_use_default_certificates ? "true" : "false"
-      TEMPORAL_TLS_INTERNODE_DISABLE_HOST_VERIFICATION = var.temporal_use_default_certificates ? "true" : "false"
-      TEMPORAL_TLS_INTERNODE_SERVER_NAME               = local.temporal_dns_name
-      TEMPORAL_TLS_FRONTEND_SERVER_NAME                = local.temporal_dns_name
-      TEMPORAL_PER_NAMESPACE_WORKER_COUNT              = local.temporal_per_namespace_worker_count
-      TEMPORAL_MAX_CONCURRENT_WORKFLOW_TASK_POLLERS    = local.temporal_max_concurrent_workflow_task_pollers
-      TEMPORAL_TLS_DISABLE_HOST_VERIFICATION           = var.temporal_use_default_certificates ? "true" : "false"
-      TEMPORAL_TLS_SERVER_NAME                         = local.temporal_dns_name
-      SQL_MAX_IDLE_CONNS                               = "10"
+      ENVIRONMENT                                          = var.environment
+      INSTANCE                                             = var.instance
+      DB                                                   = "mysql8"
+      DB_PORT                                              = "3306"
+      DBNAME                                               = "temporal"
+      MYSQL_SEEDS                                          = local.temporal_mysql_dns_name
+      MYSQL_USER                                           = "bigeye"
+      NUM_HISTORY_SHARDS                                   = "512"
+      PROMETHEUS_ENDPOINT                                  = "0.0.0.0:9091"
+      TEMPORAL_TLS_REQUIRE_CLIENT_AUTH                     = "true"
+      TEMPORAL_TLS_FRONTEND_DISABLE_HOST_VERIFICATION      = var.temporal_use_default_certificates ? "true" : "false"
+      TEMPORAL_TLS_INTERNODE_DISABLE_HOST_VERIFICATION     = var.temporal_use_default_certificates ? "true" : "false"
+      TEMPORAL_TLS_INTERNODE_SERVER_NAME                   = local.temporal_dns_name
+      TEMPORAL_TLS_FRONTEND_SERVER_NAME                    = local.temporal_dns_name
+      TEMPORAL_PER_NAMESPACE_WORKER_COUNT                  = local.temporal_per_namespace_worker_count
+      TEMPORAL_MAX_CONCURRENT_WORKFLOW_TASK_POLLERS        = local.temporal_max_concurrent_workflow_task_pollers
+      TEMPORAL_FRONTEND_PERSISTENCE_MAX_QPS                = local.temporal_frontend_persistence_max_qps
+      TEMPORAL_HISTORY_PERSISTENCE_MAX_QPS                 = local.temporal_history_persistence_max_qps
+      TEMPORAL_MATCHING_PERSISTENCE_MAX_QPS                = local.temporal_matching_persistence_max_qps
+      TEMPORAL_WORKER_PERSISTENCE_MAX_QPS                  = local.temporal_worker_persistence_max_qps
+      TEMPORAL_SYSTEM_VISIBILITY_PERSISTENCE_MAX_READ_QPS  = local.temporal_system_visibility_persistence_max_read_qps
+      TEMPORAL_SYSTEM_VISIBILITY_PERSISTENCE_MAX_WRITE_QPS = local.temporal_system_visibility_persistence_max_write_qps
+
+      TEMPORAL_TLS_DISABLE_HOST_VERIFICATION = var.temporal_use_default_certificates ? "true" : "false"
+      TEMPORAL_TLS_SERVER_NAME               = local.temporal_dns_name
+      SQL_MAX_IDLE_CONNS                     = "10"
     }
   )
 
