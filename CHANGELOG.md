@@ -1,3 +1,12 @@
+# [2.7.0](https://github.com/bigeyedata/terraform-modules/compare/v2.6.0...v2.7.0) (2024-02-14)
+
+
+### Features
+
+* add control over temporal persistence QPS ([ff4b2d9](https://github.com/bigeyedata/terraform-modules/commit/ff4b2d90bfddc3644ee16df916b78946ccd0bd55))
+
+
+
 # [2.6.0](https://github.com/bigeyedata/terraform-modules/compare/v2.5.0...v2.6.0) (2024-02-14)
 
 
