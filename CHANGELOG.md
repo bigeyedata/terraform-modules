@@ -1,3 +1,12 @@
+# [2.8.0](https://github.com/bigeyedata/terraform-modules/compare/v2.7.0...v2.8.0) (2024-02-15)
+
+
+### Features
+
+* add option to use existing high/low urgency SNS topics ([8c1ee45](https://github.com/bigeyedata/terraform-modules/commit/8c1ee45dfba87b92d6d3dae1e4fc7f887778d603))
+
+
+
 # [2.7.0](https://github.com/bigeyedata/terraform-modules/compare/v2.6.0...v2.7.0) (2024-02-14)
 
 
