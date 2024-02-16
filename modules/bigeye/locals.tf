@@ -115,7 +115,7 @@ locals {
   sentry_event_level_env_variable = var.sentry_event_level != "" ? {
     SENTRY_EVENT_LEVEL = var.sentry_event_level
   } : {}
-  sentry_dsn_secret_arn = var.sentry_dsn_secret_arn != "" ? {
+  sentry_dsn_secret_map = var.sentry_dsn_secret_arn != "" ? {
     SENTRY_DSN = var.sentry_dsn_secret_arn
   } : {}
 
@@ -129,7 +129,7 @@ locals {
     local.auth0_secrets_map,
     local.slack_secrets_map,
     local.stitch_secrets_map,
-    local.sentry_dsn_secret_arn,
+    local.sentry_dsn_secret_map,
     local.byomailserver_smtp_password_secrets_map,
     var.datawatch_additional_secret_arns,
     {

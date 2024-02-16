@@ -20,6 +20,8 @@ See the "Standard" example for more details on general Bigeye stack configuratio
 You will need all the same prerequisites as the standard
 install, as well as an existing VPC with appropriate subnets.
 
+Also create an AWS secrets manager secret and put the password for your SMTP credential as a string.
+
 ## Configuration
 
 Follow all the configuration steps in the standard install,
@@ -36,6 +38,10 @@ and then add the following variables:
 * `internet_facing          = false` - do not create the API/UI LB as public facing
 * `create_security_groups = false` - do not create security groups for the various services.  This allows you to bring your own with inbound cidr ranges restricted.  While technically not required since the subnets do not have a route to public net, this is a 2nd layer of security to ensure no public inbound traffic is allowed to the Bigeye application.  You will likely want to add your VPN cidr range to this anyhow.
 * `*_extra_security_group_ids` - use your own security groups for resources (see create_security_groups = false)
+* `byomailserver_smtp_host` - hostname of your custom SMTP server
+* `byomailserver_smtp_port` - port of your custom SMTP server
+* `byomailserver_smtp_user` - username for your custom SMTP server
+* `byomailserver_smtp_password_secret_arn` - AWS secrets manager ARN containing the password for your custom SMTP server.  See [main.tf](./main.tf) for implementation
 
 Your VPC structure will dictate which subnet IDs need to be
 chosen for each category here. You must provide at least two

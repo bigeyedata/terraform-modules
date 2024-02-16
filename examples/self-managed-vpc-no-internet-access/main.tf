@@ -1,6 +1,14 @@
 locals {
-  environment = "test"
-  instance    = "no-igw"
+  environment                                               = "test"
+  instance                                                  = "no-igw"
+  byomailserver_smtp_password_aws_secrets_manager_secret_id = "bigeye/example/byomailserver-smtp-password"
+  byomailserver_smtp_host                                   = "smtp.example.com"
+  byomailserver_smtp_port                                   = "587"
+  byomailserver_smtp_user                                   = "smtp.user@mail.example.com"
+}
+
+data "aws_secretsmanager_secret" "byomailserver_smtp_password" {
+  name = local.byomailserver_smtp_password_aws_secrets_manager_secret_id
 }
 
 module "bigeye" {
@@ -57,4 +65,11 @@ module "bigeye" {
 
   temporal_internet_facing = false
   internet_facing          = false
+
+  # byo mail server.  Bigeye's default SMTP server will not be reachable to route email notifications
+  # in a no-igw setup so add this for no-igw installs.  This can be omitted if you do not wish to receive email notifications.
+  byomailserver_smtp_host                = local.byomailserver_smtp_host
+  byomailserver_smtp_port                = local.byomailserver_smtp_port
+  byomailserver_smtp_user                = local.byomailserver_smtp_user
+  byomailserver_smtp_password_secret_arn = data.aws_secretsmanager_secret.byomailserver_smtp_password.arn
 }

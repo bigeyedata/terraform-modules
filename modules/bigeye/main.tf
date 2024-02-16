@@ -1551,7 +1551,7 @@ module "monocle" {
 
   secret_arns = merge(
     var.monocle_additional_secret_arns,
-    local.sentry_dsn_secret_arn,
+    local.sentry_dsn_secret_map,
     local.stitch_secrets_map,
     {
       MQ_BROKER_PASSWORD = local.rabbitmq_user_password_secret_arn
@@ -1642,7 +1642,7 @@ module "toretto" {
 
   secret_arns = merge(
     var.toretto_additional_secret_arns,
-    local.sentry_dsn_secret_arn,
+    local.sentry_dsn_secret_map,
     local.stitch_secrets_map,
     {
       MQ_BROKER_PASSWORD = local.rabbitmq_user_password_secret_arn
@@ -1800,7 +1800,7 @@ module "scheduler" {
       REDIS_PRIMARY_PASSWORD = local.redis_auth_token_secret_arn
       ROBOT_PASSWORD         = local.robot_password_secret_arn
     },
-    local.sentry_dsn_secret_arn,
+    local.sentry_dsn_secret_map,
   )
 }
 
