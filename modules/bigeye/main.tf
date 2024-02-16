@@ -1685,7 +1685,7 @@ resource "aws_appautoscaling_target" "toretto" {
   count              = var.toretto_autoscaling_enabled ? 1 : 0
   min_capacity       = 1
   max_capacity       = 100
-  resource_id        = format("service/%s/%s-toretto", aws_ecs_cluster.this.id, aws_ecs_cluster.this.id)
+  resource_id        = format("service/%s/%s-toretto", local.name, local.name)
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
 }
@@ -1698,7 +1698,8 @@ locals {
 
 resource "aws_appautoscaling_policy" "toretto" {
   count              = var.toretto_autoscaling_enabled ? 1 : 0
-  name               = format("%s-toretto-autoscaling", aws_ecs_cluster.this.id)
+  depends_on         = [aws_appautoscaling_target.toretto]
+  name               = format("%s-toretto-autoscaling", local.name)
   policy_type        = "StepScaling"
   resource_id        = aws_appautoscaling_target.toretto[0].resource_id
   scalable_dimension = aws_appautoscaling_target.toretto[0].scalable_dimension
@@ -1734,7 +1735,7 @@ resource "aws_appautoscaling_policy" "toretto" {
 
 resource "aws_cloudwatch_metric_alarm" "toretto" {
   count           = var.toretto_autoscaling_enabled ? 1 : 0
-  alarm_name      = format("%s-toretto autoscaling", aws_ecs_cluster.this.id)
+  alarm_name      = format("%s-toretto autoscaling", local.name)
   actions_enabled = true
   alarm_actions   = [aws_appautoscaling_policy.toretto[0].arn]
   metric_name     = "MessageCount"
