@@ -260,7 +260,7 @@ variable "rds_datawatch_connections_high_threshold" {
 variable "rds_datawatch_connections_low_datapoints_to_alarm" {
   description = "The number of datapoints breaching threshold to alarm"
   type        = number
-  default     = 6
+  default     = 3
 }
 
 variable "rds_datawatch_connections_low_disabled" {
@@ -272,7 +272,7 @@ variable "rds_datawatch_connections_low_disabled" {
 variable "rds_datawatch_connections_low_evaluation_periods" {
   description = "The number of periods over which the metric is evaluated"
   type        = number
-  default     = 3
+  default     = 6
 }
 
 variable "rds_datawatch_connections_low_period" {
@@ -440,7 +440,7 @@ variable "rds_datawatch_load_threshold" {
 variable "rds_datawatch_memory_free_datapoints_to_alarm" {
   description = "The number of datapoints breaching threshold to alarm"
   type        = number
-  default     = 4
+  default     = 2
 }
 
 variable "rds_datawatch_memory_free_disabled" {
@@ -452,7 +452,7 @@ variable "rds_datawatch_memory_free_disabled" {
 variable "rds_datawatch_memory_free_evaluation_periods" {
   description = "The number of periods over which the metric is evaluated"
   type        = number
-  default     = 2
+  default     = 4
 }
 
 variable "rds_datawatch_memory_free_period" {
@@ -728,7 +728,7 @@ variable "rds_datawatch_replica_load_threshold" {
 variable "rds_datawatch_replica_memory_free_datapoints_to_alarm" {
   description = "The number of datapoints breaching threshold to alarm"
   type        = number
-  default     = 4
+  default     = 2
 }
 
 variable "rds_datawatch_replica_memory_free_disabled" {
@@ -740,7 +740,7 @@ variable "rds_datawatch_replica_memory_free_disabled" {
 variable "rds_datawatch_replica_memory_free_evaluation_periods" {
   description = "The number of periods over which the metric is evaluated"
   type        = number
-  default     = 2
+  default     = 4
 }
 
 variable "rds_datawatch_replica_memory_free_period" {
