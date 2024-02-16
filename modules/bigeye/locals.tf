@@ -50,6 +50,12 @@ locals {
   temporal_rds_password_secret_arn     = local.create_temporal_rds_password_secret ? aws_secretsmanager_secret.temporal_rds_password[0].arn : var.temporal_rds_root_user_password_secret_arn
   create_adminpages_password_secret    = var.adminpages_password_secret_arn == ""
   adminpages_password_secret_arn       = local.create_adminpages_password_secret ? aws_secretsmanager_secret.adminpages_password[0].arn : var.adminpages_password_secret_arn
+  # byomailserver
+  byomailserver_enabled                   = var.byomailserver_smtp_host != "" && var.byomailserver_smtp_port != "" && var.byomailserver_smtp_user != "" && var.byomailserver_smtp_password_secret_arn != ""
+  byomailserver_smtp_host                 = local.byomailserver_enabled ? var.byomailserver_smtp_host : ""
+  byomailserver_smtp_port                 = local.byomailserver_enabled ? var.byomailserver_smtp_port : ""
+  byomailserver_smtp_user                 = local.byomailserver_enabled ? var.byomailserver_smtp_user : ""
+  byomailserver_smtp_password_secrets_map = local.byomailserver_enabled ? { MAILER_PASSWORD = var.byomailserver_smtp_password_secret_arn } : {}
 
   # DNS
   base_dns_alias                          = coalesce(var.vanity_alias, local.name)
@@ -124,6 +130,7 @@ locals {
     local.slack_secrets_map,
     local.stitch_secrets_map,
     local.sentry_dsn_secret_arn,
+    local.byomailserver_smtp_password_secrets_map,
     var.datawatch_additional_secret_arns,
     {
       REDIS_PRIMARY_PASSWORD = local.redis_auth_token_secret_arn
@@ -142,6 +149,7 @@ locals {
   temporal_worker_persistence_max_qps                  = var.temporal_worker_persistence_max_qps
   temporal_system_visibility_persistence_max_read_qps  = var.temporal_system_visibility_persistence_max_read_qps
   temporal_system_visibility_persistence_max_write_qps = var.temporal_system_visibility_persistence_max_write_qps
+
 
   #======================================================
   # Datadog specs

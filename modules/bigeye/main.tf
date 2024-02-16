@@ -2202,6 +2202,10 @@ module "datawatch" {
       TEMPORAL_NAMESPACE                         = var.temporal_namespace
       TEMPORAL_SSL_HOSTNAME_VERIFICATION_ENABLED = var.temporal_use_default_certificates ? "false" : "true"
 
+      MAILER_HOST = local.byomailserver_smtp_host
+      MAILER_PORT = local.byomailserver_smtp_port
+      MAILER_USER = local.byomailserver_smtp_user
+
       MTLS_KEY_PATH      = "/temporal/mtls.key"
       MTLS_CERT_PATH     = "/temporal/mtls.pem"
       MAX_RAM_PERCENTAGE = var.datawatch_jvm_max_ram_pct
@@ -2304,10 +2308,15 @@ module "datawork" {
       TEMPORAL_TARGET                            = "${local.temporal_dns_name}:${local.temporal_lb_port}"
       TEMPORAL_NAMESPACE                         = var.temporal_namespace
       TEMPORAL_SSL_HOSTNAME_VERIFICATION_ENABLED = var.temporal_use_default_certificates ? "false" : "true"
-      MTLS_KEY_PATH                              = "/temporal/mtls.key"
-      MTLS_CERT_PATH                             = "/temporal/mtls.pem"
-      MAX_RAM_PERCENTAGE                         = var.datawatch_jvm_max_ram_pct
-      AWS_REGION                                 = local.aws_region
+
+      MAILER_HOST = local.byomailserver_smtp_host
+      MAILER_PORT = local.byomailserver_smtp_port
+      MAILER_USER = local.byomailserver_smtp_user
+
+      MTLS_KEY_PATH      = "/temporal/mtls.key"
+      MTLS_CERT_PATH     = "/temporal/mtls.pem"
+      MAX_RAM_PERCENTAGE = var.datawatch_jvm_max_ram_pct
+      AWS_REGION         = local.aws_region
     }
   )
 
@@ -2405,10 +2414,15 @@ module "metricwork" {
       TEMPORAL_TARGET                            = "${local.temporal_dns_name}:${local.temporal_lb_port}"
       TEMPORAL_NAMESPACE                         = var.temporal_namespace
       TEMPORAL_SSL_HOSTNAME_VERIFICATION_ENABLED = var.temporal_use_default_certificates ? "false" : "true"
-      MTLS_KEY_PATH                              = "/temporal/mtls.key"
-      MTLS_CERT_PATH                             = "/temporal/mtls.pem"
-      MAX_RAM_PERCENTAGE                         = var.datawatch_jvm_max_ram_pct
-      AWS_REGION                                 = local.aws_region
+
+      MAILER_HOST = local.byomailserver_smtp_host
+      MAILER_PORT = local.byomailserver_smtp_port
+      MAILER_USER = local.byomailserver_smtp_user
+
+      MTLS_KEY_PATH      = "/temporal/mtls.key"
+      MTLS_CERT_PATH     = "/temporal/mtls.pem"
+      MAX_RAM_PERCENTAGE = var.datawatch_jvm_max_ram_pct
+      AWS_REGION         = local.aws_region
     }
   )
 

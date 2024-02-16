@@ -394,6 +394,31 @@ variable "stitch_api_token_secretsmanager_arn" {
   default     = ""
 }
 
+variable "byomailserver_smtp_host" {
+  description = "Hostname of SMTP server.  This is for routing email notifications through your customer SMTP server vs using Bigeye's.  Ex. smtp.example.com"
+  type        = string
+  default     = ""
+}
+
+variable "byomailserver_smtp_port" {
+  description = "Port for the SMTP server.  This is for routing email notifications through your customer SMTP server vs using Bigeye's."
+  type        = string
+  default     = ""
+}
+
+variable "byomailserver_smtp_user" {
+  description = "SMTP credentials for your custom SMPT server."
+  type        = string
+  default     = ""
+}
+
+variable "byomailserver_smtp_password_secret_arn" {
+  description = "secrets manager ARN for the SMTP password."
+  type        = string
+  default     = ""
+}
+
+
 #======================================================
 # Application Variables - Monocle
 #======================================================
