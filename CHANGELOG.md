@@ -1,3 +1,19 @@
+# [2.10.0](https://github.com/bigeyedata/terraform-modules/compare/v2.9.1...v2.10.0) (2024-02-16)
+
+
+### Bug Fixes
+
+* toretto autoscaling names ([3bc0d1e](https://github.com/bigeyedata/terraform-modules/commit/3bc0d1ecea762a77e41dc98a089baebaaf98a15a))
+* toretto autoscaling should be based on datawatch count ([f5385dd](https://github.com/bigeyedata/terraform-modules/commit/f5385ddc01325999bf2a8e714fe6f7e2646eba9c))
+
+
+### Features
+
+* add autoscaling to monocle ([dd7b1eb](https://github.com/bigeyedata/terraform-modules/commit/dd7b1ebc382eca5d1a15786462c928ce2c998f42))
+* add outputs from service module ([f99708e](https://github.com/bigeyedata/terraform-modules/commit/f99708ead622f6ad68832d36ecafafe54140672a))
+
+
+
 ## [2.9.1](https://github.com/bigeyedata/terraform-modules/compare/v2.9.0...v2.9.1) (2024-02-16)
 
 
