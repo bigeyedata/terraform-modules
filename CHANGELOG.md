@@ -1,3 +1,12 @@
+# [2.9.0](https://github.com/bigeyedata/terraform-modules/compare/v2.8.0...v2.9.0) (2024-02-16)
+
+
+### Features
+
+* add BYO mail server env vars to datawatch, datawork, metricwork ([3a814a4](https://github.com/bigeyedata/terraform-modules/commit/3a814a4868c42608d276960bc6a972f4149ecc17))
+
+
+
 # [2.8.0](https://github.com/bigeyedata/terraform-modules/compare/v2.7.0...v2.8.0) (2024-02-15)
 
 
