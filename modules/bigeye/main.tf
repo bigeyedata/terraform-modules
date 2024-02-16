@@ -1563,6 +1563,35 @@ module "monocle" {
   )
 }
 
+resource "aws_appautoscaling_target" "monocle" {
+  count              = var.monocle_autoscaling_enabled ? 1 : 0
+  depends_on         = [module.monocle]
+  min_capacity       = var.monocle_desired_count
+  max_capacity       = var.monocle_max_count
+  resource_id        = format("service/%s/%s-monocle", local.name, local.name)
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+}
+
+resource "aws_appautoscaling_policy" "monocle" {
+  count              = var.monocle_autoscaling_enabled ? 1 : 0
+  depends_on         = [aws_appautoscaling_target.monocle]
+  name               = format("%s-monocle-autoscaling", local.name)
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.monocle[0].resource_id
+  scalable_dimension = aws_appautoscaling_target.monocle[0].scalable_dimension
+  service_namespace  = aws_appautoscaling_target.monocle[0].service_namespace
+  target_tracking_scaling_policy_configuration {
+    target_value       = var.monocle_autoscaling_request_count_target
+    scale_in_cooldown  = 300
+    scale_out_cooldown = 300
+    predefined_metric_specification {
+      predefined_metric_type = "ALBRequestCountPerTarget"
+      resource_label         = format("%s/%s", module.monocle.load_balancer_full_name, module.monocle.target_group_full_name)
+    }
+  }
+}
+
 #======================================================
 # Toretto
 #======================================================
