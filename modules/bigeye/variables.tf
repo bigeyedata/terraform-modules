@@ -476,6 +476,24 @@ variable "monocle_lb_extra_security_group_ids" {
   default     = []
 }
 
+variable "monocle_autoscaling_enabled" {
+  description = "Whether monocle autoscaling is enabled"
+  type        = bool
+  default     = false
+}
+
+variable "monocle_max_count" {
+  description = "The maximum number of monocle instances allowed"
+  type        = number
+  default     = 3
+}
+
+variable "monocle_autoscaling_request_count_target" {
+  description = "The scaling target for number of requests per instance"
+  type        = number
+  default     = 15
+}
+
 #======================================================
 # Application Variables - Toretto
 #======================================================
