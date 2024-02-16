@@ -1691,9 +1691,9 @@ resource "aws_appautoscaling_target" "toretto" {
 }
 
 locals {
-  toretto_desired_count_step1 = coalesce(var.toretto_desired_count_step1, var.toretto_desired_count * 2)
-  toretto_desired_count_step2 = coalesce(var.toretto_desired_count_step2, var.toretto_desired_count * 3)
-  toretto_desired_count_step3 = coalesce(var.toretto_desired_count_step3, var.toretto_desired_count * 4)
+  toretto_desired_count_step1 = coalesce(var.toretto_desired_count_step1, var.datawatch_desired_count * 2)
+  toretto_desired_count_step2 = coalesce(var.toretto_desired_count_step2, var.datawatch_desired_count * 3)
+  toretto_desired_count_step3 = coalesce(var.toretto_desired_count_step3, var.datawatch_desired_count * 4)
 }
 
 resource "aws_appautoscaling_policy" "toretto" {
