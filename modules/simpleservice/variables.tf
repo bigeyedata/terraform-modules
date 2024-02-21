@@ -200,6 +200,12 @@ variable "datadog_additional_docker_labels" {
   type        = map(string)
   default     = {}
 }
+
+variable "datadog_agent_additional_secret_arns" {
+  description = "Additional secret arns for the datadog container"
+  type        = map(string)
+  default     = {}
+}
 #======================================================
 # Load balancer settings
 #======================================================
