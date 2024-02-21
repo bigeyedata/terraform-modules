@@ -62,9 +62,12 @@ locals {
     DATADOG_ENABLED = "false"
   }
 
-  datadog_service_secret_arns = var.datadog_agent_enabled ? {
-    DD_API_KEY = var.datadog_agent_api_key_secret_arn
-  } : {}
+  datadog_service_secret_arns = var.datadog_agent_enabled ? merge(
+    {
+      DD_API_KEY = var.datadog_agent_api_key_secret_arn
+    },
+    var.datadog_agent_additional_secret_arns
+  ) : {}
 
   datadog_agent_container_definition = {
     name        = "datadog-agent"
