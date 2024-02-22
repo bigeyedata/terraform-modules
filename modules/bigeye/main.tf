@@ -1687,6 +1687,7 @@ module "toretto" {
 
 resource "aws_appautoscaling_target" "toretto" {
   count              = var.toretto_autoscaling_enabled ? 1 : 0
+  depends_on         = [module.toretto]
   min_capacity       = 1
   max_capacity       = 100
   resource_id        = format("service/%s/%s-toretto", local.name, local.name)
