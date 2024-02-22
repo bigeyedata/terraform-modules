@@ -20,6 +20,12 @@ variable "extra_security_groups" {
   default     = []
 }
 
+variable "extra_ingress_cidr_blocks" {
+  description = "A list of additional ingress cidrs to allow access to both the AMQPS port and the HTTPS admin port.  This is necessary to use in cases where it is required to grant access to RabbitMQ externally as AWS MQ does not allow modifying security groups after MQ creation."
+  type        = list(string)
+  default     = []
+}
+
 variable "subnet_ids" {
   description = "List of subnet ids for the RabbitMQ Broker to run in"
   type        = list(string)

@@ -66,10 +66,27 @@ resource "aws_security_group" "this" {
   vpc_id = var.vpc_id
 
   ingress {
+    description     = "AMPQS connections from Bigeye"
     from_port       = 5671
     to_port         = 5671
     protocol        = "TCP"
     security_groups = [aws_security_group.client[0].id]
+  }
+
+  ingress {
+    description = "AMPQS connections from custom cidr blocks"
+    from_port   = 5671
+    to_port     = 5671
+    protocol    = "TCP"
+    cidr_blocks = var.extra_ingress_cidr_blocks
+  }
+
+  ingress {
+    description = "RabbitMQ admin console from custom cidr blocks"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "TCP"
+    cidr_blocks = var.extra_ingress_cidr_blocks
   }
 
   tags = merge(var.tags, {
