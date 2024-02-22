@@ -678,7 +678,7 @@ module "rabbitmq" {
   source                 = "../rabbitmq"
   name                   = local.name
   vpc_id                 = local.vpc_id
-  deployment_mode        = var.redundant_infrastructure ? "CLUSTER_MULTI_AZ" : "SINGLE_INSTANCE"
+  deployment_mode        = local.rabbitmq_cluster_mode_enabled ? "CLUSTER_MULTI_AZ" : "SINGLE_INSTANCE"
   create_security_groups = var.create_security_groups
   # TODO add module.bigeye_admin.client_security_group_id to the list of extra_security_groups when AWS MQ supports modifying security groups
   extra_security_groups     = var.rabbitmq_extra_security_group_ids

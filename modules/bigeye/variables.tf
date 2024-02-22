@@ -292,11 +292,16 @@ variable "rabbitmq_extra_ingress_cidr_blocks" {
   default     = []
 }
 
-
 variable "rabbitmq_instance_type" {
   description = "The instance type of the RabbitMQ broker"
   type        = string
   default     = "mq.t3.micro"
+}
+
+variable "rabbitmq_cluster_enabled" {
+  description = "Whether to use the Multi-AZ Cluster mode. If unset, it will defer to the redundant_infrastructure variable"
+  type        = bool
+  default     = null
 }
 
 variable "rabbitmq_engine_version" {
