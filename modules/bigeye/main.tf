@@ -1148,7 +1148,7 @@ locals {
       DBNAME                                               = "temporal"
       MYSQL_SEEDS                                          = local.temporal_mysql_dns_name
       MYSQL_USER                                           = "bigeye"
-      NUM_HISTORY_SHARDS                                   = "512"
+      NUM_HISTORY_SHARDS                                   = tostring(var.temporal_num_history_shards)
       PROMETHEUS_ENDPOINT                                  = "0.0.0.0:9091"
       TEMPORAL_TLS_REQUIRE_CLIENT_AUTH                     = "true"
       TEMPORAL_TLS_FRONTEND_DISABLE_HOST_VERIFICATION      = var.temporal_use_default_certificates ? "true" : "false"
