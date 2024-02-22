@@ -1,3 +1,17 @@
+# [2.11.0](https://github.com/bigeyedata/terraform-modules/compare/v2.10.0...v2.11.0) (2024-02-22)
+
+
+### Bug Fixes
+
+* datadog metric checks for haproxy ([2a2cc79](https://github.com/bigeyedata/terraform-modules/commit/2a2cc7967f26338e8864df32f8772888234bb553))
+
+
+### Features
+
+* add variables for datadog container secrets ([72d2003](https://github.com/bigeyedata/terraform-modules/commit/72d20031c6cb8bb4457cb773082a09fa8a2226e2))
+
+
+
 # [2.10.0](https://github.com/bigeyedata/terraform-modules/compare/v2.9.1...v2.10.0) (2024-02-16)
 
 
