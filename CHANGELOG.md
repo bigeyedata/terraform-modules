@@ -1,3 +1,12 @@
+# [2.12.0](https://github.com/bigeyedata/terraform-modules/compare/v2.11.0...v2.12.0) (2024-02-22)
+
+
+### Features
+
+* add ability to set ingress cidr blocks for rabbitmq ([ae4f96f](https://github.com/bigeyedata/terraform-modules/commit/ae4f96f3b197c55d2c9fa5bc95ba1b3f095718f3))
+
+
+
 # [2.11.0](https://github.com/bigeyedata/terraform-modules/compare/v2.10.0...v2.11.0) (2024-02-22)
 
 
