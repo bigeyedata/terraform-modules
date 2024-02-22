@@ -681,15 +681,16 @@ module "rabbitmq" {
   deployment_mode        = var.redundant_infrastructure ? "CLUSTER_MULTI_AZ" : "SINGLE_INSTANCE"
   create_security_groups = var.create_security_groups
   # TODO add module.bigeye_admin.client_security_group_id to the list of extra_security_groups when AWS MQ supports modifying security groups
-  extra_security_groups    = var.rabbitmq_extra_security_group_ids
-  subnet_ids               = local.rabbitmq_subnet_group_ids
-  instance_type            = var.rabbitmq_instance_type
-  engine_version           = var.rabbitmq_engine_version
-  maintenance_day          = var.rabbitmq_maintenance_day
-  maintenance_time         = var.rabbitmq_maintenance_time
-  user_name                = var.rabbitmq_user_name
-  user_password_secret_arn = local.rabbitmq_user_password_secret_arn
-  tags                     = local.tags
+  extra_security_groups     = var.rabbitmq_extra_security_group_ids
+  extra_ingress_cidr_blocks = var.rabbitmq_extra_ingress_cidr_blocks
+  subnet_ids                = local.rabbitmq_subnet_group_ids
+  instance_type             = var.rabbitmq_instance_type
+  engine_version            = var.rabbitmq_engine_version
+  maintenance_day           = var.rabbitmq_maintenance_day
+  maintenance_time          = var.rabbitmq_maintenance_time
+  user_name                 = var.rabbitmq_user_name
+  user_password_secret_arn  = local.rabbitmq_user_password_secret_arn
+  tags                      = local.tags
 }
 
 #======================================================

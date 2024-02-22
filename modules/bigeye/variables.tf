@@ -281,10 +281,17 @@ variable "rabbitmq_user_password_secret_arn" {
 }
 
 variable "rabbitmq_extra_security_group_ids" {
-  description = "A list of additional security group IDs to apply to the RabbitMQ broker"
+  description = "A list of additional security group IDs to apply to the RabbitMQ broker.  See also rabbitmq_extra_ingress_cidr_blocks"
   type        = list(string)
   default     = []
 }
+
+variable "rabbitmq_extra_ingress_cidr_blocks" {
+  description = "A list of additional ingress cidrs to allow access to both the AMQPS port and the HTTPS admin port.  This is necessary to use in cases where it is required to grant access to RabbitMQ externally as AWS MQ does not allow modifying security groups after MQ creation."
+  type        = list(string)
+  default     = []
+}
+
 
 variable "rabbitmq_instance_type" {
   description = "The instance type of the RabbitMQ broker"
