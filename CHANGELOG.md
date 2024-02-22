@@ -1,3 +1,18 @@
+# [2.13.0](https://github.com/bigeyedata/terraform-modules/compare/v2.12.0...v2.13.0) (2024-02-22)
+
+
+### Bug Fixes
+
+* add depends_on to improve deployment flow ([3a37200](https://github.com/bigeyedata/terraform-modules/commit/3a372009643848cab6f705b7d2d1663ff5310d7c))
+
+
+### Features
+
+* add variable for num history shards ([0d8460b](https://github.com/bigeyedata/terraform-modules/commit/0d8460b41495bdc62b09b990b8bf234e2cd51c32))
+* allow rabbitmq cluster mode to be controlled directly ([73f7643](https://github.com/bigeyedata/terraform-modules/commit/73f7643d3b8e38ac2ed283177305a44370d2fb20))
+
+
+
 # [2.12.0](https://github.com/bigeyedata/terraform-modules/compare/v2.11.0...v2.12.0) (2024-02-22)
 
 
