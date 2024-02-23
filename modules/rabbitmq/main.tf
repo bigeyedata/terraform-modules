@@ -65,32 +65,37 @@ resource "aws_security_group" "this" {
   name   = "${var.name}-rabbitmq"
   vpc_id = var.vpc_id
 
-  ingress {
-    description     = "AMPQS connections from Bigeye"
-    from_port       = 5671
-    to_port         = 5671
-    protocol        = "TCP"
-    security_groups = [aws_security_group.client[0].id]
-  }
-
-  ingress {
-    description = "AMPQS connections from custom cidr blocks"
-    from_port   = 5671
-    to_port     = 5671
-    protocol    = "TCP"
-    cidr_blocks = var.extra_ingress_cidr_blocks
-  }
-
-  ingress {
-    description = "RabbitMQ admin console from custom cidr blocks"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "TCP"
-    cidr_blocks = var.extra_ingress_cidr_blocks
-  }
-
   tags = merge(var.tags, {
     Duty = "rabbitmq"
     Name = "${var.name}-rabbitmq"
   })
+}
+
+resource "aws_vpc_security_group_ingress_rule" "amqps_bigeye" {
+  description                  = "AMPQS connections from Bigeye"
+  security_group_id            = aws_security_group.this[0].id
+  from_port                    = 5671
+  to_port                      = 5671
+  ip_protocol                  = "TCP"
+  referenced_security_group_id = aws_security_group.client[0].id
+}
+
+resource "aws_vpc_security_group_ingress_rule" "amqps_extra_cidr_blocks" {
+  for_each          = toset(var.extra_ingress_cidr_blocks)
+  description       = "AMPQS connections from custom cidr blocks"
+  security_group_id = aws_security_group.this[0].id
+  from_port         = 5671
+  to_port           = 5671
+  ip_protocol       = "TCP"
+  cidr_ipv4         = each.value
+}
+
+resource "aws_vpc_security_group_ingress_rule" "https_extra_cidr_blocks" {
+  for_each          = toset(var.extra_ingress_cidr_blocks)
+  description       = "RabbitMQ admin console from custom cidr blocks"
+  security_group_id = aws_security_group.this[0].id
+  from_port         = 433
+  to_port           = 433
+  ip_protocol       = "TCP"
+  cidr_ipv4         = each.value
 }
