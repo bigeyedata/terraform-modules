@@ -1,3 +1,34 @@
+# [3.0.0](https://github.com/bigeyedata/terraform-modules/compare/v2.13.0...v3.0.0) (2024-02-23)
+
+
+### Bug Fixes
+
+* use dedicated ingress rule for rabbitmq security group ([5fef368](https://github.com/bigeyedata/terraform-modules/commit/5fef3689316838c0e2b40f3d0106cfb47cc020ab))
+
+
+### Features
+
+* allow admin container access to RabbitMQ ([668e271](https://github.com/bigeyedata/terraform-modules/commit/668e271f0cce0afd2a3f211170f8eed3e5337889))
+
+
+### BREAKING CHANGES
+
+* This requires manual deletion of the <stack>-rabbitmq
+instance.
+
+AWS managed RabbitMQ does not allow changing security group membership
+for RabbitMQ so the resource must be deleted manually first before
+we can allow the admin container access to RabbitMQ.
+* This requires users to remove all existing
+security group rules from the <stack>-rabbitmq security group.
+
+The terraform run will fail due to duplicate ingress rules otherwise.
+
+This change was required to avoid terraform perpetually detecting
+changes when rabbitmq_extra_cidr_blocks is an empty list (default).
+
+
+
 # [2.13.0](https://github.com/bigeyedata/terraform-modules/compare/v2.12.0...v2.13.0) (2024-02-22)
 
 
