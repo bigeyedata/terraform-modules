@@ -547,13 +547,38 @@ resource "aws_iam_role" "ecs" {
   })
 }
 
-data "aws_iam_policy" "ecs_managed" {
-  name = "AmazonECSTaskExecutionRolePolicy"
-}
+resource "aws_iam_role_policy" "ecs_execution" {
+  role = aws_iam_role.ecs.id
+  name = "ECSTaskExecution"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "AllowECRAccess"
+        Effect = "Allow"
+        Action = [
+          "ecr:GetAuthorizationToken",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage"
+        ]
+        Resource = "*"
+      },
+      {
+        Sid    = "AllowCloudWatch"
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ]
+        Resource = [
+          "${aws_cloudwatch_log_group.bigeye.arn}:log-stream:*",
+          "${aws_cloudwatch_log_group.temporal.arn}:log-stream:*",
+        ]
+      }
+    ]
+  })
 
-resource "aws_iam_role_policy_attachment" "ecs" {
-  role       = aws_iam_role.ecs.name
-  policy_arn = data.aws_iam_policy.ecs_managed.arn
 }
 
 resource "aws_iam_role_policy" "ecs_secrets" {
