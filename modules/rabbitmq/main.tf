@@ -8,10 +8,6 @@ terraform {
   }
 }
 
-data "aws_secretsmanager_secret_version" "password" {
-  secret_id = var.user_password_secret_arn
-}
-
 resource "aws_mq_broker" "queue" {
   broker_name                = var.name
   auto_minor_version_upgrade = false
@@ -43,7 +39,7 @@ resource "aws_mq_broker" "queue" {
   user {
     console_access = true
     username       = var.user_name
-    password       = data.aws_secretsmanager_secret_version.password.secret_string
+    password       = var.user_password
   }
 
   tags = var.tags

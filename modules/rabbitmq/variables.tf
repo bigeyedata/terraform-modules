@@ -37,9 +37,10 @@ variable "user_name" {
   sensitive   = true
 }
 
-variable "user_password_secret_arn" {
-  description = "ASM Secret arn for user password to interact with the queue"
+variable "user_password" {
+  description = "User password to interact with the queue"
   type        = string
+  sensitive   = true
 }
 
 variable "deployment_mode" {
