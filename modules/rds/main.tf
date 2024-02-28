@@ -92,13 +92,6 @@ resource "aws_security_group" "db_replica_clients" {
   })
 }
 
-data "aws_secretsmanager_secret" "root_user_password" {
-  arn = var.root_user_password_secret_arn
-}
-data "aws_secretsmanager_secret_version" "root_user_password" {
-  secret_id = data.aws_secretsmanager_secret.root_user_password.id
-}
-
 module "this" {
   source  = "terraform-aws-modules/rds/aws"
   version = "6.1.1"
@@ -112,7 +105,7 @@ module "this" {
   instance_class                      = var.instance_class
   db_name                             = var.db_name
   username                            = var.root_user_name
-  password                            = data.aws_secretsmanager_secret_version.root_user_password.secret_string
+  password                            = var.root_user_password
   manage_master_user_password         = false
   deletion_protection                 = var.deletion_protection
   iam_database_authentication_enabled = true

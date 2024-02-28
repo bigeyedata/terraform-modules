@@ -634,13 +634,13 @@ module "bigeye_admin" {
   datawatch_rds_identifier          = module.datawatch_rds.identifier
   datawatch_rds_hostname            = module.datawatch_rds.primary_dns_name
   datawatch_rds_username            = module.datawatch_rds.master_user_name
-  datawatch_rds_password_secret_arn = module.datawatch_rds.master_user_password_secret_arn
+  datawatch_rds_password_secret_arn = local.datawatch_rds_password_secret_arn
   datawatch_rds_db_name             = module.datawatch_rds.database_name
 
   temporal_rds_identifier          = module.temporal_rds.identifier
   temporal_rds_hostname            = module.temporal_rds.primary_dns_name
   temporal_rds_username            = module.temporal_rds.master_user_name
-  temporal_rds_password_secret_arn = module.temporal_rds.master_user_password_secret_arn
+  temporal_rds_password_secret_arn = local.temporal_rds_password_secret_arn
   temporal_rds_db_name             = module.temporal_rds.database_name
 
   redis_domain_name         = module.redis.primary_endpoint_dns_name
@@ -985,6 +985,10 @@ resource "aws_secretsmanager_secret_version" "temporal_rds_password" {
   secret_id     = aws_secretsmanager_secret.temporal_rds_password[0].id
   secret_string = random_password.temporal_rds_password[0].result
 }
+data "aws_secretsmanager_secret_version" "byo_temporal_rds_password" {
+  count     = local.create_temporal_rds_password_secret ? 0 : 1
+  secret_id = var.temporal_rds_root_user_password_secret_arn
+}
 
 module "temporal_rds" {
   depends_on                            = [aws_secretsmanager_secret_version.temporal_rds_password]
@@ -992,7 +996,7 @@ module "temporal_rds" {
   name                                  = "${local.name}-temporal"
   db_name                               = var.temporal_rds_db_name
   root_user_name                        = "bigeye"
-  root_user_password_secret_arn         = local.temporal_rds_password_secret_arn
+  root_user_password                    = local.create_temporal_rds_password_secret ? aws_secretsmanager_secret_version.temporal_rds_password[0].secret_string : data.aws_secretsmanager_secret_version.byo_temporal_rds_password[0].secret_string
   deletion_protection                   = var.deletion_protection
   apply_immediately                     = var.rds_apply_immediately
   snapshot_identifier                   = var.temporal_rds_snapshot_identifier
@@ -2046,16 +2050,21 @@ resource "aws_secretsmanager_secret_version" "datawatch_rds_password" {
   secret_id     = aws_secretsmanager_secret.datawatch_rds_password[0].id
   secret_string = random_password.datawatch_rds_password[0].result
 }
+data "aws_secretsmanager_secret_version" "byo_datawatch_rds_password" {
+  count     = local.create_datawatch_rds_password_secret ? 0 : 1
+  secret_id = var.datawatch_rds_root_user_password_secret_arn
+}
+
 module "datawatch_rds" {
   depends_on = [aws_secretsmanager_secret_version.datawatch_rds_password]
   source     = "../rds"
   name       = "${local.name}-datawatch"
 
   # Connection Info
-  db_name                       = var.datawatch_rds_db_name
-  root_user_name                = var.datawatch_rds_root_user_name
-  root_user_password_secret_arn = local.datawatch_rds_password_secret_arn
-  snapshot_identifier           = var.datawatch_rds_snapshot_identifier
+  db_name             = var.datawatch_rds_db_name
+  root_user_name      = var.datawatch_rds_root_user_name
+  root_user_password  = local.create_datawatch_rds_password_secret ? aws_secretsmanager_secret_version.datawatch_rds_password[0].secret_string : data.aws_secretsmanager_secret_version.byo_datawatch_rds_password[0].secret_string
+  snapshot_identifier = var.datawatch_rds_snapshot_identifier
 
   #Networking
   vpc_id                   = local.vpc_id
