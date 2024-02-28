@@ -661,16 +661,23 @@ resource "random_password" "rabbitmq_user_password" {
   length  = 16
   special = false
 }
+
 resource "aws_secretsmanager_secret" "rabbitmq_user_password" {
   count                   = local.create_rabbitmq_user_password_secret ? 1 : 0
   name                    = format("bigeye/%s/datawatch/rabbitmq/password", local.name)
   recovery_window_in_days = local.secret_retention_days
   tags                    = local.tags
 }
+
 resource "aws_secretsmanager_secret_version" "rabbitmq_user_password" {
   count         = local.create_rabbitmq_user_password_secret ? 1 : 0
   secret_id     = aws_secretsmanager_secret.rabbitmq_user_password[0].id
   secret_string = random_password.rabbitmq_user_password[0].result
+}
+
+data "aws_secretsmanager_secret_version" "byo_rabbitmq_user_password" {
+  count     = local.create_rabbitmq_user_password_secret ? 0 : 1
+  secret_id = var.rabbitmq_user_password_secret_arn
 }
 
 module "rabbitmq" {
@@ -688,7 +695,7 @@ module "rabbitmq" {
   maintenance_day           = var.rabbitmq_maintenance_day
   maintenance_time          = var.rabbitmq_maintenance_time
   user_name                 = var.rabbitmq_user_name
-  user_password_secret_arn  = local.rabbitmq_user_password_secret_arn
+  user_password             = local.create_rabbitmq_user_password_secret ? aws_secretsmanager_secret_version.rabbitmq_user_password[0].secret_string : data.aws_secretsmanager_secret_version.byo_rabbitmq_user_password[0].secret_string
   tags                      = local.tags
 }
 
