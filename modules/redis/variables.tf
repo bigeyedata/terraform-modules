@@ -13,9 +13,10 @@ variable "subnet_group_name" {
   type        = string
 }
 
-variable "auth_token_secret_arn" {
-  description = "Secret arn for an authentication token to use with the cluster"
+variable "auth_token" {
+  description = "Authentication token to use with the cluster"
   type        = string
+  sensitive   = true
 }
 
 variable "cloudwatch_loggroup_name" {

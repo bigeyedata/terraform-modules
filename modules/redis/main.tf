@@ -8,10 +8,6 @@ terraform {
   }
 }
 
-data "aws_secretsmanager_secret_version" "auth_token" {
-  secret_id = var.auth_token_secret_arn
-}
-
 resource "aws_elasticache_replication_group" "this" {
   replication_group_id       = var.name
   description                = "Bigeye datawatch redis"
@@ -24,7 +20,7 @@ resource "aws_elasticache_replication_group" "this" {
 
   transit_encryption_enabled = true
   at_rest_encryption_enabled = true
-  auth_token                 = data.aws_secretsmanager_secret_version.auth_token.secret_string
+  auth_token                 = var.auth_token
   security_group_ids = concat(
     var.create_security_groups ? [aws_security_group.this[0].id] : [],
     var.extra_security_group_ids

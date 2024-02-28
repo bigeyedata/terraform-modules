@@ -644,7 +644,7 @@ module "bigeye_admin" {
   temporal_rds_db_name             = module.temporal_rds.database_name
 
   redis_domain_name         = module.redis.primary_endpoint_dns_name
-  redis_password_secret_arn = module.redis.auth_token_secret_arn
+  redis_password_secret_arn = local.redis_auth_token_secret_arn
 
   temporal_port = local.temporal_lb_port
 
@@ -1999,6 +1999,11 @@ resource "aws_secretsmanager_secret_version" "redis_auth_token" {
   secret_string = random_password.redis_auth_token[0].result
 }
 
+data "aws_secretsmanager_secret_version" "byo_redis_auth_token" {
+  count     = local.create_redis_auth_token_secret ? 0 : 1
+  secret_id = var.redis_auth_token_secret_arn
+}
+
 module "redis" {
   depends_on               = [aws_secretsmanager_secret_version.redis_auth_token]
   source                   = "../redis"
@@ -2013,7 +2018,7 @@ module "redis" {
     module.datawork.security_group_id,
     module.metricwork.security_group_id,
   ] : []
-  auth_token_secret_arn    = local.redis_auth_token_secret_arn
+  auth_token               = local.create_redis_auth_token_secret ? aws_secretsmanager_secret_version.redis_auth_token[0].secret_string : data.aws_secretsmanager_secret_version.byo_redis_auth_token[0].secret_string
   instance_type            = var.redis_instance_type
   instance_count           = var.redundant_infrastructure ? 2 : 1
   engine_version           = var.redis_engine_version
