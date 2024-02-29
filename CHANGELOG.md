@@ -1,3 +1,20 @@
+# [3.3.0](https://github.com/bigeyedata/terraform-modules/compare/v3.0.0...v3.3.0) (2024-02-29)
+
+
+### Bug Fixes
+
+* remove read-after-write race for rds databases ([776ebd5](https://github.com/bigeyedata/terraform-modules/commit/776ebd54c387c76212f0f6e34eddd0725e4b0cd3))
+* remove read-after-write race for redis auth token ([7c684c2](https://github.com/bigeyedata/terraform-modules/commit/7c684c2810171c5b5da797aae8f9e7ee7fd71762))
+* remove read-after-write race for secret in rabbitmq ([3e33823](https://github.com/bigeyedata/terraform-modules/commit/3e33823e5cd41184bcb84452f4d400c8cec5e97c))
+* upgrade slackapi/slack-github-action to v1.25.0 ([da3d503](https://github.com/bigeyedata/terraform-modules/commit/da3d50320ba52813342864d6e9076501720522b0))
+
+
+### Features
+
+* use inline policy rather than AWS-managed policy ([f68a32f](https://github.com/bigeyedata/terraform-modules/commit/f68a32ff0016528522b85df22aeb6c36b29a83c7))
+
+
+
 # [3.2.0](https://github.com/bigeyedata/terraform-modules/compare/v3.0.0...v3.2.0) (2024-02-29)
 
 
