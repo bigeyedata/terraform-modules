@@ -1,3 +1,12 @@
+## [3.3.2](https://github.com/bigeyedata/terraform-modules/compare/v3.3.1...v3.3.2) (2024-02-29)
+
+
+### Bug Fixes
+
+* always ACM cert creation flag logic ([5a2495d](https://github.com/bigeyedata/terraform-modules/commit/5a2495d069b1b8a4ede870d046f9a52730e7a80b))
+
+
+
 ## [3.3.1](https://github.com/bigeyedata/terraform-modules/compare/v3.2.0...v3.3.1) (2024-02-29)
 
 
