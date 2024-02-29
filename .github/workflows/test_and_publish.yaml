@@ -151,7 +151,7 @@ jobs:
             }
       - name: failure - notify
         if: ${{ failure() && steps.changelog.outputs.skipped == 'false' }}
-        uses: slackapi/slack-github-action@v1.23.0
+        uses: slackapi/slack-github-action@v1.25.0
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
         with:
