@@ -79,7 +79,7 @@ locals {
   datawatch_mysql_dns_name = local.use_rds_vanity_names ? local.datawatch_mysql_vanity_dns_name : module.datawatch_rds.primary_dns_name
   temporal_mysql_dns_name  = local.use_rds_vanity_names ? local.temporal_mysql_vanity_dns_name : module.temporal_rds.primary_dns_name
 
-  create_acm_cert           = var.acm_certificate_arn == "" && var.create_dns_records == false ? true : false
+  create_acm_cert           = var.acm_certificate_arn == "" ? true : false
   domain_validation_options = local.create_acm_cert ? aws_acm_certificate.wildcard[0].domain_validation_options : []
   acm_certificate_arn       = local.create_acm_cert ? aws_acm_certificate.wildcard[0].arn : var.acm_certificate_arn
 
