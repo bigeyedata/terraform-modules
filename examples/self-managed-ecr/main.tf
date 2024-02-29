@@ -7,7 +7,8 @@ module "bigeye" {
   top_level_dns_name = ""
 
   image_registry = format("%s.dkr.ecr.us-west-2.amazonaws.com", aws_ecr_repository.bigeye_ecr[0].registry_id)
-  # Get this from Bigeye Sales
+
+  # Bigeye app version.  You can list the tags available in the image_registry (using the latest is always recommended).
   image_tag = ""
 }
 

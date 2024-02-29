@@ -14,7 +14,12 @@ module "bigeye" {
   create_dns_records  = false
   acm_certificate_arn = local.acm_certificate_arn
 
-  image_tag = "1.35.0"
+  # This is Bigeye's ECR registry.  Setting this to Bigeye's registry is simple as a hello world example, but it is recommended
+  # for enterprise customers to cache our images in you own ECR repo.  See the self-managed-ecr example
+  image_registry = "021451147547.dkr.ecr.us-west-2.amazonaws.com"
+
+  # Bigeye app version.  You can list the tags available in the image_registry (using the latest is always recommended).
+  image_tag = ""
 }
 
 output "bigeye" {
