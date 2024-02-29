@@ -68,6 +68,7 @@ resource "aws_security_group" "this" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "amqps_bigeye" {
+  count                        = var.create_security_groups ? 1 : 0
   description                  = "AMPQS connections from Bigeye"
   security_group_id            = aws_security_group.this[0].id
   from_port                    = 5671
