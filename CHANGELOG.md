@@ -1,3 +1,12 @@
+## [3.3.1](https://github.com/bigeyedata/terraform-modules/compare/v3.2.0...v3.3.1) (2024-02-29)
+
+
+### Bug Fixes
+
+* only create ingress rule if create_security_groups = true ([0dd6209](https://github.com/bigeyedata/terraform-modules/commit/0dd62091ddb10344c5ad9c8125402315f0f70219))
+
+
+
 # [3.3.0](https://github.com/bigeyedata/terraform-modules/compare/v3.0.0...v3.3.0) (2024-02-29)
 
 
