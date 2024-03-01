@@ -97,6 +97,10 @@ module "vpc" {
     Duty   = "misc"
     Public = "false"
   })
+
+  enable_flow_log           = var.vpc_flow_logs_bucket_arn != ""
+  flow_log_destination_type = var.vpc_flow_logs_bucket_arn == "" ? null : "s3"
+  flow_log_destination_arn  = var.vpc_flow_logs_bucket_arn
 }
 
 # VPC input validation

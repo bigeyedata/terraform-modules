@@ -93,6 +93,12 @@ variable "vpc_single_nat_gateway" {
   default     = true
 }
 
+variable "vpc_flow_logs_bucket_arn" {
+  description = "ARN of the bucket to send flow logs to"
+  type        = string
+  default     = ""
+}
+
 #======================================================
 # Bring your own VPC
 #======================================================
