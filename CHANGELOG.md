@@ -1,3 +1,12 @@
+# [3.4.0](https://github.com/bigeyedata/terraform-modules/compare/v3.3.2...v3.4.0) (2024-03-01)
+
+
+### Features
+
+* add variable to control from email for byo smtp server setups ([30f2f14](https://github.com/bigeyedata/terraform-modules/commit/30f2f143fee3423048353a24d60b95e6f64411c0))
+
+
+
 ## [3.3.2](https://github.com/bigeyedata/terraform-modules/compare/v3.3.1...v3.3.2) (2024-02-29)
 
 
