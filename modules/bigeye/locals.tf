@@ -52,10 +52,11 @@ locals {
   create_adminpages_password_secret    = var.adminpages_password_secret_arn == ""
   adminpages_password_secret_arn       = local.create_adminpages_password_secret ? aws_secretsmanager_secret.adminpages_password[0].arn : var.adminpages_password_secret_arn
   # byomailserver
-  byomailserver_enabled                   = var.byomailserver_smtp_host != "" && var.byomailserver_smtp_port != "" && var.byomailserver_smtp_user != "" && var.byomailserver_smtp_password_secret_arn != ""
+  byomailserver_enabled                   = var.byomailserver_smtp_host != "" && var.byomailserver_smtp_port != "" && var.byomailserver_smtp_user != "" && var.byomailserver_smtp_password_secret_arn != "" && var.byomailserver_smtp_from_address != ""
   byomailserver_smtp_host                 = local.byomailserver_enabled ? var.byomailserver_smtp_host : ""
   byomailserver_smtp_port                 = local.byomailserver_enabled ? var.byomailserver_smtp_port : ""
   byomailserver_smtp_user                 = local.byomailserver_enabled ? var.byomailserver_smtp_user : ""
+  byomailserver_smtp_from_address         = local.byomailserver_enabled ? var.byomailserver_smtp_from_address : ""
   byomailserver_smtp_password_secrets_map = local.byomailserver_enabled ? { MAILER_PASSWORD = var.byomailserver_smtp_password_secret_arn } : {}
 
   # DNS

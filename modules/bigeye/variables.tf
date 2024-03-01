@@ -424,12 +424,18 @@ variable "byomailserver_smtp_user" {
   default     = ""
 }
 
+
+variable "byomailserver_smtp_from_address" {
+  description = "Set the from address for email notifications from Bigeye.  This should be from a domain the mail server is verified to be able to send emails as, ie bigeye@example.com."
+  type        = string
+  default     = ""
+}
+
 variable "byomailserver_smtp_password_secret_arn" {
   description = "secrets manager ARN for the SMTP password."
   type        = string
   default     = ""
 }
-
 
 #======================================================
 # Application Variables - Monocle
