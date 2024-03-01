@@ -2282,9 +2282,10 @@ module "datawatch" {
       TEMPORAL_NAMESPACE                         = var.temporal_namespace
       TEMPORAL_SSL_HOSTNAME_VERIFICATION_ENABLED = var.temporal_use_default_certificates ? "false" : "true"
 
-      MAILER_HOST = local.byomailserver_smtp_host
-      MAILER_PORT = local.byomailserver_smtp_port
-      MAILER_USER = local.byomailserver_smtp_user
+      MAILER_HOST         = local.byomailserver_smtp_host
+      MAILER_PORT         = local.byomailserver_smtp_port
+      MAILER_USER         = local.byomailserver_smtp_user
+      MAILER_FROM_ADDRESS = local.byomailserver_smtp_from_address
 
       MTLS_KEY_PATH      = "/temporal/mtls.key"
       MTLS_CERT_PATH     = "/temporal/mtls.pem"
@@ -2389,9 +2390,10 @@ module "datawork" {
       TEMPORAL_NAMESPACE                         = var.temporal_namespace
       TEMPORAL_SSL_HOSTNAME_VERIFICATION_ENABLED = var.temporal_use_default_certificates ? "false" : "true"
 
-      MAILER_HOST = local.byomailserver_smtp_host
-      MAILER_PORT = local.byomailserver_smtp_port
-      MAILER_USER = local.byomailserver_smtp_user
+      MAILER_HOST         = local.byomailserver_smtp_host
+      MAILER_PORT         = local.byomailserver_smtp_port
+      MAILER_USER         = local.byomailserver_smtp_user
+      MAILER_FROM_ADDRESS = local.byomailserver_smtp_from_address
 
       MTLS_KEY_PATH      = "/temporal/mtls.key"
       MTLS_CERT_PATH     = "/temporal/mtls.pem"
@@ -2495,9 +2497,10 @@ module "metricwork" {
       TEMPORAL_NAMESPACE                         = var.temporal_namespace
       TEMPORAL_SSL_HOSTNAME_VERIFICATION_ENABLED = var.temporal_use_default_certificates ? "false" : "true"
 
-      MAILER_HOST = local.byomailserver_smtp_host
-      MAILER_PORT = local.byomailserver_smtp_port
-      MAILER_USER = local.byomailserver_smtp_user
+      MAILER_HOST         = local.byomailserver_smtp_host
+      MAILER_PORT         = local.byomailserver_smtp_port
+      MAILER_USER         = local.byomailserver_smtp_user
+      MAILER_FROM_ADDRESS = local.byomailserver_smtp_from_address
 
       MTLS_KEY_PATH      = "/temporal/mtls.key"
       MTLS_CERT_PATH     = "/temporal/mtls.pem"
