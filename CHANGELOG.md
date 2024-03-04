@@ -1,3 +1,13 @@
+# [3.5.0](https://github.com/bigeyedata/terraform-modules/compare/v3.4.1...v3.5.0) (2024-03-04)
+
+
+### Features
+
+* add optional VPC S3 flow logs ([e2bc49a](https://github.com/bigeyedata/terraform-modules/commit/e2bc49ad38243da87f2edb2550e70cbcb9854d63))
+* enable performance insights by default if instances support it ([72aeeb5](https://github.com/bigeyedata/terraform-modules/commit/72aeeb5acf4fdc56509496150ba9661fb951ae2e))
+
+
+
 ## [3.4.1](https://github.com/bigeyedata/terraform-modules/compare/v3.4.0...v3.4.1) (2024-03-04)
 
 
