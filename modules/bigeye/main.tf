@@ -1038,7 +1038,7 @@ module "temporal_rds" {
   backup_window                         = var.rds_backup_window
   backup_retention_period               = var.temporal_rds_backup_retention_period
   maintenance_window                    = var.rds_maintenance_window
-  enable_performance_insights           = var.temporal_rds_enable_performance_insights
+  enable_performance_insights           = local.temporal_rds_performance_insights_enabled
   performance_insights_retention_period = var.rds_performance_insights_retention_period
   enable_multi_az                       = var.redundant_infrastructure ? true : false
   create_option_group                   = false
@@ -2119,7 +2119,7 @@ module "datawatch_rds" {
   backup_window                         = var.rds_backup_window
   backup_retention_period               = var.datawatch_rds_backup_retention_period
   maintenance_window                    = var.rds_maintenance_window
-  enable_performance_insights           = var.datawatch_rds_enable_performance_insights
+  enable_performance_insights           = local.datawatch_rds_performance_insights_enabled
   performance_insights_retention_period = var.rds_performance_insights_retention_period
   enhanced_monitoring_interval          = var.datawatch_rds_enhanced_monitoring_interval
   enhanced_monitoring_role_arn          = var.datawatch_rds_enhanced_monitoring_role_arn
