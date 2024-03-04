@@ -91,8 +91,8 @@ resource "aws_vpc_security_group_ingress_rule" "https_extra_cidr_blocks" {
   for_each          = toset(var.extra_ingress_cidr_blocks)
   description       = "RabbitMQ admin console from custom cidr blocks"
   security_group_id = aws_security_group.this[0].id
-  from_port         = 433
-  to_port           = 433
+  from_port         = 443
+  to_port           = 443
   ip_protocol       = "TCP"
   cidr_ipv4         = each.value
 }
