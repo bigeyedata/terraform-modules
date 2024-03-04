@@ -1,3 +1,12 @@
+## [3.4.1](https://github.com/bigeyedata/terraform-modules/compare/v3.4.0...v3.4.1) (2024-03-04)
+
+
+### Bug Fixes
+
+* update rabbitmq admin port to 443 ([fd42768](https://github.com/bigeyedata/terraform-modules/commit/fd4276868fa0b420098a8e030225cf00e398c9bc))
+
+
+
 # [3.4.0](https://github.com/bigeyedata/terraform-modules/compare/v3.3.2...v3.4.0) (2024-03-01)
 
 
