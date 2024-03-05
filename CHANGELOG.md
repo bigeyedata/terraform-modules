@@ -1,3 +1,12 @@
+# [3.6.0](https://github.com/bigeyedata/terraform-modules/compare/v3.5.1...v3.6.0) (2024-03-05)
+
+
+### Features
+
+* add ability to specify models s3 bucket name ([4a8e9c2](https://github.com/bigeyedata/terraform-modules/commit/4a8e9c24b1a06585e7baa0526099478f356dc60d))
+
+
+
 ## [3.5.1](https://github.com/bigeyedata/terraform-modules/compare/v3.5.0...v3.5.1) (2024-03-05)
 
 
