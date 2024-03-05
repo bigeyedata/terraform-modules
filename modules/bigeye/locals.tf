@@ -82,9 +82,9 @@ locals {
 
   # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PerfInsights.Overview.Engines.html
   performance_insights_unavailable_instance_types = ["db.t2.micro", "db.t2.small", "db.t3.micro", "db.t3.small", "db.t4g.micro", "db.t4g.small"]
-  datawatch_rds_performance_insights_available    = contains(local.performance_insights_unavailable_instance_types, var.datawatch_rds_instance_type) ? true : false
+  datawatch_rds_performance_insights_available    = !contains(local.performance_insights_unavailable_instance_types, var.datawatch_rds_instance_type) ? true : false
   datawatch_rds_performance_insights_enabled      = coalesce(var.datawatch_rds_enable_performance_insights, local.datawatch_rds_performance_insights_available)
-  temporal_rds_performance_insights_available     = contains(local.performance_insights_unavailable_instance_types, var.temporal_rds_instance_type) ? true : false
+  temporal_rds_performance_insights_available     = !contains(local.performance_insights_unavailable_instance_types, var.temporal_rds_instance_type) ? true : false
   temporal_rds_performance_insights_enabled       = coalesce(var.temporal_rds_enable_performance_insights, local.temporal_rds_performance_insights_available)
 
   create_acm_cert           = var.acm_certificate_arn == "" ? true : false
