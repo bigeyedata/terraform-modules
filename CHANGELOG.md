@@ -1,3 +1,12 @@
+## [3.5.1](https://github.com/bigeyedata/terraform-modules/compare/v3.5.0...v3.5.1) (2024-03-05)
+
+
+### Bug Fixes
+
+* logic update for when to install RDS performance insights ([b03da76](https://github.com/bigeyedata/terraform-modules/commit/b03da766ef201be57a9431de2c7e2e9dd4dc0886))
+
+
+
 # [3.5.0](https://github.com/bigeyedata/terraform-modules/compare/v3.4.1...v3.5.0) (2024-03-04)
 
 
