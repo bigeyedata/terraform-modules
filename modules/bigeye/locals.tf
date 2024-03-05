@@ -93,6 +93,9 @@ locals {
 
   max_port = 65535
 
+  # Models bucket random name
+  models_bucket_has_name_override = var.ml_models_s3_bucket_name_override == "" ? false : true
+
   # Docker image tags
   haproxy_image_tag      = coalesce(var.haproxy_image_tag, var.image_tag)
   web_image_tag          = coalesce(var.web_image_tag, var.image_tag)
