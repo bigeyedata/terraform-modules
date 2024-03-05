@@ -699,14 +699,16 @@ resource "aws_secretsmanager_secret" "rabbitmq_user_password" {
 }
 
 resource "aws_secretsmanager_secret_version" "rabbitmq_user_password" {
-  count         = local.create_rabbitmq_user_password_secret ? 1 : 0
-  secret_id     = aws_secretsmanager_secret.rabbitmq_user_password[0].id
-  secret_string = random_password.rabbitmq_user_password[0].result
+  count          = local.create_rabbitmq_user_password_secret ? 1 : 0
+  secret_id      = aws_secretsmanager_secret.rabbitmq_user_password[0].id
+  secret_string  = random_password.rabbitmq_user_password[0].result
+  version_stages = ["AWSCURRENT"]
 }
 
 data "aws_secretsmanager_secret_version" "byo_rabbitmq_user_password" {
-  count     = local.create_rabbitmq_user_password_secret ? 0 : 1
-  secret_id = var.rabbitmq_user_password_secret_arn
+  count         = local.create_rabbitmq_user_password_secret ? 0 : 1
+  secret_id     = var.rabbitmq_user_password_secret_arn
+  version_stage = "AWSCURRENT"
 }
 
 module "rabbitmq" {
@@ -830,9 +832,10 @@ resource "aws_secretsmanager_secret" "adminpages_password" {
   tags                    = local.tags
 }
 resource "aws_secretsmanager_secret_version" "adminpages_password" {
-  count         = local.create_adminpages_password_secret ? 1 : 0
-  secret_id     = aws_secretsmanager_secret.adminpages_password[0].id
-  secret_string = random_password.adminpages_password[0].result
+  count          = local.create_adminpages_password_secret ? 1 : 0
+  secret_id      = aws_secretsmanager_secret.adminpages_password[0].id
+  secret_string  = random_password.adminpages_password[0].result
+  version_stages = ["AWSCURRENT"]
 }
 
 module "haproxy" {
@@ -1023,13 +1026,15 @@ resource "aws_secretsmanager_secret" "temporal_rds_password" {
   tags                    = local.tags
 }
 resource "aws_secretsmanager_secret_version" "temporal_rds_password" {
-  count         = local.create_temporal_rds_password_secret ? 1 : 0
-  secret_id     = aws_secretsmanager_secret.temporal_rds_password[0].id
-  secret_string = random_password.temporal_rds_password[0].result
+  count          = local.create_temporal_rds_password_secret ? 1 : 0
+  secret_id      = aws_secretsmanager_secret.temporal_rds_password[0].id
+  secret_string  = random_password.temporal_rds_password[0].result
+  version_stages = ["AWSCURRENT"]
 }
 data "aws_secretsmanager_secret_version" "byo_temporal_rds_password" {
-  count     = local.create_temporal_rds_password_secret ? 0 : 1
-  secret_id = var.temporal_rds_root_user_password_secret_arn
+  count         = local.create_temporal_rds_password_secret ? 0 : 1
+  secret_id     = var.temporal_rds_root_user_password_secret_arn
+  version_stage = "AWSCURRENT"
 }
 
 module "temporal_rds" {
@@ -1685,14 +1690,16 @@ resource "aws_secretsmanager_secret" "redis_auth_token" {
   tags                    = local.tags
 }
 resource "aws_secretsmanager_secret_version" "redis_auth_token" {
-  count         = local.create_redis_auth_token_secret ? 1 : 0
-  secret_id     = aws_secretsmanager_secret.redis_auth_token[0].id
-  secret_string = random_password.redis_auth_token[0].result
+  count          = local.create_redis_auth_token_secret ? 1 : 0
+  secret_id      = aws_secretsmanager_secret.redis_auth_token[0].id
+  secret_string  = random_password.redis_auth_token[0].result
+  version_stages = ["AWSCURRENT"]
 }
 
 data "aws_secretsmanager_secret_version" "byo_redis_auth_token" {
-  count     = local.create_redis_auth_token_secret ? 0 : 1
-  secret_id = var.redis_auth_token_secret_arn
+  count         = local.create_redis_auth_token_secret ? 0 : 1
+  secret_id     = var.redis_auth_token_secret_arn
+  version_stage = "AWSCURRENT"
 }
 
 module "redis" {
@@ -1734,13 +1741,15 @@ resource "aws_secretsmanager_secret" "datawatch_rds_password" {
   tags                    = local.tags
 }
 resource "aws_secretsmanager_secret_version" "datawatch_rds_password" {
-  count         = local.create_datawatch_rds_password_secret ? 1 : 0
-  secret_id     = aws_secretsmanager_secret.datawatch_rds_password[0].id
-  secret_string = random_password.datawatch_rds_password[0].result
+  count          = local.create_datawatch_rds_password_secret ? 1 : 0
+  secret_id      = aws_secretsmanager_secret.datawatch_rds_password[0].id
+  secret_string  = random_password.datawatch_rds_password[0].result
+  version_stages = ["AWSCURRENT"]
 }
 data "aws_secretsmanager_secret_version" "byo_datawatch_rds_password" {
-  count     = local.create_datawatch_rds_password_secret ? 0 : 1
-  secret_id = var.datawatch_rds_root_user_password_secret_arn
+  count         = local.create_datawatch_rds_password_secret ? 0 : 1
+  secret_id     = var.datawatch_rds_root_user_password_secret_arn
+  version_stage = "AWSCURRENT"
 }
 
 module "datawatch_rds" {
@@ -1826,9 +1835,10 @@ resource "aws_secretsmanager_secret" "robot_password" {
   tags                    = local.tags
 }
 resource "aws_secretsmanager_secret_version" "robot_password" {
-  count         = local.create_robot_password_secret ? 1 : 0
-  secret_id     = aws_secretsmanager_secret.robot_password[0].id
-  secret_string = random_password.robot_password[0].result
+  count          = local.create_robot_password_secret ? 1 : 0
+  secret_id      = aws_secretsmanager_secret.robot_password[0].id
+  secret_string  = random_password.robot_password[0].result
+  version_stages = ["AWSCURRENT"]
 }
 
 resource "random_password" "base_encryption" {
@@ -1843,9 +1853,10 @@ resource "aws_secretsmanager_secret" "base_encryption" {
   tags                    = local.tags
 }
 resource "aws_secretsmanager_secret_version" "base_encryption" {
-  count         = local.create_base_dw_encryption_secret ? 1 : 0
-  secret_id     = aws_secretsmanager_secret.base_encryption[0].id
-  secret_string = random_password.base_encryption[0].result
+  count          = local.create_base_dw_encryption_secret ? 1 : 0
+  secret_id      = aws_secretsmanager_secret.base_encryption[0].id
+  secret_string  = random_password.base_encryption[0].result
+  version_stages = ["AWSCURRENT"]
 }
 
 resource "random_password" "base_salt" {
@@ -1860,9 +1871,10 @@ resource "aws_secretsmanager_secret" "base_salt" {
   tags                    = local.tags
 }
 resource "aws_secretsmanager_secret_version" "base_salt" {
-  count         = local.create_base_dw_salt_secret ? 1 : 0
-  secret_id     = aws_secretsmanager_secret.base_salt[0].id
-  secret_string = random_password.base_salt[0].result
+  count          = local.create_base_dw_salt_secret ? 1 : 0
+  secret_id      = aws_secretsmanager_secret.base_salt[0].id
+  secret_string  = random_password.base_salt[0].result
+  version_stages = ["AWSCURRENT"]
 }
 
 locals {
