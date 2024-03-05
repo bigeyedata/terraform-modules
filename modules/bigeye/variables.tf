@@ -518,6 +518,12 @@ variable "monocle_autoscaling_request_count_target" {
   default     = 15
 }
 
+variable "ml_models_s3_bucket_name_override" {
+  description = "Override for the monocle ML models bucket. Use of this variable is not recommended."
+  type        = string
+  default     = ""
+}
+
 #======================================================
 # Application Variables - Toretto
 #======================================================

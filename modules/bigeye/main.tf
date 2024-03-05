@@ -739,7 +739,7 @@ resource "random_string" "models_bucket_suffix" {
 }
 
 resource "aws_s3_bucket" "models" {
-  bucket = "${local.name}-models-${random_string.models_bucket_suffix.result}"
+  bucket = local.models_bucket_has_name_override ? var.ml_models_s3_bucket_name_override : "${local.name}-models-${random_string.models_bucket_suffix.result}"
   tags   = local.tags
 }
 
