@@ -1,42 +1,114 @@
 locals {
-  environment                                               = "test"
-  instance                                                  = "no-igw"
-  byomailserver_smtp_password_aws_secrets_manager_secret_id = "bigeye/example/byomailserver-smtp-password"
-  byomailserver_smtp_host                                   = "smtp.example.com"
-  byomailserver_smtp_port                                   = "587"
-  byomailserver_smtp_user                                   = "smtp.user@mail.example.com"
+  # Do not use hard coded AWS credentials for production installs.  These are here for demonstration purposes for those who do not
+  # have credentials set up for Terraform to access AWS already.
+  aws_region     = "us-west-2"
+  aws_access_key = "<your aws_access_key>"
+  aws_secret_key = "<your aws_secret_key>"
+
+  environment = "test"
+  instance    = "bigeye"
+  name        = "${local.environment}-${local.instance}"
+
+  # Get this from Bigeye Support.  Typically you will want to install the latest.
+  image_tag = "1.40.0"
+  # This will pull images directly from Bigeye's ECR repository.  It is recommended to cache the images in your own local ECR repository.
+  image_registry = "021451147547.dkr.ecr.us-west-2.amazonaws.com"
+
+  # Your parent route53 DNS domain, e.g. example.com
+  parent_domain = "example.com"
+
+  # Using a subdomain for sending from email is illustrated in this example as domain registration for a root level domain
+  # generally requires a 12 month commitment from a domain name registrar so is beyond the scope of this example.
+  # Example: subdomain_prefix = "dev" will result in the subdomain of dev.example.com
+  subdomain_prefix = "dev"
+  subdomain        = "${local.subdomain_prefix}.${local.parent_domain}"
+
+  # Vanity URL is optional, but recommended.  This sets the API and UI URL that you will access Bigeye from. https://bigeye.dev.example.com
+  vanity_alias = "bigeye"
+
+  # This will result in a VPC cidr 10.240.0.0/16
+  # Set this to something that won't collide with an existing cidr in your account
+  cidr_first_two_octets = "10.240"
+
+  # This is the email address that Bigeye email notifications will be sent from.
+  # Set this to a real email address as email verification is required by AWS SES.
+  from_email = "bigeye@${local.subdomain}"
+
+  # This IAM user is created in simple_email_server_example.tf and is used by AWS SES to send email.
+  ses_iam_user_name = "${local.name}-bigeye"
+
+  # This ASM secret is created in secrets.tf and can be used as an example if you are bringing your own email server.
+  byomailserver_smtp_password_aws_secrets_manager_secret_id = "bigeye/${local.name}/smtp/password"
+  byomailserver_smtp_host                                   = "email-smtp.${local.aws_region}.amazonaws.com"
+  byomailserver_smtp_port                                   = 587
+  byomailserver_smtp_user                                   = one(aws_iam_access_key.from_email[*].id)
+
+  # Creates the IAM and SES identity for ${from_email}
+  create_ses_from_email = true
+
+  # It can be useful to create the public_subnet as shown below in case a bastion, VPN or something similar will be used
+  # to access the network.  If not required, it is recommended to leave this as an empty list [] for no internet access installs.
+  # This is required for this example as the bastion is created on the public subnets.
+  public_subnets = [
+    format("%s.1.0/24", local.cidr_first_two_octets),
+    format("%s.3.0/24", local.cidr_first_two_octets),
+    format("%s.5.0/24", local.cidr_first_two_octets),
+  ]
+
+  # Set this true will create an admin host for debugging if required.  See docs/TROUBLESHOOTING.md for instructions
+  # on accessing the admin container
+  enable_bigeye_admin_module = false
+
+  # The bastion will be used for an SSH tunnel for no internet installs where a VPN is not available.  This is here for
+  # demonstration purposes in this example, but a VPN is recommended instead for production installs.
+  bastion_enabled = true
+
+  # If you plan to use the bastion, run ssh-keygen -t rsa -b 4096 to create a key pair first if you have not already
+  bastion_ssh_public_key_file = "~/.ssh/id_rsa.pub"
+
+  # https://whatsmyip.com can be used to get your IP if you don't have it.  This ingres cidr goes into the
+  # security group allowing access to the bastion.  This should be the IP address from where you will be
+  # using a browser or making API calls to Bigeye from.
+  bastion_ingress_cidr = "<your ip address>"
 }
 
-data "aws_secretsmanager_secret" "byomailserver_smtp_password" {
-  name = local.byomailserver_smtp_password_aws_secrets_manager_secret_id
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.31.0"
+    }
+  }
+}
+
+provider "aws" {
+  region     = local.aws_region
+  access_key = local.aws_access_key
+  secret_key = local.aws_secret_key
 }
 
 module "bigeye" {
-  source      = "git::https://github.com/bigeyedata/terraform-modules//modules/bigeye?ref=v2.4.0"
-  environment = local.environment
-  instance    = local.instance
+  source             = "git::https://github.com/bigeyedata/terraform-modules//modules/bigeye?ref=v3.6.0"
+  environment        = local.environment
+  instance           = local.instance
+  top_level_dns_name = local.subdomain
+  image_tag          = local.image_tag
+  image_registry     = local.image_registry
+  vpc_cidr_block     = module.vpc.vpc_cidr_block
+  vanity_alias       = local.vanity_alias
 
-  # Your parent DNS name here, e.g. bigeye.my-company.com
-  top_level_dns_name = ""
-
-  # This is Bigeye's ECR registry.  Setting this to Bigeye's registry is simple as a hello world example, but it is recommended
-  # for enterprise customers to cache our images in you own ECR repo.  See the self-managed-ecr example
-  image_registry = "021451147547.dkr.ecr.us-west-2.amazonaws.com"
-
-  # Bigeye app version.  You can list the tags available in the image_registry (using the latest is always recommended).
-  image_tag = ""
-
-  # BYO VPC
-  byovpc_vpc_id  = module.vpc.vpc_id
-  vpc_cidr_block = module.vpc.vpc_cidr_block
-
-  #  byovpc_public_subnet_ids          = module.vpc.intra_subnets
+  byovpc_vpc_id = module.vpc.vpc_id
+  # Leave byovpc_public_subnet_ids commented out for no-public-internet installs.  The loadbalancers will be
+  # internal, with no route to public net.
+  # byovpc_public_subnet_ids          = module.vpc.intra_subnets
   byovpc_application_subnet_ids     = module.vpc.private_subnets
   byovpc_internal_subnet_ids        = module.vpc.intra_subnets
   byovpc_rabbitmq_subnet_ids        = module.vpc.elasticache_subnets
   byovpc_redis_subnet_group_name    = module.vpc.elasticache_subnet_group_name
   byovpc_database_subnet_group_name = module.vpc.database_subnet_group_name
 
+  # SG's are VPC resources, so BYO VPC installs must create and pass in their own security groups.  This is done for you
+  # in this example in vpc_example.tf
   create_security_groups = false
 
   rabbitmq_extra_security_group_ids      = [aws_security_group.rabbitmq.id]
@@ -71,10 +143,13 @@ module "bigeye" {
   temporal_internet_facing = false
   internet_facing          = false
 
-  # byo mail server.  Bigeye's default SMTP server will not be reachable to route email notifications
-  # in a no-igw setup so add this for no-igw installs.  This can be omitted if you do not wish to receive email notifications.
+  enable_bigeye_admin_module = local.enable_bigeye_admin_module
+
+  # BYO mail server is required for installs without a route to public net as Bigeye's default SMTP server will not be
+  # reachable to route email notifications.
   byomailserver_smtp_host                = local.byomailserver_smtp_host
   byomailserver_smtp_port                = local.byomailserver_smtp_port
   byomailserver_smtp_user                = local.byomailserver_smtp_user
-  byomailserver_smtp_password_secret_arn = data.aws_secretsmanager_secret.byomailserver_smtp_password.arn
+  byomailserver_smtp_from_address        = local.from_email
+  byomailserver_smtp_password_secret_arn = local.create_ses_from_email ? aws_secretsmanager_secret.smtp_password[0].arn : ""
 }

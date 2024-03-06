@@ -5,10 +5,7 @@
 #######################################################################
 
 locals {
-  # This will result in a VPC cidr 10.250.0.0/16
-  cidr_first_two_octets = "10.250"
-  cidr_block            = format("%s.0.0/16", local.cidr_first_two_octets)
-  name                  = format("%s-%s", local.environment, local.instance)
+  cidr_block = format("%s.0.0/16", local.cidr_first_two_octets)
 }
 
 module "vpc" {
@@ -17,7 +14,7 @@ module "vpc" {
   version = "5.1.2"
 
   name = format("%s-byovpc", local.name)
-  azs  = ["us-west-2a", "us-west-2b", "us-west-2c"]
+  azs  = ["${local.aws_region}a", "${local.aws_region}b", "${local.aws_region}c"]
 
   cidr               = local.cidr_block
   enable_nat_gateway = false
@@ -25,14 +22,9 @@ module "vpc" {
   enable_ipv6 = false
 
   # Public subnets
-  public_subnets = []
   # It can be useful to create the public_subnet as shown below in case a bastion, VPN or something similar will be used
   # to access the network.  If not required, it is recommended to leave this empty.
-  #  public_subnets = [
-  #    format("%s.1.0/24", local.cidr_first_two_octets),
-  #    format("%s.3.0/24", local.cidr_first_two_octets),
-  #    format("%s.5.0/24", local.cidr_first_two_octets),
-  #  ]
+  public_subnets       = local.public_subnets
   public_subnet_suffix = "public"
   public_subnet_tags = merge({
     Duty   = "public"
@@ -125,6 +117,8 @@ resource "aws_security_group" "vpc_endpoint" {
   }
 }
 
+# Installs without an internet connection, need to use VPC Endpoints to access AWS APIs.  This is also
+# a recommended practice for installs that do allow public access.
 module "vpc_endpoints" {
   source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
   version = "5.1.2"
