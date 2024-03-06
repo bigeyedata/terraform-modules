@@ -5,12 +5,17 @@ locals {
   aws_access_key = "<your aws_access_key>"
   aws_secret_key = "<your aws_secret_key>"
 
+  # https://whatsmyip.com can be used to get your IP if you don't have it.  This ingres cidr goes into the
+  # security group allowing access to the bastion.  This should be the IP address from where you will be
+  # using a browser or making API calls to Bigeye from.
+  bastion_ingress_cidr = "<your ip address>/32"
+
   environment = "test"
   instance    = "bigeye"
   name        = "${local.environment}-${local.instance}"
 
   # Get this from Bigeye Support.  Typically you will want to install the latest.
-  image_tag = "1.40.0"
+  image_tag = "1.41.0"
   # This will pull images directly from Bigeye's ECR repository.  It is recommended to cache the images in your own local ECR repository.
   image_registry = "021451147547.dkr.ecr.us-west-2.amazonaws.com"
 
@@ -30,8 +35,7 @@ locals {
   # Set this to something that won't collide with an existing cidr in your account
   cidr_first_two_octets = "10.240"
 
-  # This is the email address that Bigeye email notifications will be sent from.
-  # Set this to a real email address as email verification is required by AWS SES.
+  # This is the email address that Bigeye email notifications will be sent from.  Don't change this value for this example.
   from_email = "bigeye@${local.subdomain}"
 
   # This IAM user is created in simple_email_server_example.tf and is used by AWS SES to send email.
@@ -46,15 +50,6 @@ locals {
   # Creates the IAM and SES identity for ${from_email}
   create_ses_from_email = true
 
-  # It can be useful to create the public_subnet as shown below in case a bastion, VPN or something similar will be used
-  # to access the network.  If not required, it is recommended to leave this as an empty list [] for no internet access installs.
-  # This is required for this example as the bastion is created on the public subnets.
-  public_subnets = [
-    format("%s.1.0/24", local.cidr_first_two_octets),
-    format("%s.3.0/24", local.cidr_first_two_octets),
-    format("%s.5.0/24", local.cidr_first_two_octets),
-  ]
-
   # Set this true will create an admin host for debugging if required.  See docs/TROUBLESHOOTING.md for instructions
   # on accessing the admin container
   enable_bigeye_admin_module = false
@@ -65,11 +60,6 @@ locals {
 
   # If you plan to use the bastion, run ssh-keygen -t rsa -b 4096 to create a key pair first if you have not already
   bastion_ssh_public_key_file = "~/.ssh/id_rsa.pub"
-
-  # https://whatsmyip.com can be used to get your IP if you don't have it.  This ingres cidr goes into the
-  # security group allowing access to the bastion.  This should be the IP address from where you will be
-  # using a browser or making API calls to Bigeye from.
-  bastion_ingress_cidr = "<your ip address>"
 }
 
 terraform {

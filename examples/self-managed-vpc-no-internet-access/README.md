@@ -46,7 +46,7 @@ The module includes:
 * ssh keys generated (~/.ssh/id_rsa.pub exists)
 
 ### Terraform install
-Official docs: (https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
+[Official Terraform install instructions](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
 
 **OSX:** 
 ```shell
@@ -113,6 +113,7 @@ A few useful commands that will be used in this example:
 * `terraform init` - this downloads and any necessary terraform modules to your local (aws provider etc)
 * `terraform plan` - think of this as a dry run mode.  This reads all of the *.tf files and compares them to AWS to see what needs to be added, removed or updated and prints out a list of proposed changes.
 * `terraform apply` - Prints the same things as terraform plan, but prompts for yes/no to actually execute the changes.
+* `terraform destroy` - Deletes all resources defined in *.tf.
 
 ## Bigeye stack install steps
 
@@ -143,24 +144,28 @@ to the following settings:
 * aws_region
 * aws_access_key
 * aws_secret_key
+* bastion_ingress_cidr
+* cidr_first_two_octets
 * environment
 * instance
 * parent_domain
 * subdomain_prefix
-* cidr_first_two_octets
-* from_email
 
 The locals block is the only section that needs to be edited for this example.
 
 ### Create route53 subdmain
 
-Create the route53 subdomain.  The "-target=aws_route53_zone.this" tells terraform to install a specific resource instead of
-all of the resources found in the *.tf files in the directory.  `aws_route53_zone.this` is defined in [vpc_example.tf](./vpc_example.tf)
+Create the route53 subdomain.  The `-target=aws_route53_zone.subdomain` tells terraform to install a specific resource instead of
+all of the resources found in the *.tf files in the directory.  **aws_route53_zone.subdomain** is defined in [subdomain_example.tf](./subdomain_example.tf)
 if you wish to inspect how it is defined.
 
 ```shell
+# initialize Terraform
 terraform init
-terraform apply -target=aws_route53_zone.this
+# create subdomain
+terraform apply -target=aws_route53_zone.subdomain
+# create NS records for subdomain in parent domain (for SES email domain verification)
+terraform apply -target=aws_route53_record.subdomain_ns_record
 ````
 
 ### Create Email account in AWS Workmail
@@ -178,26 +183,47 @@ There is no Terraform provider for Workmail, so this will be done manually using
 
 Now that the Workmail org has been created, we're going to create an email that matches the `${from_email} configured in [main.tf](./main.tf).
 
-Click on the Workmail organization you just created -> Users (left nav) -> Add user button.
+Wait for the Workmail org that you created to finish creating and become `Active` (the browser refreshes status automatically). 
+Click on 
+
+Workmail organization (e.g. bigeye-example-com) -> Users (left nav) -> Add user button.
+
 Put whatever you like into the configuration boxes, the only important one is the Email address.
-That must match the `${from_email}` in [main.tf](./main.tf).
+That must match the `${from_email}` in [main.tf](./main.tf), be sure to set the @domain dropdown box to your subdomain. 
 
 Take note of the `username` and `password` fields you have filled in.  Those will be used to log into Workmail to read a verification email from SES later.
+
+### Create a VPC
+
+`module.vpc` is defined in [vpc_example.tf](./vpc_example.tf).
+```shell
+terraform apply -target=module.vpc
+```
 
 ### Create the rest of the stack
 ```shell
 terraform plan
 terraform apply
 ```
-When this completes, the SES identity for `${from_email}` will have been created and SES will have
+This can take upwards of 20-30 minutes as a few of the AWS resources have long instance creation times (RDS, rabbitMQ, redis).
+
+### SES account verification
+When the stack has been created, the SES identity for `${from_email}` will have been created and SES will have
 sent a verification email to the account.  Log into Workmail https://<workmail_organization>.awsapps.com/mail and
-use the `username` and `password` from above to log in.  Open up the email from "Awamzon Web Services"
+use the `username` and `password` from before to log in.  Open up the email from "Awamzon Web Services"
 and click on the verify email link so the email address will be verified and SES will allow email to be sent from this address.
 
 ### Accessing the Bigeye UI
 Since this demonstration example Terraform plan does not include a VPN and the stack is set up without
 an internet gateway, a bastion will be used for an SSH tunnel to route UI/API requests to Bigeye.  This is 
 here for demonstration purposes, but a VPN is recommended instead for production installs.
+
+```text
+NOTE: Accessing Bigeye is web browser based.  The remaining steps should be run wherever you will be using a web browser to access
+Bigeye from (e.g. local laptop).  It does not have to be the same place you are running terraform from.  You will need to copy the SSH private
+key (~/.ssh/id_rsa) from the host that Terrafom was run from and put it on the machine where you will be running the web browser.  Be sure
+the file has the correct permissions when done (chmod 600).
+```
 
 Note the output of the Terraform apply when the stack was created.  The last few lines of output will be a few useful values:
 * bastion
@@ -213,7 +239,7 @@ ssh -L 8443:${bigeye_address}:443 -Nf  ubuntu@${bastion}
 Update your local /etc/hosts file so that the Bigeye url `${bigeye_address}` will go over the localhost SSH tunnel port.
 
 ```shell
-sudo -- sh -c "echo 127.0.0.1 ${vanity_url}.${subdomain}  >> /etc/hosts"
+sudo -- sh -c "echo 127.0.0.1 ${bigeye_address}  >> /etc/hosts"
 ```
 Point your browser to ${bigeye_address}:8443/first-time to create an account.
 
