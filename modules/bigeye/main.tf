@@ -2197,6 +2197,61 @@ resource "aws_secretsmanager_secret_version" "robot_password" {
   secret_string = random_password.robot_password[0].result
 }
 
+locals {
+  datawatch_common_env_vars = {
+    ENVIRONMENT = var.environment
+    INSTANCE    = var.instance
+    PORT        = var.datawatch_port
+
+    AGENT_LARGE_PAYLOAD_BUCKET_NAME = aws_s3_bucket.large_payload.id
+    AWS_REGION                      = local.aws_region
+    DEPLOY_TYPE                     = "AWS"
+
+    MYSQL_JDBC                  = "jdbc:mysql://${local.datawatch_mysql_dns_name}:3306/${local.datawatch_jdbc_database_name}?serverTimezone=UTC"
+    MYSQL_USER                  = var.datawatch_rds_root_user_name
+    MYSQL_MAXSIZE               = var.datawatch_mysql_maxsize
+    MYSQL_TRANSACTION_ISOLATION = "read-committed"
+
+    MONOCLE_ADDRESS   = "https://${local.monocle_dns_name}"
+    REDIRECT_ADDRESS  = "https://${local.vanity_dns_name}"
+    SCHEDULER_ADDRESS = "https://${local.scheduler_dns_name}"
+    TORETTO_ADDRESS   = "https://${local.toretto_dns_name}"
+
+    MQ_BROKER_HOST     = module.rabbitmq.endpoint
+    MQ_BROKER_USERNAME = var.rabbitmq_user_name
+
+    REDIS_PRIMARY_ADDRESS = module.redis.primary_endpoint_dns_name
+    REDIS_PRIMARY_PORT    = module.redis.port
+    REDIS_SSL_ENABLED     = "true"
+
+    ACTIONABLE_NOTIFICATION_ENABLED = "false"
+    FF_ANALYTICS_LOGGING_ENABLED    = var.datawatch_feature_analytics_logging_enabled
+    FF_QUEUE_BACKFILL_ENABLED       = "true"
+    FF_SEND_ANALYTICS_ENABLED       = var.datawatch_feature_analytics_send_enabled
+    MAX_RAM_PERCENTAGE              = var.datawatch_jvm_max_ram_pct
+    REQUEST_AUTH_LOGGING_ENABLED    = var.datawatch_request_auth_logging_enabled
+    REQUEST_BODY_LOGGING_ENABLED    = var.datawatch_request_body_logging_enabled
+
+    AUTH0_DOMAIN            = var.auth0_domain
+    EXTERNAL_LOGGING_LEVEL  = var.datawatch_external_logging_level
+    SLACK_HAS_DEDICATED_APP = var.datawatch_slack_has_dedicated_app ? "true" : "false"
+    STITCH_SCHEMA_NAME      = var.datawatch_stitch_schema_name
+
+    TEMPORAL_ENABLED                           = true
+    TEMPORAL_TARGET                            = "${local.temporal_dns_name}:${local.temporal_lb_port}"
+    TEMPORAL_NAMESPACE                         = var.temporal_namespace
+    TEMPORAL_SSL_HOSTNAME_VERIFICATION_ENABLED = var.temporal_use_default_certificates ? "false" : "true"
+
+    MAILER_HOST         = local.byomailserver_smtp_host
+    MAILER_PORT         = local.byomailserver_smtp_port
+    MAILER_USER         = local.byomailserver_smtp_user
+    MAILER_FROM_ADDRESS = local.byomailserver_smtp_from_address
+
+    MTLS_KEY_PATH  = "/temporal/mtls.key"
+    MTLS_CERT_PATH = "/temporal/mtls.pem"
+  }
+}
+
 module "datawatch" {
   depends_on = [aws_secretsmanager_secret_version.robot_password]
   source     = "../simpleservice"
@@ -2250,52 +2305,10 @@ module "datawatch" {
   environment_variables = merge(
     local.datawatch_dd_env_vars,
     var.datawatch_additional_environment_vars,
+    local.datawatch_common_env_vars,
     {
-      ENVIRONMENT                     = var.environment
-      INSTANCE                        = var.instance
-      PORT                            = var.datawatch_port
-      APP                             = "datawatch"
-      MYSQL_JDBC                      = "jdbc:mysql://${local.datawatch_mysql_dns_name}:3306/${local.datawatch_jdbc_database_name}?serverTimezone=UTC"
-      MYSQL_USER                      = var.datawatch_rds_root_user_name
-      MYSQL_MAXSIZE                   = var.datawatch_mysql_maxsize
-      MYSQL_TRANSACTION_ISOLATION     = "read-committed"
-      REDIRECT_ADDRESS                = "https://${local.vanity_dns_name}"
-      MONOCLE_ADDRESS                 = "https://${local.monocle_dns_name}"
-      SCHEDULER_ADDRESS               = "https://${local.scheduler_dns_name}"
-      TORETTO_ADDRESS                 = "https://${local.toretto_dns_name}"
-      FF_SEND_ANALYTICS_ENABLED       = var.datawatch_feature_analytics_send_enabled
-      MQ_BROKER_HOST                  = module.rabbitmq.endpoint
-      MQ_BROKER_USERNAME              = var.rabbitmq_user_name
-      DEPLOY_TYPE                     = "AWS"
-      FF_QUEUE_BACKFILL_ENABLED       = "true"
-      FF_ANALYTICS_LOGGING_ENABLED    = var.datawatch_feature_analytics_logging_enabled
-      STITCH_SCHEMA_NAME              = var.datawatch_stitch_schema_name
-      AUTH0_DOMAIN                    = var.auth0_domain
-      EXTERNAL_LOGGING_LEVEL          = var.datawatch_external_logging_level
-      REDIS_PRIMARY_ADDRESS           = module.redis.primary_endpoint_dns_name
-      REDIS_PRIMARY_PORT              = module.redis.port
-      REDIS_SSL_ENABLED               = "true"
-      SLACK_HAS_DEDICATED_APP         = var.datawatch_slack_has_dedicated_app ? "true" : "false"
-      WORKERS_ENABLED                 = "false"
-      ACTIONABLE_NOTIFICATION_ENABLED = "false"
-      REQUEST_BODY_LOGGING_ENABLED    = var.datawatch_request_body_logging_enabled
-      REQUEST_AUTH_LOGGING_ENABLED    = var.datawatch_request_auth_logging_enabled
-      AGENT_LARGE_PAYLOAD_BUCKET_NAME = aws_s3_bucket.large_payload.id
-
-      TEMPORAL_ENABLED                           = true
-      TEMPORAL_TARGET                            = "${local.temporal_dns_name}:${local.temporal_lb_port}"
-      TEMPORAL_NAMESPACE                         = var.temporal_namespace
-      TEMPORAL_SSL_HOSTNAME_VERIFICATION_ENABLED = var.temporal_use_default_certificates ? "false" : "true"
-
-      MAILER_HOST         = local.byomailserver_smtp_host
-      MAILER_PORT         = local.byomailserver_smtp_port
-      MAILER_USER         = local.byomailserver_smtp_user
-      MAILER_FROM_ADDRESS = local.byomailserver_smtp_from_address
-
-      MTLS_KEY_PATH      = "/temporal/mtls.key"
-      MTLS_CERT_PATH     = "/temporal/mtls.pem"
-      MAX_RAM_PERCENTAGE = var.datawatch_jvm_max_ram_pct
-      AWS_REGION         = local.aws_region
+      APP             = "datawatch"
+      WORKERS_ENABLED = "false"
     }
   )
 
@@ -2355,56 +2368,13 @@ module "datawork" {
   environment_variables = merge(
     local.datawatch_dd_env_vars,
     var.datawork_additional_environment_vars,
+    local.datawatch_common_env_vars,
     {
-      ENVIRONMENT                     = var.environment
-      INSTANCE                        = var.instance
-      PORT                            = var.datawork_port
-      APP                             = "datawork"
-      MYSQL_JDBC                      = "jdbc:mysql://${local.datawatch_mysql_dns_name}:3306/${local.datawatch_jdbc_database_name}?serverTimezone=UTC"
-      MYSQL_USER                      = var.datawatch_rds_root_user_name
-      MYSQL_MAXSIZE                   = var.datawatch_mysql_maxsize
-      MYSQL_TRANSACTION_ISOLATION     = "read-committed"
-      REDIRECT_ADDRESS                = "https://${local.vanity_dns_name}"
-      MONOCLE_ADDRESS                 = "https://${local.monocle_dns_name}"
-      SCHEDULER_ADDRESS               = "https://${local.scheduler_dns_name}"
-      TORETTO_ADDRESS                 = "https://${local.toretto_dns_name}"
-      DATAWATCH_ADDRESS               = "http://localhost:${var.datawork_port}"
-      FF_SEND_ANALYTICS_ENABLED       = var.datawatch_feature_analytics_send_enabled
-      MQ_BROKER_HOST                  = module.rabbitmq.endpoint
-      MQ_BROKER_USERNAME              = var.rabbitmq_user_name
-      DEPLOY_TYPE                     = "AWS"
-      FF_QUEUE_BACKFILL_ENABLED       = "true"
-      FF_ANALYTICS_LOGGING_ENABLED    = var.datawatch_feature_analytics_logging_enabled
-      STITCH_SCHEMA_NAME              = var.datawatch_stitch_schema_name
-      AUTH0_DOMAIN                    = var.auth0_domain
-      EXTERNAL_LOGGING_LEVEL          = var.datawatch_external_logging_level
-      REDIS_PRIMARY_ADDRESS           = module.redis.primary_endpoint_dns_name
-      REDIS_PRIMARY_PORT              = module.redis.port
-      REDIS_SSL_ENABLED               = "true"
-      SLACK_HAS_DEDICATED_APP         = var.datawatch_slack_has_dedicated_app
-      AGENT_LARGE_PAYLOAD_BUCKET_NAME = aws_s3_bucket.large_payload.id
-
+      APP                = "datawork"
+      DATAWATCH_ADDRESS  = "http://localhost:${var.datawork_port}"
       WORKERS_ENABLED    = "true"
       METRIC_RUN_WORKERS = "1"
       EXCLUDE_QUEUES     = "trigger-batch-metric-run"
-
-      ACTIONABLE_NOTIFICATION_ENABLED            = "false"
-      REQUEST_BODY_LOGGING_ENABLED               = var.datawatch_request_body_logging_enabled
-      REQUEST_AUTH_LOGGING_ENABLED               = var.datawatch_request_auth_logging_enabled
-      TEMPORAL_ENABLED                           = true
-      TEMPORAL_TARGET                            = "${local.temporal_dns_name}:${local.temporal_lb_port}"
-      TEMPORAL_NAMESPACE                         = var.temporal_namespace
-      TEMPORAL_SSL_HOSTNAME_VERIFICATION_ENABLED = var.temporal_use_default_certificates ? "false" : "true"
-
-      MAILER_HOST         = local.byomailserver_smtp_host
-      MAILER_PORT         = local.byomailserver_smtp_port
-      MAILER_USER         = local.byomailserver_smtp_user
-      MAILER_FROM_ADDRESS = local.byomailserver_smtp_from_address
-
-      MTLS_KEY_PATH      = "/temporal/mtls.key"
-      MTLS_CERT_PATH     = "/temporal/mtls.pem"
-      MAX_RAM_PERCENTAGE = var.datawatch_jvm_max_ram_pct
-      AWS_REGION         = local.aws_region
     }
   )
 
@@ -2463,56 +2433,13 @@ module "metricwork" {
   environment_variables = merge(
     local.datawatch_dd_env_vars,
     var.metricwork_additional_environment_vars,
+    local.datawatch_common_env_vars,
     {
-      ENVIRONMENT                     = var.environment
-      INSTANCE                        = var.instance
-      PORT                            = var.metricwork_port
-      APP                             = "metricwork"
-      MYSQL_JDBC                      = "jdbc:mysql://${local.datawatch_mysql_dns_name}:3306/${local.datawatch_jdbc_database_name}?serverTimezone=UTC"
-      MYSQL_USER                      = var.datawatch_rds_root_user_name
-      MYSQL_MAXSIZE                   = var.datawatch_mysql_maxsize
-      MYSQL_TRANSACTION_ISOLATION     = "read-committed"
-      REDIRECT_ADDRESS                = "https://${local.vanity_dns_name}"
-      MONOCLE_ADDRESS                 = "https://${local.monocle_dns_name}"
-      SCHEDULER_ADDRESS               = "https://${local.scheduler_dns_name}"
-      TORETTO_ADDRESS                 = "https://${local.toretto_dns_name}"
-      DATAWATCH_ADDRESS               = "http://localhost:${var.metricwork_port}"
-      FF_SEND_ANALYTICS_ENABLED       = var.datawatch_feature_analytics_send_enabled
-      MQ_BROKER_HOST                  = module.rabbitmq.endpoint
-      MQ_BROKER_USERNAME              = var.rabbitmq_user_name
-      DEPLOY_TYPE                     = "AWS"
-      FF_QUEUE_BACKFILL_ENABLED       = "true"
-      FF_ANALYTICS_LOGGING_ENABLED    = var.datawatch_feature_analytics_logging_enabled
-      STITCH_SCHEMA_NAME              = var.datawatch_stitch_schema_name
-      AUTH0_DOMAIN                    = var.auth0_domain
-      EXTERNAL_LOGGING_LEVEL          = var.datawatch_external_logging_level
-      REDIS_PRIMARY_ADDRESS           = module.redis.primary_endpoint_dns_name
-      REDIS_PRIMARY_PORT              = module.redis.port
-      REDIS_SSL_ENABLED               = "true"
-      SLACK_HAS_DEDICATED_APP         = var.datawatch_slack_has_dedicated_app
-      AGENT_LARGE_PAYLOAD_BUCKET_NAME = aws_s3_bucket.large_payload.id
-
+      APP                   = "metricwork"
+      DATAWATCH_ADDRESS     = "http://localhost:${var.metricwork_port}"
       WORKERS_ENABLED       = "true"
       METRIC_RUN_WORKERS    = "1"
       SINGLE_QUEUE_OVERRIDE = "trigger-batch-metric-run"
-
-      ACTIONABLE_NOTIFICATION_ENABLED            = "false"
-      REQUEST_BODY_LOGGING_ENABLED               = var.datawatch_request_body_logging_enabled
-      REQUEST_AUTH_LOGGING_ENABLED               = var.datawatch_request_auth_logging_enabled
-      TEMPORAL_ENABLED                           = true
-      TEMPORAL_TARGET                            = "${local.temporal_dns_name}:${local.temporal_lb_port}"
-      TEMPORAL_NAMESPACE                         = var.temporal_namespace
-      TEMPORAL_SSL_HOSTNAME_VERIFICATION_ENABLED = var.temporal_use_default_certificates ? "false" : "true"
-
-      MAILER_HOST         = local.byomailserver_smtp_host
-      MAILER_PORT         = local.byomailserver_smtp_port
-      MAILER_USER         = local.byomailserver_smtp_user
-      MAILER_FROM_ADDRESS = local.byomailserver_smtp_from_address
-
-      MTLS_KEY_PATH      = "/temporal/mtls.key"
-      MTLS_CERT_PATH     = "/temporal/mtls.pem"
-      MAX_RAM_PERCENTAGE = var.datawatch_jvm_max_ram_pct
-      AWS_REGION         = local.aws_region
     }
   )
 
