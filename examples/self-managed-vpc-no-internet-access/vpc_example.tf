@@ -24,7 +24,11 @@ module "vpc" {
   # Public subnets
   # It can be useful to create the public_subnet as shown below in case a bastion, VPN or something similar will be used
   # to access the network.  If not required, it is recommended to leave this empty.
-  public_subnets       = local.public_subnets
+  public_subnets = local.bastion_enabled ? [
+    format("%s.1.0/24", local.cidr_first_two_octets),
+    format("%s.3.0/24", local.cidr_first_two_octets),
+    format("%s.5.0/24", local.cidr_first_two_octets),
+  ] : []
   public_subnet_suffix = "public"
   public_subnet_tags = merge({
     Duty   = "public"
