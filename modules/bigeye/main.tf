@@ -2280,6 +2280,7 @@ module "datawatch" {
       ACTIONABLE_NOTIFICATION_ENABLED = "false"
       REQUEST_BODY_LOGGING_ENABLED    = var.datawatch_request_body_logging_enabled
       REQUEST_AUTH_LOGGING_ENABLED    = var.datawatch_request_auth_logging_enabled
+      AGENT_LARGE_PAYLOAD_BUCKET_NAME = aws_s3_bucket.large_payload.id
 
       TEMPORAL_ENABLED                           = true
       TEMPORAL_TARGET                            = "${local.temporal_dns_name}:${local.temporal_lb_port}"
@@ -2355,32 +2356,33 @@ module "datawork" {
     local.datawatch_dd_env_vars,
     var.datawork_additional_environment_vars,
     {
-      ENVIRONMENT                  = var.environment
-      INSTANCE                     = var.instance
-      PORT                         = var.datawork_port
-      APP                          = "datawork"
-      MYSQL_JDBC                   = "jdbc:mysql://${local.datawatch_mysql_dns_name}:3306/${local.datawatch_jdbc_database_name}?serverTimezone=UTC"
-      MYSQL_USER                   = var.datawatch_rds_root_user_name
-      MYSQL_MAXSIZE                = var.datawatch_mysql_maxsize
-      MYSQL_TRANSACTION_ISOLATION  = "read-committed"
-      REDIRECT_ADDRESS             = "https://${local.vanity_dns_name}"
-      MONOCLE_ADDRESS              = "https://${local.monocle_dns_name}"
-      SCHEDULER_ADDRESS            = "https://${local.scheduler_dns_name}"
-      TORETTO_ADDRESS              = "https://${local.toretto_dns_name}"
-      DATAWATCH_ADDRESS            = "http://localhost:${var.datawork_port}"
-      FF_SEND_ANALYTICS_ENABLED    = var.datawatch_feature_analytics_send_enabled
-      MQ_BROKER_HOST               = module.rabbitmq.endpoint
-      MQ_BROKER_USERNAME           = var.rabbitmq_user_name
-      DEPLOY_TYPE                  = "AWS"
-      FF_QUEUE_BACKFILL_ENABLED    = "true"
-      FF_ANALYTICS_LOGGING_ENABLED = var.datawatch_feature_analytics_logging_enabled
-      STITCH_SCHEMA_NAME           = var.datawatch_stitch_schema_name
-      AUTH0_DOMAIN                 = var.auth0_domain
-      EXTERNAL_LOGGING_LEVEL       = var.datawatch_external_logging_level
-      REDIS_PRIMARY_ADDRESS        = module.redis.primary_endpoint_dns_name
-      REDIS_PRIMARY_PORT           = module.redis.port
-      REDIS_SSL_ENABLED            = "true"
-      SLACK_HAS_DEDICATED_APP      = var.datawatch_slack_has_dedicated_app
+      ENVIRONMENT                     = var.environment
+      INSTANCE                        = var.instance
+      PORT                            = var.datawork_port
+      APP                             = "datawork"
+      MYSQL_JDBC                      = "jdbc:mysql://${local.datawatch_mysql_dns_name}:3306/${local.datawatch_jdbc_database_name}?serverTimezone=UTC"
+      MYSQL_USER                      = var.datawatch_rds_root_user_name
+      MYSQL_MAXSIZE                   = var.datawatch_mysql_maxsize
+      MYSQL_TRANSACTION_ISOLATION     = "read-committed"
+      REDIRECT_ADDRESS                = "https://${local.vanity_dns_name}"
+      MONOCLE_ADDRESS                 = "https://${local.monocle_dns_name}"
+      SCHEDULER_ADDRESS               = "https://${local.scheduler_dns_name}"
+      TORETTO_ADDRESS                 = "https://${local.toretto_dns_name}"
+      DATAWATCH_ADDRESS               = "http://localhost:${var.datawork_port}"
+      FF_SEND_ANALYTICS_ENABLED       = var.datawatch_feature_analytics_send_enabled
+      MQ_BROKER_HOST                  = module.rabbitmq.endpoint
+      MQ_BROKER_USERNAME              = var.rabbitmq_user_name
+      DEPLOY_TYPE                     = "AWS"
+      FF_QUEUE_BACKFILL_ENABLED       = "true"
+      FF_ANALYTICS_LOGGING_ENABLED    = var.datawatch_feature_analytics_logging_enabled
+      STITCH_SCHEMA_NAME              = var.datawatch_stitch_schema_name
+      AUTH0_DOMAIN                    = var.auth0_domain
+      EXTERNAL_LOGGING_LEVEL          = var.datawatch_external_logging_level
+      REDIS_PRIMARY_ADDRESS           = module.redis.primary_endpoint_dns_name
+      REDIS_PRIMARY_PORT              = module.redis.port
+      REDIS_SSL_ENABLED               = "true"
+      SLACK_HAS_DEDICATED_APP         = var.datawatch_slack_has_dedicated_app
+      AGENT_LARGE_PAYLOAD_BUCKET_NAME = aws_s3_bucket.large_payload.id
 
       WORKERS_ENABLED    = "true"
       METRIC_RUN_WORKERS = "1"
@@ -2462,32 +2464,33 @@ module "metricwork" {
     local.datawatch_dd_env_vars,
     var.metricwork_additional_environment_vars,
     {
-      ENVIRONMENT                  = var.environment
-      INSTANCE                     = var.instance
-      PORT                         = var.metricwork_port
-      APP                          = "metricwork"
-      MYSQL_JDBC                   = "jdbc:mysql://${local.datawatch_mysql_dns_name}:3306/${local.datawatch_jdbc_database_name}?serverTimezone=UTC"
-      MYSQL_USER                   = var.datawatch_rds_root_user_name
-      MYSQL_MAXSIZE                = var.datawatch_mysql_maxsize
-      MYSQL_TRANSACTION_ISOLATION  = "read-committed"
-      REDIRECT_ADDRESS             = "https://${local.vanity_dns_name}"
-      MONOCLE_ADDRESS              = "https://${local.monocle_dns_name}"
-      SCHEDULER_ADDRESS            = "https://${local.scheduler_dns_name}"
-      TORETTO_ADDRESS              = "https://${local.toretto_dns_name}"
-      DATAWATCH_ADDRESS            = "http://localhost:${var.metricwork_port}"
-      FF_SEND_ANALYTICS_ENABLED    = var.datawatch_feature_analytics_send_enabled
-      MQ_BROKER_HOST               = module.rabbitmq.endpoint
-      MQ_BROKER_USERNAME           = var.rabbitmq_user_name
-      DEPLOY_TYPE                  = "AWS"
-      FF_QUEUE_BACKFILL_ENABLED    = "true"
-      FF_ANALYTICS_LOGGING_ENABLED = var.datawatch_feature_analytics_logging_enabled
-      STITCH_SCHEMA_NAME           = var.datawatch_stitch_schema_name
-      AUTH0_DOMAIN                 = var.auth0_domain
-      EXTERNAL_LOGGING_LEVEL       = var.datawatch_external_logging_level
-      REDIS_PRIMARY_ADDRESS        = module.redis.primary_endpoint_dns_name
-      REDIS_PRIMARY_PORT           = module.redis.port
-      REDIS_SSL_ENABLED            = "true"
-      SLACK_HAS_DEDICATED_APP      = var.datawatch_slack_has_dedicated_app
+      ENVIRONMENT                     = var.environment
+      INSTANCE                        = var.instance
+      PORT                            = var.metricwork_port
+      APP                             = "metricwork"
+      MYSQL_JDBC                      = "jdbc:mysql://${local.datawatch_mysql_dns_name}:3306/${local.datawatch_jdbc_database_name}?serverTimezone=UTC"
+      MYSQL_USER                      = var.datawatch_rds_root_user_name
+      MYSQL_MAXSIZE                   = var.datawatch_mysql_maxsize
+      MYSQL_TRANSACTION_ISOLATION     = "read-committed"
+      REDIRECT_ADDRESS                = "https://${local.vanity_dns_name}"
+      MONOCLE_ADDRESS                 = "https://${local.monocle_dns_name}"
+      SCHEDULER_ADDRESS               = "https://${local.scheduler_dns_name}"
+      TORETTO_ADDRESS                 = "https://${local.toretto_dns_name}"
+      DATAWATCH_ADDRESS               = "http://localhost:${var.metricwork_port}"
+      FF_SEND_ANALYTICS_ENABLED       = var.datawatch_feature_analytics_send_enabled
+      MQ_BROKER_HOST                  = module.rabbitmq.endpoint
+      MQ_BROKER_USERNAME              = var.rabbitmq_user_name
+      DEPLOY_TYPE                     = "AWS"
+      FF_QUEUE_BACKFILL_ENABLED       = "true"
+      FF_ANALYTICS_LOGGING_ENABLED    = var.datawatch_feature_analytics_logging_enabled
+      STITCH_SCHEMA_NAME              = var.datawatch_stitch_schema_name
+      AUTH0_DOMAIN                    = var.auth0_domain
+      EXTERNAL_LOGGING_LEVEL          = var.datawatch_external_logging_level
+      REDIS_PRIMARY_ADDRESS           = module.redis.primary_endpoint_dns_name
+      REDIS_PRIMARY_PORT              = module.redis.port
+      REDIS_SSL_ENABLED               = "true"
+      SLACK_HAS_DEDICATED_APP         = var.datawatch_slack_has_dedicated_app
+      AGENT_LARGE_PAYLOAD_BUCKET_NAME = aws_s3_bucket.large_payload.id
 
       WORKERS_ENABLED       = "true"
       METRIC_RUN_WORKERS    = "1"
