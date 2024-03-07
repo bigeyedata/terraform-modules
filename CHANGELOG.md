@@ -1,3 +1,12 @@
+## [3.6.1](https://github.com/bigeyedata/terraform-modules/compare/v3.6.0...v3.6.1) (2024-03-07)
+
+
+### Bug Fixes
+
+* add agent large payload bucket name env var ([f026974](https://github.com/bigeyedata/terraform-modules/commit/f026974147d7d32dbcb0c9295994f6b6bafa2059))
+
+
+
 # [3.6.0](https://github.com/bigeyedata/terraform-modules/compare/v3.5.1...v3.6.0) (2024-03-05)
 
 
