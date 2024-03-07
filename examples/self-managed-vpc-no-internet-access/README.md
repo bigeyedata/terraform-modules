@@ -85,7 +85,7 @@ yum install git
 ```
 **Ubuntu/Debian Linux:**
 ```shell
- apt-get install git
+ sudo apt-get install git
 ```
 
 ### AWS credentials
