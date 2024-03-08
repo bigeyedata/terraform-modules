@@ -1,3 +1,14 @@
+## [3.6.2](https://github.com/bigeyedata/terraform-modules/compare/v3.6.1...v3.6.2) (2024-03-08)
+
+
+### Bug Fixes
+
+* alarm defaults for redis and rabbitmq ([413127a](https://github.com/bigeyedata/terraform-modules/commit/413127ae3386ee0c51bc0b861970e4ea03c95cb3))
+* elasticache alarms incorrect namespace ([23d31a8](https://github.com/bigeyedata/terraform-modules/commit/23d31a8cb2101d3f5c63b8b9b23706f07e6453d0))
+* load balancer and target group alarm ids should use arn_suffix ([f875b75](https://github.com/bigeyedata/terraform-modules/commit/f875b75f0e347eba8c501e4beffae01dccf363c4))
+
+
+
 ## [3.6.1](https://github.com/bigeyedata/terraform-modules/compare/v3.6.0...v3.6.1) (2024-03-07)
 
 
