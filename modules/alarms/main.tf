@@ -63,7 +63,7 @@ resource "aws_cloudwatch_metric_alarm" "redis_cpu" {
   actions_enabled   = length(local.redis_cpu_sns_arns) > 0
   alarm_description = "If this is triggering, should scale up vs trying to be HW efficient"
   metric_name       = "EngineCPUUtilization"
-  namespace         = "AWS/Elasticache"
+  namespace         = "AWS/ElastiCache"
   statistic         = "Average"
   dimensions = {
     CacheClusterId = format("%s-001", var.redis_cluster_id)
@@ -84,7 +84,7 @@ resource "aws_cloudwatch_metric_alarm" "redis_burst_balance" {
   actions_enabled   = length(local.redis_burst_balance_sns_arns) > 0
   alarm_description = "Once the CPU burst balance runs out, app response time may suffer"
   metric_name       = "CPUCreditBalance"
-  namespace         = "AWS/Elasticache"
+  namespace         = "AWS/ElastiCache"
   statistic         = "Minimum"
   dimensions = {
     CacheClusterId = format("%s-001", var.redis_cluster_id)
@@ -106,7 +106,7 @@ resource "aws_cloudwatch_metric_alarm" "redis_memory" {
   actions_enabled   = length(local.redis_memory_sns_arns) > 0
   alarm_description = "Increase the HW type to get more memory"
   metric_name       = "DatabaseMemoryUsagePercentage"
-  namespace         = "AWS/Elasticache"
+  namespace         = "AWS/ElastiCache"
   statistic         = "Maximum"
   dimensions = {
     CacheClusterId = format("%s-001", var.redis_cluster_id)
