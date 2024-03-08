@@ -5,10 +5,11 @@ locals {
   aws_access_key = "<your aws_access_key>"
   aws_secret_key = "<your aws_secret_key>"
 
-  # https://whatsmyip.com can be used to get your IP if you don't have it.  This ingres cidr goes into the
-  # security group allowing access to the bastion.  This should be the IP address from where you will be
-  # using a browser or making API calls to Bigeye from.
-  bastion_ingress_cidr = "<your ip address>/32"
+  # https://whatsmyip.com can be used to get your IP if you don't have it.  This should be the IP address from where
+  # you will be using a browser or making API calls to Bigeye from.
+  # This is only used for access to the bastion.  Ingress is only allowed from this cidr for the bastion and only
+  # outbound to this address and the vpc cidr.
+  external_access_cidr = "<your ip address>/32"
 
   environment = "test"
   instance    = "bigeye"

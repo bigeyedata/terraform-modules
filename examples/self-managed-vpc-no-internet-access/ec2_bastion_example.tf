@@ -23,16 +23,15 @@ resource "aws_security_group" "bastion" {
     to_port     = 22
     protocol    = "TCP"
     description = "Allow all traffic"
-    cidr_blocks = [local.bastion_ingress_cidr]
+    cidr_blocks = [local.external_access_cidr]
   }
 
   egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-    description      = "Allow all egress"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [local.cidr_block, local.external_access_cidr]
+    description = "Allow all egress"
   }
 }
 
