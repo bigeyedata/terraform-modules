@@ -39,7 +39,7 @@ resource "aws_cloudwatch_metric_alarm" "rabbitmq_message_count" {
   actions_enabled     = length(local.rabbitmq_message_count_sns_arns) > 0
   evaluation_periods  = coalesce(var.rabbitmq_message_count_evaluation_periods, 1)
   datapoints_to_alarm = coalesce(var.rabbitmq_message_count_datapoints_to_alarm, 1)
-  threshold           = coalesce(var.rabbitmq_message_count_threshold, 100000)
+  threshold           = var.rabbitmq_message_count_threshold
   comparison_operator = "GreaterThanOrEqualToThreshold"
   treat_missing_data  = "missing"
   metric_query {
@@ -71,7 +71,7 @@ resource "aws_cloudwatch_metric_alarm" "redis_cpu" {
   period              = coalesce(var.redis_cpu_period, 300)
   evaluation_periods  = coalesce(var.redis_cpu_evaluation_periods, 2)
   datapoints_to_alarm = coalesce(var.redis_cpu_datapoints_to_alarm, 2)
-  threshold           = coalesce(var.redis_cpu_threshold, 50)
+  threshold           = var.redis_cpu_threshold
   comparison_operator = "GreaterThanThreshold"
   treat_missing_data  = "missing"
 }
@@ -93,7 +93,7 @@ resource "aws_cloudwatch_metric_alarm" "redis_burst_balance" {
   period              = coalesce(var.redis_burst_balance_period, 300)
   evaluation_periods  = coalesce(var.redis_burst_balance_evaluation_periods, 6)
   datapoints_to_alarm = coalesce(var.redis_burst_balance_datapoints_to_alarm, 6)
-  threshold           = coalesce(var.redis_burst_balance_threshold, 150)
+  threshold           = var.redis_burst_balance_threshold
   comparison_operator = "LessThanThreshold"
   treat_missing_data  = "missing"
 }
@@ -114,7 +114,7 @@ resource "aws_cloudwatch_metric_alarm" "redis_memory" {
   period              = coalesce(var.redis_memory_period, 300)
   evaluation_periods  = coalesce(var.redis_memory_evaluation_periods, 2)
   datapoints_to_alarm = coalesce(var.redis_memory_datapoints_to_alarm, 2)
-  threshold           = coalesce(var.redis_memory_threshold, 60)
+  threshold           = var.redis_memory_threshold
   comparison_operator = "GreaterThanThreshold"
   treat_missing_data  = "missing"
 }

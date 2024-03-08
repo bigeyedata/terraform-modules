@@ -74,7 +74,7 @@ variable "redis_burst_balance_sns_arns" {
 variable "redis_burst_balance_threshold" {
   description = "Alarms when the metric is below this value"
   type        = number
-  default     = 0
+  default     = 150
 }
 
 variable "redis_cpu_datapoints_to_alarm" {
@@ -110,7 +110,7 @@ variable "redis_cpu_sns_arns" {
 variable "redis_cpu_threshold" {
   description = "Alarms when the metric is above this value"
   type        = number
-  default     = 0
+  default     = 50
 }
 
 variable "redis_memory_datapoints_to_alarm" {
@@ -146,7 +146,7 @@ variable "redis_memory_sns_arns" {
 variable "redis_memory_threshold" {
   description = "Alarms when the metric is above this value"
   type        = number
-  default     = 0
+  default     = 60
 }
 
 variable "rabbitmq_message_count_datapoints_to_alarm" {
@@ -182,7 +182,7 @@ variable "rabbitmq_message_count_sns_arns" {
 variable "rabbitmq_message_count_threshold" {
   description = "Alarms when the metric is above this value"
   type        = number
-  default     = 0
+  default     = 100000
 }
 
 variable "rds_datawatch_burst_balance_datapoints_to_alarm" {
