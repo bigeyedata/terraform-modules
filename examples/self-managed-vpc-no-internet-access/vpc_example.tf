@@ -112,12 +112,11 @@ resource "aws_security_group" "vpc_endpoint" {
   }
 
   egress {
-    from_port        = 0
-    to_port          = 65535
-    protocol         = "TCP"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-    description      = "Allow all egress"
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "TCP"
+    cidr_blocks = [local.cidr_block]
+    description = "Allow all egress"
   }
 }
 
@@ -195,12 +194,11 @@ resource "aws_security_group" "rabbitmq" {
   }
 
   egress {
-    from_port        = 0
-    to_port          = 65535
-    protocol         = "TCP"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-    description      = "Allows egress"
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "TCP"
+    cidr_blocks = [local.cidr_block]
+    description = "Allows egress"
   }
 }
 
@@ -211,21 +209,19 @@ resource "aws_security_group" "temporal" {
   description = "Allows port 7233"
 
   ingress {
-    from_port        = 7233
-    to_port          = 7233
-    protocol         = "TCP"
-    cidr_blocks      = [local.cidr_block]
-    ipv6_cidr_blocks = ["::/0"]
-    description      = "Allow temporal traffic"
+    from_port   = 7233
+    to_port     = 7233
+    protocol    = "TCP"
+    cidr_blocks = [local.cidr_block]
+    description = "Allow temporal traffic"
   }
 
   egress {
-    from_port        = 0
-    to_port          = 65535
-    protocol         = "TCP"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-    description      = "Allows egress"
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "TCP"
+    cidr_blocks = [local.cidr_block]
+    description = "Allows egress"
   }
 }
 
@@ -244,12 +240,11 @@ resource "aws_security_group" "rds" {
   }
 
   egress {
-    from_port        = 0
-    to_port          = 65535
-    protocol         = "TCP"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-    description      = "Allows egress"
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "TCP"
+    cidr_blocks = [local.cidr_block]
+    description = "Allows egress"
   }
 }
 
@@ -268,12 +263,11 @@ resource "aws_security_group" "redis" {
   }
 
   egress {
-    from_port        = 0
-    to_port          = 65535
-    protocol         = "TCP"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-    description      = "Allows egress"
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "TCP"
+    cidr_blocks = [local.cidr_block]
+    description = "Allows egress"
   }
 }
 
@@ -284,30 +278,27 @@ resource "aws_security_group" "services" {
   description = "Allows port 80/443"
 
   ingress {
-    from_port        = 80
-    to_port          = 80
-    protocol         = "TCP"
-    cidr_blocks      = [local.cidr_block]
-    ipv6_cidr_blocks = ["::/0"]
-    description      = "Allow HTTP traffic"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "TCP"
+    cidr_blocks = [local.cidr_block]
+    description = "Allow HTTP traffic"
   }
 
   ingress {
-    from_port        = 443
-    to_port          = 443
-    protocol         = "TCP"
-    cidr_blocks      = [local.cidr_block]
-    ipv6_cidr_blocks = ["::/0"]
-    description      = "Allow HTTPS traffic"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "TCP"
+    cidr_blocks = [local.cidr_block]
+    description = "Allow HTTPS traffic"
   }
 
   egress {
-    from_port        = 0
-    to_port          = 65535
-    protocol         = "TCP"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-    description      = "Allows egress"
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "TCP"
+    cidr_blocks = [local.cidr_block]
+    description = "Allows egress"
   }
 }
 
@@ -318,29 +309,26 @@ resource "aws_security_group" "http" {
   description = "Allows port 80/443"
 
   ingress {
-    from_port        = 80
-    to_port          = 80
-    protocol         = "TCP"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-    description      = "Allow HTTP traffic"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "TCP"
+    cidr_blocks = [local.cidr_block]
+    description = "Allow HTTP traffic"
   }
 
   ingress {
-    from_port        = 443
-    to_port          = 443
-    protocol         = "TCP"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-    description      = "Allow HTTPS traffic"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "TCP"
+    cidr_blocks = [local.cidr_block]
+    description = "Allow HTTPS traffic"
   }
 
   egress {
-    from_port        = 0
-    to_port          = 65535
-    protocol         = "TCP"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-    description      = "Allows egress"
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "TCP"
+    cidr_blocks = [local.cidr_block]
+    description = "Allows egress"
   }
 }
