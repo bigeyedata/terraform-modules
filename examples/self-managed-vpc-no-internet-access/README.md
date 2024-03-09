@@ -186,10 +186,12 @@ Now that the Workmail org has been created, we're going to create an email that 
 Wait for the Workmail org that you created to finish creating and become `Active` (the browser refreshes status automatically). 
 Click on 
 
-Workmail organization (e.g. bigeye-example-com) -> Users (left nav) -> Add user button.
+`Workmail organization (e.g. bigeye-example-com) -> Users (left nav) -> Add user button.`
 
 Put whatever you like into the configuration boxes, the only important one is the Email address.
-That must match the `${from_email}` in [main.tf](./main.tf), be sure to set the @domain dropdown box to your subdomain. 
+That must match the `${from_email}` in [main.tf](./main.tf), be sure to set the @domain dropdown box to your subdomain.
+If the drop down is empty or your subdomain isn't in the list, just wait a minute or two and refresh the page.  DNS verification
+is happening in the background and this can take a few minutes.
 
 Take note of the `username` and `password` fields you have filled in.  Those will be used to log into Workmail to read a verification email from SES later.
 

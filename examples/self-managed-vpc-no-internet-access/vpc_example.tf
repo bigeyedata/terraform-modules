@@ -124,16 +124,17 @@ resource "aws_security_group" "vpc_endpoint" {
 # a recommended practice for installs that do allow public access.
 module "vpc_endpoints" {
   source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
-  version = "5.1.2"
+  version = "5.5.3"
 
   vpc_id             = module.vpc.vpc_id
   security_group_ids = [aws_security_group.vpc_endpoint.id]
 
   endpoints = {
-    s3 = {
-      service      = "s3"
-      tags         = merge({ Name = format("%s-s3-endpoint", local.name) })
-      service_type = "Gateway"
+    s3_gateway = {
+      service             = "s3"
+      tags                = merge({ Name = format("%s-s3-endpoint", local.name) })
+      service_type        = "Gateway"
+      private_dns_enabled = true
       route_table_ids = concat(
         module.vpc.database_route_table_ids,
         module.vpc.elasticache_route_table_ids,
@@ -141,6 +142,18 @@ module "vpc_endpoints" {
         module.vpc.private_route_table_ids,
         module.vpc.public_route_table_ids
       )
+    }
+    s3_interface = {
+      service             = "s3"
+      service_type        = "Interface"
+      subnet_ids          = module.vpc.private_subnets
+      private_dns_enabled = true
+      dns_options = {
+        private_dns_only_for_inbound_resolver_endpoint = false
+      }
+      tags = merge({
+        Name = format("%s-s3-interface-endpoint", local.name)
+      })
     }
     ecr_api = {
       service             = "ecr.api"
