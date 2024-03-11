@@ -897,6 +897,11 @@ variable "temporal_rds_additional_tags" {
   default     = {}
 }
 
+variable "temporal_rds_parameters" {
+  description = "Parameters to use for the RDS database. See https://github.com/terraform-aws-modules/terraform-aws-rds?tab=readme-ov-file#input_parameters"
+  type        = list(map(any))
+  default     = []
+}
 variable "temporal_rds_primary_additional_tags" {
   description = "Additional tags to apply to the temporal RDS primary DB.  This is merged with temporal_rds_additional_tags for the primary"
   type        = map(string)
@@ -1144,6 +1149,45 @@ variable "datawatch_rds_additional_tags" {
   description = "Additional tags to apply to the datawatch RDS resources"
   type        = map(string)
   default     = {}
+}
+
+variable "datawatch_rds_parameters" {
+  description = "Parameters to use for the RDS database. See https://github.com/terraform-aws-modules/terraform-aws-rds?tab=readme-ov-file#input_parameters"
+  type        = list(map(any))
+  default = [
+    {
+      name  = "binlog_format"
+      value = "ROW"
+      }, {
+      name  = "character_set_server"
+      value = "utf8mb4"
+      }, {
+      name  = "general_log"
+      value = 0
+      }, {
+      name  = "innodb_lock_wait_timeout"
+      value = 300
+      }, {
+      name  = "lock_wait_timeout"
+      value = 300
+      name  = "log_bin_trust_function_creators"
+      value = "1"
+      }, {
+      name  = "long_query_time"
+      value = 120
+      }, {
+      name         = "performance_schema"
+      value        = 1
+      apply_method = "pending-reboot"
+      }, {
+      name         = "skip_name_resolve"
+      value        = 1
+      apply_method = "pending-reboot"
+      }, {
+      name  = "slow_query_log"
+      value = 0
+    }
+  ]
 }
 
 variable "datawatch_rds_primary_additional_tags" {
