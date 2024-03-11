@@ -1046,7 +1046,9 @@ module "temporal_rds" {
   performance_insights_retention_period = var.rds_performance_insights_retention_period
   enable_multi_az                       = var.redundant_infrastructure ? true : false
   create_option_group                   = false
-  create_parameter_group                = false
+  create_parameter_group                = local.temporal_rds_create_parameter_group
+  parameter_group_name                  = local.temporal_rds_create_parameter_group ? "${local.name}-temporal" : null
+  parameters                            = local.temporal_rds_create_parameter_group ? var.temporal_rds_parameters : null
   tags                                  = merge(local.tags, var.temporal_rds_additional_tags)
   primary_additional_tags               = var.temporal_rds_primary_additional_tags
   replica_additional_tags               = var.temporal_rds_primary_additional_tags
@@ -2131,41 +2133,7 @@ module "datawatch_rds" {
   create_option_group    = false
   create_parameter_group = true
   parameter_group_name   = "${local.name}-datawatch"
-  parameters = [
-    {
-      name  = "log_bin_trust_function_creators"
-      value = "1"
-      }, {
-      name  = "general_log"
-      value = 0
-      }, {
-      name  = "slow_query_log"
-      value = 0
-      }, {
-      name  = "long_query_time"
-      value = 120
-      }, {
-      name         = "performance_schema"
-      value        = 1
-      apply_method = "pending-reboot"
-      }, {
-      name         = "skip_name_resolve"
-      value        = 1
-      apply_method = "pending-reboot"
-      }, {
-      name  = "character_set_server"
-      value = "utf8mb4"
-      }, {
-      name  = "innodb_lock_wait_timeout"
-      value = 300
-      }, {
-      name  = "lock_wait_timeout"
-      value = 300
-      }, {
-      name  = "binlog_format"
-      value = "ROW"
-    }
-  ]
+  parameters             = var.datawatch_rds_parameters
 
   # Replica
   create_replica                  = var.datawatch_rds_replica_enabled
