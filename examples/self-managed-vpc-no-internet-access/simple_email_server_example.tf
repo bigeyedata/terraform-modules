@@ -55,8 +55,31 @@ resource "aws_route53_record" "subdomain_dmarc" {
   records = ["v=DMARC1;p=quarantine;pct=100;fo=1"]
 }
 
+resource "aws_security_group" "smtp_vpce" {
+  name   = "${local.name}-smtp-vpce"
+  vpc_id = module.vpc.vpc_id
+
+  ingress {
+    from_port   = local.byomailserver_smtp_port
+    to_port     = local.byomailserver_smtp_port
+    protocol    = "tcp"
+    cidr_blocks = [module.vpc.vpc_cidr_block]
+  }
+
+  egress {
+    from_port   = local.byomailserver_smtp_port
+    to_port     = local.byomailserver_smtp_port
+    protocol    = "tcp"
+    cidr_blocks = [local.cidr_block]
+  }
+
+  tags = {
+    "Name" = "${local.name}-smtp-endpoint"
+  }
+}
+
 resource "aws_vpc_endpoint" "smtp_vpce" {
-  security_group_ids  = [aws_security_group.vpc_endpoint.id]
+  security_group_ids  = [aws_security_group.smtp_vpce.id]
   service_name        = "com.amazonaws.${local.aws_region}.email-smtp"
   vpc_endpoint_type   = "Interface"
   subnet_ids          = module.vpc.private_subnets
