@@ -898,27 +898,33 @@ module "haproxy" {
   }
 
 
-  environment_variables = merge(var.haproxy_additional_environment_vars, {
-    ENVIRONMENT      = var.environment
-    INSTANCE         = var.instance
-    DW_HOST          = local.datawatch_dns_name
-    DW_PORT          = "443"
-    SCHEDULER_HOST   = local.scheduler_dns_name
-    SCHEDULER_PORT   = "443"
-    TORETTO_HOST     = local.toretto_dns_name
-    TORETTO_PORT     = "443"
-    MONOCLE_HOST     = local.monocle_dns_name
-    MONOCLE_PORT     = "443"
-    WEB_HOST         = local.web_dns_name
-    WEB_PORT         = "443"
-    REDIRECT_ADDRESS = "https://${local.vanity_dns_name}"
-    PORT             = var.haproxy_port
-    HAPROXY_PORT     = var.haproxy_port
-  })
+  environment_variables = merge(
+    {
+      ENVIRONMENT      = var.environment
+      INSTANCE         = var.instance
+      DW_HOST          = local.datawatch_dns_name
+      DW_PORT          = "443"
+      SCHEDULER_HOST   = local.scheduler_dns_name
+      SCHEDULER_PORT   = "443"
+      TORETTO_HOST     = local.toretto_dns_name
+      TORETTO_PORT     = "443"
+      MONOCLE_HOST     = local.monocle_dns_name
+      MONOCLE_PORT     = "443"
+      WEB_HOST         = local.web_dns_name
+      WEB_PORT         = "443"
+      REDIRECT_ADDRESS = "https://${local.vanity_dns_name}"
+      PORT             = var.haproxy_port
+      HAPROXY_PORT     = var.haproxy_port
+    },
+    var.haproxy_additional_environment_vars,
+  )
 
-  secret_arns = merge(var.haproxy_additional_secret_arns, {
-    BIGEYE_ADMIN_PAGES_PASSWORD = local.adminpages_password_secret_arn
-  })
+  secret_arns = merge(
+    {
+      BIGEYE_ADMIN_PAGES_PASSWORD = local.adminpages_password_secret_arn
+    },
+    var.haproxy_additional_secret_arns,
+  )
 }
 
 #======================================================
@@ -978,7 +984,6 @@ module "web" {
 
   environment_variables = merge(
     local.web_dd_env_vars,
-    var.web_additional_environment_vars,
     {
       ENVIRONMENT       = var.environment
       INSTANCE          = var.instance
@@ -989,7 +994,8 @@ module "web" {
       DROPWIZARD_HOST   = "https://${local.datawatch_dns_name}"
       DATAWATCH_ADDRESS = "https://${local.datawatch_dns_name}"
       MAX_NODE_MEM_MB   = "4096"
-    }
+    },
+    var.web_additional_environment_vars,
   )
 
   secret_arns = var.web_additional_secret_arns
@@ -1180,7 +1186,6 @@ locals {
 
   temporal_environment_variables = merge(
     local.temporal_dd_env_vars,
-    var.temporal_additional_environment_vars,
     {
       ENVIRONMENT                                          = var.environment
       INSTANCE                                             = var.instance
@@ -1208,12 +1213,16 @@ locals {
       TEMPORAL_TLS_DISABLE_HOST_VERIFICATION = var.temporal_use_default_certificates ? "true" : "false"
       TEMPORAL_TLS_SERVER_NAME               = local.temporal_dns_name
       SQL_MAX_IDLE_CONNS                     = "10"
-    }
+    },
+    var.temporal_additional_environment_vars,
   )
 
-  temporal_secret_arns = merge(var.temporal_additional_secret_arns, {
-    "MYSQL_PWD" = local.temporal_rds_password_secret_arn
-  })
+  temporal_secret_arns = merge(
+    {
+      "MYSQL_PWD" = local.temporal_rds_password_secret_arn
+    },
+    var.temporal_additional_secret_arns,
+  )
 
   log_configuration_def = var.temporal_logging_enabled ? {
     logDriver = "awslogs"
@@ -1448,7 +1457,6 @@ module "temporalui" {
 
   environment_variables = merge(
     local.temporalui_dd_env_vars,
-    var.temporalui_additional_environment_vars,
     {
       ENVIRONMENT                           = var.environment
       INSTANCE                              = var.instance
@@ -1457,7 +1465,8 @@ module "temporalui" {
       TEMPORAL_CORS_ORIGINS                 = "https://${local.temporal_dns_name}:${local.temporal_lb_port}"
       TEMPORAL_TLS_ENABLE_HOST_VERIFICATION = var.temporal_use_default_certificates ? "false" : "true"
       TEMPORAL_TLS_SERVER_NAME              = local.temporal_dns_name
-    }
+    },
+    var.temporalui_additional_environment_vars,
   )
 
   secret_arns = var.temporalui_additional_secret_arns
@@ -1568,7 +1577,6 @@ module "monocle" {
 
 
   environment_variables = merge(
-    var.monocle_additional_environment_vars,
     {
       ENVIRONMENT                = var.environment
       INSTANCE                   = var.instance
@@ -1592,10 +1600,10 @@ module "monocle" {
       DD_TRACE_DEBUG           = "false"
       DD_LOGS_INJECTION        = "true"
     } : {},
+    var.monocle_additional_environment_vars,
   )
 
   secret_arns = merge(
-    var.monocle_additional_secret_arns,
     local.sentry_dsn_secret_map,
     local.stitch_secrets_map,
     {
@@ -1604,7 +1612,8 @@ module "monocle" {
     },
     var.datadog_agent_enabled ? {
       DATADOG_API_KEY = var.datadog_agent_api_key_secret_arn
-    } : {}
+    } : {},
+    var.monocle_additional_secret_arns,
   )
 }
 
@@ -1696,7 +1705,6 @@ module "toretto" {
 
 
   environment_variables = merge(
-    var.toretto_additional_environment_vars,
     {
       ENVIRONMENT                = var.environment
       INSTANCE                   = var.instance
@@ -1712,17 +1720,18 @@ module "toretto" {
       DATAWATCH_ADDRESS          = "https://${local.datawatch_dns_name}"
     },
     local.sentry_event_level_env_variable,
+    var.toretto_additional_environment_vars,
   )
 
   secret_arns = merge(
-    var.toretto_additional_secret_arns,
     local.sentry_dsn_secret_map,
     local.stitch_secrets_map,
     {
       MQ_BROKER_PASSWORD = local.rabbitmq_user_password_secret_arn
       ROBOT_PASSWORD     = local.robot_password_secret_arn
     },
-    var.datadog_agent_enabled ? { DATADOG_API_KEY = var.datadog_agent_api_key_secret_arn } : {}
+    var.datadog_agent_enabled ? { DATADOG_API_KEY = var.datadog_agent_api_key_secret_arn } : {},
+    var.toretto_additional_secret_arns,
   )
 }
 
@@ -1855,7 +1864,6 @@ module "scheduler" {
 
 
   environment_variables = merge(
-    var.scheduler_additional_environment_vars,
     {
       ENVIRONMENT           = var.environment
       INSTANCE              = var.instance
@@ -1868,15 +1876,16 @@ module "scheduler" {
       REDIS_PRIMARY_ADDRESS = module.redis.primary_endpoint_dns_name
       REDIS_PRIMARY_PORT    = module.redis.port
     },
+    var.scheduler_additional_environment_vars,
   )
 
   secret_arns = merge(
-    var.scheduler_additional_secret_arns,
     {
       REDIS_PRIMARY_PASSWORD = local.redis_auth_token_secret_arn
       ROBOT_PASSWORD         = local.robot_password_secret_arn
     },
     local.sentry_dsn_secret_map,
+    var.scheduler_additional_secret_arns,
   )
 }
 
@@ -2272,12 +2281,12 @@ module "datawatch" {
 
   environment_variables = merge(
     local.datawatch_dd_env_vars,
-    var.datawatch_additional_environment_vars,
     local.datawatch_common_env_vars,
     {
       APP             = "datawatch"
       WORKERS_ENABLED = "false"
-    }
+    },
+    var.datawatch_additional_environment_vars,
   )
 
   secret_arns = local.datawatch_secret_arns
@@ -2335,7 +2344,6 @@ module "datawork" {
 
   environment_variables = merge(
     local.datawatch_dd_env_vars,
-    var.datawork_additional_environment_vars,
     local.datawatch_common_env_vars,
     {
       APP                = "datawork"
@@ -2343,7 +2351,8 @@ module "datawork" {
       WORKERS_ENABLED    = "true"
       METRIC_RUN_WORKERS = "1"
       EXCLUDE_QUEUES     = "trigger-batch-metric-run"
-    }
+    },
+    var.datawork_additional_environment_vars,
   )
 
   secret_arns = local.datawatch_secret_arns
@@ -2400,7 +2409,6 @@ module "metricwork" {
 
   environment_variables = merge(
     local.datawatch_dd_env_vars,
-    var.metricwork_additional_environment_vars,
     local.datawatch_common_env_vars,
     {
       APP                   = "metricwork"
@@ -2408,7 +2416,8 @@ module "metricwork" {
       WORKERS_ENABLED       = "true"
       METRIC_RUN_WORKERS    = "1"
       SINGLE_QUEUE_OVERRIDE = "trigger-batch-metric-run"
-    }
+    },
+    var.metricwork_additional_environment_vars,
   )
 
   secret_arns = local.datawatch_secret_arns

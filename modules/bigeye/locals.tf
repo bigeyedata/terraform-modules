@@ -144,13 +144,13 @@ locals {
     local.stitch_secrets_map,
     local.sentry_dsn_secret_map,
     local.byomailserver_smtp_password_secrets_map,
-    var.datawatch_additional_secret_arns,
     {
       REDIS_PRIMARY_PASSWORD = local.redis_auth_token_secret_arn
       MQ_BROKER_PASSWORD     = local.rabbitmq_user_password_secret_arn
       MYSQL_PASSWORD         = local.datawatch_rds_password_secret_arn
       ROBOT_PASSWORD         = local.robot_password_secret_arn
-    }
+    },
+    var.datawatch_additional_secret_arns,
   )
 
   temporal_lb_port                                     = 443
