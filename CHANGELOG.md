@@ -1,3 +1,17 @@
+# [3.7.0](https://github.com/bigeyedata/terraform-modules/compare/v3.6.2...v3.7.0) (2024-03-12)
+
+
+### Bug Fixes
+
+* reorder environment variable merge list to allow var to override ([7afaf17](https://github.com/bigeyedata/terraform-modules/commit/7afaf17d7b495bcaecdca2f06f3b98d8be08643f))
+
+
+### Features
+
+* add rds parameters variables ([1ecf236](https://github.com/bigeyedata/terraform-modules/commit/1ecf236fbe2b36588de5950544b9b14d752b01a5))
+
+
+
 ## [3.6.2](https://github.com/bigeyedata/terraform-modules/compare/v3.6.1...v3.6.2) (2024-03-08)
 
 
