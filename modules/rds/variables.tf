@@ -193,6 +193,24 @@ variable "replica_enable_performance_insights" {
   default     = false
 }
 
+variable "replica_create_parameter_group" {
+  description = "Whether to create a parameter group for the replica"
+  type        = bool
+  default     = false
+}
+
+variable "replica_parameters" {
+  description = "A list of maps containing parameters. Maps should have keys 'name' and 'value'"
+  type        = list(map(string))
+  default     = []
+}
+
+variable "replica_parameter_group_name" {
+  description = "Name for the replica parameter group"
+  type        = string
+  default     = ""
+}
+
 variable "create_security_groups" {
   description = "whether or not to create security groups for the database and their workers"
   type        = bool
