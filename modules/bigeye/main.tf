@@ -2149,6 +2149,10 @@ module "datawatch_rds" {
   replica_instance_class          = var.datawatch_rds_replica_instance_type
   replica_backup_retention_period = var.datawatch_rds_replica_backup_retention_period
 
+  replica_create_parameter_group = true
+  replica_parameter_group_name   = "${local.name}-datawatch-replica"
+  replica_parameters             = var.datawatch_rds_replica_parameters
+
   tags                    = merge(local.tags, var.datawatch_rds_additional_tags)
   primary_additional_tags = var.datawatch_rds_primary_additional_tags
   replica_additional_tags = var.datawatch_rds_replica_additional_tags

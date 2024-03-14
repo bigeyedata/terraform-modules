@@ -1121,36 +1121,6 @@ variable "datawatch_rds_backup_retention_period" {
   default     = 30
 }
 
-variable "datawatch_rds_replica_enabled" {
-  description = "Whether to use a read replica for datawatch"
-  type        = bool
-  default     = false
-}
-
-variable "datawatch_rds_replica_instance_type" {
-  description = "The instance type to use for datawatch read replica"
-  type        = string
-  default     = "db.t4g.small"
-}
-
-variable "datawatch_rds_replica_backup_retention_period" {
-  description = "Days to keep backups for the replica"
-  type        = number
-  default     = 1
-}
-
-variable "datawatch_rds_extra_security_group_ids" {
-  description = "Extra security groups to put on the RDS instance"
-  type        = list(string)
-  default     = []
-}
-
-variable "datawatch_rds_additional_tags" {
-  description = "Additional tags to apply to the datawatch RDS resources"
-  type        = map(string)
-  default     = {}
-}
-
 variable "datawatch_rds_parameters" {
   description = "Parameters to use for the RDS database. See https://github.com/terraform-aws-modules/terraform-aws-rds?tab=readme-ov-file#input_parameters"
   type        = list(map(any))
@@ -1170,6 +1140,7 @@ variable "datawatch_rds_parameters" {
       }, {
       name  = "lock_wait_timeout"
       value = 300
+      }, {
       name  = "log_bin_trust_function_creators"
       value = "1"
       }, {
@@ -1188,6 +1159,66 @@ variable "datawatch_rds_parameters" {
       value = 0
     }
   ]
+}
+
+variable "datawatch_rds_replica_enabled" {
+  description = "Whether to use a read replica for datawatch"
+  type        = bool
+  default     = false
+}
+
+variable "datawatch_rds_replica_instance_type" {
+  description = "The instance type to use for datawatch read replica"
+  type        = string
+  default     = "db.t4g.small"
+}
+
+variable "datawatch_rds_replica_backup_retention_period" {
+  description = "Days to keep backups for the replica"
+  type        = number
+  default     = 1
+}
+
+variable "datawatch_rds_replica_parameters" {
+  description = "Parameters to use for the RDS replica database"
+  type        = list(map(string))
+  default = [
+    {
+      name         = "general_log"
+      value        = "0"
+      apply_method = "immediate"
+      }, {
+      name  = "log_bin_trust_function_creators"
+      value = "1"
+      }, {
+      name         = "log_output"
+      value        = "FILE"
+      apply_method = "immediate"
+      }, {
+      name         = "performance_schema"
+      value        = 1
+      apply_method = "pending-reboot"
+      }, {
+      name         = "skip_name_resolve"
+      value        = 1
+      apply_method = "pending-reboot"
+      }, {
+      name  = "slow_query_log"
+      value = 0
+    }
+  ]
+}
+
+variable "datawatch_rds_extra_security_group_ids" {
+  description = "Extra security groups to put on the RDS instance"
+  type        = list(string)
+  default     = []
+}
+
+variable "datawatch_rds_additional_tags" {
+  description = "Additional tags to apply to the datawatch RDS resources"
+  type        = map(string)
+  default     = {}
 }
 
 variable "datawatch_rds_primary_additional_tags" {

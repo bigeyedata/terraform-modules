@@ -182,10 +182,14 @@ module "replica" {
   maintenance_window                    = var.maintenance_window
   enabled_cloudwatch_logs_exports       = var.enabled_logs
 
-  create_db_parameter_group = false
-  parameter_group_name      = module.this.db_parameter_group_id
-  create_db_option_group    = false
-  option_group_name         = module.this.db_option_group_id
+  create_db_option_group = false
+  option_group_name      = module.this.db_option_group_id
+
+  family                      = "mysql8.0"
+  create_db_parameter_group   = var.replica_create_parameter_group
+  parameter_group_name        = var.replica_parameter_group_name == "" ? module.this.db_parameter_group_id : var.replica_parameter_group_name
+  parameter_group_description = var.replica_create_parameter_group ? "Parameter group for ${var.name}" : ""
+  parameters                  = var.replica_parameters
 
   tags = merge(var.tags, var.replica_additional_tags)
 }
