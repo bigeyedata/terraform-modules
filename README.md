@@ -8,9 +8,10 @@ the Bigeye stack into an AWS Environment.
 ### Terraform
 
 [Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli#install-terraform)
-- at least version 1.0.
-We find that `tfenv` ([link](https://github.com/tfutils/tfenv)) is a useful way
-to install & manage Terraform versions. 
+
+- at least version 1.0.  We find that
+`tfenv` ([link](https://github.com/tfutils/tfenv)) is a useful way to install
+& manage Terraform versions
 
 ### AWS
 
@@ -29,10 +30,7 @@ For a full list of the configuration options, please review the
 
 ### Upgrading to 1.0.0
 
-**IMPORTANT**
-
-There are a few breaking changes in this release.
+>IMPORTANT - There are a few breaking changes in this release.
 
 Please refer to the [changelog](./CHANGELOG.md#100-2023-12-22)
 for more instructions.
-

@@ -34,7 +34,7 @@ The Bigeye stack will launch a number of containers into ECS.
 Speak with someone in sales at Bigeye to request your account
 be given access to these container images.
 
-### Set up the directory that will hold your terraform.
+### Set up the directory that will hold your terraform
 
 ```sh
 mkdir bigeye-stack
@@ -60,7 +60,8 @@ wget https://raw.githubusercontent.com/bigeyedata/terraform-modules/main/example
 
 Replace the following variables in `main.tf`.
 
-* `top_level_dns_name` - replace this with your Route53 hosted zone that we'll create DNS records in.
+* `top_level_dns_name` - replace this with your Route53 hosted zone that we'll
+create DNS records in.
 * `image_tag` - get the container image tag to use from Bigeye
 
 ### Configure AWS (optional)
@@ -84,4 +85,3 @@ terraform init
 terraform plan
 terraform apply
 ```
-

@@ -81,7 +81,6 @@ If within AWS, you may choose to use an Alias type A record for the
 load balancers. The necessary Route53 Zone IDs are also included
 in the module output.
 
-
 | Output Name Containing DNS Name | Output Name Containing Record Value |
 | ------------------------------- | ----------------------------------- |
 | vanity_dns_name | haproxy_load_balancer_dns_name |
@@ -105,7 +104,7 @@ readable domain names for the databases. The bigeye module outputs
 these values for you to create those records.
 
 | Output Name Containing DNS Name | Output Name Containing Record Value |
-| ------------------------------- | ----------------------------------- |
-| datawatch_database_vanity_dns_name | datawatch_database_dns_name |
+| ------------------------------- |-------------------------------------|
+| datawatch_database_vanity_dns_name | datawatch_database_dns_name         |
 | datawatch_database_replica_vanity_dns_name | datawatch_database_replica_dns_name |
-| temporal_database_vanity_dns_name | temporal_database_dns_name |
+| temporal_database_vanity_dns_name | temporal_database_dns_name          |
