@@ -22,4 +22,4 @@ jobs:
         uses: docker://avtodev/markdown-lint:v1
         with:
           args: "**/*.md"
-          ignore: './CHANGELOG.md'
+          ignore: "./CHANGELOG.md examples/self-managed-vpc-no-internet-access/README.md examples/self-managed-mtls-certs/README.md examples/self-managed-ecr/README.md examples/self-managed-dns/README.md"
