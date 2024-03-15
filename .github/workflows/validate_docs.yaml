@@ -1,0 +1,25 @@
+name: Validate docs
+
+on:
+  pull_request:
+    paths:
+      - examples/**
+      - docs/**
+      - .husky/**
+      - .gitignore
+      - "**/*.md"
+      - package*
+      - .github/workflows/validate_docs.yaml
+
+
+jobs:
+  validate_docs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4.1.1
+      - name: "Markdown lint codebase"
+        uses: docker://avtodev/markdown-lint:v1
+        with:
+          args: "**/*.md"
+          ignore: './CHANGELOG.md'
