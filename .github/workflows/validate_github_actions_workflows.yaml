@@ -1,0 +1,21 @@
+name: Validate GH Actions Workflows
+
+on:
+  pull_request:
+    paths:
+      - .github/**
+
+
+jobs:
+  actionlint_github_actions_workflows:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4.1.1
+      - name: "Actionlint GH Actions workflows"
+        uses: reviewdog/action-actionlint@v1.34.0
+        with:
+          filter_mode: file
+          actionlint_flags: "--ignore SC2086 --ignore SC2046"
+
+
