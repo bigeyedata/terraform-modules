@@ -1,3 +1,12 @@
+## [3.8.1](https://github.com/bigeyedata/terraform-modules/compare/v3.8.0...v3.8.1) (2024-03-15)
+
+
+### Bug Fixes
+
+* add app tag for temporal, redis, rabbit ([b2d54ee](https://github.com/bigeyedata/terraform-modules/commit/b2d54eed04d8fd42a53c913a26ef203a6e23e998))
+
+
+
 # [3.8.0](https://github.com/bigeyedata/terraform-modules/compare/v3.7.0...v3.8.0) (2024-03-15)
 
 
