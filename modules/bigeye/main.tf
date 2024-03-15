@@ -630,7 +630,7 @@ module "bigeye_admin" {
   image                     = format("%s/%s%s:%s", local.image_registry, "bigeye-admin", var.image_repository_suffix, local.bigeye_admin_image_tag)
   vpc_id                    = local.vpc_id
   subnet_ids                = local.application_subnet_ids
-  tags                      = local.tags
+  tags                      = merge(local.tags, { app = "bigeye-admin" })
   cluster_name              = local.name
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
   execution_role_arn        = aws_iam_role.ecs.arn
@@ -725,7 +725,7 @@ module "rabbitmq" {
   maintenance_time          = var.rabbitmq_maintenance_time
   user_name                 = var.rabbitmq_user_name
   user_password             = local.create_rabbitmq_user_password_secret ? aws_secretsmanager_secret_version.rabbitmq_user_password[0].secret_string : data.aws_secretsmanager_secret_version.byo_rabbitmq_user_password[0].secret_string
-  tags                      = local.tags
+  tags                      = merge(local.tags, { app = "datawatch" })
 }
 
 #======================================================
@@ -1055,7 +1055,7 @@ module "temporal_rds" {
   create_parameter_group                = local.temporal_rds_create_parameter_group
   parameter_group_name                  = local.temporal_rds_create_parameter_group ? "${local.name}-temporal" : null
   parameters                            = local.temporal_rds_create_parameter_group ? var.temporal_rds_parameters : null
-  tags                                  = merge(local.tags, var.temporal_rds_additional_tags)
+  tags                                  = merge(local.tags, { app = "temporal" }, var.temporal_rds_additional_tags)
   primary_additional_tags               = var.temporal_rds_primary_additional_tags
   replica_additional_tags               = var.temporal_rds_primary_additional_tags
 }
@@ -1307,7 +1307,7 @@ resource "aws_ecs_task_definition" "temporal" {
   memory                   = var.temporal_memory
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  tags                     = local.tags
+  tags                     = merge(local.tags, { app = "temporal" })
   execution_role_arn       = aws_iam_role.ecs.arn
   container_definitions    = var.datadog_agent_enabled ? jsonencode([local.temporal_container_def, local.temporal_datadog_container_def]) : jsonencode([local.temporal_container_def])
 }
@@ -1364,7 +1364,7 @@ resource "aws_ecs_service" "temporal" {
 
   propagate_tags = "SERVICE"
 
-  tags = local.tags
+  tags = merge(local.tags, { app = "temporal" })
 }
 
 resource "aws_security_group" "temporal" {
@@ -2068,7 +2068,7 @@ module "redis" {
   engine_version           = var.redis_engine_version
   maintenance_window       = var.redis_maintenance_window
   cloudwatch_loggroup_name = aws_cloudwatch_log_group.bigeye.name
-  tags                     = local.tags
+  tags                     = merge(local.tags, { app = "datawatch" })
 }
 
 #======================================================
@@ -2153,7 +2153,7 @@ module "datawatch_rds" {
   replica_parameter_group_name   = "${local.name}-datawatch-replica"
   replica_parameters             = var.datawatch_rds_replica_parameters
 
-  tags                    = merge(local.tags, var.datawatch_rds_additional_tags)
+  tags                    = merge(local.tags, { app = "datawatch" }, var.datawatch_rds_additional_tags)
   primary_additional_tags = var.datawatch_rds_primary_additional_tags
   replica_additional_tags = var.datawatch_rds_replica_additional_tags
 }
