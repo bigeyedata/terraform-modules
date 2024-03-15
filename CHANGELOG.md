@@ -1,3 +1,12 @@
+# [3.8.0](https://github.com/bigeyedata/terraform-modules/compare/v3.7.0...v3.8.0) (2024-03-15)
+
+
+### Features
+
+* create parameter group by default for datawatch replica ([6ce59d6](https://github.com/bigeyedata/terraform-modules/commit/6ce59d67b4b2b63a196e3c41c552a555359b6ccc))
+
+
+
 # [3.7.0](https://github.com/bigeyedata/terraform-modules/compare/v3.6.2...v3.7.0) (2024-03-12)
 
 
