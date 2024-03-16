@@ -121,7 +121,7 @@ resource "aws_cloudwatch_metric_alarm" "write_iops" {
   alarm_actions     = var.write_iops_sns_arns
   actions_enabled   = length(var.write_iops_sns_arns) > 0
   alarm_description = "Check performance insights for missing indexes or query volume"
-  metric_name       = "ReadIOPS"
+  metric_name       = "WriteIOPS"
   namespace         = "AWS/RDS"
   statistic         = "Average"
   dimensions = {
