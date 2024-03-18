@@ -1184,6 +1184,9 @@ variable "datawatch_rds_replica_parameters" {
   type        = list(map(string))
   default = [
     {
+      name  = "binlog_format"
+      value = "ROW"
+      }, {
       name         = "general_log"
       value        = "0"
       apply_method = "immediate"
