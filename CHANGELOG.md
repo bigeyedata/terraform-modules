@@ -1,3 +1,13 @@
+## [3.8.2](https://github.com/bigeyedata/terraform-modules/compare/v3.8.1...v3.8.2) (2024-03-18)
+
+
+### Bug Fixes
+
+* binlog_format should be ROW for replica by default ([25a6b26](https://github.com/bigeyedata/terraform-modules/commit/25a6b263448ed85264de653855819119425e5fc9))
+* write iops metric for RDS ([a0c85a5](https://github.com/bigeyedata/terraform-modules/commit/a0c85a56b2ad67434520b84d85c87cee2c522131))
+
+
+
 ## [3.8.1](https://github.com/bigeyedata/terraform-modules/compare/v3.8.0...v3.8.1) (2024-03-15)
 
 
