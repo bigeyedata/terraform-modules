@@ -23,7 +23,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: setdirs
-        run: echo "dir=$(ls -d modules/* | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
+        run: |
+          # shellcheck disable=SC2012
+          echo "dir=$(ls -d modules/* | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
   validate:
     name: TF Check
     runs-on: ubuntu-latest
@@ -83,7 +85,7 @@ jobs:
           input-file: CHANGELOG.md
       - name: replace tf release version in scripts
         if: ${{ steps.changelog.outputs.skipped == 'false' }}
-        run: ./scripts/replace-terraform-version.sh "${{ steps.prevversion.outputs.PREVIOUS_VERSION }}" "${{ steps.changelog.outputs.tag }}"
+        run: ./scripts/replace-terraform-version.sh "${{ steps.changelog.outputs.tag }}"
       - name: inspect git status
         run: |
           git status
