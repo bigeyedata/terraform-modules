@@ -8,9 +8,9 @@ fi
 
 usage() {
     echo
-    echo "Replace old version number with new version number"
+    echo "Update version number"
     echo
-    echo "Usage: $0 [old version number] [new version number]"
+    echo "Usage: $0 [new version number]"
     exit 1
 }
 
@@ -22,24 +22,20 @@ matches_version_pattern() {
     return 1
 }
 
-OLD_VERSION=$1
-NEW_VERSION=$2
+NEW_VERSION=$1
 
-if [ -z "${OLD_VERSION}" ] || [ -z "${NEW_VERSION}" ]; then
+
+if [ -z "${NEW_VERSION}" ]; then
     echo "missing positional arguments"
     usage
 fi
-if ! matches_version_pattern ${OLD_VERSION} ; then
-    echo "OLD_VERSION must be a semantic version, got ${OLD_VERSION}"
-    usage
-fi
 
-if ! matches_version_pattern ${NEW_VERSION} ; then
+if ! matches_version_pattern "${NEW_VERSION}" ; then
     echo "NEW_VERSION must be a semantic version, got ${NEW_VERSION}"
     usage
 fi
 
-shift 2
+shift 1
 while getopts "" opt; do
     case $opt in
         *)
@@ -50,8 +46,8 @@ done
 
 # Replace text. Unfortunately need to check system since Mac sed is different
 if [ "$(uname -s)" = "Darwin" ]; then
-    find ./examples -name \*.tf -print0 | xargs -0 -I '{}' sed -i '' "s/${OLD_VERSION}/${NEW_VERSION}/g" "{}"
+    find ./examples -name \*.tf -print0 | xargs -0 -I '{}' sed -E -i '' "s/ref=v([0-9\.]+)\"/ref=${NEW_VERSION}\"/" "{}"
 else
-    find ./examples -name \*.tf -print0 | xargs --null -I '{}' sed -i "s/${OLD_VERSION}/${NEW_VERSION}/g" "{}"
+    find ./examples -name \*.tf -print0 | xargs --null -I '{}' sed -E -i "s/ref=v([0-9\.]+)\"/ref=${NEW_VERSION}\"/" "{}"
 fi
 
