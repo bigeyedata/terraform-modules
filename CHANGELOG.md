@@ -1,3 +1,12 @@
+## [3.8.3](https://github.com/bigeyedata/terraform-modules/compare/v3.8.2...v3.8.3) (2024-03-27)
+
+
+### Bug Fixes
+
+* scheduler datawatch address to datawork ([7371a93](https://github.com/bigeyedata/terraform-modules/commit/7371a933b46bb1fe7f40b2a9542016075d1c6a76))
+
+
+
 ## [3.8.2](https://github.com/bigeyedata/terraform-modules/compare/v3.8.1...v3.8.2) (2024-03-18)
 
 
