@@ -154,7 +154,7 @@ module "replica" {
   apply_immediately                   = var.apply_immediately
   identifier                          = "${var.name}-ro"
   engine                              = "mysql"
-  engine_version                      = var.engine_version
+  engine_version                      = var.replica_engine_version != "" ? var.replica_engine_version : var.engine_version
   auto_minor_version_upgrade          = false
   instance_class                      = var.replica_instance_class
   deletion_protection                 = var.deletion_protection

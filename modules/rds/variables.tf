@@ -181,6 +181,13 @@ variable "create_replica" {
   default     = false
 }
 
+variable "replica_engine_version" {
+  description = "Defaults to engine_version.  This is primarily used for engine upgrades as the replica has to be upgraded first."
+  type        = string
+  default     = ""
+}
+
+
 variable "replica_instance_class" {
   description = "Instance class of the replica"
   type        = string
