@@ -2146,6 +2146,7 @@ module "datawatch_rds" {
 
   # Replica
   create_replica                  = var.datawatch_rds_replica_enabled
+  replica_engine_version          = var.datawatch_rds_replica_engine_version
   replica_instance_class          = var.datawatch_rds_replica_instance_type
   replica_backup_retention_period = var.datawatch_rds_replica_backup_retention_period
 

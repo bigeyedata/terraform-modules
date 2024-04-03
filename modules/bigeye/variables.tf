@@ -1167,6 +1167,12 @@ variable "datawatch_rds_replica_enabled" {
   default     = false
 }
 
+variable "datawatch_rds_replica_engine_version" {
+  description = "Defaults to engine_version.  This is primarily used for engine upgrades as the replica has to be upgraded first."
+  type        = string
+  default     = ""
+}
+
 variable "datawatch_rds_replica_instance_type" {
   description = "The instance type to use for datawatch read replica"
   type        = string
