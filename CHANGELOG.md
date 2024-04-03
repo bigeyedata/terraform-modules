@@ -1,3 +1,12 @@
+# [3.9.0](https://github.com/bigeyedata/terraform-modules/compare/v3.8.3...v3.9.0) (2024-04-03)
+
+
+### Features
+
+* allow setting replica DB engine version ([c801fb2](https://github.com/bigeyedata/terraform-modules/commit/c801fb24407ca3bbbaa1e7b53a1ff13e4ca9cc8b))
+
+
+
 ## [3.8.3](https://github.com/bigeyedata/terraform-modules/compare/v3.8.2...v3.8.3) (2024-03-27)
 
 
