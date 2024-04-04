@@ -72,6 +72,11 @@ variable "create_security_groups" {
   default     = true
 }
 
+variable "additional_ingress_cidrs" {
+  description = "This setting allows additional CIDR blocks to ingress to the load balancers for the application. A common use case here is when the internet_facing is false, and ingress from a VPN must be allowed"
+  type        = list(string)
+  default     = []
+}
 #======================================================
 # VPC
 #======================================================
