@@ -9,9 +9,9 @@ terraform {
 }
 
 locals {
-  max_port                   = 65535
-  load_balancer_ingress_text = var.internet_facing ? "anywhere" : "internal"
-  load_balancer_ingress_cidr = var.internet_facing ? "0.0.0.0/0" : var.vpc_cidr_block
+  max_port                    = 65535
+  load_balancer_ingress_text  = var.internet_facing ? "anywhere" : "internal"
+  load_balancer_ingress_cidrs = var.internet_facing ? ["0.0.0.0/0"] : concat([var.vpc_cidr_block], var.lb_additional_ingress_cidrs)
 }
 
 
@@ -32,7 +32,7 @@ resource "aws_security_group" "lb" {
     from_port   = 443
     to_port     = 443
     protocol    = "TCP"
-    cidr_blocks = [local.load_balancer_ingress_cidr]
+    cidr_blocks = local.load_balancer_ingress_cidrs
   }
 
   ingress {
@@ -40,7 +40,7 @@ resource "aws_security_group" "lb" {
     from_port   = 80
     to_port     = 80
     protocol    = "TCP"
-    cidr_blocks = [local.load_balancer_ingress_cidr]
+    cidr_blocks = local.load_balancer_ingress_cidrs
   }
 
   egress {

@@ -864,6 +864,7 @@ module "haproxy" {
   lb_idle_timeout                  = 900
   lb_subnet_ids                    = var.internet_facing ? local.public_alb_subnet_ids : local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids = concat(var.haproxy_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
+  lb_additional_ingress_cidrs      = var.additional_ingress_cidrs
   lb_stickiness_enabled            = true
   lb_deregistration_delay          = 900
 
@@ -1077,7 +1078,7 @@ resource "aws_security_group" "temporal_lb" {
     from_port   = local.temporal_lb_port
     to_port     = local.temporal_lb_port
     protocol    = "TCP"
-    cidr_blocks = var.temporal_internet_facing ? ["0.0.0.0/0"] : [var.vpc_cidr_block]
+    cidr_blocks = var.temporal_internet_facing ? ["0.0.0.0/0"] : concat([var.vpc_cidr_block], var.additional_ingress_cidrs)
   }
 
   egress {
