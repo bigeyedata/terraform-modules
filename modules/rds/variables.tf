@@ -224,6 +224,12 @@ variable "create_security_groups" {
   default     = true
 }
 
+variable "additional_ingress_cidrs" {
+  description = "A list of additional cidrs to make ingress rules for"
+  type        = list(string)
+  default     = []
+}
+
 variable "allowed_client_security_group_ids" {
   description = "A list of security groups to allow ingress from"
   type        = list(string)

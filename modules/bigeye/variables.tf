@@ -77,6 +77,12 @@ variable "additional_ingress_cidrs" {
   type        = list(string)
   default     = []
 }
+
+variable "internal_additional_ingress_cidrs" {
+  description = "This setting is similar to additional_ingress_cidrs, except it applies to internal resources. It is not recommended to use this, instead you should use the admin module using enable_bigeye_admin_module"
+  type        = list(string)
+  default     = []
+}
 #======================================================
 # VPC
 #======================================================

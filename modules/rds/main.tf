@@ -40,6 +40,17 @@ resource "aws_vpc_security_group_ingress_rule" "other_sgs" {
   referenced_security_group_id = var.allowed_client_security_group_ids[count.index]
 }
 
+resource "aws_vpc_security_group_ingress_rule" "additional_cidrs" {
+  count             = var.create_security_groups ? length(var.additional_ingress_cidrs) : 0
+  security_group_id = aws_security_group.db[0].id
+
+  from_port   = 3306
+  to_port     = 3306
+  ip_protocol = "TCP"
+  description = "Allows MySQL port from ${var.additional_ingress_cidrs[count.index]}"
+  cidr_ipv4   = var.additional_ingress_cidrs[count.index]
+}
+
 resource "aws_security_group" "db_clients" {
   count  = var.create_security_groups ? 1 : 0
   vpc_id = var.vpc_id
@@ -80,6 +91,17 @@ resource "aws_vpc_security_group_ingress_rule" "replica_other_sgs" {
   ip_protocol                  = "TCP"
   description                  = "Allows MySQL port from ${var.allowed_client_security_group_ids[count.index]}"
   referenced_security_group_id = var.allowed_client_security_group_ids[count.index]
+}
+
+resource "aws_vpc_security_group_ingress_rule" "replica_additional_cidrs" {
+  count             = var.create_security_groups && var.create_replica ? length(var.additional_ingress_cidrs) : 0
+  security_group_id = aws_security_group.db_replica[0].id
+
+  from_port   = 3306
+  to_port     = 3306
+  ip_protocol = "TCP"
+  description = "Allows MySQL port from ${var.additional_ingress_cidrs[count.index]}"
+  cidr_ipv4   = var.additional_ingress_cidrs[count.index]
 }
 
 resource "aws_security_group" "db_replica_clients" {
