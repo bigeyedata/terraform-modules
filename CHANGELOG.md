@@ -1,3 +1,12 @@
+## [3.9.1](https://github.com/bigeyedata/terraform-modules/compare/v3.9.0...v3.9.1) (2024-04-04)
+
+
+### Bug Fixes
+
+* add sentry dsn to web container ([7173a30](https://github.com/bigeyedata/terraform-modules/commit/7173a30959c6fa78efffee6167f8c2f5dc3c7942))
+
+
+
 # [3.9.0](https://github.com/bigeyedata/terraform-modules/compare/v3.8.3...v3.9.0) (2024-04-03)
 
 
