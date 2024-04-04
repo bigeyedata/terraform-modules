@@ -84,3 +84,13 @@ resource "aws_vpc_security_group_ingress_rule" "other_sgs" {
   referenced_security_group_id = var.allowed_client_security_group_ids[count.index]
 }
 
+resource "aws_vpc_security_group_ingress_rule" "additional_cidrs" {
+  count             = var.create_security_groups ? length(var.additional_ingress_cidrs) : 0
+  security_group_id = aws_security_group.this[0].id
+
+  from_port   = 6379
+  to_port     = 6379
+  ip_protocol = "TCP"
+  description = "Allows redis port from ${var.additional_ingress_cidrs[count.index]}"
+  cidr_ipv4   = var.additional_ingress_cidrs[count.index]
+}

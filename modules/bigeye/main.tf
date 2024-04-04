@@ -279,7 +279,7 @@ resource "aws_security_group" "vpc_endpoint" {
     to_port     = 80
     protocol    = "TCP"
     description = "Allow HTTP traffic"
-    cidr_blocks = [var.vpc_cidr_block]
+    cidr_blocks = concat([var.vpc_cidr_block], var.internal_additional_ingress_cidrs)
   }
 
   ingress {
@@ -287,7 +287,7 @@ resource "aws_security_group" "vpc_endpoint" {
     to_port     = 443
     protocol    = "TCP"
     description = "Allow HTTPS traffic"
-    cidr_blocks = [var.vpc_cidr_block]
+    cidr_blocks = concat([var.vpc_cidr_block], var.internal_additional_ingress_cidrs)
   }
 
   egress {
@@ -717,7 +717,7 @@ module "rabbitmq" {
   deployment_mode           = local.rabbitmq_cluster_mode_enabled ? "CLUSTER_MULTI_AZ" : "SINGLE_INSTANCE"
   create_security_groups    = var.create_security_groups
   extra_security_groups     = concat(var.rabbitmq_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
-  extra_ingress_cidr_blocks = var.rabbitmq_extra_ingress_cidr_blocks
+  extra_ingress_cidr_blocks = concat(var.rabbitmq_extra_ingress_cidr_blocks, var.internal_additional_ingress_cidrs)
   subnet_ids                = local.rabbitmq_subnet_group_ids
   instance_type             = var.rabbitmq_instance_type
   engine_version            = var.rabbitmq_engine_version
@@ -849,6 +849,7 @@ module "haproxy" {
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
+  task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
   additional_security_group_ids = concat(var.haproxy_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   traffic_port                  = var.haproxy_port
   ecs_cluster_id                = aws_ecs_cluster.this.id
@@ -943,6 +944,7 @@ module "web" {
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
+  task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
   additional_security_group_ids = concat(var.web_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   traffic_port                  = var.web_port
   ecs_cluster_id                = aws_ecs_cluster.this.id
@@ -957,6 +959,7 @@ module "web" {
   lb_idle_timeout                  = 180
   lb_subnet_ids                    = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids = concat(var.web_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
+  lb_additional_ingress_cidrs      = var.internal_additional_ingress_cidrs
   lb_stickiness_enabled            = true
   lb_deregistration_delay          = 120
 
@@ -1046,6 +1049,7 @@ module "temporal_rds" {
   storage_type                          = "gp3"
   db_subnet_group_name                  = local.database_subnet_group_name
   create_security_groups                = var.create_security_groups
+  additional_ingress_cidrs              = var.internal_additional_ingress_cidrs
   extra_security_group_ids              = concat(var.temporal_rds_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   allowed_client_security_group_ids     = var.create_security_groups ? [aws_security_group.temporal[0].id] : []
   instance_class                        = var.temporal_rds_instance_type
@@ -1396,6 +1400,19 @@ resource "aws_security_group" "temporal" {
     security_groups = [aws_security_group.temporal_lb[0].id]
   }
 
+  # TODO split this out into their own resources
+  dynamic "ingress" {
+    for_each = toset(var.internal_additional_ingress_cidrs)
+
+    content {
+      from_port   = 7233
+      to_port     = 7233
+      protocol    = "TCP"
+      description = "Allows port 7233 from cidr - ${ingress.key}"
+      cidr_blocks = [ingress.key]
+    }
+  }
+
   egress {
     from_port        = 0
     to_port          = local.max_port
@@ -1421,6 +1438,7 @@ module "temporalui" {
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
+  task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
   additional_security_group_ids = concat(var.temporalui_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   traffic_port                  = var.temporalui_port
   ecs_cluster_id                = aws_ecs_cluster.this.id
@@ -1434,6 +1452,7 @@ module "temporalui" {
   acm_certificate_arn              = local.acm_certificate_arn
   lb_subnet_ids                    = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids = concat(var.temporalui_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
+  lb_additional_ingress_cidrs      = var.internal_additional_ingress_cidrs
   lb_deregistration_delay          = 120
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
@@ -1532,10 +1551,11 @@ module "monocle" {
   name     = "${local.name}-monocle"
   tags     = merge(local.tags, { app = "monocle" })
 
-  vpc_id                 = local.vpc_id
-  vpc_cidr_block         = var.vpc_cidr_block
-  subnet_ids             = local.application_subnet_ids
-  create_security_groups = var.create_security_groups
+  vpc_id                        = local.vpc_id
+  vpc_cidr_block                = var.vpc_cidr_block
+  subnet_ids                    = local.application_subnet_ids
+  create_security_groups        = var.create_security_groups
+  task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
   additional_security_group_ids = concat(
     var.monocle_extra_security_group_ids,
     [module.bigeye_admin.client_security_group_id],
@@ -1555,6 +1575,7 @@ module "monocle" {
   lb_idle_timeout                  = 900
   lb_subnet_ids                    = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids = concat(var.monocle_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
+  lb_additional_ingress_cidrs      = var.internal_additional_ingress_cidrs
   lb_deregistration_delay          = 300
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
@@ -1661,10 +1682,11 @@ module "toretto" {
   name     = "${local.name}-toretto"
   tags     = merge(local.tags, { app = "toretto" })
 
-  vpc_id                 = local.vpc_id
-  vpc_cidr_block         = var.vpc_cidr_block
-  subnet_ids             = local.application_subnet_ids
-  create_security_groups = var.create_security_groups
+  vpc_id                        = local.vpc_id
+  vpc_cidr_block                = var.vpc_cidr_block
+  subnet_ids                    = local.application_subnet_ids
+  create_security_groups        = var.create_security_groups
+  task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
   additional_security_group_ids = concat(
     var.toretto_extra_security_group_ids,
     [module.bigeye_admin.client_security_group_id],
@@ -1681,6 +1703,7 @@ module "toretto" {
   lb_idle_timeout                  = 900
   lb_subnet_ids                    = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids = concat(var.toretto_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
+  lb_additional_ingress_cidrs      = var.internal_additional_ingress_cidrs
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -1824,10 +1847,11 @@ module "scheduler" {
   name     = "${local.name}-scheduler"
   tags     = merge(local.tags, { app = "scheduler" })
 
-  vpc_id                 = local.vpc_id
-  vpc_cidr_block         = var.vpc_cidr_block
-  subnet_ids             = local.application_subnet_ids
-  create_security_groups = var.create_security_groups
+  vpc_id                        = local.vpc_id
+  vpc_cidr_block                = var.vpc_cidr_block
+  subnet_ids                    = local.application_subnet_ids
+  create_security_groups        = var.create_security_groups
+  task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
   additional_security_group_ids = concat(
     var.scheduler_extra_security_group_ids,
     [module.bigeye_admin.client_security_group_id],
@@ -1843,6 +1867,7 @@ module "scheduler" {
   lb_idle_timeout                  = 900
   lb_subnet_ids                    = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids = concat(var.scheduler_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
+  lb_additional_ingress_cidrs      = var.internal_additional_ingress_cidrs
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -2058,6 +2083,7 @@ module "redis" {
   name                     = local.name
   vpc_id                   = local.vpc_id
   create_security_groups   = var.create_security_groups
+  additional_ingress_cidrs = var.internal_additional_ingress_cidrs
   subnet_group_name        = local.elasticache_subnet_group_name
   extra_security_group_ids = concat(var.redis_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   allowed_client_security_group_ids = var.create_security_groups ? [
@@ -2114,6 +2140,7 @@ module "datawatch_rds" {
   vpc_id                   = local.vpc_id
   db_subnet_group_name     = local.database_subnet_group_name
   create_security_groups   = var.create_security_groups
+  additional_ingress_cidrs = var.internal_additional_ingress_cidrs
   extra_security_group_ids = concat(var.datawatch_rds_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   enable_multi_az          = var.redundant_infrastructure ? true : false
 
@@ -2251,6 +2278,7 @@ module "datawatch" {
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
+  task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
   additional_security_group_ids = concat(local.datawatch_additional_security_groups, var.datawatch_extra_security_group_ids)
   traffic_port                  = var.datawatch_port
   ecs_cluster_id                = aws_ecs_cluster.this.id
@@ -2264,6 +2292,7 @@ module "datawatch" {
   lb_idle_timeout                  = 900
   lb_subnet_ids                    = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids = concat(var.datawatch_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
+  lb_additional_ingress_cidrs      = var.internal_additional_ingress_cidrs
   lb_deregistration_delay          = 900
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
@@ -2314,6 +2343,7 @@ module "datawork" {
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
+  task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
   additional_security_group_ids = concat(local.datawatch_additional_security_groups, var.datawork_extra_security_group_ids)
   traffic_port                  = var.datawork_port
   ecs_cluster_id                = aws_ecs_cluster.this.id
@@ -2327,6 +2357,7 @@ module "datawork" {
   lb_idle_timeout                  = 900
   lb_subnet_ids                    = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids = concat(var.datawork_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
+  lb_additional_ingress_cidrs      = var.internal_additional_ingress_cidrs
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -2380,6 +2411,7 @@ module "metricwork" {
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
+  task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
   additional_security_group_ids = concat(local.datawatch_additional_security_groups, var.metricwork_extra_security_group_ids)
   traffic_port                  = var.metricwork_port
   ecs_cluster_id                = aws_ecs_cluster.this.id
@@ -2392,6 +2424,7 @@ module "metricwork" {
   lb_idle_timeout                  = 900
   lb_subnet_ids                    = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids = concat(var.metricwork_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
+  lb_additional_ingress_cidrs      = var.internal_additional_ingress_cidrs
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket

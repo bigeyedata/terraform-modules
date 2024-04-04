@@ -151,6 +151,19 @@ resource "aws_security_group" "this" {
     security_groups = [aws_security_group.lb[0].id]
   }
 
+  # TODO split these out into their own resources
+  dynamic "ingress" {
+    for_each = toset(var.task_additional_ingress_cidrs)
+
+    content {
+      from_port   = var.traffic_port
+      to_port     = var.traffic_port
+      protocol    = "TCP"
+      description = "Allows port ${var.traffic_port} from ${ingress.key}"
+      cidr_blocks = [ingress.key]
+    }
+  }
+
   egress {
     description      = "Allow outbound"
     from_port        = 0

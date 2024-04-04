@@ -48,6 +48,12 @@ variable "create_security_groups" {
   default     = true
 }
 
+variable "additional_ingress_cidrs" {
+  description = "A list of additional cidrs to make ingress rules for"
+  type        = list(string)
+  default     = []
+}
+
 variable "extra_security_group_ids" {
   description = "List of extra security group ids for the cache to use"
   type        = list(string)

@@ -45,6 +45,12 @@ variable "lb_additional_ingress_cidrs" {
   default     = []
 }
 
+variable "task_additional_ingress_cidrs" {
+  description = "A list of additional cidrs to apply to the task"
+  type        = list(string)
+  default     = []
+}
+
 variable "ecs_cluster_id" {
   description = "The ID of the ECS cluster"
   type        = string
