@@ -998,7 +998,10 @@ module "web" {
     var.web_additional_environment_vars,
   )
 
-  secret_arns = var.web_additional_secret_arns
+  secret_arns = merge(
+    local.sentry_dsn_secret_map,
+    var.web_additional_secret_arns
+  )
 }
 
 #======================================================
