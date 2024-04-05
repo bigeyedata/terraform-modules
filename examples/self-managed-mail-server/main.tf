@@ -3,7 +3,7 @@ data "aws_secretsmanager_secret" "byomailserver_smtp_password" {
 }
 
 module "bigeye" {
-  source      = "git::https://github.com/bigeyedata/terraform-modules//modules/bigeye?ref=v3.9.1"
+  source      = "git::https://github.com/bigeyedata/terraform-modules//modules/bigeye?ref=v3.10.0"
   environment = "test"
   instance    = "bigeye"
 
