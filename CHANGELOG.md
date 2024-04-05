@@ -1,3 +1,13 @@
+# [3.10.0](https://github.com/bigeyedata/terraform-modules/compare/v3.9.1...v3.10.0) (2024-04-05)
+
+
+### Features
+
+* add additional ingress cidrs for internal resources ([ffb2c8f](https://github.com/bigeyedata/terraform-modules/commit/ffb2c8f30c29098af7c9ccbc6ba5dd0ad7909d6f))
+* add additional_ingress_cidrs var for outward-facing resources ([08a1917](https://github.com/bigeyedata/terraform-modules/commit/08a19174c9107d06bf7e293ce6de06e901ae81dd))
+
+
+
 ## [3.9.1](https://github.com/bigeyedata/terraform-modules/compare/v3.9.0...v3.9.1) (2024-04-04)
 
 
