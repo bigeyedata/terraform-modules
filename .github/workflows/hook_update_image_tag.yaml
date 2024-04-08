@@ -1,0 +1,61 @@
+name: Update Image Tag
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Docker image tag'
+        required: true
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  print_inputs:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "New image tag - ${{ inputs.tag }}"
+  update_tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: set up branch
+        run: |
+          git branch "update-image-tag-${{ inputs.tag }}" "${{ github.sha }}"
+          git checkout "update-image-tag-${{ inputs.tag }}"
+      - name: replace image tag in scripts
+        run: ./scripts/replace-image-tag.sh "${{ inputs.tag }}"
+      - name: inspect git status
+        run: |
+          git status
+          git diff | cat
+          git diff HEAD~1 | cat
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          create_branch: false
+          branch: "update-image-tag-${{ inputs.tag }}"
+          commit_message: "chore: update image_tag"
+          file_pattern: examples/**/*
+          skip_fetch: true
+      - name: create PR with update
+        id: create-pr
+        run: gh pr create --base main --head update-image-tag-${{ inputs.tag }} --title "Update image tag in examples to ${{ inputs.tag }}" --body "Created by action ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: approve pr
+        run: |
+          gh pr review "update-image-tag-${{ inputs.tag }}" --approve
+        env:
+          GH_TOKEN: ${{ secrets.BIGEYE_SRE_BOT_GH_PAT }}
+      - name: merge PR with updates
+        id: merge-pr
+        run: |
+          gh pr merge "update-image-tag-${{ inputs.tag }}" --admin --rebase --delete-branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
