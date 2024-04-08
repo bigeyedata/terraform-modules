@@ -16,7 +16,7 @@ locals {
   name        = "${local.environment}-${local.instance}"
 
   # Get this from Bigeye Support.  Typically you will want to install the latest.
-  image_tag = "1.33.0"
+  image_tag = "1.34.0"
   # This will pull images directly from Bigeye's ECR repository.  It is recommended to cache the images in your own local ECR repository.
   image_registry = "021451147547.dkr.ecr.us-west-2.amazonaws.com"
 
