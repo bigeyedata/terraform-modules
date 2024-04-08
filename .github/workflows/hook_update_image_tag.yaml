@@ -40,12 +40,12 @@ jobs:
         with:
           create_branch: false
           branch: "update-image-tag-${{ inputs.tag }}"
-          commit_message: "chore: update image_tag"
+          commit_message: "chore: update image_tag in examples to ${{ inputs.tag }}"
           file_pattern: examples/**/*
           skip_fetch: true
       - name: create PR with update
         id: create-pr
-        run: gh pr create --base main --head update-image-tag-${{ inputs.tag }} --title "Update image tag in examples to ${{ inputs.tag }}" --body "Created by action ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        run: gh pr create --base ${{ github.ref_name }} --head update-image-tag-${{ inputs.tag }} --title "Update image tag in examples to ${{ inputs.tag }}" --body "Created by action ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: approve pr
