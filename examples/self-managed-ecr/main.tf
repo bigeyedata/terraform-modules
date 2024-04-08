@@ -9,7 +9,7 @@ module "bigeye" {
   image_registry = format("%s.dkr.ecr.us-west-2.amazonaws.com", aws_ecr_repository.bigeye_ecr[0].registry_id)
 
   # Bigeye app version.  You can list the tags available in the image_registry (using the latest is always recommended).
-  image_tag = ""
+  image_tag = "1.34.0"
 }
 
 # Create local ECR repos for caching of images.  See run list_bigeye_images.sh and get_bigeye_image.sh for
