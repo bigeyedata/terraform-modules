@@ -930,14 +930,47 @@ variable "temporal_rds_replica_additional_tags" {
   default     = {}
 }
 
+#======================================================
+# Application Variables - Temporal Components
+#======================================================
 variable "temporal_desired_count" {
-  description = "The desired number of replicas"
+  description = "The desired number of temporal components, applies to frontend, internal_frontend, history, matching, and worker services if those are not set"
   type        = number
   default     = 1
 }
 
+variable "temporal_frontend_desired_count" {
+  description = "The desired number of temporal frontend services, defaults to temporal_desired_count if not set"
+  type        = number
+  default     = null
+}
+
+variable "temporal_internal_frontend_desired_count" {
+  description = "The desired number of temporal internal-frontend services, defaults to temporal_desired_count if not set"
+  type        = number
+  default     = null
+}
+
+variable "temporal_history_desired_count" {
+  description = "The desired number of temporal history services, defaults to temporal_desired_count if not set"
+  type        = number
+  default     = null
+}
+
+variable "temporal_matching_desired_count" {
+  description = "The desired number of temporal matching services, defaults to temporal_desired_count if not set"
+  type        = number
+  default     = null
+}
+
+variable "temporal_worker_desired_count" {
+  description = "The desired number of temporal worker services, defaults to temporal_desired_count if not set"
+  type        = number
+  default     = null
+}
+
 variable "temporal_cpu" {
-  description = "Amount of CPU to allocate"
+  description = "Amount of CPU to allocate for temporal. Applies to temporal frontend, internal_frontend, history, matching, and worker services if those are not specified"
   type        = number
   default     = 1024
 }
@@ -948,8 +981,98 @@ variable "temporal_memory" {
   default     = 2048
 }
 
+variable "temporal_frontend_cpu" {
+  description = "Amount of CPU to allocate to the temporal frontend service. Defaults to temporal_cpu if not set"
+  type        = number
+  default     = null
+}
+
+variable "temporal_frontend_memory" {
+  description = "Amount of Memory in MB to allocate to the temporal frontend service. Defaults to temporal_memory if not set"
+  type        = number
+  default     = null
+}
+
+variable "temporal_internal_frontend_cpu" {
+  description = "Amount of CPU to allocate to the temporal internal-frontend service. Defaults to temporal_cpu if not set"
+  type        = number
+  default     = null
+}
+
+variable "temporal_internal_frontend_memory" {
+  description = "Amount of Memory in MB to allocate to the temporal internal-frontend service. Defaults to temporal_memory if not set"
+  type        = number
+  default     = null
+}
+
+variable "temporal_history_cpu" {
+  description = "Amount of CPU to allocate to the temporal history service. Defaults to temporal_cpu if not set"
+  type        = number
+  default     = null
+}
+
+variable "temporal_history_memory" {
+  description = "Amount of Memory in MB to allocate to the temporal history service. Defaults to temporal_memory if not set"
+  type        = number
+  default     = null
+}
+
+variable "temporal_matching_cpu" {
+  description = "Amount of CPU to allocate to the temporal matching service. Defaults to temporal_cpu if not set"
+  type        = number
+  default     = null
+}
+
+variable "temporal_matching_memory" {
+  description = "Amount of Memory in MB to allocate to the matching frontend service. Defaults to temporal_memory if not set"
+  type        = number
+  default     = null
+}
+
+variable "temporal_worker_cpu" {
+  description = "Amount of CPU to allocate to the temporal worker service. Defaults to temporal_cpu if not set"
+  type        = number
+  default     = null
+}
+
+variable "temporal_worker_memory" {
+  description = "Amount of Memory in MB to allocate to the temporal worker service. Defaults to temporal_memory if not set"
+  type        = number
+  default     = null
+}
+
 variable "temporal_additional_environment_vars" {
   description = "Additional enviromnent variables to give the application"
+  type        = map(string)
+  default     = {}
+}
+
+variable "temporal_frontend_additional_environment_vars" {
+  description = "Additional enviromnent variables to give the temporal frontend application"
+  type        = map(string)
+  default     = {}
+}
+
+variable "temporal_internal_frontend_additional_environment_vars" {
+  description = "Additional enviromnent variables to give the temporal internal-frontend application"
+  type        = map(string)
+  default     = {}
+}
+
+variable "temporal_history_additional_environment_vars" {
+  description = "Additional enviromnent variables to give the temporal history application"
+  type        = map(string)
+  default     = {}
+}
+
+variable "temporal_matching_additional_environment_vars" {
+  description = "Additional enviromnent variables to give the temporal matching application"
+  type        = map(string)
+  default     = {}
+}
+
+variable "temporal_worker_additional_environment_vars" {
+  description = "Additional enviromnent variables to give the temporal worker application"
   type        = map(string)
   default     = {}
 }
