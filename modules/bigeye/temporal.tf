@@ -241,6 +241,19 @@ resource "aws_security_group" "temporal" {
     for_each = toset(var.internal_additional_ingress_cidrs)
 
     content {
+      from_port   = 9091
+      to_port     = 9091
+      protocol    = "TCP"
+      description = "Allows metrics port 9091 from cidr - ${ingress.key}"
+      cidr_blocks = [ingress.key]
+    }
+  }
+
+  # TODO split this out into their own resources
+  dynamic "ingress" {
+    for_each = toset(var.internal_additional_ingress_cidrs)
+
+    content {
       from_port   = 7233
       to_port     = 7233
       protocol    = "TCP"
