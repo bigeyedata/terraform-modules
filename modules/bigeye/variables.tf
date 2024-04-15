@@ -661,6 +661,11 @@ variable "rds_apply_immediately" {
   default     = false
 }
 
+variable "replica_rds_performance_insights_retention_period" {
+  description = "Days to keep performance insights for the replica"
+  type        = number
+  default     = 7
+}
 
 #======================================================
 # Application Variables - HAProxy

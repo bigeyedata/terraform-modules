@@ -196,7 +196,7 @@ module "replica" {
   storage_encrypted     = true
 
   performance_insights_enabled          = var.replica_enable_performance_insights
-  performance_insights_retention_period = var.performance_insights_retention_period
+  performance_insights_retention_period = var.replica_performance_insights_retention_period
   monitoring_interval                   = var.enhanced_monitoring_interval
   monitoring_role_arn                   = var.enhanced_monitoring_role_arn
   backup_window                         = var.backup_window
