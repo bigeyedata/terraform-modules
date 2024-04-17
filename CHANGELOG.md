@@ -1,3 +1,12 @@
+## [3.11.1](https://github.com/bigeyedata/terraform-modules/compare/v3.11.0...v3.11.1) (2024-04-17)
+
+
+### Bug Fixes
+
+* update logic enabling performance insights on RDS ([3689493](https://github.com/bigeyedata/terraform-modules/commit/36894935b44b5e6a3c83de265ded77fe4fd84047))
+
+
+
 # [3.11.0](https://github.com/bigeyedata/terraform-modules/compare/v3.10.0...v3.11.0) (2024-04-17)
 
 
