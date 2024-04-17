@@ -187,7 +187,6 @@ variable "replica_engine_version" {
   default     = ""
 }
 
-
 variable "replica_instance_class" {
   description = "Instance class of the replica"
   type        = string
@@ -198,6 +197,12 @@ variable "replica_enable_performance_insights" {
   description = "Whether to enable performance insights on the replica"
   type        = bool
   default     = false
+}
+
+variable "replica_performance_insights_retention_period" {
+  description = "days to keep performance insights on the replica"
+  type        = number
+  default     = 7
 }
 
 variable "replica_create_parameter_group" {

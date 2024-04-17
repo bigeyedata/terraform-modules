@@ -2176,10 +2176,12 @@ module "datawatch_rds" {
   parameters             = var.datawatch_rds_parameters
 
   # Replica
-  create_replica                  = var.datawatch_rds_replica_enabled
-  replica_engine_version          = var.datawatch_rds_replica_engine_version
-  replica_instance_class          = var.datawatch_rds_replica_instance_type
-  replica_backup_retention_period = var.datawatch_rds_replica_backup_retention_period
+  create_replica                                = var.datawatch_rds_replica_enabled
+  replica_engine_version                        = var.datawatch_rds_replica_engine_version
+  replica_instance_class                        = var.datawatch_rds_replica_instance_type
+  replica_backup_retention_period               = var.datawatch_rds_replica_backup_retention_period
+  replica_enable_performance_insights           = local.datawatch_rds_replica_performance_insights_enabled
+  replica_performance_insights_retention_period = var.replica_rds_performance_insights_retention_period
 
   replica_create_parameter_group = true
   replica_parameter_group_name   = "${local.name}-datawatch-replica"
