@@ -106,7 +106,7 @@ variable "enable_multi_az" {
 variable "enable_performance_insights" {
   description = "Whether to enable performance insights"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "performance_insights_retention_period" {
