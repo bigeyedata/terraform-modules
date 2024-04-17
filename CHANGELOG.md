@@ -1,3 +1,12 @@
+# [3.11.0](https://github.com/bigeyedata/terraform-modules/compare/v3.10.0...v3.11.0) (2024-04-17)
+
+
+### Features
+
+* enable performance insights on datawatch mysql replica ([c36f20f](https://github.com/bigeyedata/terraform-modules/commit/c36f20fd0b799e33606e1256065da2c03d53834e))
+
+
+
 # [3.10.0](https://github.com/bigeyedata/terraform-modules/compare/v3.9.1...v3.10.0) (2024-04-05)
 
 
