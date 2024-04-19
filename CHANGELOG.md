@@ -1,3 +1,12 @@
+## [3.11.2](https://github.com/bigeyedata/terraform-modules/compare/v3.11.1...v3.11.2) (2024-04-19)
+
+
+### Bug Fixes
+
+* set default for performance insights back to true ([e521370](https://github.com/bigeyedata/terraform-modules/commit/e521370078543642508d63b43cd31de97985fe17))
+
+
+
 ## [3.11.1](https://github.com/bigeyedata/terraform-modules/compare/v3.11.0...v3.11.1) (2024-04-17)
 
 
