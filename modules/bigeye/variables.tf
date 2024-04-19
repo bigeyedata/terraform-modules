@@ -890,9 +890,9 @@ variable "temporal_rds_engine_version" {
 }
 
 variable "temporal_rds_enable_performance_insights" {
-  description = "Whether to enable performance insights. If not specified, will default to on if the database type supports it"
+  description = "Whether to enable performance insights. Default to true if the database type supports it"
   type        = bool
-  default     = null
+  default     = true
 }
 
 variable "temporal_rds_backup_retention_period" {
@@ -1114,9 +1114,9 @@ variable "datawatch_rds_engine_version" {
 }
 
 variable "datawatch_rds_enable_performance_insights" {
-  description = "Whether to enable performance insights. If not specified, will default to on if the database type supports it"
+  description = "Whether to enable performance insights. Default to true if the database type supports it"
   type        = bool
-  default     = null
+  default     = true
 }
 
 variable "datawatch_rds_enhanced_monitoring_interval" {
