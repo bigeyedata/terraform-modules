@@ -2212,6 +2212,40 @@ resource "aws_secretsmanager_secret_version" "robot_password" {
   secret_string = random_password.robot_password[0].result
 }
 
+resource "random_password" "base_encryption" {
+  count   = local.create_base_dw_encryption_secret ? 1 : 0
+  length  = 32
+  special = false
+}
+resource "aws_secretsmanager_secret" "base_encryption" {
+  count                   = local.create_base_dw_encryption_secret ? 1 : 0
+  name                    = format("bigeye/%s/datawatch/base-encryption", local.name)
+  recovery_window_in_days = local.secret_retention_days
+  tags                    = local.tags
+}
+resource "aws_secretsmanager_secret_version" "base_encryption" {
+  count         = local.create_base_dw_encryption_secret ? 1 : 0
+  secret_id     = aws_secretsmanager_secret.base_encryption[0].id
+  secret_string = random_password.base_encryption[0].result
+}
+
+resource "random_password" "base_salt" {
+  count   = local.create_base_dw_salt_secret ? 1 : 0
+  length  = 32
+  special = false
+}
+resource "aws_secretsmanager_secret" "base_salt" {
+  count                   = local.create_base_dw_salt_secret ? 1 : 0
+  name                    = format("bigeye/%s/datawatch/base-salt", local.name)
+  recovery_window_in_days = local.secret_retention_days
+  tags                    = local.tags
+}
+resource "aws_secretsmanager_secret_version" "base_salt" {
+  count         = local.create_base_dw_salt_secret ? 1 : 0
+  secret_id     = aws_secretsmanager_secret.base_salt[0].id
+  secret_string = random_password.base_salt[0].result
+}
+
 locals {
   datawatch_common_env_vars = {
     ENVIRONMENT = var.environment
