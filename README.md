@@ -26,6 +26,16 @@ a Bigeye stack. Other common configurations are also in the examples directory.
 For a full list of the configuration options, please review the
 [variables.tf](./modules/bigeye/variables.tf) in the main bigeye module.
 
+## Compatibility
+
+As features are released, newer versions of this terraform infrastructure are required.
+To prevent issues resulting from misalignment between the `image_tag` of the application
+and the module version, please consult this chart:
+
+| Application Version | Terraform Module Version |
+| ------------------- | ------------------------ |
+| 1.48.0 | requires 3.12.0+ |
+
 ## Upgrading
 
 ### Upgrading to 1.0.0
