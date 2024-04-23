@@ -90,7 +90,7 @@ resource "aws_ecs_service" "temporal" {
     target_group_arn = aws_lb_target_group.temporal.arn
   }
 
-  platform_version = "1.4.0"
+  platform_version = var.fargate_version
 
   deployment_circuit_breaker {
     enable   = false
@@ -163,7 +163,7 @@ resource "aws_ecs_service" "temporal_components" {
     )
   }
 
-  platform_version = "1.4.0"
+  platform_version = var.fargate_version
 
   deployment_circuit_breaker {
     enable   = false
