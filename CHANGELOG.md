@@ -1,3 +1,12 @@
+# [3.12.0](https://github.com/bigeyedata/terraform-modules/compare/v3.11.2...v3.12.0) (2024-04-23)
+
+
+### Features
+
+* add encryption and salt secrets ([3d5ef9b](https://github.com/bigeyedata/terraform-modules/commit/3d5ef9bd428dcea2fa3cc9fe535fe3a5a69db92f))
+
+
+
 ## [3.11.2](https://github.com/bigeyedata/terraform-modules/compare/v3.11.1...v3.11.2) (2024-04-19)
 
 
