@@ -901,6 +901,12 @@ variable "temporal_rds_backup_retention_period" {
   default     = 30
 }
 
+variable "temporal_rds_enabled_logs" {
+  description = "A list of log types to enable. By default only error logs are enabled"
+  type        = list(string)
+  default     = ["error"]
+}
+
 variable "temporal_rds_extra_security_group_ids" {
   description = "Extra security groups to put on the RDS instance"
   type        = list(string)
@@ -1147,6 +1153,12 @@ variable "datawatch_rds_backup_retention_period" {
   description = "Days to keep backups"
   type        = number
   default     = 30
+}
+
+variable "datawatch_rds_enabled_logs" {
+  description = "A list of log types to enable. By default only error logs are enabled"
+  type        = list(string)
+  default     = ["error"]
 }
 
 variable "datawatch_rds_parameters" {
