@@ -1,3 +1,18 @@
+# [3.13.0](https://github.com/bigeyedata/terraform-modules/compare/v3.12.0...v3.13.0) (2024-04-24)
+
+
+### Bug Fixes
+
+* use fargate_version var ([b6fa30a](https://github.com/bigeyedata/terraform-modules/commit/b6fa30a3d9bba7ae8e6f959032437a7f99971a9c))
+
+
+### Features
+
+* add security group rule for metrics checking ([fc7a2c2](https://github.com/bigeyedata/terraform-modules/commit/fc7a2c22cb57206de9f8827f918910ae507bbffa))
+* split temporal into components ([11d42e3](https://github.com/bigeyedata/terraform-modules/commit/11d42e302edfff1af54bd2579901f17a7bc82a73))
+
+
+
 # [3.12.0](https://github.com/bigeyedata/terraform-modules/compare/v3.11.2...v3.12.0) (2024-04-23)
 
 
