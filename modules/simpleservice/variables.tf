@@ -108,6 +108,12 @@ variable "execution_role_arn" {
   type        = string
 }
 
+variable "enable_execute_command" {
+  description = "Whether or not to enable executing commands"
+  type        = bool
+  default     = false
+}
+
 variable "image_registry" {
   description = "The container image registry"
   type        = string

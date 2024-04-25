@@ -535,6 +535,12 @@ variable "ml_models_s3_bucket_name_override" {
   default     = ""
 }
 
+variable "monocle_enable_ecs_exec" {
+  description = "Whether to enable ECS exec"
+  type        = bool
+  default     = false
+}
+
 #======================================================
 # Application Variables - Toretto
 #======================================================
@@ -632,6 +638,12 @@ variable "toretto_desired_count_step3" {
   description = "How many toretto tasks to run after reaching the third and final autoscaling step, if not specified it will be four times the toretto_desired_count"
   type        = number
   default     = null
+}
+
+variable "toretto_enable_ecs_exec" {
+  description = "Whether to enable ECS exec"
+  type        = bool
+  default     = false
 }
 
 #======================================================
@@ -1495,6 +1507,12 @@ variable "datawatch_jvm_max_ram_pct" {
   default     = 85
 }
 
+variable "datawatch_enable_ecs_exec" {
+  description = "Whether to enable ECS exec"
+  type        = bool
+  default     = false
+}
+
 #======================================================
 # Application Variables - Datawork
 #======================================================
@@ -1546,6 +1564,12 @@ variable "datawork_lb_extra_security_group_ids" {
   default     = []
 }
 
+variable "datawork_enable_ecs_exec" {
+  description = "Whether to enable ECS exec"
+  type        = bool
+  default     = false
+}
+
 #======================================================
 # Application Variables - Metricwork
 #======================================================
@@ -1595,6 +1619,12 @@ variable "metricwork_lb_extra_security_group_ids" {
   description = "Additional security group ids to metricwork ALB"
   type        = list(string)
   default     = []
+}
+
+variable "metricwork_enable_ecs_exec" {
+  description = "Whether to enable ECS exec"
+  type        = bool
+  default     = false
 }
 
 #======================================================
