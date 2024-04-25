@@ -352,7 +352,7 @@ locals {
     "frontend" = merge(
       local.temporal_environment_variables_general,
       {
-
+        SERVICES = "frontend"
       },
       var.temporal_additional_environment_vars,
       var.temporal_frontend_additional_environment_vars,
