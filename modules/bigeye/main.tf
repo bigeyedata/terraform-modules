@@ -1116,6 +1116,27 @@ resource "aws_iam_role_policy" "monocle" {
   })
 }
 
+resource "aws_iam_role_policy" "monocle_ecs_exec" {
+  count = var.monocle_enable_ecs_exec || var.toretto_enable_ecs_exec ? 1 : 0
+  role  = aws_iam_role.monocle.id
+  name  = "AllowECSExec"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "ssmmessages:CreateControlChannel",
+          "ssmmessages:CreateDataChannel",
+          "ssmmessages:OpenControlChannel",
+          "ssmmessages:OpenDataChannel"
+        ],
+        "Resource" = "*"
+      }
+    ]
+  })
+}
+
 module "monocle" {
   source   = "../simpleservice"
   app      = "monocle"
@@ -1135,9 +1156,10 @@ module "monocle" {
     var.create_security_groups ? [module.rabbitmq.client_security_group_id] : [],
 
   )
-  traffic_port    = var.monocle_port
-  ecs_cluster_id  = aws_ecs_cluster.this.id
-  fargate_version = var.fargate_version
+  traffic_port           = var.monocle_port
+  ecs_cluster_id         = aws_ecs_cluster.this.id
+  fargate_version        = var.fargate_version
+  enable_execute_command = var.monocle_enable_ecs_exec
 
   # Load balancer
   healthcheck_path                 = "/health"
@@ -1265,9 +1287,10 @@ module "toretto" {
     [module.bigeye_admin.client_security_group_id],
     var.create_security_groups ? [module.rabbitmq.client_security_group_id] : [],
   )
-  traffic_port    = var.toretto_port
-  ecs_cluster_id  = aws_ecs_cluster.this.id
-  fargate_version = var.fargate_version
+  traffic_port           = var.toretto_port
+  ecs_cluster_id         = aws_ecs_cluster.this.id
+  fargate_version        = var.fargate_version
+  enable_execute_command = var.toretto_enable_ecs_exec
 
   # Load balancer
   healthcheck_path                 = "/health"
@@ -1625,6 +1648,27 @@ resource "aws_iam_role_policy" "datawatch_secrets" {
   })
 }
 
+resource "aws_iam_role_policy" "datawatch_ecs_exec" {
+  count = var.datawatch_enable_ecs_exec || var.datawork_enable_ecs_exec || var.metricwork_enable_ecs_exec ? 1 : 0
+  role  = aws_iam_role.datawatch.id
+  name  = "AllowECSExec"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "ssmmessages:CreateControlChannel",
+          "ssmmessages:CreateDataChannel",
+          "ssmmessages:OpenControlChannel",
+          "ssmmessages:OpenDataChannel"
+        ],
+        "Resource" = "*"
+      }
+    ]
+  })
+}
+
 #======================================================
 # Datawatch - Redis
 #======================================================
@@ -1892,6 +1936,7 @@ module "datawatch" {
   traffic_port                  = var.datawatch_port
   ecs_cluster_id                = aws_ecs_cluster.this.id
   fargate_version               = var.fargate_version
+  enable_execute_command        = var.datawatch_enable_ecs_exec
 
   # Load balancer
   healthcheck_path                 = "/health"
@@ -1957,6 +2002,7 @@ module "datawork" {
   traffic_port                  = var.datawork_port
   ecs_cluster_id                = aws_ecs_cluster.this.id
   fargate_version               = var.fargate_version
+  enable_execute_command        = var.datawork_enable_ecs_exec
 
   # Load balancer
   healthcheck_path                 = "/health"
@@ -2024,6 +2070,7 @@ module "metricwork" {
   additional_security_group_ids = concat(local.datawatch_additional_security_groups, var.metricwork_extra_security_group_ids)
   traffic_port                  = var.metricwork_port
   ecs_cluster_id                = aws_ecs_cluster.this.id
+  enable_execute_command        = var.metricwork_enable_ecs_exec
 
   # Load balancer
   healthcheck_path                 = "/health"
