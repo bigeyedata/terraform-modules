@@ -1,3 +1,12 @@
+## [3.13.1](https://github.com/bigeyedata/terraform-modules/compare/v3.13.0...v3.13.1) (2024-04-25)
+
+
+### Bug Fixes
+
+* temporal frontend service should only run the frontend component ([13dfdc5](https://github.com/bigeyedata/terraform-modules/commit/13dfdc593c2469f2f7434c584406a6f8e668b1dd))
+
+
+
 # [3.13.0](https://github.com/bigeyedata/terraform-modules/compare/v3.12.0...v3.13.0) (2024-04-24)
 
 
