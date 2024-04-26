@@ -1,70 +1,114 @@
 # [4.0.0](https://github.com/bigeyedata/terraform-modules/compare/v3.15.0...v4.0.0) (2024-04-26)
 
 
-### Bug Fixes
+## Breaking Changes
 
-* ensure the AWSCURRENT version of ASM secrets is controlled ([1ee7c40](https://github.com/bigeyedata/terraform-modules/commit/1ee7c408afc7074c57f18425f72a9f3b5be1cd80))
+### Variable Re-definition - RDS Parameters
 
-
-* feat!: improve database parameter specification ([eb9b737](https://github.com/bigeyedata/terraform-modules/commit/eb9b7374a5d74126a2d17b59a501700aa75fdf06))
-* fix!: upgrade aws provider ([1dc29a3](https://github.com/bigeyedata/terraform-modules/commit/1dc29a3ece38b67ec5af6fc7bcd78e267d063560))
-
-
-### BREAKING CHANGES
-
-* The existing parameters defined in the variables
-`datawatch_rds_parameters`, `datawatch_rds_replica_parameters`,
-and `temporal_rds_parameters` have been moved to
-`datawatch_rds_default_parameters`,
-`datawatch_rds_replica_default_parameters`, and
-`temporal_rds_default_parameters`. The original variable names
-still exist, and now allow you to deviate from the defaults
-in a more granular way. To do this, the structure of the
-parameters variables has been changed to use a map, with keys
-being the parameter name. The value of each map entry is an
-object with `value` and `apply_method`. For example:
-
-// FROM
-datawatch_rds_parameters = [
-  {
-    name = "log_output"
-    value = "FILE"
-    apply_method = "immediate"
-  }
-]
-
-// TO
-datawatch_rds_parameters = {
-  log_output = {
-    value = "FILE"
-    apply_method = "immediate"
-  }
-}
-
-Additionally, the log_output parameter was defaulted to FILE,
-and the parameters "general_log" and "slow_query_log" now
-are automatically enabled if the rds_enabled_logs includes
-general and slowlog, respectively.
-
-Recommendation: Update how your parameters variables are
-configured in your terraform file
+[eb9b737](https://github.com/bigeyedata/terraform-modules/commit/eb9b7374a5d74126a2d17b59a501700aa75fdf06)
 
 Downtime: No
 
-Steps: Update your terraform module version. Replace the
-variable values for the parameters from lists to maps,
-as shown above. Run terraform init then terraform plan.
-Review the changes to ensure your desired set of parameters
-are configured. Run terraform apply to deploy the changes.
-* You must run `terraform init -upgrade` to upgrade
-your provider versions.
+The way RDS parameters were configured made it cumbersome
+to specify database parameter changes. If a user wanted to change
+a single DB parameter, they would need to provide the rest
+of the database parameters into the variable. This represented
+an unnecessary maintenance risk.
 
-Recommendation: Run `terraform init -upgrade`.
+In version `4.0.0`, the default RDS parameters are now
+specified in the following variables:
 
-Downtime: No.
+* `datawatch_rds_default_parameters`
+* `datawatch_rds_replica_default_parameters`
+* `temporal_rds_default_parameters`
 
-Steps: Run `terraform init -upgrade`.
+Users can add to or override these defaults by specifying the
+following variables (previously these variables contained the
+default values):
 
+* `datawatch_rds_parameters`
+* `datawatch_rds_replica_parameters`
+* `temporal_rds_parameters`
+
+The structure of all of these variables has also changed to
+more clearly control merging precedence. The structure has
+changed as follows:
+
+```tf
+locals {
+  previous_structure = [
+    {
+      name         = "log_output"
+      value        = "FILE"
+      apply_method = "immediate"
+    }
+  ]
+
+  new_structure = {
+    log_output = {
+      value = "FILE"
+      apply_method = "immediate"
+    }
+  }
+}
+```
+
+The parameters are constructed by merging the `_rds_parameters`
+with, or on top of (i.e. overriding), the values in the
+respective `_default_rds_parameters` variables.
+
+#### Changes Required
+
+If you have modified any of the following variables,
+then you will have to make changes.
+
+* `datawatch_rds_parameters`
+* `datawatch_rds_replica_parameters`
+* `temporal_rds_parameters`
+
+Change the structure of your parameters variable values
+to conform to the new syntax. Confirm your changes by
+running `terraform plan` and inspecting the output.
+
+### RDS Parameter Value Changes
+
+Downtime: No
+
+The `log_output` DB parameter was defaulted to `"FILE"`.
+
+Now, the `general_log` and `slow_query_log` DB parameters
+are now enabled by default if the `rds_enabled_logs` variables
+include the `general` and `slowlog` values, respectively.
+
+### Upgrade AWS Provider
+
+[1dc29a3](https://github.com/bigeyedata/terraform-modules/commit/1dc29a3ece38b67ec5af6fc7bcd78e267d063560)
+
+Downtime: No
+
+The required AWS provider was increased from `5.31.0` to
+`5.33.0`. This was to allow the AWS Secrets Manager secret versions
+to be controlled and prevent drift. Previously, if someone had
+modified one of the terraform-controlled AWS Secrets Manager secrets
+to have a new value, the Terraform module would not correct that drift.
+In this new version, drift detection is possible for AWS Secrets Manager
+secret versions. See the
+[release notes](https://github.com/hashicorp/terraform-provider-aws/releases/tag/v5.33.0)
+for more information.
+
+To upgrade, you must run:
+
+```tf
+terraform init -upgrade
+```
+
+If you have pinned your AWS terraform provider version to something less
+than `5.33.0`, you will need to update that value and run `terraform init -upgrade`.
+
+
+## Bug Fixes
+
+* ensure the AWSCURRENT version of ASM secrets is controlled ([1ee7c40](https://github.com/bigeyedata/terraform-modules/commit/1ee7c408afc7074c57f18425f72a9f3b5be1cd80))
 
 
 # [3.15.0](https://github.com/bigeyedata/terraform-modules/compare/v3.14.0...v3.15.0) (2024-04-26)
