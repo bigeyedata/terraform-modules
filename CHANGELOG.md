@@ -1,3 +1,12 @@
+# [3.15.0](https://github.com/bigeyedata/terraform-modules/compare/v3.14.0...v3.15.0) (2024-04-26)
+
+
+### Features
+
+* add variable to configure database logs ([4e8da7a](https://github.com/bigeyedata/terraform-modules/commit/4e8da7adcebf0bac983b915b9083db09fdeafab6))
+
+
+
 # [3.14.0](https://github.com/bigeyedata/terraform-modules/compare/v3.13.1...v3.14.0) (2024-04-26)
 
 
