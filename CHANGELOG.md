@@ -1,3 +1,72 @@
+# [4.0.0](https://github.com/bigeyedata/terraform-modules/compare/v3.15.0...v4.0.0) (2024-04-26)
+
+
+### Bug Fixes
+
+* ensure the AWSCURRENT version of ASM secrets is controlled ([1ee7c40](https://github.com/bigeyedata/terraform-modules/commit/1ee7c408afc7074c57f18425f72a9f3b5be1cd80))
+
+
+* feat!: improve database parameter specification ([eb9b737](https://github.com/bigeyedata/terraform-modules/commit/eb9b7374a5d74126a2d17b59a501700aa75fdf06))
+* fix!: upgrade aws provider ([1dc29a3](https://github.com/bigeyedata/terraform-modules/commit/1dc29a3ece38b67ec5af6fc7bcd78e267d063560))
+
+
+### BREAKING CHANGES
+
+* The existing parameters defined in the variables
+`datawatch_rds_parameters`, `datawatch_rds_replica_parameters`,
+and `temporal_rds_parameters` have been moved to
+`datawatch_rds_default_parameters`,
+`datawatch_rds_replica_default_parameters`, and
+`temporal_rds_default_parameters`. The original variable names
+still exist, and now allow you to deviate from the defaults
+in a more granular way. To do this, the structure of the
+parameters variables has been changed to use a map, with keys
+being the parameter name. The value of each map entry is an
+object with `value` and `apply_method`. For example:
+
+// FROM
+datawatch_rds_parameters = [
+  {
+    name = "log_output"
+    value = "FILE"
+    apply_method = "immediate"
+  }
+]
+
+// TO
+datawatch_rds_parameters = {
+  log_output = {
+    value = "FILE"
+    apply_method = "immediate"
+  }
+}
+
+Additionally, the log_output parameter was defaulted to FILE,
+and the parameters "general_log" and "slow_query_log" now
+are automatically enabled if the rds_enabled_logs includes
+general and slowlog, respectively.
+
+Recommendation: Update how your parameters variables are
+configured in your terraform file
+
+Downtime: No
+
+Steps: Update your terraform module version. Replace the
+variable values for the parameters from lists to maps,
+as shown above. Run terraform init then terraform plan.
+Review the changes to ensure your desired set of parameters
+are configured. Run terraform apply to deploy the changes.
+* You must run `terraform init -upgrade` to upgrade
+your provider versions.
+
+Recommendation: Run `terraform init -upgrade`.
+
+Downtime: No.
+
+Steps: Run `terraform init -upgrade`.
+
+
+
 # [3.15.0](https://github.com/bigeyedata/terraform-modules/compare/v3.14.0...v3.15.0) (2024-04-26)
 
 
