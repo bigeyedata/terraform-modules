@@ -1068,7 +1068,7 @@ module "temporal_rds" {
   create_option_group                   = false
   create_parameter_group                = local.temporal_rds_create_parameter_group
   parameter_group_name                  = local.temporal_rds_create_parameter_group ? "${local.name}-temporal" : null
-  parameters                            = local.temporal_rds_create_parameter_group ? var.temporal_rds_parameters : null
+  parameters                            = local.temporal_rds_create_parameter_group ? merge(var.temporal_rds_default_parameters, var.temporal_rds_parameters) : null
   tags                                  = merge(local.tags, { app = "temporal" }, var.temporal_rds_additional_tags)
   primary_additional_tags               = var.temporal_rds_primary_additional_tags
   replica_additional_tags               = var.temporal_rds_primary_additional_tags
@@ -1801,7 +1801,7 @@ module "datawatch_rds" {
   create_option_group    = false
   create_parameter_group = true
   parameter_group_name   = "${local.name}-datawatch"
-  parameters             = var.datawatch_rds_parameters
+  parameters             = merge(var.datawatch_rds_default_parameters, var.datawatch_rds_parameters)
 
   # Replica
   create_replica                                = var.datawatch_rds_replica_enabled
@@ -1813,7 +1813,7 @@ module "datawatch_rds" {
 
   replica_create_parameter_group = true
   replica_parameter_group_name   = "${local.name}-datawatch-replica"
-  replica_parameters             = var.datawatch_rds_replica_parameters
+  replica_parameters             = merge(var.datawatch_rds_replica_default_parameters, var.datawatch_rds_replica_parameters)
 
   tags                    = merge(local.tags, { app = "datawatch" }, var.datawatch_rds_additional_tags)
   primary_additional_tags = var.datawatch_rds_primary_additional_tags

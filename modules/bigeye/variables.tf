@@ -931,11 +931,29 @@ variable "temporal_rds_additional_tags" {
   default     = {}
 }
 
-variable "temporal_rds_parameters" {
-  description = "Parameters to use for the RDS database. See https://github.com/terraform-aws-modules/terraform-aws-rds?tab=readme-ov-file#input_parameters"
-  type        = list(map(any))
-  default     = []
+variable "temporal_rds_default_parameters" {
+  description = "Default parameters to use. These provide a baseline set of parameters. Can add to them using temporal_rds_parameters variable."
+  type = map(object({
+    value        = any
+    apply_method = optional(string)
+  }))
+  default = {
+    log_output = {
+      value        = "FILE"
+      apply_method = "immediate"
+    }
+  }
 }
+
+variable "temporal_rds_parameters" {
+  description = "Database parameters to use."
+  type = map(object({
+    value        = any
+    apply_method = optional(string)
+  }))
+  default = {}
+}
+
 variable "temporal_rds_primary_additional_tags" {
   description = "Additional tags to apply to the temporal RDS primary DB.  This is merged with temporal_rds_additional_tags for the primary"
   type        = map(string)
@@ -1296,44 +1314,53 @@ variable "datawatch_rds_enabled_logs" {
   default     = ["error"]
 }
 
-variable "datawatch_rds_parameters" {
-  description = "Parameters to use for the RDS database. See https://github.com/terraform-aws-modules/terraform-aws-rds?tab=readme-ov-file#input_parameters"
-  type        = list(map(any))
-  default = [
-    {
-      name  = "binlog_format"
+variable "datawatch_rds_default_parameters" {
+  description = "Default parameters to use. These provide a baseline set of parameters. Can add to them using datawatch_rds_parameters variable."
+  type = map(object({
+    value        = any
+    apply_method = optional(string)
+  }))
+  default = {
+    binlog_format = {
       value = "ROW"
-      }, {
-      name  = "character_set_server"
-      value = "utf8mb4"
-      }, {
-      name  = "general_log"
-      value = 0
-      }, {
-      name  = "innodb_lock_wait_timeout"
-      value = 300
-      }, {
-      name  = "lock_wait_timeout"
-      value = 300
-      }, {
-      name  = "log_bin_trust_function_creators"
-      value = "1"
-      }, {
-      name  = "long_query_time"
-      value = 120
-      }, {
-      name         = "performance_schema"
-      value        = 1
-      apply_method = "pending-reboot"
-      }, {
-      name         = "skip_name_resolve"
-      value        = 1
-      apply_method = "pending-reboot"
-      }, {
-      name  = "slow_query_log"
-      value = 0
     }
-  ]
+    character_set_server = {
+      value = "utf8mb4"
+    }
+    innodb_lock_wait_timeout = {
+      value = 300
+    }
+    lock_wait_timeout = {
+      value = 300
+    }
+    log_bin_trust_function_creators = {
+      value = "1"
+    }
+    log_output = {
+      value        = "FILE"
+      apply_method = "immediate"
+    }
+    long_query_time = {
+      value = 120
+    }
+    performance_schema = {
+      value        = 1
+      apply_method = "pending-reboot"
+    }
+    skip_name_resolve = {
+      value        = 1
+      apply_method = "pending-reboot"
+    }
+  }
+}
+
+variable "datawatch_rds_parameters" {
+  description = "Additional db parameters to use. These are applied on top of datawatch_rds_default_parameters"
+  type = map(object({
+    value        = any
+    apply_method = optional(string)
+  }))
+  default = {}
 }
 
 variable "datawatch_rds_replica_enabled" {
@@ -1360,37 +1387,45 @@ variable "datawatch_rds_replica_backup_retention_period" {
   default     = 1
 }
 
-variable "datawatch_rds_replica_parameters" {
-  description = "Parameters to use for the RDS replica database"
-  type        = list(map(string))
-  default = [
-    {
-      name  = "binlog_format"
+variable "datawatch_rds_replica_default_parameters" {
+  description = "Default parameters to use for the replica. These provide a baseline set of parameters. Can add to them using datawatch_rds_replica_parameters variable."
+  type = map(object({
+    value        = any
+    apply_method = optional(string)
+  }))
+  default = {
+    binlog_format = {
       value = "ROW"
-      }, {
-      name         = "general_log"
+    }
+    general_log = {
       value        = "0"
       apply_method = "immediate"
-      }, {
-      name  = "log_bin_trust_function_creators"
+    }
+    log_bin_trust_function_creators = {
       value = "1"
-      }, {
-      name         = "log_output"
+    }
+    log_output = {
       value        = "FILE"
       apply_method = "immediate"
-      }, {
-      name         = "performance_schema"
-      value        = 1
-      apply_method = "pending-reboot"
-      }, {
-      name         = "skip_name_resolve"
-      value        = 1
-      apply_method = "pending-reboot"
-      }, {
-      name  = "slow_query_log"
-      value = 0
     }
-  ]
+    performance_schema = {
+      value        = 1
+      apply_method = "pending-reboot"
+    }
+    skip_name_resolve = {
+      value        = 1
+      apply_method = "pending-reboot"
+    }
+  }
+}
+
+variable "datawatch_rds_replica_parameters" {
+  description = "Additional db parameters to use on the replica. These are applied on top of datawatch_rds_replica_default_parameters"
+  type = map(object({
+    value        = any
+    apply_method = optional(string)
+  }))
+  default = {}
 }
 
 variable "datawatch_rds_extra_security_group_ids" {

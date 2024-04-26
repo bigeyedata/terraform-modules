@@ -8,6 +8,44 @@ terraform {
   }
 }
 
+locals {
+  general_log_param = {
+    general_log = {
+      value = contains(var.enabled_logs, "general") ? 1 : 0
+    }
+  }
+  slow_log_param = {
+    slow_query_log = {
+      value = contains(var.enabled_logs, "slowlog") ? 1 : 0
+    }
+  }
+  parameters_object = merge(
+    local.general_log_param,
+    local.slow_log_param,
+    var.parameters
+  )
+  parameters_list = [
+    for k, v in local.parameters_object : {
+      name         = k
+      value        = v["value"]
+      apply_method = lookup(v, "apply_method", null)
+    }
+  ]
+  replica_parameters_object = merge(
+    local.general_log_param,
+    local.slow_log_param,
+    var.replica_parameters
+  )
+  replica_parameters_list = [
+    for k, v in local.replica_parameters_object : merge(
+      {
+        name = k
+      },
+      v
+    )
+  ]
+}
+
 resource "aws_security_group" "db" {
   count  = var.create_security_groups ? 1 : 0
   vpc_id = var.vpc_id
@@ -161,7 +199,7 @@ module "this" {
   create_db_parameter_group   = var.create_parameter_group
   parameter_group_name        = var.parameter_group_name
   parameter_group_description = "Bigeye RDS parameter group with recommendations"
-  parameters                  = var.parameters
+  parameters                  = local.parameters_list
 
   tags = merge(var.tags, var.primary_additional_tags)
 }
@@ -211,7 +249,7 @@ module "replica" {
   create_db_parameter_group   = var.replica_create_parameter_group
   parameter_group_name        = var.replica_parameter_group_name == "" ? module.this.db_parameter_group_id : var.replica_parameter_group_name
   parameter_group_description = var.replica_create_parameter_group ? "Parameter group for ${var.name}" : ""
-  parameters                  = var.replica_parameters
+  parameters                  = local.replica_parameters_list
 
   tags = merge(var.tags, var.replica_additional_tags)
 }
