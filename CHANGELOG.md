@@ -1,3 +1,12 @@
+# [3.14.0](https://github.com/bigeyedata/terraform-modules/compare/v3.13.1...v3.14.0) (2024-04-26)
+
+
+### Features
+
+* enable ecs exec for some of the services ([9418ef3](https://github.com/bigeyedata/terraform-modules/commit/9418ef368001e71c848a77e9cbb029fe4ae035cc))
+
+
+
 ## [3.13.1](https://github.com/bigeyedata/terraform-modules/compare/v3.13.0...v3.13.1) (2024-04-25)
 
 
