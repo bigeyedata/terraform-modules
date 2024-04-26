@@ -164,9 +164,12 @@ variable "parameter_group_name" {
 }
 
 variable "parameters" {
-  description = "A list of maps containing parameters. Maps should have keys 'name' and 'value'"
-  type        = list(map(string))
-  default     = []
+  description = "A map of parameters, whose keys are the parameter name, value is the parameter value, and apply_type is optionally provided as pending-reboot or apply-immediately"
+  type = map(object({
+    value        = any
+    apply_method = optional(string)
+  }))
+  default = {}
 }
 
 variable "extra_security_group_ids" {
@@ -212,9 +215,12 @@ variable "replica_create_parameter_group" {
 }
 
 variable "replica_parameters" {
-  description = "A list of maps containing parameters. Maps should have keys 'name' and 'value'"
-  type        = list(map(string))
-  default     = []
+  description = "A map of parameters, whose keys are the parameter name, value is the parameter value, and apply_type is optionally provided as pending-reboot or immediate"
+  type = map(object({
+    value      = any
+    apply_type = optional(string)
+  }))
+  default = {}
 }
 
 variable "replica_parameter_group_name" {
