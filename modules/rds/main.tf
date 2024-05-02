@@ -181,6 +181,7 @@ module "this" {
   max_allocated_storage = var.max_allocated_storage
   storage_type          = var.storage_type
   storage_encrypted     = true
+  iops                  = var.iops
 
   performance_insights_enabled          = var.enable_performance_insights
   performance_insights_retention_period = var.performance_insights_retention_period
@@ -232,6 +233,7 @@ module "replica" {
   max_allocated_storage = var.max_allocated_storage
   storage_type          = var.storage_type
   storage_encrypted     = true
+  iops                  = var.replica_iops
 
   performance_insights_enabled          = var.replica_enable_performance_insights
   performance_insights_retention_period = var.replica_performance_insights_retention_period

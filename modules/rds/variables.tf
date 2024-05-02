@@ -50,6 +50,12 @@ variable "storage_type" {
   default     = "gp3"
 }
 
+variable "iops" {
+  description = "iops for the primary DB.  Null will use the defaults for gp3 which is recommended."
+  type        = number
+  default     = null
+}
+
 variable "db_subnet_group_name" {
   description = "The name of the subnet group to put the database instance"
   type        = string
@@ -89,6 +95,12 @@ variable "replica_backup_retention_period" {
   description = "days to keep backups for the replica"
   type        = number
   default     = 1
+}
+
+variable "replica_iops" {
+  description = "iops for the replica DB.  Null will use the defaults for gp3 which is recommended."
+  type        = number
+  default     = null
 }
 
 variable "maintenance_window" {

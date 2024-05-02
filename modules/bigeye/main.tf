@@ -1052,6 +1052,7 @@ module "temporal_rds" {
   allocated_storage                     = var.temporal_rds_allocated_storage
   max_allocated_storage                 = var.temporal_rds_max_allocated_storage
   storage_type                          = "gp3"
+  iops                                  = var.temporal_rds_iops
   db_subnet_group_name                  = local.database_subnet_group_name
   create_security_groups                = var.create_security_groups
   additional_ingress_cidrs              = var.internal_additional_ingress_cidrs
@@ -1785,6 +1786,7 @@ module "datawatch_rds" {
   allocated_storage     = var.datawatch_rds_allocated_storage
   max_allocated_storage = var.datawatch_rds_max_allocated_storage
   storage_type          = "gp3"
+  iops                  = var.datawatch_rds_iops
 
   # Ops
   apply_immediately                     = var.rds_apply_immediately
@@ -1810,6 +1812,7 @@ module "datawatch_rds" {
   replica_backup_retention_period               = var.datawatch_rds_replica_backup_retention_period
   replica_enable_performance_insights           = local.datawatch_rds_replica_performance_insights_enabled
   replica_performance_insights_retention_period = var.replica_rds_performance_insights_retention_period
+  replica_iops                                  = var.datawatch_rds_replica_iops
 
   replica_create_parameter_group = true
   replica_parameter_group_name   = "${local.name}-datawatch-replica"
