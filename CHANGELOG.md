@@ -1,3 +1,12 @@
+# [4.1.0](https://github.com/bigeyedata/terraform-modules/compare/v4.0.0...v4.1.0) (2024-05-03)
+
+
+### Features
+
+* allow configuring database iops ([6972a6c](https://github.com/bigeyedata/terraform-modules/commit/6972a6c0f5ecdc664b9c6dce5c930d858b8d6ff6))
+
+
+
 # [4.0.0](https://github.com/bigeyedata/terraform-modules/compare/v3.15.0...v4.0.0) (2024-04-26)
 
 
