@@ -1,3 +1,12 @@
+## [4.1.1](https://github.com/bigeyedata/terraform-modules/compare/v4.1.0...v4.1.1) (2024-05-03)
+
+
+### Bug Fixes
+
+* db parameter apply method not working ([fa561eb](https://github.com/bigeyedata/terraform-modules/commit/fa561ebb6447dd350265f94c768c1c8d74cc5a20))
+
+
+
 # [4.1.0](https://github.com/bigeyedata/terraform-modules/compare/v4.0.0...v4.1.0) (2024-05-03)
 
 
