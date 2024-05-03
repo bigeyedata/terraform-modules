@@ -883,6 +883,12 @@ variable "temporal_rds_max_allocated_storage" {
   default     = 1024
 }
 
+variable "temporal_rds_iops" {
+  description = "iops for the temporal primary DB.  Null will use the defaults for gp3 which is recommended."
+  type        = number
+  default     = null
+}
+
 variable "temporal_rds_instance_type" {
   description = "The instance type to use for RDS"
   type        = string
@@ -1266,6 +1272,12 @@ variable "datawatch_rds_max_allocated_storage" {
   default     = 2048
 }
 
+variable "datawatch_rds_iops" {
+  description = "iops for the datawatch primary DB.  Null will use the defaults for gp3 which is recommended."
+  type        = number
+  default     = null
+}
+
 variable "datawatch_rds_instance_type" {
   description = "The instance type to use for RDS"
   type        = string
@@ -1373,6 +1385,12 @@ variable "datawatch_rds_replica_engine_version" {
   description = "Defaults to engine_version.  This is primarily used for engine upgrades as the replica has to be upgraded first."
   type        = string
   default     = ""
+}
+
+variable "datawatch_rds_replica_iops" {
+  description = "iops for the datawatch replica DB.  Null will use the defaults for gp3 which is recommended."
+  type        = number
+  default     = null
 }
 
 variable "datawatch_rds_replica_instance_type" {
