@@ -229,8 +229,8 @@ variable "replica_create_parameter_group" {
 variable "replica_parameters" {
   description = "A map of parameters, whose keys are the parameter name, value is the parameter value, and apply_type is optionally provided as pending-reboot or immediate"
   type = map(object({
-    value      = any
-    apply_type = optional(string)
+    value        = any
+    apply_method = optional(string)
   }))
   default = {}
 }

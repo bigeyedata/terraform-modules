@@ -37,12 +37,11 @@ locals {
     var.replica_parameters
   )
   replica_parameters_list = [
-    for k, v in local.replica_parameters_object : merge(
-      {
-        name = k
-      },
-      v
-    )
+    for k, v in local.replica_parameters_object : {
+      name         = k
+      value        = v["value"]
+      apply_method = lookup(v, "apply_method", null)
+    }
   ]
 }
 
