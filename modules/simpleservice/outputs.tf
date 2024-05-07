@@ -1,6 +1,6 @@
 output "ecs_service_arn" {
   description = "The ARN of the ecs service"
-  value       = aws_ecs_service.this.id
+  value       = var.control_desired_count ? aws_ecs_service.controlled_count[0].id : aws_ecs_service.uncontrolled_count[0].id
 }
 
 output "dns_name" {

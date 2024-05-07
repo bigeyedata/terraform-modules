@@ -1207,6 +1207,7 @@ module "monocle" {
   lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "monocle")
 
   # Task settings
+  control_desired_count     = var.monocle_autoscaling_enabled ? false : true
   desired_count             = var.monocle_desired_count
   cpu                       = var.monocle_cpu
   memory                    = var.monocle_memory
@@ -1335,6 +1336,7 @@ module "toretto" {
   lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "toretto")
 
   # Task settings
+  control_desired_count     = var.toretto_autoscaling_enabled ? false : true
   desired_count             = var.toretto_desired_count
   cpu                       = var.toretto_cpu
   memory                    = var.toretto_memory
