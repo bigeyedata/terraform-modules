@@ -512,7 +512,7 @@ variable "monocle_lb_extra_security_group_ids" {
 }
 
 variable "monocle_autoscaling_enabled" {
-  description = "Whether monocle autoscaling is enabled"
+  description = "Whether monocle autoscaling is enabled. Note - if you change this variable, it changes the terraform resource that is created. You must run 'terraform state mv' in order to gracefully make this change"
   type        = bool
   default     = false
 }
@@ -599,7 +599,7 @@ variable "toretto_lb_extra_security_group_ids" {
 }
 
 variable "toretto_autoscaling_enabled" {
-  description = "Whether to scale toretto based on queue depth"
+  description = "Whether toretto autoscaling is enabled. Note - if you change this variable, it changes the terraform resource that is created. You must run 'terraform state mv' in order to gracefully make this change"
   type        = bool
   default     = false
 }

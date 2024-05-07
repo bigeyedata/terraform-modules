@@ -186,7 +186,65 @@ resource "aws_ecs_task_definition" "this" {
   container_definitions    = jsonencode(local.container_definitions)
 }
 
-resource "aws_ecs_service" "this" {
+# If the ECS service is autoscaling, then we will ignore changes to the desired_count field.
+# These two resources should be identical otherwise
+resource "aws_ecs_service" "uncontrolled_count" {
+  lifecycle {
+    ignore_changes = [desired_count]
+  }
+  count                  = var.control_desired_count ? 0 : 1
+  name                   = var.name
+  depends_on             = [aws_lb.this]
+  cluster                = var.ecs_cluster_id
+  task_definition        = aws_ecs_task_definition.this.arn
+  enable_execute_command = var.enable_execute_command
+  desired_count          = var.desired_count
+
+  capacity_provider_strategy {
+    capacity_provider = "FARGATE"
+    base              = var.on_demand_base_count
+    weight            = var.on_demand_weight
+  }
+  capacity_provider_strategy {
+    capacity_provider = "FARGATE_SPOT"
+    base              = var.spot_base_count
+    weight            = var.spot_weight
+  }
+  deployment_maximum_percent         = 200
+  deployment_minimum_healthy_percent = 100
+  enable_ecs_managed_tags            = true
+  health_check_grace_period_seconds  = var.healthcheck_grace_period
+  network_configuration {
+    subnets          = var.subnet_ids
+    assign_public_ip = false
+    security_groups = concat(
+      aws_security_group.this[*].id,
+      var.additional_security_group_ids
+    )
+  }
+  load_balancer {
+    container_name   = var.name
+    container_port   = var.traffic_port
+    target_group_arn = aws_lb_target_group.this.arn
+  }
+  platform_version = var.fargate_version
+
+  deployment_circuit_breaker {
+    enable   = false
+    rollback = false
+  }
+
+  deployment_controller {
+    type = "ECS"
+  }
+
+  propagate_tags = "SERVICE"
+
+  tags = var.tags
+}
+
+resource "aws_ecs_service" "controlled_count" {
+  count                  = var.control_desired_count ? 1 : 0
   name                   = var.name
   depends_on             = [aws_lb.this]
   cluster                = var.ecs_cluster_id

@@ -81,6 +81,12 @@ variable "desired_count" {
   type        = number
 }
 
+variable "control_desired_count" {
+  description = "whether to control the desired count. If autoscaling, this should be false. Otherwise it should be true. If you change this value, you will need to run 'terraform state mv' to move resource from the controlled_count resource to uncontrolled_count"
+  type        = bool
+  default     = true
+}
+
 variable "cpu" {
   description = "The number of CPU units required by the Fargate task, e.g. 2. See - https://docs.aws.amazon.com/AmazonECS/latest/developerguide/fargate-tasks-services.html#fargate-tasks-size"
   type        = number
