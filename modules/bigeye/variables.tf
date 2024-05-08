@@ -1415,10 +1415,6 @@ variable "datawatch_rds_replica_default_parameters" {
     binlog_format = {
       value = "ROW"
     }
-    general_log = {
-      value        = "0"
-      apply_method = "immediate"
-    }
     log_bin_trust_function_creators = {
       value = "1"
     }
