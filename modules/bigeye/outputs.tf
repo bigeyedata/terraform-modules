@@ -252,3 +252,39 @@ output "all_route_table_ids" {
   )
 }
 
+output "public_alb_subnet_ids" {
+  description = "List of subnet IDs where public load balancers live"
+  value       = local.public_alb_subnet_ids
+}
+
+output "internal_alb_subnet_ids" {
+  description = "List of subnet IDs where internal load balancers live"
+  value       = local.internal_service_alb_subnet_ids
+}
+
+output "application_subnet_ids" {
+  description = "List of subnet IDs where the applications live"
+  value       = local.application_subnet_ids
+}
+
+output "database_subnet_ids" {
+  description = "List of subnet IDs for databases, only output if a VPC was created by this module"
+  value       = local.create_vpc ? module.vpc[0].database_subnets : []
+}
+
+output "misc_subnet_ids" {
+  description = "List of subnet IDs for miscellaneous services, e.g. elasticache. Only output if a VPC was created by this module"
+  value       = local.create_vpc ? module.vpc[0].elasticache_subnets : []
+}
+
+output "elasticache_subnet_group_name" {
+  description = "Elasticache subnet group name"
+  value       = local.elasticache_subnet_group_name
+}
+
+output "database_subnet_group_name" {
+  description = "Database subnet group name"
+  value       = local.database_subnet_group_name
+}
+
+
