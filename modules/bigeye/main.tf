@@ -1067,9 +1067,9 @@ module "temporal_rds" {
   enabled_logs                          = var.temporal_rds_enabled_logs
   enable_multi_az                       = var.redundant_infrastructure ? true : false
   create_option_group                   = false
-  create_parameter_group                = local.temporal_rds_create_parameter_group
-  parameter_group_name                  = local.temporal_rds_create_parameter_group ? "${local.name}-temporal" : null
-  parameters                            = local.temporal_rds_create_parameter_group ? merge(var.temporal_rds_default_parameters, var.temporal_rds_parameters) : null
+  create_parameter_group                = true
+  parameter_group_name                  = "${local.name}-temporal"
+  parameters                            = merge(var.temporal_rds_default_parameters, var.temporal_rds_parameters)
   tags                                  = merge(local.tags, { app = "temporal" }, var.temporal_rds_additional_tags)
   primary_additional_tags               = var.temporal_rds_primary_additional_tags
   replica_additional_tags               = var.temporal_rds_primary_additional_tags

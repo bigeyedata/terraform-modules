@@ -92,7 +92,6 @@ locals {
   datawatch_rds_replica_performance_insights_enabled   = alltrue([var.datawatch_rds_enable_performance_insights, local.datawatch_rds_replica_performance_insights_available])
   temporal_rds_performance_insights_available          = !contains(local.performance_insights_unavailable_instance_types, var.temporal_rds_instance_type) ? true : false
   temporal_rds_performance_insights_enabled            = alltrue([var.temporal_rds_enable_performance_insights, local.temporal_rds_performance_insights_available])
-  temporal_rds_create_parameter_group                  = length(var.temporal_rds_parameters) > 0
 
   create_acm_cert           = var.acm_certificate_arn == "" ? true : false
   domain_validation_options = local.create_acm_cert ? aws_acm_certificate.wildcard[0].domain_validation_options : []
