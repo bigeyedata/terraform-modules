@@ -16,7 +16,7 @@ locals {
   }
   slow_log_param = {
     slow_query_log = {
-      value = contains(var.enabled_logs, "slowlog") ? 1 : 0
+      value = contains(var.enabled_logs, "slowquery") ? 1 : 0
     }
   }
   parameters_object = merge(
