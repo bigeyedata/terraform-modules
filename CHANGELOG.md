@@ -1,3 +1,19 @@
+# [4.2.0](https://github.com/bigeyedata/terraform-modules/compare/v4.1.1...v4.2.0) (2024-05-09)
+
+
+### Bug Fixes
+
+* change the default setting for general_log on replica ([7bf436b](https://github.com/bigeyedata/terraform-modules/commit/7bf436b8af6d3ed51d156c85da66582c545d5634))
+* create temporal parameters by default ([588ea58](https://github.com/bigeyedata/terraform-modules/commit/588ea587a445b3ab07298395e13f01120d64109a))
+* database slow log parameter settings ([d97746b](https://github.com/bigeyedata/terraform-modules/commit/d97746bc8606fa40d362c5f24be08aa8f67d548c))
+
+
+### Features
+
+* add additional outputs for subnet ids ([82b0e3a](https://github.com/bigeyedata/terraform-modules/commit/82b0e3ac0ea162022b03f49483ff94d40c7b4b16))
+
+
+
 ## [4.1.1](https://github.com/bigeyedata/terraform-modules/compare/v4.1.0...v4.1.1) (2024-05-03)
 
 
