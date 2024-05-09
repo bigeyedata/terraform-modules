@@ -96,7 +96,7 @@ jobs:
         with:
           create_branch: false
           branch: "release-from-${{ github.sha }}"
-          commit_message: "Update example docs to use new version ${{ steps.changelog.outputs.tag }}"
+          commit_message: "chore(release): update example docs to use new version ${{ steps.changelog.outputs.tag }}"
           file_pattern: examples/**/*
           skip_fetch: true
       - name: create PR with release
