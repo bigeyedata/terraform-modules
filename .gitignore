@@ -9,4 +9,7 @@ modules/**/.terraform.lock.hcl
 .idea
 *.iml
 
+# vscode
+.vscode
+
 bigeye_cloudformation_v3.yaml
