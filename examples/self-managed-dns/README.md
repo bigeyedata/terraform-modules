@@ -86,6 +86,7 @@ in the module output.
 | vanity_dns_name | haproxy_load_balancer_dns_name |
 | datawatch_dns_name | datawatch_load_balancer_dns_name |
 | datawork_dns_name | datawork_load_balancer_dns_name |
+| lineagework_dns_name | lineagework_load_balancer_dns_name |
 | metricwork_dns_name | metricwork_load_balancer_dns_name |
 | monocle_dns_name | monocle_load_balancer_dns_name  |
 | web_dns_name | web_load_balancer_dns_name  |

@@ -478,6 +478,21 @@ module "elb_datawork" {
   error_rate_disabled    = true
 }
 
+module "elb_lineagework" {
+  source                         = "./elb"
+  stack                          = var.stack
+  app                            = "lineagework"
+  host_count_disabled            = var.elb_lineagework_host_count_disabled
+  host_count_datapoints_to_alarm = var.elb_lineagework_host_count_datapoints_to_alarm
+  host_count_evaluation_periods  = var.elb_lineagework_host_count_evaluation_periods
+  host_count_period              = var.elb_lineagework_host_count_period
+  host_count_sns_arns            = coalesce(var.elb_lineagework_host_count_sns_arns, [local.high_urgency_sns_topic_arn])
+  host_count_threshold           = var.elb_lineagework_host_count_threshold
+
+  response_time_disabled = true
+  error_rate_disabled    = true
+}
+
 module "elb_metricwork" {
   source                         = "./elb"
   stack                          = var.stack
