@@ -1,3 +1,14 @@
+# [4.5.0](https://github.com/bigeyedata/terraform-modules/compare/v4.4.0...v4.5.0) (2024-05-13)
+
+
+### Features
+
+* add opensearch for temporal visibility store with one data node ([bd3a8ee](https://github.com/bigeyedata/terraform-modules/commit/bd3a8eef5c99d623623c6ef939de23b38c95296a))
+* allow temporal visibility store to be driven by SQL ([4edadf2](https://github.com/bigeyedata/terraform-modules/commit/4edadf2af158a2b052240954a9a283a7894d82ef))
+* enable production settings on temporal visibility store ([e162989](https://github.com/bigeyedata/terraform-modules/commit/e1629898abffca2ea46b6ee9b23fd6ee89c0f68f))
+
+
+
 # [4.4.0](https://github.com/bigeyedata/terraform-modules/compare/v4.3.0...v4.4.0) (2024-05-13)
 
 
