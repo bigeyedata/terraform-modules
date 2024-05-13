@@ -61,6 +61,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
+    outputs:
+      skipped: ${{ steps.changelog.outputs.skipped }}
+      tag: ${{ steps.changelog.outputs.tag }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -132,10 +135,6 @@ jobs:
           gh workflow run "TF Bump Module Version" -R "bigeyedata/semantic-data-platform" --field "previousVersion=${{ steps.prevversion.outputs.PREVIOUS_VERSION }}" --field "version=${{ steps.changelog.outputs.tag }}"
         env:
           GITHUB_TOKEN: ${{ secrets.BIGEYE_SRE_BOT_GH_PAT }}
-      - name: publish bundle to s3
-        uses: ./.github/workflows/publish_bundle_s3.yaml
-        with:
-          tag: ${{ steps.changelog.outputs.tag }}
       - name: notify slack
         if: ${{ steps.changelog.outputs.skipped == 'false' }}
         uses: slackapi/slack-github-action@v1.25.0
@@ -180,3 +179,12 @@ jobs:
           git push -d origin release-from-${{ github.sha }} || echo "failed to delete branch"
           git push -d origin ${{ steps.changelog.outputs.tag }} || echo "failed to delete tag"
 
+
+  publish_bundle:
+    name: Publish bundle
+    needs: [publish]
+    if: ${{ needs.publish.outputs.skipped == 'false' }}
+    uses: ./.github/workflows/publish_bundle_s3.yaml
+    secrets: inherit
+    with:
+      tag: ${{ needs.publish.outputs.tag }}
