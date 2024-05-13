@@ -53,6 +53,22 @@ variable "instance_count" {
   type        = number
 }
 
+variable "master_nodes_enabled" {
+  description = "Whether to enable master nodes"
+  type        = bool
+}
+
+variable "master_node_instance_type" {
+  description = "instance type for master nodes"
+  type        = string
+}
+
+variable "zone_awareness_zone_count" {
+  description = "Zone awareness count. Specify this if it's different than the number of subnets"
+  type        = number
+  default     = null
+}
+
 variable "subnet_ids" {
   description = "list of subnet ids to launch in to"
   type        = list(string)

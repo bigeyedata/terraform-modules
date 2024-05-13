@@ -681,4 +681,7 @@ module "temporal_opensearch" {
   instance_count             = var.temporal_opensearch_instance_count
   subnet_ids                 = local.rabbitmq_subnet_group_ids
   master_user_password       = local.create_temporal_opensearch_password_secret ? random_password.temporal_opensearch_password[0].result : data.aws_secretsmanager_secret_version.byo_temporal_opensearch_password[0].secret_string
+  master_nodes_enabled       = var.temporal_opensearch_enable_master_nodes
+  master_node_instance_type  = var.temporal_opensearch_master_instance_type
+  zone_awareness_zone_count  = var.temporal_opensearch_zone_awareness_zone_count
 }

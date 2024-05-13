@@ -1002,6 +1002,24 @@ variable "temporal_opensearch_extra_security_group_ids" {
   default     = []
 }
 
+variable "temporal_opensearch_enable_master_nodes" {
+  description = "Whether to enable master nodes to offload administrative tasks. Recommended for production systems"
+  type        = bool
+  default     = true
+}
+
+variable "temporal_opensearch_master_instance_type" {
+  description = "The opensearch instance type to use for master nodes"
+  type        = string
+  default     = "m6g.large.search"
+}
+
+variable "temporal_opensearch_zone_awareness_zone_count" {
+  description = "The number of AZs the domain is aware of. Will default to the number of subnets, or instance count, whichever is lowest"
+  type        = number
+  default     = null
+}
+
 #======================================================
 # Application Variables - Temporal Components
 #======================================================

@@ -1,5 +1,7 @@
 locals {
-  max_port = 65535
+  max_port             = 65535
+  relevant_subnet_ids  = var.instance_count < length(var.subnet_ids) ? slice(var.subnet_ids, 0, var.instance_count) : var.subnet_ids
+  zone_awareness_count = coalesce(var.zone_awareness_zone_count, length(local.relevant_subnet_ids))
 }
 
 resource "aws_security_group" "this" {
@@ -68,13 +70,18 @@ resource "aws_opensearch_domain" "this" {
   engine_version = var.engine_version
 
   cluster_config {
-    zone_awareness_enabled   = false
+    zone_awareness_enabled = var.instance_count > 1
+    zone_awareness_config {
+      availability_zone_count = local.zone_awareness_count
+    }
     instance_count           = var.instance_count
     instance_type            = var.instance_type
-    dedicated_master_enabled = false
+    dedicated_master_enabled = var.master_nodes_enabled
+    dedicated_master_count   = var.master_nodes_enabled ? 3 : null
+    dedicated_master_type    = var.master_node_instance_type
   }
   vpc_options {
-    subnet_ids = var.instance_count < length(var.subnet_ids) ? slice(var.subnet_ids, 0, var.instance_count) : var.subnet_ids
+    subnet_ids = local.relevant_subnet_ids
     security_group_ids = concat(
       var.create_security_groups ? [aws_security_group.this[0].id] : [],
       var.extra_security_group_ids
