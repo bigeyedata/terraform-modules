@@ -1,3 +1,12 @@
+# [4.4.0](https://github.com/bigeyedata/terraform-modules/compare/v4.3.0...v4.4.0) (2024-05-13)
+
+
+### Features
+
+* add lineagework service ([9d8a03c](https://github.com/bigeyedata/terraform-modules/commit/9d8a03c784deddc42ea38acff37d24b01300bc0b))
+
+
+
 # [4.3.0](https://github.com/bigeyedata/terraform-modules/compare/v4.1.2...v4.3.0) (2024-05-09)
 
 
