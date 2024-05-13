@@ -972,6 +972,12 @@ variable "temporal_rds_replica_additional_tags" {
   default     = {}
 }
 
+variable "temporal_opensearch_enabled" {
+  description = "Whether opensearch is enabled for temporal visibility store. If false, temporal uses instead. Opensearch is recommended for all systems. Using SQL will degrade performance in systems with modest amounts of traffic."
+  type        = bool
+  default     = true
+}
+
 variable "temporal_opensearch_engine_version" {
   description = "The opensearch engine version"
   type        = string

@@ -310,6 +310,15 @@ locals {
     "com.datadoghq.tags.stack"    = local.name
   } : {}
 
+  temporal_visibility_env_vars = var.temporal_opensearch_enabled ? {
+    ENABLE_ES  = "true"
+    ES_VERSION = "v7"
+    ES_SCHEME  = "https"
+    ES_SEEDS   = module.temporal_opensearch[0].dns_name
+    ES_PORT    = "443"
+    ES_USER    = "temporal"
+  } : {}
+
   temporal_environment_variables_general = merge(
     local.temporal_dd_env_vars,
     {
@@ -320,13 +329,6 @@ locals {
       DBNAME      = "temporal"
       MYSQL_SEEDS = local.temporal_mysql_dns_name
       MYSQL_USER  = "bigeye"
-
-      ENABLE_ES  = "true"
-      ES_VERSION = "v7"
-      ES_SCHEME  = "https"
-      ES_SEEDS   = module.temporal_opensearch.dns_name
-      ES_PORT    = "443"
-      ES_USER    = "temporal"
 
       NUM_HISTORY_SHARDS                                   = tostring(var.temporal_num_history_shards)
       PROMETHEUS_ENDPOINT                                  = "0.0.0.0:9091"
@@ -348,6 +350,7 @@ locals {
       TEMPORAL_TLS_SERVER_NAME               = local.temporal_dns_name
       SQL_MAX_IDLE_CONNS                     = "10"
     },
+    local.temporal_visibility_env_vars,
   )
 
   temporal_component_common_env_vars = {
@@ -406,8 +409,10 @@ locals {
   temporal_secret_arns = merge(
     {
       "MYSQL_PWD" = local.temporal_rds_password_secret_arn
-      "ES_PWD"    = local.temporal_opensearch_password_secret_arn
     },
+    var.temporal_opensearch_enabled ? {
+      "ES_PWD" = local.temporal_opensearch_password_secret_arn
+    } : {},
     var.temporal_additional_secret_arns,
   )
 
@@ -661,12 +666,13 @@ resource "aws_secretsmanager_secret_version" "temporal_opensearch_password" {
 }
 
 data "aws_secretsmanager_secret_version" "byo_temporal_opensearch_password" {
-  count         = local.create_temporal_opensearch_password_secret ? 0 : 1
+  count         = local.temporal_opensearch_password_byo_secret ? 1 : 0
   secret_id     = var.temporal_opensearch_master_user_password_secret_arn
   version_stage = "AWSCURRENT"
 }
 
 module "temporal_opensearch" {
+  count  = var.temporal_opensearch_enabled ? 1 : 0
   source = "../opensearch"
 
   name                       = local.name
