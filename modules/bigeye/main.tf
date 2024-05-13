@@ -203,6 +203,11 @@ data "aws_vpc" "this" {
     }
 
     postcondition {
+      condition     = var.create_security_groups || length(var.lineagework_lb_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide a security group for the lineagework lb using lineagework_lb_extra_security_group_ids (ports 80/443)"
+    }
+
+    postcondition {
       condition     = var.create_security_groups || length(var.metricwork_lb_extra_security_group_ids) > 0
       error_message = "If create_security_groups is false, you must provide a security group for the metricwork lb using metricwork_lb_extra_security_group_ids (ports 80/443)"
     }
@@ -250,6 +255,11 @@ data "aws_vpc" "this" {
     postcondition {
       condition     = var.create_security_groups || length(var.datawork_extra_security_group_ids) > 0
       error_message = "If create_security_groups is false, you must provide a security group for the datawork ECS tasks using datawork_extra_security_group_ids (port ${var.datawork_port})"
+    }
+
+    postcondition {
+      condition     = var.create_security_groups || length(var.lineagework_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide a security group for the lineagework ECS tasks using lineagework_extra_security_group_ids (port ${var.lineagework_port})"
     }
 
     postcondition {
@@ -414,6 +424,15 @@ resource "aws_route53_record" "datawork" {
   type    = "CNAME"
   ttl     = 3600
   records = [module.datawork.dns_name]
+}
+
+resource "aws_route53_record" "lineagework" {
+  count   = var.create_dns_records ? 1 : 0
+  zone_id = data.aws_route53_zone.this.zone_id
+  name    = local.lineagework_dns_name
+  type    = "CNAME"
+  ttl     = 3600
+  records = [module.lineagework.dns_name]
 }
 
 resource "aws_route53_record" "metricwork" {
@@ -638,27 +657,29 @@ module "bigeye_admin" {
 
   stack_name = local.name
 
-  haproxy_domain_name    = local.vanity_dns_name
-  web_domain_name        = local.web_dns_name
-  monocle_domain_name    = local.monocle_dns_name
-  toretto_domain_name    = local.toretto_dns_name
-  temporal_domain_name   = local.temporal_dns_name
-  temporalui_domain_name = local.temporalui_dns_name
-  datawatch_domain_name  = local.datawatch_dns_name
-  datawork_domain_name   = local.datawork_dns_name
-  metricwork_domain_name = local.metricwork_dns_name
-  scheduler_domain_name  = local.scheduler_dns_name
+  haproxy_domain_name     = local.vanity_dns_name
+  web_domain_name         = local.web_dns_name
+  monocle_domain_name     = local.monocle_dns_name
+  toretto_domain_name     = local.toretto_dns_name
+  temporal_domain_name    = local.temporal_dns_name
+  temporalui_domain_name  = local.temporalui_dns_name
+  datawatch_domain_name   = local.datawatch_dns_name
+  datawork_domain_name    = local.datawork_dns_name
+  lineagework_domain_name = local.lineagework_dns_name
+  metricwork_domain_name  = local.metricwork_dns_name
+  scheduler_domain_name   = local.scheduler_dns_name
 
-  haproxy_resource_name    = "${local.name}-haproxy"
-  web_resource_name        = "${local.name}-web"
-  monocle_resource_name    = "${local.name}-monocle"
-  toretto_resource_name    = "${local.name}-toretto"
-  temporal_resource_name   = "${local.name}-temporal"
-  temporalui_resource_name = "${local.name}-temporalui"
-  datawatch_resource_name  = "${local.name}-datawatch"
-  datawork_resource_name   = "${local.name}-datawork"
-  metricwork_resource_name = "${local.name}-metricwork"
-  scheduler_resource_name  = "${local.name}-scheduler"
+  haproxy_resource_name     = "${local.name}-haproxy"
+  web_resource_name         = "${local.name}-web"
+  monocle_resource_name     = "${local.name}-monocle"
+  toretto_resource_name     = "${local.name}-toretto"
+  temporal_resource_name    = "${local.name}-temporal"
+  temporalui_resource_name  = "${local.name}-temporalui"
+  datawatch_resource_name   = "${local.name}-datawatch"
+  datawork_resource_name    = "${local.name}-datawork"
+  lineagework_resource_name = "${local.name}-lineagework"
+  metricwork_resource_name  = "${local.name}-metricwork"
+  scheduler_resource_name   = "${local.name}-scheduler"
 
   datawatch_rds_identifier          = module.datawatch_rds.identifier
   datawatch_rds_hostname            = module.datawatch_rds.primary_dns_name
@@ -1656,7 +1677,7 @@ resource "aws_iam_role_policy" "datawatch_secrets" {
 }
 
 resource "aws_iam_role_policy" "datawatch_ecs_exec" {
-  count = var.datawatch_enable_ecs_exec || var.datawork_enable_ecs_exec || var.metricwork_enable_ecs_exec ? 1 : 0
+  count = var.datawatch_enable_ecs_exec || var.datawork_enable_ecs_exec || var.lineagework_enable_ecs_exec || var.metricwork_enable_ecs_exec ? 1 : 0
   role  = aws_iam_role.datawatch.id
   name  = "AllowECSExec"
   policy = jsonencode({
@@ -1716,6 +1737,7 @@ module "redis" {
     module.scheduler.security_group_id,
     module.datawatch.security_group_id,
     module.datawork.security_group_id,
+    module.lineagework.security_group_id,
     module.metricwork.security_group_id,
   ] : []
   auth_token               = local.create_redis_auth_token_secret ? aws_secretsmanager_secret_version.redis_auth_token[0].secret_string : data.aws_secretsmanager_secret_version.byo_redis_auth_token[0].secret_string
@@ -1775,6 +1797,7 @@ module "datawatch_rds" {
   allowed_client_security_group_ids = var.create_security_groups ? [
     module.datawatch.security_group_id,
     module.datawork.security_group_id,
+    module.lineagework.security_group_id,
     module.metricwork.security_group_id,
   ] : []
 
@@ -2062,9 +2085,78 @@ module "datawork" {
       DATAWATCH_ADDRESS  = "http://localhost:${var.datawork_port}"
       WORKERS_ENABLED    = "true"
       METRIC_RUN_WORKERS = "1"
-      EXCLUDE_QUEUES     = "trigger-batch-metric-run"
+      EXCLUDE_QUEUES     = "trigger-batch-metric-run,source-lineage,metacenter-lineage"
     },
     var.datawork_additional_environment_vars,
+  )
+
+  secret_arns = local.datawatch_secret_arns
+}
+
+module "lineagework" {
+  depends_on = [aws_secretsmanager_secret_version.robot_password]
+  source     = "../simpleservice"
+  app        = "lineagework"
+  instance   = var.instance
+  stack      = local.name
+  name       = "${local.name}-lineagework"
+  tags       = merge(local.tags, { app = "lineagework" })
+
+  vpc_id                        = local.vpc_id
+  vpc_cidr_block                = var.vpc_cidr_block
+  subnet_ids                    = local.application_subnet_ids
+  create_security_groups        = var.create_security_groups
+  task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
+  additional_security_group_ids = concat(local.datawatch_additional_security_groups, var.lineagework_extra_security_group_ids)
+  traffic_port                  = var.lineagework_port
+  ecs_cluster_id                = aws_ecs_cluster.this.id
+  enable_execute_command        = var.lineagework_enable_ecs_exec
+
+  # Load balancer
+  healthcheck_path                 = "/health"
+  healthcheck_interval             = 90
+  ssl_policy                       = var.alb_ssl_policy
+  acm_certificate_arn              = local.acm_certificate_arn
+  lb_idle_timeout                  = 900
+  lb_subnet_ids                    = local.internal_service_alb_subnet_ids
+  lb_additional_security_group_ids = concat(var.lineagework_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
+  lb_additional_ingress_cidrs      = var.internal_additional_ingress_cidrs
+
+  lb_access_logs_enabled       = var.elb_access_logs_enabled
+  lb_access_logs_bucket_name   = var.elb_access_logs_bucket
+  lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "lineagework")
+
+  # Task settings
+  desired_count             = var.lineagework_desired_count
+  cpu                       = var.lineagework_cpu
+  memory                    = var.lineagework_memory
+  execution_role_arn        = aws_iam_role.ecs.arn
+  task_role_arn             = aws_iam_role.datawatch.arn
+  image_registry            = local.image_registry
+  image_repository          = format("%s%s", "datawatch", var.image_repository_suffix)
+  image_tag                 = local.lineagework_image_tag
+  cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
+  stop_timeout              = 120
+
+  # Datadog
+  datadog_agent_enabled            = var.datadog_agent_enabled
+  datadog_agent_image              = var.datadog_agent_image
+  datadog_agent_cpu                = var.datadog_agent_cpu
+  datadog_agent_memory             = var.datadog_agent_memory
+  datadog_agent_api_key_secret_arn = var.datadog_agent_api_key_secret_arn
+
+  # lineagework should only subscribe to source-lineage and metacenter-lineage, ie exclude all other Temporal queues.
+  environment_variables = merge(
+    local.datawatch_dd_env_vars,
+    local.datawatch_common_env_vars,
+    {
+      APP                = "lineagework"
+      DATAWATCH_ADDRESS  = "http://localhost:${var.lineagework_port}"
+      WORKERS_ENABLED    = "true"
+      METRIC_RUN_WORKERS = "1"
+      EXCLUDE_QUEUES     = "run-metrics.v1,delete-source.v1,get-samples.v1,collect-lineage.v1,indexing.v1,reconciliation,trigger-batch-metric-run,agent-heartbeat"
+    },
+    var.lineagework_additional_environment_vars,
   )
 
   secret_arns = local.datawatch_secret_arns
@@ -2137,4 +2229,3 @@ module "metricwork" {
 
   secret_arns = local.datawatch_secret_arns
 }
-

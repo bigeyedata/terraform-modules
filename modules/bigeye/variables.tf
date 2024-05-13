@@ -1632,6 +1632,63 @@ variable "datawork_enable_ecs_exec" {
 }
 
 #======================================================
+# Application Variables - Lineagework
+#======================================================
+variable "lineagework_image_tag" {
+  description = "The image tag to use for lineagework, defaults to the global `image_tag` if not specified"
+  type        = string
+  default     = ""
+}
+
+variable "lineagework_desired_count" {
+  description = "The desired number of replicas"
+  type        = number
+  default     = 1
+}
+
+variable "lineagework_cpu" {
+  description = "Amount of CPU to allocate"
+  type        = number
+  default     = 1024
+}
+
+variable "lineagework_memory" {
+  description = "Amount of Memory in MB to allocate"
+  type        = number
+  default     = 4096
+}
+
+variable "lineagework_port" {
+  description = "The port to listen on"
+  type        = number
+  default     = 80
+}
+
+variable "lineagework_additional_environment_vars" {
+  description = "Additional enviromnent variables to give the application"
+  type        = map(string)
+  default     = {}
+}
+
+variable "lineagework_extra_security_group_ids" {
+  description = "Additional security group ids to lineagework"
+  type        = list(string)
+  default     = []
+}
+
+variable "lineagework_lb_extra_security_group_ids" {
+  description = "Additional security group ids to lineagework ALB"
+  type        = list(string)
+  default     = []
+}
+
+variable "lineagework_enable_ecs_exec" {
+  description = "Whether to enable ECS exec"
+  type        = bool
+  default     = false
+}
+
+#======================================================
 # Application Variables - Metricwork
 #======================================================
 variable "metricwork_image_tag" {

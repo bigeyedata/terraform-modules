@@ -114,6 +114,21 @@ output "datawork_load_balancer_zone_id" {
   value       = module.datawork.zone_id
 }
 
+output "lineagework_dns_name" {
+  description = "DNS name for the lineagework service"
+  value       = local.lineagework_dns_name
+}
+
+output "lineagework_load_balancer_dns_name" {
+  description = "The dns name of the lineagework load balancer"
+  value       = module.lineagework.dns_name
+}
+
+output "lineagework_load_balancer_zone_id" {
+  description = "The Route53 Zone ID of the lineagework load balancer"
+  value       = module.lineagework.zone_id
+}
+
 output "metricwork_dns_name" {
   description = "DNS name for the metricwork service"
   value       = local.metricwork_dns_name

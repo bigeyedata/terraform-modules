@@ -91,6 +91,11 @@ variable "datawork_domain_name" {
   type        = string
 }
 
+variable "lineagework_domain_name" {
+  description = "lineagework domain name"
+  type        = string
+}
+
 variable "metricwork_domain_name" {
   description = "metricwork domain name"
   type        = string
@@ -138,6 +143,11 @@ variable "datawatch_resource_name" {
 
 variable "datawork_resource_name" {
   description = "datawork resource name"
+  type        = string
+}
+
+variable "lineagework_resource_name" {
+  description = "lineagework resource name"
   type        = string
 }
 
