@@ -972,6 +972,36 @@ variable "temporal_rds_replica_additional_tags" {
   default     = {}
 }
 
+variable "temporal_opensearch_engine_version" {
+  description = "The opensearch engine version"
+  type        = string
+  default     = "OpenSearch_2.11"
+}
+
+variable "temporal_opensearch_instance_type" {
+  description = "The opensearch instance type to use"
+  type        = string
+  default     = "t3.medium.search"
+}
+
+variable "temporal_opensearch_instance_count" {
+  description = "The number of data nodes"
+  type        = number
+  default     = 1
+}
+
+variable "temporal_opensearch_master_user_password_secret_arn" {
+  description = "ARN for secretsmanager secret holding the opensearch master user password. One will be created if not provided."
+  type        = string
+  default     = ""
+}
+
+variable "temporal_opensearch_extra_security_group_ids" {
+  description = "Additional security group IDs to give to temporal opensearch"
+  type        = list(string)
+  default     = []
+}
+
 #======================================================
 # Application Variables - Temporal Components
 #======================================================

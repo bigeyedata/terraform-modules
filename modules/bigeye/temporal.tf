@@ -313,13 +313,21 @@ locals {
   temporal_environment_variables_general = merge(
     local.temporal_dd_env_vars,
     {
-      ENVIRONMENT                                          = var.environment
-      INSTANCE                                             = var.instance
-      DB                                                   = "mysql8"
-      DB_PORT                                              = "3306"
-      DBNAME                                               = "temporal"
-      MYSQL_SEEDS                                          = local.temporal_mysql_dns_name
-      MYSQL_USER                                           = "bigeye"
+      ENVIRONMENT = var.environment
+      INSTANCE    = var.instance
+      DB          = "mysql8"
+      DB_PORT     = "3306"
+      DBNAME      = "temporal"
+      MYSQL_SEEDS = local.temporal_mysql_dns_name
+      MYSQL_USER  = "bigeye"
+
+      ENABLE_ES  = "true"
+      ES_VERSION = "v7"
+      ES_SCHEME  = "https"
+      ES_SEEDS   = module.temporal_opensearch.dns_name
+      ES_PORT    = "443"
+      ES_USER    = "temporal"
+
       NUM_HISTORY_SHARDS                                   = tostring(var.temporal_num_history_shards)
       PROMETHEUS_ENDPOINT                                  = "0.0.0.0:9091"
       TEMPORAL_TLS_REQUIRE_CLIENT_AUTH                     = "true"
@@ -398,6 +406,7 @@ locals {
   temporal_secret_arns = merge(
     {
       "MYSQL_PWD" = local.temporal_rds_password_secret_arn
+      "ES_PWD"    = local.temporal_opensearch_password_secret_arn
     },
     var.temporal_additional_secret_arns,
   )
@@ -626,3 +635,50 @@ module "temporalui" {
   secret_arns = var.temporalui_additional_secret_arns
 }
 
+#======================================================
+# Temporal-Elasticsearch
+#======================================================
+resource "random_password" "temporal_opensearch_password" {
+  count   = local.create_temporal_opensearch_password_secret ? 1 : 0
+  length  = 16
+  special = true
+  upper   = true
+  numeric = true
+}
+
+resource "aws_secretsmanager_secret" "temporal_opensearch_password" {
+  count                   = local.create_temporal_opensearch_password_secret ? 1 : 0
+  name                    = format("bigeye/%s/bigeye/temporal/opensearch-password", local.name)
+  recovery_window_in_days = local.secret_retention_days
+  tags                    = local.tags
+}
+
+resource "aws_secretsmanager_secret_version" "temporal_opensearch_password" {
+  count          = local.create_temporal_opensearch_password_secret ? 1 : 0
+  secret_id      = aws_secretsmanager_secret.temporal_opensearch_password[0].id
+  secret_string  = random_password.temporal_opensearch_password[0].result
+  version_stages = ["AWSCURRENT"]
+}
+
+data "aws_secretsmanager_secret_version" "byo_temporal_opensearch_password" {
+  count         = local.create_temporal_opensearch_password_secret ? 0 : 1
+  secret_id     = var.temporal_opensearch_master_user_password_secret_arn
+  version_stage = "AWSCURRENT"
+}
+
+module "temporal_opensearch" {
+  source = "../opensearch"
+
+  name                       = local.name
+  vpc_id                     = local.vpc_id
+  tags                       = local.tags
+  create_security_groups     = var.create_security_groups
+  ingress_security_group_ids = var.create_security_groups ? [aws_security_group.temporal[0].id] : []
+  extra_security_group_ids   = var.temporal_opensearch_extra_security_group_ids
+  additional_ingress_cidrs   = var.internal_additional_ingress_cidrs
+  engine_version             = var.temporal_opensearch_engine_version
+  instance_type              = var.temporal_opensearch_instance_type
+  instance_count             = var.temporal_opensearch_instance_count
+  subnet_ids                 = local.rabbitmq_subnet_group_ids
+  master_user_password       = local.create_temporal_opensearch_password_secret ? random_password.temporal_opensearch_password[0].result : data.aws_secretsmanager_secret_version.byo_temporal_opensearch_password[0].secret_string
+}
