@@ -1,0 +1,76 @@
+name: Publish Bundle to S3
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'The git version to use'
+        type: 'string'
+        required: true
+  workflow_call:
+    inputs:
+      tag:
+        description: 'The git version to use'
+        type: 'string'
+        required: true
+  pull_request:
+    paths:
+      - .github/workflows/publish_bundle_s3.yaml
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  build_and_publish:
+    runs-on: ubuntu-latest
+    steps:
+      - id: determine-ref
+        name: determine git ref
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ] ; then 
+            ref="${{ github.ref }}"
+            tarname="terraform-modules-pr-test.tar.gz"
+          else
+            ref="${{ inputs.tag }}"
+            tarname="terraform-modules-${ref}.tar.gz"
+          fi
+          echo "ref=${ref}"
+          echo "ref=${ref}" >> $GITHUB_OUTPUT
+          echo "tarname=${tarname}"
+          echo "tarname=${tarname}" >> $GITHUB_OUTPUT
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.determine-ref.outputs.ref }}
+          path: terraform-modules
+      - name: Setup terraform
+        uses: hashicorp/setup-terraform@v3.0.0
+        with:
+          terraform_version: 1.7.5
+          # https://github.com/hashicorp/setup-terraform/issues/373
+          terraform_wrapper: false
+      - name: set up bundle directory
+        run: |
+          mkdir bundle
+          cp terraform-modules/examples/standard/main.tf bundle/main.tf
+      - name: install terraform deps
+        run: |
+          cd bundle
+          terraform init
+      - name: bundle everything
+        run: |
+          tar --exclude='terraform-modules/.git' -czvf "${{ steps.determine-ref.outputs.tarname }}" bundle terraform-modules
+          ls -ahl
+
+      - name: Configure AWS credentials
+        if: "${{ github.event_name != 'pull_request' }}"
+        uses: aws-actions/configure-aws-credentials@v4.0.1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2
+
+      - name: push to s3
+        if: "${{ github.event_name != 'pull_request' }}"
+        run: |
+          aws s3 cp "${{ steps.determine-ref.outputs.tarname }}" s3://bigeye-bundle-distribution/terraform-modules/
+
