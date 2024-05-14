@@ -80,13 +80,17 @@ locals {
     REDIS_PASSWORD         = var.redis_password_secret_arn
     RABBITMQ_PASSWORD      = var.rabbitmq_password_secret_arn
   }
+
+  create_iam_role = var.task_iam_role_arn == ""
+  ecs_iam_role    = local.create_iam_role ? aws_iam_role.this[0].arn : var.task_iam_role_arn
 }
 
 data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
 
 resource "aws_iam_role" "this" {
-  name = local.name
+  count = local.create_iam_role ? 1 : 0
+  name  = local.name
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -103,7 +107,8 @@ resource "aws_iam_role" "this" {
 }
 
 resource "aws_iam_role_policy" "this" {
-  role = aws_iam_role.this.id
+  count = local.create_iam_role ? 1 : 0
+  role  = aws_iam_role.this[0].id
   policy = jsonencode({
     Version = "2012-10-17",
     Statement : [
@@ -213,7 +218,7 @@ resource "aws_ecs_task_definition" "this" {
   requires_compatibilities = ["FARGATE"]
   tags                     = var.tags
   execution_role_arn       = var.execution_role_arn
-  task_role_arn            = aws_iam_role.this.arn
+  task_role_arn            = local.ecs_iam_role
   container_definitions = jsonencode([{
     name         = local.name
     cpu          = 1024

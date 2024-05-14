@@ -125,7 +125,7 @@ resource "aws_ecs_task_definition" "temporal_components" {
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   tags                     = merge(local.tags, { app = "temporal", component = each.key })
-  execution_role_arn       = aws_iam_role.ecs.arn
+  execution_role_arn       = local.ecs_role_arn
   container_definitions    = var.datadog_agent_enabled ? jsonencode([local.temporal_component_container_def[each.key], local.temporal_component_datadog_container_def[each.key]]) : jsonencode([local.temporal_component_container_def[each.key]])
 }
 
@@ -608,7 +608,7 @@ module "temporalui" {
   desired_count             = var.temporalui_desired_count
   cpu                       = var.temporalui_cpu
   memory                    = var.temporalui_memory
-  execution_role_arn        = aws_iam_role.ecs.arn
+  execution_role_arn        = local.ecs_role_arn
   task_role_arn             = null
   image_registry            = local.image_registry
   image_repository          = format("%s%s", "temporalui", var.image_repository_suffix)

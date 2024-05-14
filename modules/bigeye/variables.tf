@@ -83,6 +83,7 @@ variable "internal_additional_ingress_cidrs" {
   type        = list(string)
   default     = []
 }
+
 #======================================================
 # VPC
 #======================================================
@@ -106,6 +107,33 @@ variable "vpc_single_nat_gateway" {
 
 variable "vpc_flow_logs_bucket_arn" {
   description = "ARN of the bucket to send flow logs to"
+  type        = string
+  default     = ""
+}
+
+#======================================================
+# Bring your own IAM Roles
+#======================================================
+variable "ecs_service_role_arn" {
+  description = "IAM Role ARN for the ECS execution role. If not specified, it will be created"
+  type        = string
+  default     = ""
+}
+
+variable "admin_container_ecs_task_role_arn" {
+  description = "IAM Role ARN for the Admin container. If not specified, it will be created"
+  type        = string
+  default     = ""
+}
+
+variable "datawatch_task_role_arn" {
+  description = "IAM Role ARN for the Datawatch services. If not specified, it will be created"
+  type        = string
+  default     = ""
+}
+
+variable "monocle_task_role_arn" {
+  description = "IAM Role ARN for the Monocle/Toretto services. If not specified, it will be created"
   type        = string
   default     = ""
 }

@@ -105,6 +105,14 @@ locals {
 
   max_port = 65535
 
+  # IAM Roles
+  create_ecs_role       = var.ecs_service_role_arn == ""
+  ecs_role_arn          = local.create_ecs_role ? aws_iam_role.ecs[0].arn : var.ecs_service_role_arn
+  create_datawatch_role = var.datawatch_task_role_arn == ""
+  datawatch_role_arn    = local.create_datawatch_role ? aws_iam_role.datawatch[0].arn : var.datawatch_task_role_arn
+  create_monocle_role   = var.monocle_task_role_arn == ""
+  monocle_role_arn      = local.create_monocle_role ? aws_iam_role.monocle[0].arn : var.monocle_task_role_arn
+
   # Models bucket random name
   models_bucket_has_name_override = var.ml_models_s3_bucket_name_override == "" ? false : true
 
