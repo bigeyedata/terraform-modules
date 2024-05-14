@@ -1,7 +1,8 @@
 locals {
-  max_port             = 65535
-  relevant_subnet_ids  = var.instance_count < length(var.subnet_ids) ? slice(var.subnet_ids, 0, var.instance_count) : var.subnet_ids
-  zone_awareness_count = coalesce(var.zone_awareness_zone_count, length(local.relevant_subnet_ids))
+  max_port            = 65535
+  relevant_subnet_ids = var.instance_count < length(var.subnet_ids) ? slice(var.subnet_ids, 0, var.instance_count) : var.subnet_ids
+  # Burstable class hardware is not supported for auto tune.
+  auto_tune_enabled = !can(regex("^t", var.master_node_instance_type))
 }
 
 resource "aws_security_group" "this" {
@@ -72,7 +73,7 @@ resource "aws_opensearch_domain" "this" {
   cluster_config {
     zone_awareness_enabled = var.instance_count > 1
     zone_awareness_config {
-      availability_zone_count = local.zone_awareness_count
+      availability_zone_count = 3
     }
     instance_count           = var.instance_count
     instance_type            = var.instance_type
@@ -113,6 +114,9 @@ resource "aws_opensearch_domain" "this" {
     iops        = var.ebs_iops
     volume_size = var.ebs_size
     volume_type = "gp3"
+  }
+  auto_tune_options {
+    desired_state = local.auto_tune_enabled ? "ENABLED" : "DISABLED"
   }
 }
 
