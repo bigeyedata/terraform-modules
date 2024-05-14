@@ -302,4 +302,48 @@ output "database_subnet_group_name" {
   value       = local.database_subnet_group_name
 }
 
+#======================================================
+# Cloudwatch Log Groups
+#======================================================
+output "cloudwatch_log_group_name" {
+  description = "Name of log group where application logs are sent"
+  value       = aws_cloudwatch_log_group.bigeye.name
+}
 
+output "cloudwatch_log_group_arn" {
+  description = "ARN of log group where application logs are sent"
+  value       = aws_cloudwatch_log_group.bigeye.arn
+}
+
+output "cloudwatch_temporal_log_group_name" {
+  description = "Name of log group where temporal logs are sent"
+  value       = aws_cloudwatch_log_group.temporal.name
+}
+
+output "cloudwatch_temporal_log_group_arn" {
+  description = "ARN of log group where temporal logs are sent"
+  value       = aws_cloudwatch_log_group.temporal.arn
+}
+
+#======================================================
+# S3
+#======================================================
+output "models_bucket_name" {
+  description = "S3 bucket name for models"
+  value       = aws_s3_bucket.models.id
+}
+
+output "models_bucket_arn" {
+  description = "ARN for models bucket"
+  value       = aws_s3_bucket.models.arn
+}
+
+output "large_payload_bucket_name" {
+  description = "S3 bucket name for large payloads"
+  value       = aws_s3_bucket.large_payload.id
+}
+
+output "large_payload_bucket_arn" {
+  description = "ARN for large payloads bucket"
+  value       = aws_s3_bucket.large_payload.arn
+}
