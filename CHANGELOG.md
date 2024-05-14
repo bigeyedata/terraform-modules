@@ -1,3 +1,12 @@
+# [4.6.0](https://github.com/bigeyedata/terraform-modules/compare/v4.5.0...v4.6.0) (2024-05-14)
+
+
+### Features
+
+* disable MQ workers for lineagework service ([87cf93f](https://github.com/bigeyedata/terraform-modules/commit/87cf93f6420e62685155066a05545c880a1a9c41))
+
+
+
 # [4.5.0](https://github.com/bigeyedata/terraform-modules/compare/v4.4.0...v4.5.0) (2024-05-13)
 
 
