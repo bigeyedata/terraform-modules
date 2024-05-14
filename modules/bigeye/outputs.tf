@@ -236,7 +236,7 @@ output "web_load_balancer_zone_id" {
 
 output "ecs_task_role_id" {
   description = "Id of the ECS Task execution role.  This is useful for granting ECS access to secrets manager secrets."
-  value       = aws_iam_role.ecs.id
+  value       = local.create_ecs_role ? aws_iam_role.ecs[0].id : ""
 }
 
 #======================================================

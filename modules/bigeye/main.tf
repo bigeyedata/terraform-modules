@@ -554,8 +554,9 @@ resource "aws_ecs_cluster" "this" {
 }
 
 resource "aws_iam_role" "ecs" {
-  name = "${local.name}-service-role"
-  tags = local.tags
+  count = local.create_ecs_role ? 1 : 0
+  name  = "${local.name}-service-role"
+  tags  = local.tags
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -572,8 +573,9 @@ resource "aws_iam_role" "ecs" {
 }
 
 resource "aws_iam_role_policy" "ecs_execution" {
-  role = aws_iam_role.ecs.id
-  name = "ECSTaskExecution"
+  count = local.create_ecs_role ? 1 : 0
+  role  = aws_iam_role.ecs[0].id
+  name  = "ECSTaskExecution"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -606,8 +608,9 @@ resource "aws_iam_role_policy" "ecs_execution" {
 }
 
 resource "aws_iam_role_policy" "ecs_secrets" {
-  role = aws_iam_role.ecs.id
-  name = "AllowAccessSecrets"
+  count = local.create_ecs_role ? 1 : 0
+  role  = aws_iam_role.ecs[0].id
+  name  = "AllowAccessSecrets"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -653,7 +656,8 @@ module "bigeye_admin" {
   tags                      = merge(local.tags, { app = "bigeye-admin" })
   cluster_name              = local.name
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
-  execution_role_arn        = aws_iam_role.ecs.arn
+  execution_role_arn        = local.ecs_role_arn
+  task_iam_role_arn         = var.admin_container_ecs_task_role_arn
   fargate_version           = var.fargate_version
 
   stack_name = local.name
@@ -832,7 +836,7 @@ resource "aws_s3_bucket_policy" "large_payload" {
           format("%s/*", aws_s3_bucket.large_payload.arn)
         ]
         Principal = {
-          AWS = aws_iam_role.datawatch.arn
+          AWS = local.datawatch_role_arn
         }
       }
     ]
@@ -902,7 +906,7 @@ module "haproxy" {
   desired_count             = var.haproxy_desired_count
   cpu                       = var.haproxy_cpu
   memory                    = var.haproxy_memory
-  execution_role_arn        = aws_iam_role.ecs.arn
+  execution_role_arn        = local.ecs_role_arn
   task_role_arn             = null
   image_registry            = local.image_registry
   image_repository          = format("%s%s", "haproxy", var.image_repository_suffix)
@@ -996,7 +1000,7 @@ module "web" {
   desired_count             = var.web_desired_count
   cpu                       = var.web_cpu
   memory                    = var.web_memory
-  execution_role_arn        = aws_iam_role.ecs.arn
+  execution_role_arn        = local.ecs_role_arn
   task_role_arn             = null
   image_registry            = local.image_registry
   image_repository          = format("%s%s", "web", var.image_repository_suffix)
@@ -1101,8 +1105,9 @@ module "temporal_rds" {
 # Monocle
 #======================================================
 resource "aws_iam_role" "monocle" {
-  name = "${local.name}-monocle"
-  tags = local.tags
+  count = local.create_monocle_role ? 1 : 0
+  name  = "${local.name}-monocle"
+  tags  = local.tags
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -1119,8 +1124,9 @@ resource "aws_iam_role" "monocle" {
 }
 
 resource "aws_iam_role_policy" "monocle" {
-  role = aws_iam_role.monocle.id
-  name = "AllowAccessModelsBucket"
+  count = local.create_monocle_role ? 1 : 0
+  role  = aws_iam_role.monocle[0].id
+  name  = "AllowAccessModelsBucket"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -1146,8 +1152,8 @@ resource "aws_iam_role_policy" "monocle" {
 }
 
 resource "aws_iam_role_policy" "monocle_ecs_exec" {
-  count = var.monocle_enable_ecs_exec || var.toretto_enable_ecs_exec ? 1 : 0
-  role  = aws_iam_role.monocle.id
+  count = local.create_monocle_role && (var.monocle_enable_ecs_exec || var.toretto_enable_ecs_exec) ? 1 : 0
+  role  = aws_iam_role.monocle[0].id
   name  = "AllowECSExec"
   policy = jsonencode({
     Version = "2012-10-17"
@@ -1210,8 +1216,8 @@ module "monocle" {
   desired_count             = var.monocle_desired_count
   cpu                       = var.monocle_cpu
   memory                    = var.monocle_memory
-  execution_role_arn        = aws_iam_role.ecs.arn
-  task_role_arn             = aws_iam_role.monocle.arn
+  execution_role_arn        = local.ecs_role_arn
+  task_role_arn             = local.monocle_role_arn
   image_registry            = local.image_registry
   image_repository          = format("%s%s", "monocle", var.image_repository_suffix)
   image_tag                 = local.monocle_image_tag
@@ -1338,8 +1344,8 @@ module "toretto" {
   desired_count             = var.toretto_desired_count
   cpu                       = var.toretto_cpu
   memory                    = var.toretto_memory
-  execution_role_arn        = aws_iam_role.ecs.arn
-  task_role_arn             = aws_iam_role.monocle.arn
+  execution_role_arn        = local.ecs_role_arn
+  task_role_arn             = local.monocle_role_arn
   image_registry            = local.image_registry
   image_repository          = format("%s%s", "toretto", var.image_repository_suffix)
   image_tag                 = local.toretto_image_tag
@@ -1502,7 +1508,7 @@ module "scheduler" {
   desired_count             = var.scheduler_desired_count
   cpu                       = var.scheduler_cpu
   memory                    = var.scheduler_memory
-  execution_role_arn        = aws_iam_role.ecs.arn
+  execution_role_arn        = local.ecs_role_arn
   task_role_arn             = null
   image_registry            = local.image_registry
   image_repository          = format("%s%s", "scheduler", var.image_repository_suffix)
@@ -1547,8 +1553,9 @@ module "scheduler" {
 # Datawatch - IAM
 #======================================================
 resource "aws_iam_role" "datawatch" {
-  name = "${local.name}-datawatch"
-  tags = local.tags
+  count = local.create_datawatch_role ? 1 : 0
+  name  = "${local.name}-datawatch"
+  tags  = local.tags
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -1565,8 +1572,9 @@ resource "aws_iam_role" "datawatch" {
 }
 
 resource "aws_iam_role_policy" "datawatch_s3" {
-  role = aws_iam_role.datawatch.id
-  name = "AllowAccessLargePayloadBucket"
+  count = local.create_datawatch_role ? 1 : 0
+  role  = aws_iam_role.datawatch[0].id
+  name  = "AllowAccessLargePayloadBucket"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -1590,8 +1598,9 @@ resource "aws_iam_role_policy" "datawatch_s3" {
 }
 
 resource "aws_iam_role_policy" "datawatch_temporalsecrets" {
-  role = aws_iam_role.datawatch.id
-  name = "AllowTemporalSecretsAccess"
+  count = local.create_datawatch_role ? 1 : 0
+  role  = aws_iam_role.datawatch[0].id
+  name  = "AllowTemporalSecretsAccess"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -1626,8 +1635,9 @@ resource "aws_iam_role_policy" "datawatch_temporalsecrets" {
 }
 
 resource "aws_iam_role_policy" "datawatch_listsecrets" {
-  role = aws_iam_role.datawatch.id
-  name = "AllowListSecrets"
+  count = local.create_datawatch_role ? 1 : 0
+  role  = aws_iam_role.datawatch[0].id
+  name  = "AllowListSecrets"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -1642,8 +1652,9 @@ resource "aws_iam_role_policy" "datawatch_listsecrets" {
 }
 
 resource "aws_iam_role_policy" "datawatch_secrets" {
-  role = aws_iam_role.datawatch.id
-  name = "AllowSecretsAccess"
+  count = local.create_datawatch_role ? 1 : 0
+  role  = aws_iam_role.datawatch[0].id
+  name  = "AllowSecretsAccess"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -1678,8 +1689,8 @@ resource "aws_iam_role_policy" "datawatch_secrets" {
 }
 
 resource "aws_iam_role_policy" "datawatch_ecs_exec" {
-  count = var.datawatch_enable_ecs_exec || var.datawork_enable_ecs_exec || var.lineagework_enable_ecs_exec || var.metricwork_enable_ecs_exec ? 1 : 0
-  role  = aws_iam_role.datawatch.id
+  count = local.create_datawatch_role && (var.datawatch_enable_ecs_exec || var.datawork_enable_ecs_exec || var.lineagework_enable_ecs_exec || var.metricwork_enable_ecs_exec) ? 1 : 0
+  role  = aws_iam_role.datawatch[0].id
   name  = "AllowECSExec"
   policy = jsonencode({
     Version = "2012-10-17"
@@ -1998,8 +2009,8 @@ module "datawatch" {
   desired_count             = var.datawatch_desired_count
   cpu                       = var.datawatch_cpu
   memory                    = var.datawatch_memory
-  execution_role_arn        = aws_iam_role.ecs.arn
-  task_role_arn             = aws_iam_role.datawatch.arn
+  execution_role_arn        = local.ecs_role_arn
+  task_role_arn             = local.datawatch_role_arn
   image_registry            = local.image_registry
   image_repository          = format("%s%s", "datawatch", var.image_repository_suffix)
   image_tag                 = local.datawatch_image_tag
@@ -2063,8 +2074,8 @@ module "datawork" {
   desired_count             = var.datawork_desired_count
   cpu                       = var.datawork_cpu
   memory                    = var.datawork_memory
-  execution_role_arn        = aws_iam_role.ecs.arn
-  task_role_arn             = aws_iam_role.datawatch.arn
+  execution_role_arn        = local.ecs_role_arn
+  task_role_arn             = local.datawatch_role_arn
   image_registry            = local.image_registry
   image_repository          = format("%s%s", "datawatch", var.image_repository_suffix)
   image_tag                 = local.datawork_image_tag
@@ -2131,8 +2142,8 @@ module "lineagework" {
   desired_count             = var.lineagework_desired_count
   cpu                       = var.lineagework_cpu
   memory                    = var.lineagework_memory
-  execution_role_arn        = aws_iam_role.ecs.arn
-  task_role_arn             = aws_iam_role.datawatch.arn
+  execution_role_arn        = local.ecs_role_arn
+  task_role_arn             = local.datawatch_role_arn
   image_registry            = local.image_registry
   image_repository          = format("%s%s", "datawatch", var.image_repository_suffix)
   image_tag                 = local.lineagework_image_tag
@@ -2201,8 +2212,8 @@ module "metricwork" {
   desired_count             = var.metricwork_desired_count
   cpu                       = var.metricwork_cpu
   memory                    = var.metricwork_memory
-  execution_role_arn        = aws_iam_role.ecs.arn
-  task_role_arn             = aws_iam_role.datawatch.arn
+  execution_role_arn        = local.ecs_role_arn
+  task_role_arn             = local.datawatch_role_arn
   image_registry            = local.image_registry
   image_repository          = format("%s%s", "datawatch", var.image_repository_suffix)
   image_tag                 = local.metricwork_image_tag

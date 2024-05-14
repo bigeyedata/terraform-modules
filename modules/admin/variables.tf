@@ -240,3 +240,9 @@ variable "rabbitmq_password_secret_arn" {
   description = "RabbitMQ password secret ARN"
   type        = string
 }
+
+variable "task_iam_role_arn" {
+  description = "The ECS Task IAM Role, will create if not specified"
+  type        = string
+  default     = ""
+}
