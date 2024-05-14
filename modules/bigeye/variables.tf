@@ -1017,7 +1017,7 @@ variable "temporal_opensearch_enable_master_nodes" {
 variable "temporal_opensearch_master_instance_type" {
   description = "The opensearch instance type to use for master nodes"
   type        = string
-  default     = "m6g.large.search"
+  default     = "t3.medium.search"
 }
 
 variable "temporal_opensearch_zone_awareness_zone_count" {
