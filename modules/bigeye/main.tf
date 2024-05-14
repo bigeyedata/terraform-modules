@@ -2155,6 +2155,7 @@ module "lineagework" {
       WORKERS_ENABLED    = "true"
       METRIC_RUN_WORKERS = "1"
       EXCLUDE_QUEUES     = "run-metrics.v1,delete-source.v1,get-samples.v1,collect-lineage.v1,indexing.v1,reconciliation,trigger-batch-metric-run,agent-heartbeat"
+      MQ_WORKERS_ENABLED = "false"
     },
     var.lineagework_additional_environment_vars,
   )
