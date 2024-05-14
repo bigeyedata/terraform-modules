@@ -79,7 +79,7 @@ provider "aws" {
 }
 
 module "bigeye" {
-  source             = "git::https://github.com/bigeyedata/terraform-modules//modules/bigeye?ref=v4.6.0"
+  source             = "git::https://github.com/bigeyedata/terraform-modules//modules/bigeye?ref=v4.6.1"
   environment        = local.environment
   instance           = local.instance
   top_level_dns_name = local.subdomain

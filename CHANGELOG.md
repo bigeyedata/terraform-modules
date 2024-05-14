@@ -1,3 +1,13 @@
+## [4.6.1](https://github.com/bigeyedata/terraform-modules/compare/v4.6.0...v4.6.1) (2024-05-14)
+
+
+### Bug Fixes
+
+* always use 3 opensearch zones if zone aware is enabled ([669b3d5](https://github.com/bigeyedata/terraform-modules/commit/669b3d56638b255d3e8024654e44582a47f3dbc5))
+* set opensearch data and master node types to the same ([5194ae4](https://github.com/bigeyedata/terraform-modules/commit/5194ae41321d818de4caf1790cdde086c2b9cae8))
+
+
+
 # [4.6.0](https://github.com/bigeyedata/terraform-modules/compare/v4.5.0...v4.6.0) (2024-05-14)
 
 
