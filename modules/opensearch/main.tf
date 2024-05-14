@@ -1,7 +1,6 @@
 locals {
-  max_port             = 65535
-  relevant_subnet_ids  = var.instance_count < length(var.subnet_ids) ? slice(var.subnet_ids, 0, var.instance_count) : var.subnet_ids
-  zone_awareness_count = coalesce(var.zone_awareness_zone_count, length(local.relevant_subnet_ids))
+  max_port            = 65535
+  relevant_subnet_ids = var.instance_count < length(var.subnet_ids) ? slice(var.subnet_ids, 0, var.instance_count) : var.subnet_ids
 }
 
 resource "aws_security_group" "this" {
@@ -72,7 +71,7 @@ resource "aws_opensearch_domain" "this" {
   cluster_config {
     zone_awareness_enabled = var.instance_count > 1
     zone_awareness_config {
-      availability_zone_count = local.zone_awareness_count
+      availability_zone_count = 3
     }
     instance_count           = var.instance_count
     instance_type            = var.instance_type
