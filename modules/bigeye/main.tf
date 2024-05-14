@@ -375,12 +375,13 @@ module "vpc_endpoints" {
 # DNS
 #======================================================
 data "aws_route53_zone" "this" {
-  name = "${var.top_level_dns_name}."
+  count = var.create_dns_records ? 1 : 0
+  name  = "${var.top_level_dns_name}."
 }
 
 resource "aws_route53_record" "apex" {
   count   = var.create_dns_records ? 1 : 0
-  zone_id = data.aws_route53_zone.this.zone_id
+  zone_id = data.aws_route53_zone.this[0].zone_id
   name    = local.vanity_dns_name
   type    = "A"
   alias {
@@ -392,7 +393,7 @@ resource "aws_route53_record" "apex" {
 
 resource "aws_route53_record" "datawatch" {
   count   = var.create_dns_records ? 1 : 0
-  zone_id = data.aws_route53_zone.this.zone_id
+  zone_id = data.aws_route53_zone.this[0].zone_id
   name    = local.datawatch_dns_name
   type    = "CNAME"
   ttl     = 3600
@@ -401,7 +402,7 @@ resource "aws_route53_record" "datawatch" {
 
 resource "aws_route53_record" "datawatch_mysql" {
   count   = var.create_dns_records ? 1 : 0
-  zone_id = data.aws_route53_zone.this.zone_id
+  zone_id = data.aws_route53_zone.this[0].zone_id
   name    = local.datawatch_mysql_vanity_dns_name
   type    = "CNAME"
   ttl     = 300
@@ -410,7 +411,7 @@ resource "aws_route53_record" "datawatch_mysql" {
 
 resource "aws_route53_record" "datawatch_mysql_replica" {
   count   = var.create_dns_records && var.datawatch_rds_replica_enabled ? 1 : 0
-  zone_id = data.aws_route53_zone.this.zone_id
+  zone_id = data.aws_route53_zone.this[0].zone_id
   name    = local.datawatch_mysql_replica_vanity_dns_name
   type    = "CNAME"
   ttl     = 300
@@ -419,7 +420,7 @@ resource "aws_route53_record" "datawatch_mysql_replica" {
 
 resource "aws_route53_record" "datawork" {
   count   = var.create_dns_records ? 1 : 0
-  zone_id = data.aws_route53_zone.this.zone_id
+  zone_id = data.aws_route53_zone.this[0].zone_id
   name    = local.datawork_dns_name
   type    = "CNAME"
   ttl     = 3600
@@ -428,7 +429,7 @@ resource "aws_route53_record" "datawork" {
 
 resource "aws_route53_record" "lineagework" {
   count   = var.create_dns_records ? 1 : 0
-  zone_id = data.aws_route53_zone.this.zone_id
+  zone_id = data.aws_route53_zone.this[0].zone_id
   name    = local.lineagework_dns_name
   type    = "CNAME"
   ttl     = 3600
@@ -437,7 +438,7 @@ resource "aws_route53_record" "lineagework" {
 
 resource "aws_route53_record" "metricwork" {
   count   = var.create_dns_records ? 1 : 0
-  zone_id = data.aws_route53_zone.this.zone_id
+  zone_id = data.aws_route53_zone.this[0].zone_id
   name    = local.metricwork_dns_name
   type    = "CNAME"
   ttl     = 3600
@@ -446,7 +447,7 @@ resource "aws_route53_record" "metricwork" {
 
 resource "aws_route53_record" "monocle" {
   count   = var.create_dns_records ? 1 : 0
-  zone_id = data.aws_route53_zone.this.zone_id
+  zone_id = data.aws_route53_zone.this[0].zone_id
   name    = local.monocle_dns_name
   type    = "CNAME"
   ttl     = 300
@@ -455,7 +456,7 @@ resource "aws_route53_record" "monocle" {
 
 resource "aws_route53_record" "web" {
   count   = var.create_dns_records ? 1 : 0
-  zone_id = data.aws_route53_zone.this.zone_id
+  zone_id = data.aws_route53_zone.this[0].zone_id
   name    = local.web_dns_name
   type    = "CNAME"
   ttl     = 300
@@ -464,7 +465,7 @@ resource "aws_route53_record" "web" {
 
 resource "aws_route53_record" "toretto" {
   count   = var.create_dns_records ? 1 : 0
-  zone_id = data.aws_route53_zone.this.zone_id
+  zone_id = data.aws_route53_zone.this[0].zone_id
   name    = local.toretto_dns_name
   type    = "CNAME"
   ttl     = 300
@@ -473,7 +474,7 @@ resource "aws_route53_record" "toretto" {
 
 resource "aws_route53_record" "scheduler" {
   count   = var.create_dns_records ? 1 : 0
-  zone_id = data.aws_route53_zone.this.zone_id
+  zone_id = data.aws_route53_zone.this[0].zone_id
   name    = local.scheduler_dns_name
   type    = "CNAME"
   ttl     = 3600
@@ -482,7 +483,7 @@ resource "aws_route53_record" "scheduler" {
 
 resource "aws_route53_record" "temporalui" {
   count   = var.create_dns_records ? 1 : 0
-  zone_id = data.aws_route53_zone.this.zone_id
+  zone_id = data.aws_route53_zone.this[0].zone_id
   name    = local.temporalui_dns_name
   type    = "CNAME"
   ttl     = 300
@@ -491,7 +492,7 @@ resource "aws_route53_record" "temporalui" {
 
 resource "aws_route53_record" "temporal" {
   count   = var.create_dns_records ? 1 : 0
-  zone_id = data.aws_route53_zone.this.zone_id
+  zone_id = data.aws_route53_zone.this[0].zone_id
   name    = local.temporal_dns_name
   type    = "CNAME"
   ttl     = 300
@@ -500,7 +501,7 @@ resource "aws_route53_record" "temporal" {
 
 resource "aws_route53_record" "temporal_mysql" {
   count   = var.create_dns_records ? 1 : 0
-  zone_id = data.aws_route53_zone.this.zone_id
+  zone_id = data.aws_route53_zone.this[0].zone_id
   name    = local.temporal_mysql_vanity_dns_name
   type    = "CNAME"
   ttl     = 300
@@ -531,7 +532,7 @@ resource "aws_route53_record" "wildcard" {
   records         = [each.value.record]
   ttl             = 60
   type            = each.value.type
-  zone_id         = data.aws_route53_zone.this.zone_id
+  zone_id         = data.aws_route53_zone.this[0].zone_id
 }
 #======================================================
 # ECS
