@@ -16,10 +16,6 @@ on:
     paths:
       - .github/workflows/publish_bundle_s3.yaml
 
-concurrency:
-  group: ${{ github.workflow }}
-  cancel-in-progress: false
-
 jobs:
   build_and_publish:
     runs-on: ubuntu-latest
