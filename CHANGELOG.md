@@ -1,3 +1,12 @@
+## [4.7.3](https://github.com/bigeyedata/terraform-modules/compare/v4.7.2...v4.7.3) (2024-05-15)
+
+
+### Bug Fixes
+
+* update opernsearch autotune rollback setting ([1166591](https://github.com/bigeyedata/terraform-modules/commit/1166591a61ba1a10421e9e41684c08da220f5459))
+
+
+
 ## [4.7.2](https://github.com/bigeyedata/terraform-modules/compare/v4.7.1...v4.7.2) (2024-05-15)
 
 
