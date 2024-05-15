@@ -122,7 +122,8 @@ resource "aws_opensearch_domain" "this" {
     volume_type = "gp3"
   }
   auto_tune_options {
-    desired_state = local.auto_tune_enabled ? "ENABLED" : "DISABLED"
+    desired_state       = local.auto_tune_enabled ? "ENABLED" : "DISABLED"
+    rollback_on_disable = "NO_ROLLBACK"
   }
 }
 
