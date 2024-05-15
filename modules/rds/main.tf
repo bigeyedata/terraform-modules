@@ -251,6 +251,7 @@ module "replica" {
   create_db_option_group = local.replica_create_option_group
   option_group_name      = local.replica_option_group_name
   options                = var.replica_options
+  major_engine_version   = "8.0"
 
   family                      = "mysql8.0"
   create_db_parameter_group   = var.replica_create_parameter_group
