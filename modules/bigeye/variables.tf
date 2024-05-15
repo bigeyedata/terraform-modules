@@ -313,6 +313,12 @@ variable "redis_maintenance_window" {
 #======================================================
 # RabbitMQ
 #======================================================
+variable "byo_rabbitmq_endpoint" {
+  description = "If managing your own RabbitMQ broker, use this variable to specify its endpoint (e.g. amqps://<host>:port). An Amazon MQ RabbitMQ broker will be managed in this module if byo_rabbitmq_endpoint is not set"
+  type        = string
+  default     = ""
+}
+
 variable "rabbitmq_user_name" {
   description = "The user name to log into RabbitMQ with"
   type        = string

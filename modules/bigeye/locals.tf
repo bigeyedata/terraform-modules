@@ -30,6 +30,9 @@ locals {
   elasticache_subnet_group_name   = local.create_vpc ? module.vpc[0].elasticache_subnet_group_name : var.byovpc_redis_subnet_group_name
   rabbitmq_subnet_group_ids       = local.create_vpc ? module.vpc[0].elasticache_subnets : var.byovpc_rabbitmq_subnet_ids
 
+  # Rabbit MQ
+  create_rabbitmq               = var.byo_rabbitmq_endpoint == ""
+  rabbitmq_endpoint             = local.create_rabbitmq ? module.rabbitmq[0].endpoint : var.byo_rabbitmq_endpoint
   rabbitmq_cluster_mode_enabled = var.rabbitmq_cluster_enabled == null ? var.redundant_infrastructure : var.rabbitmq_cluster_enabled
 
   # AWS Account
@@ -153,10 +156,10 @@ locals {
   } : {}
 
   datawatch_jdbc_database_name = coalesce(var.datawatch_db_name, var.datawatch_rds_db_name)
-  datawatch_additional_security_groups = var.create_security_groups ? [
-    module.rabbitmq.client_security_group_id,
-    module.bigeye_admin.client_security_group_id,
-  ] : []
+  datawatch_additional_security_groups = var.create_security_groups ? concat(
+    [module.bigeye_admin.client_security_group_id],
+    local.create_rabbitmq ? [module.rabbitmq[0].client_security_group_id] : [],
+  ) : []
 
   datawatch_secret_arns = merge(
     local.auth0_secrets_map,
