@@ -1,3 +1,13 @@
+## [4.7.1](https://github.com/bigeyedata/terraform-modules/compare/v4.7.0...v4.7.1) (2024-05-15)
+
+
+### Bug Fixes
+
+* add missing flag for replica option group ([954c17b](https://github.com/bigeyedata/terraform-modules/commit/954c17bc57ae5badc27e31b6ee90159775ae3a46))
+* use dynamic config for opensearch availability zone count ([de8d837](https://github.com/bigeyedata/terraform-modules/commit/de8d8377aa9e60ebe42817ead8fbe6ca606d4e3f))
+
+
+
 # [4.7.0](https://github.com/bigeyedata/terraform-modules/compare/v4.6.1...v4.7.0) (2024-05-15)
 
 
