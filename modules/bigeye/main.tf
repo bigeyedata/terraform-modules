@@ -703,7 +703,7 @@ module "bigeye_admin" {
 
   temporal_port = local.temporal_lb_port
 
-  rabbitmq_endpoint            = module.rabbitmq.endpoint
+  rabbitmq_endpoint            = local.rabbitmq_endpoint
   rabbitmq_username            = var.rabbitmq_user_name
   rabbitmq_password_secret_arn = local.rabbitmq_user_password_secret_arn
 }
@@ -738,6 +738,7 @@ data "aws_secretsmanager_secret_version" "byo_rabbitmq_user_password" {
 }
 
 module "rabbitmq" {
+  count                     = local.create_rabbitmq ? 1 : 0
   depends_on                = [aws_secretsmanager_secret_version.rabbitmq_user_password]
   source                    = "../rabbitmq"
   name                      = local.name
@@ -1188,7 +1189,7 @@ module "monocle" {
   additional_security_group_ids = concat(
     var.monocle_extra_security_group_ids,
     [module.bigeye_admin.client_security_group_id],
-    var.create_security_groups ? [module.rabbitmq.client_security_group_id] : [],
+    var.create_security_groups ? [module.rabbitmq[*].client_security_group_id] : [],
 
   )
   traffic_port           = var.monocle_port
@@ -1236,7 +1237,7 @@ module "monocle" {
       ENVIRONMENT                = var.environment
       INSTANCE                   = var.instance
       PORT                       = var.monocle_port
-      MQ_BROKER_HOST             = module.rabbitmq.endpoint
+      MQ_BROKER_HOST             = local.rabbitmq_endpoint
       MQ_BROKER_USERNAME         = var.rabbitmq_user_name
       ML_MODELS_S3_BUCKET        = aws_s3_bucket.models.id
       DEPLOY_TYPE                = "AWS"
@@ -1320,7 +1321,7 @@ module "toretto" {
   additional_security_group_ids = concat(
     var.toretto_extra_security_group_ids,
     [module.bigeye_admin.client_security_group_id],
-    var.create_security_groups ? [module.rabbitmq.client_security_group_id] : [],
+    var.create_security_groups ? [module.rabbitmq[*].client_security_group_id] : [],
   )
   traffic_port           = var.toretto_port
   ecs_cluster_id         = aws_ecs_cluster.this.id
@@ -1366,7 +1367,7 @@ module "toretto" {
     {
       ENVIRONMENT                = var.environment
       INSTANCE                   = var.instance
-      MQ_BROKER_HOST             = module.rabbitmq.endpoint
+      MQ_BROKER_HOST             = local.rabbitmq_endpoint
       MQ_BROKER_USERNAME         = var.rabbitmq_user_name
       ML_MODELS_S3_BUCKET        = aws_s3_bucket.models.id
       DEPLOY_TYPE                = "AWS"
@@ -1447,7 +1448,7 @@ resource "aws_appautoscaling_policy" "toretto" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "toretto" {
-  count           = var.toretto_autoscaling_enabled ? 1 : 0
+  count           = var.toretto_autoscaling_enabled && local.create_rabbitmq ? 1 : 0
   alarm_name      = format("%s-toretto autoscaling", local.name)
   actions_enabled = true
   alarm_actions   = [aws_appautoscaling_policy.toretto[0].arn]
@@ -1455,7 +1456,7 @@ resource "aws_cloudwatch_metric_alarm" "toretto" {
   namespace       = "AWS/AmazonMQ"
   statistic       = "Average"
   dimensions = {
-    Broker      = module.rabbitmq.name
+    Broker      = module.rabbitmq[0].name
     VirtualHost = "/"
     Queue       = "ml_training_task_queue"
   }
@@ -1935,7 +1936,7 @@ locals {
     SCHEDULER_ADDRESS = "https://${local.scheduler_dns_name}"
     TORETTO_ADDRESS   = "https://${local.toretto_dns_name}"
 
-    MQ_BROKER_HOST     = module.rabbitmq.endpoint
+    MQ_BROKER_HOST     = local.rabbitmq_endpoint
     MQ_BROKER_USERNAME = var.rabbitmq_user_name
 
     REDIS_PRIMARY_ADDRESS = module.redis.primary_endpoint_dns_name
