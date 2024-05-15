@@ -1,3 +1,12 @@
+# [4.7.0](https://github.com/bigeyedata/terraform-modules/compare/v4.6.1...v4.7.0) (2024-05-15)
+
+
+### Features
+
+* allow passing in rds db option group settings ([fa5d9db](https://github.com/bigeyedata/terraform-modules/commit/fa5d9dbbeadd772fa377022878b7da348b88d542))
+
+
+
 ## [4.6.1](https://github.com/bigeyedata/terraform-modules/compare/v4.6.0...v4.6.1) (2024-05-14)
 
 
