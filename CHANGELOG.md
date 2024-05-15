@@ -1,3 +1,12 @@
+## [4.7.2](https://github.com/bigeyedata/terraform-modules/compare/v4.7.1...v4.7.2) (2024-05-15)
+
+
+### Bug Fixes
+
+* update password strength rules for generated opensearch password ([3190b83](https://github.com/bigeyedata/terraform-modules/commit/3190b83b8cff4c25e6c231d359681f6c208a3c3e))
+
+
+
 ## [4.7.1](https://github.com/bigeyedata/terraform-modules/compare/v4.7.0...v4.7.1) (2024-05-15)
 
 
