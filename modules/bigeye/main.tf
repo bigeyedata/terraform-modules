@@ -1087,7 +1087,8 @@ module "temporal_rds" {
   performance_insights_retention_period = var.rds_performance_insights_retention_period
   enabled_logs                          = var.temporal_rds_enabled_logs
   enable_multi_az                       = var.redundant_infrastructure ? true : false
-  create_option_group                   = false
+  option_group_name                     = "${local.name}-temporal"
+  options                               = var.temporal_rds_options
   create_parameter_group                = true
   parameter_group_name                  = "${local.name}-temporal"
   parameters                            = merge(var.temporal_rds_default_parameters, var.temporal_rds_parameters)
@@ -1823,7 +1824,8 @@ module "datawatch_rds" {
   enhanced_monitoring_role_arn          = var.datawatch_rds_enhanced_monitoring_role_arn
   enabled_logs                          = var.datawatch_rds_enabled_logs
 
-  create_option_group    = false
+  option_group_name      = "${local.name}-datawatch"
+  options                = var.datawatch_rds_options
   create_parameter_group = true
   parameter_group_name   = "${local.name}-datawatch"
   parameters             = merge(var.datawatch_rds_default_parameters, var.datawatch_rds_parameters)
@@ -1837,6 +1839,8 @@ module "datawatch_rds" {
   replica_performance_insights_retention_period = var.replica_rds_performance_insights_retention_period
   replica_iops                                  = var.datawatch_rds_replica_iops
 
+  replica_option_group_name      = "${local.name}-datawatch-replica"
+  replica_options                = var.datawatch_replica_rds_options
   replica_create_parameter_group = true
   replica_parameter_group_name   = "${local.name}-datawatch-replica"
   replica_parameters             = merge(var.datawatch_rds_replica_default_parameters, var.datawatch_rds_replica_parameters)
