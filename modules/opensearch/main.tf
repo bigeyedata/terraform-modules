@@ -2,7 +2,8 @@ locals {
   max_port            = 65535
   relevant_subnet_ids = var.instance_count < length(var.subnet_ids) ? slice(var.subnet_ids, 0, var.instance_count) : var.subnet_ids
   # Burstable class hardware is not supported for auto tune.
-  auto_tune_enabled = !can(regex("^t", var.master_node_instance_type))
+  auto_tune_enabled      = !can(regex("^t", var.master_node_instance_type))
+  zone_awareness_enabled = var.instance_count > 1
 }
 
 resource "aws_security_group" "this" {
@@ -71,10 +72,15 @@ resource "aws_opensearch_domain" "this" {
   engine_version = var.engine_version
 
   cluster_config {
-    zone_awareness_enabled = var.instance_count > 1
-    zone_awareness_config {
-      availability_zone_count = 3
+    zone_awareness_enabled = local.zone_awareness_enabled
+
+    dynamic "zone_awareness_config" {
+      for_each = local.zone_awareness_enabled == true ? toset([1]) : toset([])
+      content {
+        availability_zone_count = 3
+      }
     }
+
     instance_count           = var.instance_count
     instance_type            = var.instance_type
     dedicated_master_enabled = var.master_nodes_enabled
