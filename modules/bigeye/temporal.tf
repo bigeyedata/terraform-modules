@@ -644,11 +644,17 @@ module "temporalui" {
 # Temporal-Elasticsearch
 #======================================================
 resource "random_password" "temporal_opensearch_password" {
-  count   = local.create_temporal_opensearch_password_secret ? 1 : 0
-  length  = 16
-  special = true
-  upper   = true
-  numeric = true
+  count       = local.create_temporal_opensearch_password_secret ? 1 : 0
+  length      = 16
+  special     = true
+  upper       = true
+  lower       = true
+  numeric     = true
+  min_special = 1
+  min_lower   = 1
+  min_upper   = 1
+  min_numeric = 1
+
 }
 
 resource "aws_secretsmanager_secret" "temporal_opensearch_password" {
