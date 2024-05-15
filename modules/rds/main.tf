@@ -19,6 +19,8 @@ locals {
       value = contains(var.enabled_logs, "slowquery") ? 1 : 0
     }
   }
+  create_option_group = length(var.options) > 0
+  option_group_name   = local.create_option_group ? var.option_group_name : "default:mysql-8-0"
   parameters_object = merge(
     local.general_log_param,
     local.slow_log_param,
@@ -31,6 +33,8 @@ locals {
       apply_method = lookup(v, "apply_method", null)
     }
   ]
+  replica_create_option_group = length(var.replica_options) > 0
+  replica_option_group_name   = local.replica_create_option_group ? var.replica_option_group_name : "default:mysql-8-0"
   replica_parameters_object = merge(
     local.general_log_param,
     local.slow_log_param,
@@ -191,9 +195,10 @@ module "this" {
   maintenance_window                    = var.maintenance_window
   enabled_cloudwatch_logs_exports       = var.enabled_logs
 
-  create_db_option_group = var.create_option_group
-  option_group_name      = var.option_group_name
+  create_db_option_group = local.create_option_group
+  option_group_name      = local.option_group_name
   options                = var.options
+  major_engine_version   = "8.0"
 
   family                      = "mysql8.0"
   create_db_parameter_group   = var.create_parameter_group
@@ -243,8 +248,9 @@ module "replica" {
   maintenance_window                    = var.maintenance_window
   enabled_cloudwatch_logs_exports       = var.enabled_logs
 
-  create_db_option_group = false
-  option_group_name      = module.this.db_option_group_id
+  create_db_option_group = local.replica_create_option_group
+  option_group_name      = local.replica_option_group_name
+  options                = var.replica_options
 
   family                      = "mysql8.0"
   create_db_parameter_group   = var.replica_create_parameter_group

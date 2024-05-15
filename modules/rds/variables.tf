@@ -145,12 +145,6 @@ variable "enabled_logs" {
   default     = ["error"]
 }
 
-variable "create_option_group" {
-  description = "Whether or not to create a custom option group"
-  type        = bool
-  default     = false
-}
-
 variable "option_group_name" {
   description = "Name for the option group"
   type        = string
@@ -158,9 +152,15 @@ variable "option_group_name" {
 }
 
 variable "options" {
-  description = "A list of maps containing options, maps should have keys 'name' and 'value'"
-  type        = list(map(string))
-  default     = []
+  description = "A list of maps containing db option group options, maps should have keys 'name' and 'value'.  If no values are set, the default option group is used."
+  type = list(object({
+    option_name = string
+    option_settings = list(object({
+      name  = string
+      value = string
+    }))
+  }))
+  default = []
 }
 
 variable "create_parameter_group" {
@@ -218,6 +218,24 @@ variable "replica_performance_insights_retention_period" {
   description = "days to keep performance insights on the replica"
   type        = number
   default     = 7
+}
+
+variable "replica_option_group_name" {
+  description = "Name for the replica option group"
+  type        = string
+  default     = ""
+}
+
+variable "replica_options" {
+  description = "A list of maps containing db option group options for the replica, maps should have keys 'name' and 'value'.  If no values are set, the default option group is used."
+  type = list(object({
+    option_name = string
+    option_settings = list(object({
+      name  = string
+      value = string
+    }))
+  }))
+  default = []
 }
 
 variable "replica_create_parameter_group" {

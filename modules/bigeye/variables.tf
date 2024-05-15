@@ -937,6 +937,18 @@ variable "temporal_rds_additional_tags" {
   default     = {}
 }
 
+variable "temporal_rds_options" {
+  description = "A list of maps containing db option group options, maps should have keys 'name' and 'value'.  If no values are set, the default option group is used."
+  type = list(object({
+    option_name = string
+    option_settings = list(object({
+      name  = string
+      value = string
+    }))
+  }))
+  default = []
+}
+
 variable "temporal_rds_default_parameters" {
   description = "Default parameters to use. These provide a baseline set of parameters. Can add to them using temporal_rds_parameters variable."
   type = map(object({
@@ -1380,6 +1392,18 @@ variable "datawatch_rds_enabled_logs" {
   default     = ["error"]
 }
 
+variable "datawatch_rds_options" {
+  description = "A list of maps containing db option group options, maps should have keys 'name' and 'value'.  If no values are set, the default option group is used."
+  type = list(object({
+    option_name = string
+    option_settings = list(object({
+      name  = string
+      value = string
+    }))
+  }))
+  default = []
+}
+
 variable "datawatch_rds_default_parameters" {
   description = "Default parameters to use. These provide a baseline set of parameters. Can add to them using datawatch_rds_parameters variable."
   type = map(object({
@@ -1457,6 +1481,18 @@ variable "datawatch_rds_replica_backup_retention_period" {
   description = "Days to keep backups for the replica"
   type        = number
   default     = 1
+}
+
+variable "datawatch_replica_rds_options" {
+  description = "A list of maps containing db option group options for the replica, maps should have keys 'name' and 'value'.  If no values are set, the default option group is used."
+  type = list(object({
+    option_name = string
+    option_settings = list(object({
+      name  = string
+      value = string
+    }))
+  }))
+  default = []
 }
 
 variable "datawatch_rds_replica_default_parameters" {
