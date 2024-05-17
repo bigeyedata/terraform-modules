@@ -1,15 +1,16 @@
 output "bigeye_address" {
-  value = "${local.vanity_alias}.${local.subdomain}"
+  value = module.bigeye.vanity_dns_name
 }
 
 output "bigeye_url" {
-  value = "https://${local.vanity_alias}.${local.subdomain}"
+  value = "https://${module.bigeye.vanity_dns_name}"
 }
 
-output "bastion" {
-  value = one(aws_instance.bastion[*].public_dns)
+output "bastion_ip" {
+  value = module.bringyourown.bastion_ip
 }
 
-output "bastion_ssh_user" {
-  value = "ubuntu"
+output "bastion_user" {
+  value = module.bringyourown.bastion_user
 }
+
