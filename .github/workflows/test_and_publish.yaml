@@ -187,4 +187,5 @@ jobs:
     uses: ./.github/workflows/publish_bundle_s3.yaml
     secrets: inherit
     with:
-      tag: ${{ needs.publish.outputs.tag }}
+      ref: main
+      bundlename: ${{ needs.publish.outputs.tag }}
