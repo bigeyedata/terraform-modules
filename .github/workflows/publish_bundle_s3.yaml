@@ -2,14 +2,22 @@ name: Publish Bundle to S3
 on:
   workflow_dispatch:
     inputs:
-      tag:
-        description: 'The git version to use'
+      ref:
+        description: 'The ref to checkout and bundle'
+        type: 'string'
+        required: true
+      bundlename:
+        description: 'The suffix to append to terraform-modules-<bundlename>.tar.gz'
         type: 'string'
         required: true
   workflow_call:
     inputs:
-      tag:
-        description: 'The git version to use'
+      ref:
+        description: 'The ref to checkout and bundle'
+        type: 'string'
+        required: true
+      bundlename:
+        description: 'The suffix to append to terraform-modules-<bundlename>.tar.gz'
         type: 'string'
         required: true
   pull_request:
@@ -27,8 +35,8 @@ jobs:
             ref="${{ github.ref }}"
             tarname="terraform-modules-pr-test.tar.gz"
           else
-            ref="${{ inputs.tag }}"
-            tarname="terraform-modules-${ref}.tar.gz"
+            ref="${{ inputs.ref }}"
+            tarname="terraform-modules-${bundlename}.tar.gz"
           fi
           echo "ref=${ref}"
           echo "ref=${ref}" >> $GITHUB_OUTPUT
@@ -44,19 +52,14 @@ jobs:
           terraform_version: 1.7.5
           # https://github.com/hashicorp/setup-terraform/issues/373
           terraform_wrapper: false
-      - name: set up bundle directory
+      - name: Install terraform deps in folders
         run: |
-          mkdir bundle
-          cp terraform-modules/examples/standard/main.tf bundle/main.tf
-      - name: install terraform deps
-        run: |
-          cd bundle
-          terraform init
+          cd terraform-modules
+          ./scripts/install-terraform-in-examples.sh
       - name: bundle everything
         run: |
-          tar --exclude='terraform-modules/.git' -czvf "${{ steps.determine-ref.outputs.tarname }}" bundle terraform-modules
+          tar --exclude='terraform-modules/.git' -czvf "${{ steps.determine-ref.outputs.tarname }}" terraform-modules
           ls -ahl
-
       - name: Configure AWS credentials
         if: "${{ github.event_name != 'pull_request' }}"
         uses: aws-actions/configure-aws-credentials@v4.0.1
