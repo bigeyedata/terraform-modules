@@ -1,159 +1,102 @@
 # [5.0.0](https://github.com/bigeyedata/terraform-modules/compare/v4.7.3...v5.0.0) (2024-05-20)
 
 
-### Bug Fixes
+## Breaking Changes - State Moves
+
+Downtime: Yes if steps are not taken.
+
+Several resource addresses have changed, requiring some manual steps to
+prepare the terraform state for a non-destructive apply. These changes
+were made to accommodate the injection of several other resources,
+as well as to avoid overriding the `desired_count` of the autoscaling
+ECS services.
+
+If no manual changes are made, then the next `terraform apply` will
+be destructive.
+
+Always inspect the output of the `terraform plan` and `terraform apply`
+commands to ensure the changes Terraform plans are the ones you expect.
+
+### Autoscaling desired_count
+
+[ead3a6d](https://github.com/bigeyedata/terraform-modules/commit/ead3a6d5cd64769f8ac6cb947d35a541be262552)
+
+The resource name for the `aws_ecs_service`'s in the
+`simpleservice` module have been changed to reflect whether the
+`desired_count` is controlled.
+
+Run the following commands:
+
+```sh
+terraform state mv 'module.bigeye.module.web.aws_ecs_service.this' 'module.bigeye.module.web.aws_ecs_service.controlled_count[0]'
+terraform state mv 'module.bigeye.module.temporalui.aws_ecs_service.this' 'module.bigeye.module.temporalui.aws_ecs_service.controlled_count[0]'
+terraform state mv 'module.bigeye.module.datawatch.aws_ecs_service.this' 'module.bigeye.module.datawatch.aws_ecs_service.controlled_count[0]'
+terraform state mv 'module.bigeye.module.datawork.aws_ecs_service.this' 'module.bigeye.module.datawork.aws_ecs_service.controlled_count[0]'
+terraform state mv 'module.bigeye.module.lineagework.aws_ecs_service.this' 'module.bigeye.module.lineagework.aws_ecs_service.controlled_count[0]'
+terraform state mv 'module.bigeye.module.metricwork.aws_ecs_service.this' 'module.bigeye.module.metricwork.aws_ecs_service.controlled_count[0]'
+terraform state mv 'module.bigeye.module.scheduler.aws_ecs_service.this' 'module.bigeye.module.scheduler.aws_ecs_service.controlled_count[0]'
+terraform state mv 'module.bigeye.module.haproxy.aws_ecs_service.this' 'module.bigeye.module.haproxy.aws_ecs_service.controlled_count[0]'
+```
+
+If you are autoscaling monocle & toretto, run the following:
+
+```sh
+terraform state mv 'module.bigeye.module.toretto.aws_ecs_service.this' 'module.bigeye.module.toretto.aws_ecs_service.uncontrolled_count[0]'
+terraform state mv 'module.bigeye.module.monocle.aws_ecs_service.this' 'module.bigeye.module.monocle.aws_ecs_service.uncontrolled_count[0]'
+```
+
+If you are not autoscaling monocle & toretto, run the following:
+
+```sh
+terraform state mv 'module.bigeye.module.toretto.aws_ecs_service.this' 'module.bigeye.module.toretto.aws_ecs_service.controlled_count[0]'
+terraform state mv 'module.bigeye.module.monocle.aws_ecs_service.this' 'module.bigeye.module.monocle.aws_ecs_service.controlled_count[0]'
+```
+
+### Bring-your-own Resources
+
+You can now bring your own IAM Roles as well as a RabbitMQ broker.
+
+* IAM Roles [c73561e](https://github.com/bigeyedata/terraform-modules/commit/c73561e9371d1d489e9c44181928a5edee225e1f)
+* RabbitMQ [77e9169](https://github.com/bigeyedata/terraform-modules/commit/77e91698a3a034d2c604c768772c5d14c689c558)
+
+These resources are now conditional and therefore their resource
+addresses have changed.
+
+You must run the following commands.
+
+```sh
+# RabbitMQ
+terraform state mv 'module.bigeye.module.rabbitmq' 'module.bigeye.module.rabbitmq[0]';
+
+# ECS Role
+terraform state mv 'module.bigeye.aws_iam_role.ecs' 'module.bigeye.aws_iam_role.ecs[0]';
+terraform state mv 'module.bigeye.aws_iam_role_policy.ecs_execution' 'module.bigeye.aws_iam_role_policy.ecs_execution[0]';
+terraform state mv 'module.bigeye.aws_iam_role_policy.ecs_secrets' 'module.bigeye.aws_iam_role_policy.ecs_secrets[0]';
+
+# Admin Container Role
+terraform state mv 'module.bigeye.module.bigeye_admin.aws_iam_role.this' 'module.bigeye.module.bigeye_admin.aws_iam_role.this[0]';
+terraform state mv 'module.bigeye.module.bigeye_admin.aws_iam_role_policy.this' 'module.bigeye.module.bigeye_admin.aws_iam_role_policy.this[0]';
+
+# Monocle Role
+terraform state mv 'module.bigeye.aws_iam_role.monocle' 'module.bigeye.aws_iam_role.monocle[0]';
+terraform state mv 'module.bigeye.aws_iam_role_policy.monocle' 'module.bigeye.aws_iam_role_policy.monocle[0]';
+
+# Datawatch Role
+terraform state mv 'module.bigeye.aws_iam_role.datawatch' 'module.bigeye.aws_iam_role.datawatch[0]';
+terraform state mv 'module.bigeye.aws_iam_role_policy.datawatch_s3' 'module.bigeye.aws_iam_role_policy.datawatch_s3[0]';
+terraform state mv 'module.bigeye.aws_iam_role_policy.datawatch_temporalsecrets' 'module.bigeye.aws_iam_role_policy.datawatch_temporalsecrets[0]';
+terraform state mv 'module.bigeye.aws_iam_role_policy.datawatch_listsecrets' 'module.bigeye.aws_iam_role_policy.datawatch_listsecrets[0]';
+terraform state mv 'module.bigeye.aws_iam_role_policy.datawatch_secrets' 'module.bigeye.aws_iam_role_policy.datawatch_secrets[0]';
+```
+
+## Bug Fixes
 
 * do not access route53 if not managing dns ([80ad921](https://github.com/bigeyedata/terraform-modules/commit/80ad92134807639610479022aa3451133c1b23da))
 
 
-* feat!: allow bringing your own rabbitmq ([77e9169](https://github.com/bigeyedata/terraform-modules/commit/77e91698a3a034d2c604c768772c5d14c689c558))
-* feat!: add ability to inject IAM Roles ([c73561e](https://github.com/bigeyedata/terraform-modules/commit/c73561e9371d1d489e9c44181928a5edee225e1f))
-
-
-### Features
+## Other Features
 
 * add outputs for cloudwatch and s3 resources ([1d6c2be](https://github.com/bigeyedata/terraform-modules/commit/1d6c2be5d33e485064dbd396182abf6f44c0d2a5))
-* do not control desired_count when autoscaling is enabled ([ead3a6d](https://github.com/bigeyedata/terraform-modules/commit/ead3a6d5cd64769f8ac6cb947d35a541be262552))
-
-
-### BREAKING CHANGES
-
-* This change required making the RabbitMQ resources
-conditional. This results in an alteration to the resource address
-in the terraform state file. If no manual action is taken, terraform
-will try to destroy the IAM resources and recreate them in the new
-address.
-
-Recommendation: Run "terraform state mv" commands to move the
-resources to their new address to avoid a destructive apply.
-
-Downtime: If you do nothing - yes. If you follow these steps - no.
-
-Steps: Run the following commands
-
-terraform state mv \
-    'module.bigeye.module.rabbitmq' \
-    'module.bigeye.module.rabbitmq[0]';
-* This change required making the IAM resources
-conditional. This results in an alteration to the resource address
-in the terraform state file. If no manual action is taken, terraform
-will try to destroy the IAM resources and recreate them in the new
-address.
-
-Recommendation: Run "terraform state mv" commands to move the
-resources to their new address to avoid a destructive apply.
-
-Downtime: If you do nothing - yes. If you follow these steps - no.
-
-Steps: Run the following commands
-
-terraform state mv \
-    'module.bigeye.aws_iam_role.ecs' \
-    'module.bigeye.aws_iam_role.ecs[0]';
-terraform state mv \
-    'module.bigeye.aws_iam_role_policy.ecs_execution' \
-    'module.bigeye.aws_iam_role_policy.ecs_execution[0]';
-terraform state mv \
-    'module.bigeye.aws_iam_role_policy.ecs_secrets' \
-    'module.bigeye.aws_iam_role_policy.ecs_secrets[0]';
-
-terraform state mv \
-    'module.bigeye.module.bigeye_admin.aws_iam_role.this' \
-    'module.bigeye.module.bigeye_admin.aws_iam_role.this[0]';
-terraform state mv \
-    'module.bigeye.module.bigeye_admin.aws_iam_role_policy.this' \
-    'module.bigeye.module.bigeye_admin.aws_iam_role_policy.this[0]';
-
-terraform state mv \
-    'module.bigeye.aws_iam_role.monocle' \
-    'module.bigeye.aws_iam_role.monocle[0]';
-terraform state mv \
-    'module.bigeye.aws_iam_role_policy.monocle' \
-    'module.bigeye.aws_iam_role_policy.monocle[0]';
-
-terraform state mv \
-    'module.bigeye.aws_iam_role.datawatch' \
-    'module.bigeye.aws_iam_role.datawatch[0]';
-terraform state mv \
-    'module.bigeye.aws_iam_role_policy.datawatch_s3' \
-    'module.bigeye.aws_iam_role_policy.datawatch_s3[0]';
-terraform state mv \
-    'module.bigeye.aws_iam_role_policy.datawatch_temporalsecrets' \
-    'module.bigeye.aws_iam_role_policy.datawatch_temporalsecrets[0]';
-terraform state mv \
-    'module.bigeye.aws_iam_role_policy.datawatch_listsecrets' \
-    'module.bigeye.aws_iam_role_policy.datawatch_listsecrets[0]';
-terraform state mv \
-    'module.bigeye.aws_iam_role_policy.datawatch_secrets' \
-    'module.bigeye.aws_iam_role_policy.datawatch_secrets[0]';
-* The resource name for the aws_ecs_service's in the
-simpleservice module have been changed to reflect whether the
-desired_count is controlled.
-
-Recommendation: Use 'terraform state mv' command to move existing
-ECS resources into their respective new names.
-
-Downtime: Yes, if you do not follow these upgrade steps.
-No, if you use the 'terraform state mv' commands outlined
-in these upgrade steps.
-
-Steps: You should run a series of terraform state mv commands. These
-commands will tell Terraform that the AWS ECS Services already exist,
-and that they just use a different name now.
-
-Depending on how you have named your bigeye module in your terraform
-file, the following commands may need to be modified to align with
-your usage. Always inspect the output of 'terraform apply'.
-
-Run the following steps:
-terraform state mv \
-    'module.bigeye.module.web.aws_ecs_service.this' \
-    'module.bigeye.module.web.aws_ecs_service.controlled_count[0]'
-
-terraform state mv \
-    'module.bigeye.module.temporalui.aws_ecs_service.this' \
-    'module.bigeye.module.temporalui.aws_ecs_service.controlled_count[0]'
-
-terraform state mv \
-    'module.bigeye.module.datawatch.aws_ecs_service.this' \
-    'module.bigeye.module.datawatch.aws_ecs_service.controlled_count[0]'
-
-terraform state mv \
-    'module.bigeye.module.datawork.aws_ecs_service.this' \
-    'module.bigeye.module.datawork.aws_ecs_service.controlled_count[0]'
-
-terraform state mv \
-    'module.bigeye.module.metricwork.aws_ecs_service.this' \
-    'module.bigeye.module.metricwork.aws_ecs_service.controlled_count[0]'
-
-terraform state mv \
-    'module.bigeye.module.scheduler.aws_ecs_service.this' \
-    'module.bigeye.module.scheduler.aws_ecs_service.controlled_count[0]'
-
-terraform state mv \
-    'module.bigeye.module.haproxy.aws_ecs_service.this' \
-    'module.bigeye.module.haproxy.aws_ecs_service.controlled_count[0]'
-
-Then, if you have autoscaling enabled for monocle and toretto, you will run:
-
-terraform state mv \
-    'module.bigeye.module.toretto.aws_ecs_service.this' \
-    'module.bigeye.module.toretto.aws_ecs_service.uncontrolled_count[0]'
-
-terraform state mv \
-    'module.bigeye.module.monocle.aws_ecs_service.this' \
-    'module.bigeye.module.monocle.aws_ecs_service.uncontrolled_count[0]'
-
-Or, if you do not have autoscaling enabled for monocle and toretto, you
-will run:
-
-terraform state mv \
-    'module.bigeye.module.toretto.aws_ecs_service.this' \
-    'module.bigeye.module.toretto.aws_ecs_service.controlled_count[0]'
-
-terraform state mv \
-    'module.bigeye.module.monocle.aws_ecs_service.this' \
-    'module.bigeye.module.monocle.aws_ecs_service.controlled_count[0]'
 
 
 
