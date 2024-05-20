@@ -5,6 +5,9 @@ node_modules
 .terraform
 modules/**/.terraform.lock.hcl
 
+# Examples terraform lock files
+examples/**/.terraform.lock.hcl
+
 # Intellij
 .idea
 *.iml
