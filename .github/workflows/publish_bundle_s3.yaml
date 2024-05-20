@@ -36,7 +36,7 @@ jobs:
             tarname="terraform-modules-pr-test.tar.gz"
           else
             ref="${{ inputs.ref }}"
-            tarname="terraform-modules-${bundlename}.tar.gz"
+            tarname="terraform-modules-${{ inputs.bundlename }}.tar.gz"
           fi
           echo "ref=${ref}"
           echo "ref=${ref}" >> $GITHUB_OUTPUT
