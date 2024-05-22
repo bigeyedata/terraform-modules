@@ -63,12 +63,6 @@ variable "master_node_instance_type" {
   type        = string
 }
 
-variable "zone_awareness_zone_count" {
-  description = "Zone awareness count. Specify this if it's different than the number of subnets"
-  type        = number
-  default     = null
-}
-
 variable "subnet_ids" {
   description = "list of subnet ids to launch in to"
   type        = list(string)

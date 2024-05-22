@@ -690,10 +690,9 @@ module "temporal_opensearch" {
   additional_ingress_cidrs   = var.internal_additional_ingress_cidrs
   engine_version             = var.temporal_opensearch_engine_version
   instance_type              = var.temporal_opensearch_instance_type
-  instance_count             = var.temporal_opensearch_instance_count
+  instance_count             = var.redundant_infrastructure ? 3 : 1
   subnet_ids                 = local.rabbitmq_subnet_group_ids
   master_user_password       = local.create_temporal_opensearch_password_secret ? random_password.temporal_opensearch_password[0].result : data.aws_secretsmanager_secret_version.byo_temporal_opensearch_password[0].secret_string
-  master_nodes_enabled       = var.temporal_opensearch_enable_master_nodes
+  master_nodes_enabled       = var.redundant_infrastructure ? true : false
   master_node_instance_type  = var.temporal_opensearch_master_instance_type
-  zone_awareness_zone_count  = var.temporal_opensearch_zone_awareness_zone_count
 }
