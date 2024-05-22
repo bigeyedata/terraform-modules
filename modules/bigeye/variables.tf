@@ -1002,12 +1002,6 @@ variable "temporal_opensearch_instance_type" {
   default     = "t3.medium.search"
 }
 
-variable "temporal_opensearch_instance_count" {
-  description = "The number of data nodes"
-  type        = number
-  default     = 1
-}
-
 variable "temporal_opensearch_master_user_password_secret_arn" {
   description = "ARN for secretsmanager secret holding the opensearch master user password. One will be created if not provided."
   type        = string
@@ -1020,22 +1014,10 @@ variable "temporal_opensearch_extra_security_group_ids" {
   default     = []
 }
 
-variable "temporal_opensearch_enable_master_nodes" {
-  description = "Whether to enable master nodes to offload administrative tasks. Recommended for production systems"
-  type        = bool
-  default     = true
-}
-
 variable "temporal_opensearch_master_instance_type" {
-  description = "The opensearch instance type to use for master nodes"
+  description = "The opensearch instance type to use for master nodes.  Only applicable if var.redundant_infrastructure = true"
   type        = string
   default     = "t3.medium.search"
-}
-
-variable "temporal_opensearch_zone_awareness_zone_count" {
-  description = "The number of AZs the domain is aware of. Will default to the number of subnets, or instance count, whichever is lowest"
-  type        = number
-  default     = null
 }
 
 #======================================================
