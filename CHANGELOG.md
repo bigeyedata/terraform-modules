@@ -1,3 +1,23 @@
+# [6.0.0](https://github.com/bigeyedata/terraform-modules/compare/v5.0.0...v6.0.0) (2024-05-23)
+
+
+### Features
+
+* control opensearch redeundancy with var.redundant_infrastructure ([7829d35](https://github.com/bigeyedata/terraform-modules/commit/7829d35c993350d1f46594a0b35748f988c02270))
+
+
+### BREAKING CHANGES
+
+* The following variables have been removed
+- temporal_opensearch_instance_count
+- temporal_opensearch_enable_master_nodes
+- temporal_opensearch_zone_awareness_zone_count
+
+These are now no longer settable, but instead controlled via
+var.redundant_infrastructure.
+
+
+
 # [5.0.0](https://github.com/bigeyedata/terraform-modules/compare/v4.7.3...v5.0.0) (2024-05-20)
 
 
