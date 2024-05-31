@@ -706,6 +706,14 @@ module "bigeye_admin" {
   rabbitmq_endpoint            = local.rabbitmq_endpoint
   rabbitmq_username            = var.rabbitmq_user_name
   rabbitmq_password_secret_arn = local.rabbitmq_user_password_secret_arn
+
+  # aws firelens
+  awsfirelens_cpu     = var.awsfirelens_cpu
+  awsfirelens_memory  = var.awsfirelens_memory
+  awsfirelens_enabled = var.awsfirelens_enabled
+  awsfirelens_host    = var.awsfirelens_host
+  awsfirelens_image   = var.awsfirelens_image
+  awsfirelens_uri     = var.awsfirelens_uri
 }
 
 #======================================================
@@ -929,6 +937,13 @@ module "haproxy" {
     BIGEYE_ADMIN_PAGES_PASSWORD = local.adminpages_password_secret_arn
   }
 
+  # aws firelens
+  awsfirelens_cpu     = var.awsfirelens_cpu
+  awsfirelens_memory  = var.awsfirelens_memory
+  awsfirelens_enabled = var.awsfirelens_enabled
+  awsfirelens_host    = var.awsfirelens_host
+  awsfirelens_image   = var.awsfirelens_image
+  awsfirelens_uri     = var.awsfirelens_uri
 
   environment_variables = merge(
     {
@@ -1015,6 +1030,13 @@ module "web" {
   datadog_agent_memory             = var.datadog_agent_memory
   datadog_agent_api_key_secret_arn = var.datadog_agent_api_key_secret_arn
 
+  # aws firelens
+  awsfirelens_cpu     = var.awsfirelens_cpu
+  awsfirelens_memory  = var.awsfirelens_memory
+  awsfirelens_enabled = var.awsfirelens_enabled
+  awsfirelens_host    = var.awsfirelens_host
+  awsfirelens_image   = var.awsfirelens_image
+  awsfirelens_uri     = var.awsfirelens_uri
 
   environment_variables = merge(
     local.web_dd_env_vars,
@@ -1233,6 +1255,13 @@ module "monocle" {
   datadog_agent_memory             = var.datadog_agent_memory
   datadog_agent_api_key_secret_arn = var.datadog_agent_api_key_secret_arn
 
+  # aws firelens
+  awsfirelens_cpu     = var.awsfirelens_cpu
+  awsfirelens_memory  = var.awsfirelens_memory
+  awsfirelens_enabled = var.awsfirelens_enabled
+  awsfirelens_host    = var.awsfirelens_host
+  awsfirelens_image   = var.awsfirelens_image
+  awsfirelens_uri     = var.awsfirelens_uri
 
   environment_variables = merge(
     {
@@ -1365,6 +1394,13 @@ module "toretto" {
   datadog_agent_memory             = var.datadog_agent_memory
   datadog_agent_api_key_secret_arn = var.datadog_agent_api_key_secret_arn
 
+  # aws firelens
+  awsfirelens_cpu     = var.awsfirelens_cpu
+  awsfirelens_memory  = var.awsfirelens_memory
+  awsfirelens_enabled = var.awsfirelens_enabled
+  awsfirelens_host    = var.awsfirelens_host
+  awsfirelens_image   = var.awsfirelens_image
+  awsfirelens_uri     = var.awsfirelens_uri
 
   environment_variables = merge(
     {
@@ -1526,6 +1562,13 @@ module "scheduler" {
   datadog_agent_memory             = var.datadog_agent_memory
   datadog_agent_api_key_secret_arn = var.datadog_agent_api_key_secret_arn
 
+  # aws firelens
+  awsfirelens_cpu     = var.awsfirelens_cpu
+  awsfirelens_memory  = var.awsfirelens_memory
+  awsfirelens_enabled = var.awsfirelens_enabled
+  awsfirelens_host    = var.awsfirelens_host
+  awsfirelens_image   = var.awsfirelens_image
+  awsfirelens_uri     = var.awsfirelens_uri
 
   environment_variables = merge(
     {
@@ -2030,6 +2073,14 @@ module "datawatch" {
   datadog_agent_memory             = var.datadog_agent_memory
   datadog_agent_api_key_secret_arn = var.datadog_agent_api_key_secret_arn
 
+  # aws firelens
+  awsfirelens_cpu     = var.awsfirelens_cpu
+  awsfirelens_memory  = var.awsfirelens_memory
+  awsfirelens_enabled = var.awsfirelens_enabled
+  awsfirelens_host    = var.awsfirelens_host
+  awsfirelens_image   = var.awsfirelens_image
+  awsfirelens_uri     = var.awsfirelens_uri
+
   environment_variables = merge(
     local.datawatch_dd_env_vars,
     local.datawatch_common_env_vars,
@@ -2095,6 +2146,14 @@ module "datawork" {
   datadog_agent_cpu                = var.datadog_agent_cpu
   datadog_agent_memory             = var.datadog_agent_memory
   datadog_agent_api_key_secret_arn = var.datadog_agent_api_key_secret_arn
+
+  # aws firelens
+  awsfirelens_cpu     = var.awsfirelens_cpu
+  awsfirelens_memory  = var.awsfirelens_memory
+  awsfirelens_enabled = var.awsfirelens_enabled
+  awsfirelens_host    = var.awsfirelens_host
+  awsfirelens_image   = var.awsfirelens_image
+  awsfirelens_uri     = var.awsfirelens_uri
 
   environment_variables = merge(
     local.datawatch_dd_env_vars,
@@ -2163,6 +2222,14 @@ module "lineagework" {
   datadog_agent_cpu                = var.datadog_agent_cpu
   datadog_agent_memory             = var.datadog_agent_memory
   datadog_agent_api_key_secret_arn = var.datadog_agent_api_key_secret_arn
+
+  # aws firelens
+  awsfirelens_cpu     = var.awsfirelens_cpu
+  awsfirelens_memory  = var.awsfirelens_memory
+  awsfirelens_enabled = var.awsfirelens_enabled
+  awsfirelens_host    = var.awsfirelens_host
+  awsfirelens_image   = var.awsfirelens_image
+  awsfirelens_uri     = var.awsfirelens_uri
 
   # lineagework should only subscribe to source-lineage and metacenter-lineage, ie exclude all other Temporal queues.
   environment_variables = merge(
@@ -2233,6 +2300,14 @@ module "metricwork" {
   datadog_agent_cpu                = var.datadog_agent_cpu
   datadog_agent_memory             = var.datadog_agent_memory
   datadog_agent_api_key_secret_arn = var.datadog_agent_api_key_secret_arn
+
+  # aws firelens
+  awsfirelens_cpu     = var.awsfirelens_cpu
+  awsfirelens_memory  = var.awsfirelens_memory
+  awsfirelens_enabled = var.awsfirelens_enabled
+  awsfirelens_host    = var.awsfirelens_host
+  awsfirelens_image   = var.awsfirelens_image
+  awsfirelens_uri     = var.awsfirelens_uri
 
   environment_variables = merge(
     local.datawatch_dd_env_vars,

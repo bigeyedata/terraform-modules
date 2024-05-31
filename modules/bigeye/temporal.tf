@@ -126,7 +126,11 @@ resource "aws_ecs_task_definition" "temporal_components" {
   requires_compatibilities = ["FARGATE"]
   tags                     = merge(local.tags, { app = "temporal", component = each.key })
   execution_role_arn       = local.ecs_role_arn
-  container_definitions    = var.datadog_agent_enabled ? jsonencode([local.temporal_component_container_def[each.key], local.temporal_component_datadog_container_def[each.key]]) : jsonencode([local.temporal_component_container_def[each.key]])
+  container_definitions = jsonencode(concat(
+    [local.temporal_component_container_def[each.key]],
+    var.datadog_agent_enabled ? [local.temporal_component_datadog_container_def[each.key]] : [],
+    var.awsfirelens_enabled && var.temporal_logging_enabled ? [local.temporal_component_awsfirelens_container_def[each.key]] : [],
+  ))
 }
 
 resource "aws_ecs_service" "temporal_components" {
@@ -416,7 +420,17 @@ locals {
     var.temporal_additional_secret_arns,
   )
 
-  log_configuration_def = var.temporal_logging_enabled ? {
+  log_configuration_def = var.temporal_logging_enabled ? var.awsfirelens_enabled ? {
+    logDriver = "awsfirelens",
+    options = {
+      "Name"       = "http"
+      "Host"       = var.awsfirelens_host
+      "URI"        = var.awsfirelens_uri
+      "Port"       = 443
+      "tls"        = "on"
+      "tls.verify" = "off"
+      "format"     = "json_lines"
+    } } : {
     logDriver = "awslogs"
     options = {
       "awslogs-group"         = aws_cloudwatch_log_group.temporal.name
@@ -491,8 +505,8 @@ locals {
       local.temporal_container_def_general,
       {
         name   = "${local.name}-temporal-${local.temporal_svc_override_names[svc]}"
-        cpu    = var.datadog_agent_enabled ? local.temporal_component_cpu[svc] - var.datadog_agent_cpu : local.temporal_component_cpu[svc]
-        memory = var.datadog_agent_enabled ? local.temporal_component_memory[svc] - var.datadog_agent_memory : local.temporal_component_memory[svc]
+        cpu    = local.temporal_component_cpu[svc] - (var.datadog_agent_enabled ? var.datadog_agent_cpu : 0) - (var.awsfirelens_enabled ? var.awsfirelens_cpu : 0)
+        memory = local.temporal_component_memory[svc] - (var.datadog_agent_enabled ? var.datadog_agent_memory : 0) - (var.awsfirelens_enabled ? var.awsfirelens_memory : 0)
         dockerLabels = var.datadog_agent_enabled ? merge(
           local.temporal_docker_labels_general,
           {
@@ -530,13 +544,14 @@ locals {
     "com.datadoghq.tags.stack" : local.name
   }
   temporal_datadog_container_def_generic = {
-    name        = "datadog-agent"
-    image       = var.datadog_agent_image
-    cpu         = var.datadog_agent_cpu
-    memory      = var.datadog_agent_memory
-    essential   = true
-    mountPoints = []
-    volumesFrom = []
+    name           = "datadog-agent"
+    image          = var.datadog_agent_image
+    cpu            = var.datadog_agent_cpu
+    memory         = var.datadog_agent_memory
+    essential      = true
+    mountPoints    = []
+    volumesFrom    = []
+    systemControls = []
     portMappings = [
       {
         containerPort = 8126
@@ -563,6 +578,55 @@ locals {
           "com.datadog.tags.component" : local.temporal_svc_override_names[svc]
           "com.datadog.tags.service" : "temporal-${local.temporal_svc_override_names[svc]}"
         })
+      }
+    )
+  }
+}
+
+#======================================================
+# Temporal Awsfirelens Container Defs
+#======================================================
+
+locals {
+  temporal_awsfirelens_container_def_generic = {
+    name           = "awsfirelens-log-router"
+    image          = var.awsfirelens_image
+    cpu            = var.awsfirelens_cpu
+    memory         = var.awsfirelens_memory
+    essential      = true
+    mountPoints    = []
+    volumesFrom    = []
+    systemControls = []
+    portMappings   = []
+    firelensConfiguration = {
+      type = "fluentbit",
+      options = {
+        "enable-ecs-log-metadata" : "true"
+      }
+    }
+    logConfiguration = {
+      "logDriver" : "awslogs",
+      "options" : {
+        "awslogs-group"         = aws_cloudwatch_log_group.temporal.name
+        "awslogs-region"        = local.aws_region
+        "awslogs-stream-prefix" = "${local.name}-temporal"
+      }
+    }
+    environment = []
+    user        = "0"
+  }
+
+  temporal_component_awsfirelens_container_def = {
+    for svc in local.temporal_services : svc => merge(
+      local.temporal_awsfirelens_container_def_generic,
+      {
+        dockerLabels = var.awsfirelens_enabled ? merge(
+          local.temporal_docker_labels_general,
+          {
+            "com.datadoghq.tags.app"       = "temporal"
+            "com.datadoghq.tags.component" = local.temporal_svc_override_names[svc]
+            "com.datadoghq.tags.service"   = "temporal-${local.temporal_svc_override_names[svc]}"
+        }) : {}
       }
     )
   }
@@ -638,6 +702,14 @@ module "temporalui" {
   )
 
   secret_arns = var.temporalui_additional_secret_arns
+
+  # aws firelens
+  awsfirelens_cpu     = var.awsfirelens_cpu
+  awsfirelens_memory  = var.awsfirelens_memory
+  awsfirelens_enabled = var.awsfirelens_enabled
+  awsfirelens_host    = var.awsfirelens_host
+  awsfirelens_image   = var.awsfirelens_image
+  awsfirelens_uri     = var.awsfirelens_uri
 }
 
 #======================================================

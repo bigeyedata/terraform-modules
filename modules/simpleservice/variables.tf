@@ -153,7 +153,7 @@ variable "docker_labels" {
 }
 
 variable "cloudwatch_log_group_name" {
-  description = "Cloudwatch log group name to write container logs"
+  description = "Cloudwatch log group name to write container logs.  If var.awsfirelens_enabled = true, container logs are shipped via AWS firelens and not cloudwatch.  The AWS firelens side car container though is the exception and will continue to send logs to cloudwatch logs even if var.awsfirelens_enabled = true to facilitate debugging firelens issues."
   type        = string
 }
 
@@ -230,6 +230,46 @@ variable "datadog_agent_additional_secret_arns" {
   type        = map(string)
   default     = {}
 }
+
+#======================================================
+# AWS Firelens settings
+#======================================================
+variable "awsfirelens_enabled" {
+  description = "Whether to include the awsfirelens container in the task definition"
+  type        = bool
+  default     = false
+}
+
+variable "awsfirelens_image" {
+  description = "The full image for aws firelens, e.g. registry-host-name.com/repository/name:tag.  It is recommended to pin this to a specific tag for production systems vs relying on latest."
+  type        = string
+  default     = ""
+}
+
+variable "awsfirelens_cpu" {
+  description = "The amount of CPU to allocate to the AWS firelens container, in Mhz, e.g. 256"
+  type        = number
+  default     = null
+}
+
+variable "awsfirelens_memory" {
+  description = "The amount of Memory to allocate to the AWS firelens container, in MiB, e.g. 512"
+  type        = number
+  default     = null
+}
+
+variable "awsfirelens_host" {
+  description = "The hostname of the destination for awsfirelens to deliver logs to.  Example: logs-endpoint.example.com"
+  type        = string
+  default     = ""
+}
+
+variable "awsfirelens_uri" {
+  description = "The URI of the destination for awsfirelens to deliver logs to.  Example: /receiver/v1/http/<token>"
+  type        = string
+  default     = ""
+}
+
 #======================================================
 # Load balancer settings
 #======================================================
