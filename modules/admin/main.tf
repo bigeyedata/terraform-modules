@@ -209,6 +209,41 @@ resource "aws_vpc_security_group_ingress_rule" "client_from_main" {
   referenced_security_group_id = aws_security_group.this[0].id
 }
 
+locals {
+  primary_container_definition = {
+    name           = local.name
+    cpu            = 1024 - var.awsfirelens_cpu
+    memory         = 2048 - var.awsfirelens_memory
+    image          = var.image
+    essential      = true
+    mountPoints    = []
+    portMappings   = []
+    volumesFrom    = []
+    systemControls = []
+    environment    = [for k, v in local.environment_variables : { Name = k, Value = v }]
+    secrets        = [for k, v in local.secret_arns : { Name = k, ValueFrom = v }]
+    command        = ["tail", "-f", "/dev/null"]
+    logConfiguration = var.awsfirelens_enabled ? {
+      logDriver = "awsfirelens",
+      options = {
+        "Name"       = "http"
+        "Host"       = var.awsfirelens_host
+        "URI"        = var.awsfirelens_uri
+        "Port"       = 443
+        "tls"        = "on"
+        "tls.verify" = "off"
+        "format"     = "json_lines"
+      } } : {
+      logDriver = "awslogs"
+      options = {
+        "awslogs-group"         = var.cloudwatch_log_group_name
+        "awslogs-region"        = data.aws_region.current.name
+        "awslogs-stream-prefix" = local.name
+      }
+    }
+  }
+}
+
 resource "aws_ecs_task_definition" "this" {
   count                    = var.enabled ? 1 : 0
   family                   = local.name
@@ -219,27 +254,44 @@ resource "aws_ecs_task_definition" "this" {
   tags                     = var.tags
   execution_role_arn       = var.execution_role_arn
   task_role_arn            = local.ecs_iam_role
-  container_definitions = jsonencode([{
-    name         = local.name
-    cpu          = 1024
-    memory       = 2048
-    image        = var.image
-    essential    = true
-    mountPoints  = []
-    portMappings = []
-    volumesFrom  = []
-    environment  = [for k, v in local.environment_variables : { Name = k, Value = v }]
-    secrets      = [for k, v in local.secret_arns : { Name = k, ValueFrom = v }]
-    command      = ["tail", "-f", "/dev/null"]
-    logConfiguration = {
-      logDriver = "awslogs"
+  container_definitions = jsonencode(concat(
+    [local.primary_container_definition],
+    var.awsfirelens_enabled ? [local.awsfirelens_container_definition] : [],
+  ))
+}
+
+#======================================================
+# Temporal Awsfirelens Container Defs
+#======================================================
+
+locals {
+  awsfirelens_container_definition = {
+    name           = "awsfirelens-log-router"
+    image          = var.awsfirelens_image
+    cpu            = var.awsfirelens_cpu
+    memory         = var.awsfirelens_memory
+    essential      = true
+    mountPoints    = []
+    volumesFrom    = []
+    systemControls = []
+    portMappings   = []
+    firelensConfiguration = {
+      type = "fluentbit",
       options = {
+        "enable-ecs-log-metadata" : "true"
+      }
+    }
+    logConfiguration = {
+      "logDriver" : "awslogs",
+      "options" : {
         "awslogs-group"         = var.cloudwatch_log_group_name
         "awslogs-region"        = data.aws_region.current.name
         "awslogs-stream-prefix" = local.name
       }
     }
-  }])
+    environment = []
+    user        = "0"
+  }
 }
 
 resource "aws_ecs_service" "this" {

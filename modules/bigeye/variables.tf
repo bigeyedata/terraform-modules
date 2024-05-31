@@ -277,6 +277,45 @@ variable "datadog_agent_api_key_secret_arn" {
 }
 
 #======================================================
+# AWS Firelens settings
+#======================================================
+variable "awsfirelens_enabled" {
+  description = "If set to true, container logs are shipped via AWS firelens and not cloudwatch.  The AWS firelens side car container though is the exception and will continue to send logs to cloudwatch logs even if var.awsfirelens_enabled = true to facilitate debugging firelens issues."
+  type        = bool
+  default     = false
+}
+
+variable "awsfirelens_image" {
+  description = "The full image for aws firelens, e.g. registry-host-name.com/repository/name:tag.  It is recommended to pin this to a specific tag for production systems vs relying on latest."
+  type        = string
+  default     = "amazon/aws-for-fluent-bit:latest"
+}
+
+variable "awsfirelens_cpu" {
+  description = "The amount of CPU to allocate to the AWS firelens container, in Mhz, e.g. 256"
+  type        = number
+  default     = 256
+}
+
+variable "awsfirelens_memory" {
+  description = "The amount of Memory to allocate to the AWS firelens container, in MiB, e.g. 512"
+  type        = number
+  default     = 256
+}
+
+variable "awsfirelens_host" {
+  description = "The hostname of the destination for awsfirelens to deliver logs to.  Example: logs-endpoint.example.com"
+  type        = string
+  default     = ""
+}
+
+variable "awsfirelens_uri" {
+  description = "The URI of the destination for awsfirelens to deliver logs to.  Example: /receiver/v1/http/<token>"
+  type        = string
+  default     = ""
+}
+
+#======================================================
 # Redis
 #======================================================
 variable "redis_extra_security_group_ids" {
@@ -731,13 +770,13 @@ variable "haproxy_desired_count" {
 variable "haproxy_cpu" {
   description = "Amount of CPU to allocate"
   type        = number
-  default     = 512
+  default     = 1024
 }
 
 variable "haproxy_memory" {
   description = "Amount of Memory in MB to allocate"
   type        = number
-  default     = 1024
+  default     = 2048
 }
 
 variable "haproxy_port" {
@@ -1869,13 +1908,13 @@ variable "scheduler_desired_count" {
 variable "scheduler_cpu" {
   description = "Amount of CPU to allocate"
   type        = number
-  default     = 512
+  default     = 1024
 }
 
 variable "scheduler_memory" {
   description = "Amount of Memory in MB to allocate"
   type        = number
-  default     = 1024
+  default     = 2048
 }
 
 variable "scheduler_port" {

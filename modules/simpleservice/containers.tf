@@ -2,8 +2,8 @@
 # Containers, lots of boilerplate here
 #==============================================
 locals {
-  container_cpu    = var.cpu - (var.datadog_agent_enabled ? var.datadog_agent_cpu : 0)
-  container_memory = var.memory - (var.datadog_agent_enabled ? var.datadog_agent_memory : 0)
+  container_cpu    = var.cpu - (var.datadog_agent_enabled ? var.datadog_agent_cpu : 0) - (var.awsfirelens_enabled ? var.awsfirelens_cpu : 0)
+  container_memory = var.memory - (var.datadog_agent_enabled ? var.datadog_agent_memory : 0) - (var.awsfirelens_enabled ? var.awsfirelens_memory : 0)
   container_image  = "${var.image_registry}/${var.image_repository}:${var.image_tag}"
 
   container_environment_variables = [for k, v in merge(local.datadog_service_environment_variables, var.environment_variables) : { Name = k, Value = v }]
@@ -26,7 +26,17 @@ locals {
     environment  = local.container_environment_variables
     secrets      = local.container_environment_secrets
     stopTimeout  = var.stop_timeout
-    logConfiguration = {
+    logConfiguration = var.awsfirelens_enabled ? {
+      logDriver = "awsfirelens",
+      options = {
+        "Name"       = "http"
+        "Host"       = var.awsfirelens_host
+        "URI"        = var.awsfirelens_uri
+        "Port"       = 443
+        "tls"        = "on"
+        "tls.verify" = "off"
+        "format"     = "json_lines"
+      } } : {
       logDriver = "awslogs"
       options = {
         "awslogs-group"         = var.cloudwatch_log_group_name
@@ -93,12 +103,38 @@ locals {
     secrets     = [for k, v in local.datadog_service_secret_arns : { Name = k, ValueFrom = v }]
   }
 
-  container_definition_options = {
-    single       = [local.primary_container_definition]
-    with_datadog = [local.primary_container_definition, local.datadog_agent_container_definition]
+  awsfirelens_container_definition = {
+    name         = "awsfirelens-log-router"
+    image        = var.awsfirelens_image
+    cpu          = var.awsfirelens_cpu
+    memory       = var.awsfirelens_memory
+    essential    = true
+    mountPoints  = []
+    volumesFrom  = []
+    portMappings = []
+    firelensConfiguration = {
+      type = "fluentbit",
+      options = {
+        "enable-ecs-log-metadata" : "true"
+      }
+    }
+    logConfiguration = {
+      "logDriver" : "awslogs",
+      "options" : {
+        "awslogs-group"         = var.cloudwatch_log_group_name
+        "awslogs-region"        = data.aws_region.current.name
+        "awslogs-stream-prefix" = var.name
+      }
+    }
+    environment = []
+    user        = "0"
   }
 
-  container_definitions = local.container_definition_options[var.datadog_agent_enabled ? "with_datadog" : "single"]
+  container_definitions = concat(
+    [local.primary_container_definition],
+    var.datadog_agent_enabled ? [local.datadog_agent_container_definition] : [],
+    var.awsfirelens_enabled ? [local.awsfirelens_container_definition] : [],
+  )
 }
 
 data "aws_region" "current" {}
