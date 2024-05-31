@@ -1,3 +1,12 @@
+# [6.1.0](https://github.com/bigeyedata/terraform-modules/compare/v6.0.0...v6.1.0) (2024-05-31)
+
+
+### Features
+
+* allow using firelens for ECS logs ([3aeb288](https://github.com/bigeyedata/terraform-modules/commit/3aeb2881fbf11e9cbcf7f31c38b6fa079dc9ee42))
+
+
+
 # [6.0.0](https://github.com/bigeyedata/terraform-modules/compare/v5.0.0...v6.0.0) (2024-05-23)
 
 
