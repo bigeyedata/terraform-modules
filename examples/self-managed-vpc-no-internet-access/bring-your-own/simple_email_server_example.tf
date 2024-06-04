@@ -115,11 +115,30 @@ resource "aws_security_group" "smtp_vpce" {
   }
 }
 
+# https://github.com/terraform-aws-modules/terraform-aws-vpc/issues/462
+# Not all VPC endpoint services are supported in all availability zones.
+# example SES isn't available in us-east-1a
+data "aws_vpc_endpoint_service" "ses" {
+  service = "email-smtp"
+}
+
+data "aws_subnets" "ses_vpce_subnets" {
+  filter {
+    name   = "subnet-id"
+    values = module.vpc.private_subnets
+  }
+
+  filter {
+    name   = "availability-zone"
+    values = data.aws_vpc_endpoint_service.ses.availability_zones
+  }
+}
+
 resource "aws_vpc_endpoint" "smtp_vpce" {
   security_group_ids  = [aws_security_group.smtp_vpce.id]
   service_name        = "com.amazonaws.${local.aws_region}.email-smtp"
   vpc_endpoint_type   = "Interface"
-  subnet_ids          = module.vpc.private_subnets
+  subnet_ids          = data.aws_subnets.ses_vpce_subnets.ids
   private_dns_enabled = true
   tags = {
     "Name" = "${local.name}-smtp-endpoint"
