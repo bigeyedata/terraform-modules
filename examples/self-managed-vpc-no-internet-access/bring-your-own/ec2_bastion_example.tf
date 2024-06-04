@@ -85,10 +85,18 @@ resource "aws_vpc_security_group_egress_rule" "egress" {
   ip_protocol       = "TCP"
 }
 
+data "aws_ami" "amazon_linux_2023" {
+  owners      = ["amazon"]
+  most_recent = true
+  filter {
+    name   = "name"
+    values = ["al2023-ami-*-x86_64"]
+  }
+}
+
 resource "aws_instance" "bastion" {
-  count = var.bastion_enabled ? 1 : 0
-  # Amazon Linux 2023
-  ami                         = "ami-01cd4de4363ab6ee8"
+  count                       = var.bastion_enabled ? 1 : 0
+  ami                         = data.aws_ami.amazon_linux_2023.id
   instance_type               = "t3.small"
   key_name                    = aws_key_pair.bastion[0].key_name
   subnet_id                   = var.bastion_public ? module.vpc.public_subnets[0] : module.vpc.private_subnets[0]
@@ -100,7 +108,7 @@ resource "aws_instance" "bastion" {
     delete_on_termination = true
     encrypted             = true
     volume_type           = "gp3"
-    volume_size           = 10
+    volume_size           = 30
     tags = {
       Name = "Bigeye bastion"
     }
