@@ -1276,7 +1276,7 @@ module "monocle" {
       BACKLOG                    = "512"
       WORKERS                    = "2"
       TIMEOUT                    = "900"
-      DATAWATCH_ADDRESS          = "https://${local.datawatch_dns_name}"
+      DATAWATCH_ADDRESS          = "https://${local.datawork_dns_name}"
     },
     local.sentry_event_level_env_variable,
     var.datadog_agent_enabled ? {
@@ -1415,7 +1415,7 @@ module "toretto" {
       BACKLOG                    = "512"
       WORKERS                    = "1"
       TIMEOUT                    = "900"
-      DATAWATCH_ADDRESS          = "https://${local.datawatch_dns_name}"
+      DATAWATCH_ADDRESS          = "https://${local.datawork_dns_name}"
     },
     local.sentry_event_level_env_variable,
     var.toretto_additional_environment_vars,
