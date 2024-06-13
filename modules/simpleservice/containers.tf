@@ -19,8 +19,13 @@ locals {
       hostPort      = var.traffic_port
       protocol      = "tcp"
     }]
-    essential    = true
-    mountPoints  = []
+    essential = true
+    mountPoints = local.efs_volume_enabled ? [
+      {
+        containerPath : var.efs_mount_point,
+        sourceVolume : var.name,
+      }
+    ] : []
     volumesFrom  = []
     dockerLabels = merge(local.datadog_docker_labels, var.docker_labels)
     environment  = local.container_environment_variables

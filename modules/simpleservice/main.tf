@@ -12,6 +12,7 @@ locals {
   max_port                    = 65535
   load_balancer_ingress_text  = var.internet_facing ? "anywhere" : "internal"
   load_balancer_ingress_cidrs = var.internet_facing ? ["0.0.0.0/0"] : concat([var.vpc_cidr_block], var.lb_additional_ingress_cidrs)
+  efs_volume_enabled          = var.efs_mount_point != "" && var.efs_access_point_id != ""
 }
 
 
@@ -184,6 +185,20 @@ resource "aws_ecs_task_definition" "this" {
   execution_role_arn       = var.execution_role_arn
   task_role_arn            = var.task_role_arn
   container_definitions    = jsonencode(local.container_definitions)
+  dynamic "volume" {
+    for_each = local.efs_volume_enabled ? ["this"] : []
+    content {
+      name = var.name
+      efs_volume_configuration {
+        file_system_id     = var.efs_volume_id
+        transit_encryption = "ENABLED"
+        authorization_config {
+          access_point_id = var.efs_access_point_id
+          iam             = "ENABLED"
+        }
+      }
+    }
+  }
 }
 
 # If the ECS service is autoscaling, then we will ignore changes to the desired_count field.

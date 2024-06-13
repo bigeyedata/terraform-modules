@@ -131,6 +131,20 @@ resource "aws_ecs_task_definition" "temporal_components" {
     var.datadog_agent_enabled ? [local.temporal_component_datadog_container_def[each.key]] : [],
     var.awsfirelens_enabled && var.temporal_logging_enabled ? [local.temporal_component_awsfirelens_container_def[each.key]] : [],
   ))
+  dynamic "volume" {
+    for_each = contains(var.efs_volume_enabled_services, "temporal-${local.temporal_svc_override_names[each.key]}") ? ["temporal-${local.temporal_svc_override_names[each.key]}"] : []
+    content {
+      name = "${local.name}-${each.value}"
+      efs_volume_configuration {
+        file_system_id     = aws_efs_file_system.this[each.value].id
+        transit_encryption = "ENABLED"
+        authorization_config {
+          access_point_id = aws_efs_access_point.this[each.value].id
+          iam             = "ENABLED"
+        }
+      }
+    }
+  }
 }
 
 resource "aws_ecs_service" "temporal_components" {
@@ -516,6 +530,10 @@ locals {
           }
         ) : {}
         environment = [for k, v in local.temporal_component_env_vars[svc] : { Name = k, Value = v }]
+        mountPoints = contains(var.efs_volume_enabled_services, "temporal-${local.temporal_svc_override_names[svc]}") ? [{
+          containerPath : var.efs_mount_point,
+          sourceVolume : "temporal-${local.temporal_svc_override_names[svc]}",
+        }] : []
       }
     )
   }
@@ -678,6 +696,9 @@ module "temporalui" {
   image_repository          = format("%s%s", "temporalui", var.image_repository_suffix)
   image_tag                 = local.temporalui_image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.temporal.name
+  efs_volume_id             = contains(var.efs_volume_enabled_services, "temporalui") ? aws_efs_file_system.this[0].id : ""
+  efs_access_point_id       = contains(var.efs_volume_enabled_services, "temporalui") ? aws_efs_access_point.this["temporalui"].id : ""
+  efs_mount_point           = var.efs_mount_point
 
   # Datadog
   datadog_agent_enabled            = var.datadog_agent_enabled
