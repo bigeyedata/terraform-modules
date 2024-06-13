@@ -1,3 +1,12 @@
+# [6.2.0](https://github.com/bigeyedata/terraform-modules/compare/v6.1.1...v6.2.0) (2024-06-13)
+
+
+### Features
+
+* add ability to mount EFS volume in app containers ([569bb5c](https://github.com/bigeyedata/terraform-modules/commit/569bb5cc95fc0c0f8e3f750cef7c0da1b217a2c5))
+
+
+
 ## [6.1.1](https://github.com/bigeyedata/terraform-modules/compare/v6.1.0...v6.1.1) (2024-06-12)
 
 
