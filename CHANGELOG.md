@@ -1,3 +1,12 @@
+## [6.3.1](https://github.com/bigeyedata/terraform-modules/compare/v6.3.0...v6.3.1) (2024-06-13)
+
+
+### Bug Fixes
+
+* revert send monocle and toretto traffic to datawork instead ([b65bade](https://github.com/bigeyedata/terraform-modules/commit/b65badebf010084ebd5174aa10d01e9cd7a68bc0))
+
+
+
 # [6.3.0](https://github.com/bigeyedata/terraform-modules/compare/v6.2.0...v6.3.0) (2024-06-13)
 
 
