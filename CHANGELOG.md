@@ -1,3 +1,12 @@
+# [6.3.0](https://github.com/bigeyedata/terraform-modules/compare/v6.2.0...v6.3.0) (2024-06-13)
+
+
+### Features
+
+* enable heap dump on OOM for some java services ([d7e66fe](https://github.com/bigeyedata/terraform-modules/commit/d7e66fef33f50f025270c8ba057c7bc0c1006fef))
+
+
+
 # [6.2.0](https://github.com/bigeyedata/terraform-modules/compare/v6.1.1...v6.2.0) (2024-06-13)
 
 
