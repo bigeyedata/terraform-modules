@@ -243,6 +243,24 @@ variable "fargate_version" {
   default     = "1.4.0"
 }
 
+variable "efs_volume_enabled_services" {
+  description = "A shared EFS volume can be mounted on core service containers.  This can be useful for containers to persist a heap dump on OOM for example.  Service names: datawatch, datawork, metricwork, lineagework, etc"
+  type        = list(string)
+  default     = []
+}
+
+variable "efs_volume_extra_security_group_ids" {
+  description = "A list of additional security group ids to put onto the EFS volume"
+  type        = list(string)
+  default     = []
+}
+
+variable "efs_mount_point" {
+  description = "Container path where the EFS volume will be mounted."
+  type        = string
+  default     = "/mnt"
+}
+
 #======================================================
 # Datadog
 #======================================================

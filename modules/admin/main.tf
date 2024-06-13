@@ -81,8 +81,9 @@ locals {
     RABBITMQ_PASSWORD      = var.rabbitmq_password_secret_arn
   }
 
-  create_iam_role = var.task_iam_role_arn == ""
-  ecs_iam_role    = local.create_iam_role ? aws_iam_role.this[0].arn : var.task_iam_role_arn
+  create_iam_role    = var.task_iam_role_arn == ""
+  ecs_iam_role       = local.create_iam_role ? aws_iam_role.this[0].arn : var.task_iam_role_arn
+  efs_volume_enabled = var.efs_mount_point != "" && var.efs_access_point_id != ""
 }
 
 data "aws_region" "current" {}
@@ -211,12 +212,17 @@ resource "aws_vpc_security_group_ingress_rule" "client_from_main" {
 
 locals {
   primary_container_definition = {
-    name           = local.name
-    cpu            = 1024 - var.awsfirelens_cpu
-    memory         = 2048 - var.awsfirelens_memory
-    image          = var.image
-    essential      = true
-    mountPoints    = []
+    name      = local.name
+    cpu       = 1024 - var.awsfirelens_cpu
+    memory    = 2048 - var.awsfirelens_memory
+    image     = var.image
+    essential = true
+    mountPoints = local.efs_volume_enabled ? [
+      {
+        containerPath : var.efs_mount_point,
+        sourceVolume : local.name,
+      }
+    ] : []
     portMappings   = []
     volumesFrom    = []
     systemControls = []
@@ -258,6 +264,20 @@ resource "aws_ecs_task_definition" "this" {
     [local.primary_container_definition],
     var.awsfirelens_enabled ? [local.awsfirelens_container_definition] : [],
   ))
+  dynamic "volume" {
+    for_each = local.efs_volume_enabled ? ["this"] : []
+    content {
+      name = local.name
+      efs_volume_configuration {
+        file_system_id     = var.efs_volume_id
+        transit_encryption = "ENABLED"
+        authorization_config {
+          access_point_id = var.efs_access_point_id
+          iam             = "ENABLED"
+        }
+      }
+    }
+  }
 }
 
 #======================================================

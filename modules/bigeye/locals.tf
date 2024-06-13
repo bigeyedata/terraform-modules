@@ -177,6 +177,7 @@ locals {
     },
     var.datawatch_additional_secret_arns,
   )
+  efs_volume_enabled = length(var.efs_volume_enabled_services) > 0
 
   temporal_lb_port                                     = 443
   temporal_per_namespace_worker_count                  = coalesce(var.temporal_per_namespace_worker_count, var.temporal_desired_count * 3)

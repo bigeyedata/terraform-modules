@@ -186,6 +186,25 @@ variable "spot_weight" {
   type        = number
   default     = 0
 }
+
+variable "efs_volume_id" {
+  description = "Use in conjunction with var.access_point_id to mount an EFS volume on the app container"
+  type        = string
+  default     = ""
+}
+
+variable "efs_access_point_id" {
+  description = "Use in conjunction with var.efs_volume_id to mount an EFS volume on the app container"
+  type        = string
+  default     = ""
+}
+
+variable "efs_mount_point" {
+  description = "Container path where the EFS volume will be mounted."
+  type        = string
+  default     = ""
+}
+
 #======================================================
 # Datadog agent settings
 #======================================================

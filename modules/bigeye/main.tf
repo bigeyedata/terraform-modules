@@ -589,8 +589,7 @@ resource "aws_iam_role_policy" "ecs_execution" {
           "ecr:BatchGetImage"
         ]
         Resource = "*"
-      },
-      {
+        }, {
         Sid    = "AllowCloudWatch"
         Effect = "Allow"
         Action = [
@@ -604,7 +603,6 @@ resource "aws_iam_role_policy" "ecs_execution" {
       }
     ]
   })
-
 }
 
 resource "aws_iam_role_policy" "ecs_secrets" {
@@ -659,6 +657,9 @@ module "bigeye_admin" {
   execution_role_arn        = local.ecs_role_arn
   task_iam_role_arn         = var.admin_container_ecs_task_role_arn
   fargate_version           = var.fargate_version
+  efs_volume_id             = local.efs_volume_enabled && var.enable_bigeye_admin_module ? aws_efs_file_system.this[0].id : ""
+  efs_access_point_id       = local.efs_volume_enabled && var.enable_bigeye_admin_module ? aws_efs_access_point.bigeye_admin[0].id : ""
+  efs_mount_point           = var.efs_mount_point
 
   stack_name = local.name
 
@@ -921,6 +922,9 @@ module "haproxy" {
   image_repository          = format("%s%s", "haproxy", var.image_repository_suffix)
   image_tag                 = local.haproxy_image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
+  efs_volume_id             = contains(var.efs_volume_enabled_services, "haproxy") ? aws_efs_file_system.this[0].id : ""
+  efs_access_point_id       = contains(var.efs_volume_enabled_services, "haproxy") ? aws_efs_access_point.this["haproxy"].id : ""
+  efs_mount_point           = var.efs_mount_point
 
   # Datadog
   datadog_agent_enabled            = var.datadog_agent_enabled
@@ -1022,6 +1026,9 @@ module "web" {
   image_repository          = format("%s%s", "web", var.image_repository_suffix)
   image_tag                 = local.web_image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
+  efs_volume_id             = contains(var.efs_volume_enabled_services, "web") ? aws_efs_file_system.this[0].id : ""
+  efs_access_point_id       = contains(var.efs_volume_enabled_services, "web") ? aws_efs_access_point.this["web"].id : ""
+  efs_mount_point           = var.efs_mount_point
 
   # Datadog
   datadog_agent_enabled            = var.datadog_agent_enabled
@@ -1247,6 +1254,9 @@ module "monocle" {
   image_repository          = format("%s%s", "monocle", var.image_repository_suffix)
   image_tag                 = local.monocle_image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
+  efs_volume_id             = contains(var.efs_volume_enabled_services, "monocle") ? aws_efs_file_system.this[0].id : ""
+  efs_access_point_id       = contains(var.efs_volume_enabled_services, "monocle") ? aws_efs_access_point.this["monocle"].id : ""
+  efs_mount_point           = var.efs_mount_point
 
   # Datadog
   datadog_agent_enabled            = var.datadog_agent_enabled
@@ -1383,6 +1393,9 @@ module "toretto" {
   image_repository          = format("%s%s", "toretto", var.image_repository_suffix)
   image_tag                 = local.toretto_image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
+  efs_volume_id             = contains(var.efs_volume_enabled_services, "toretto") ? aws_efs_file_system.this[0].id : ""
+  efs_access_point_id       = contains(var.efs_volume_enabled_services, "toretto") ? aws_efs_access_point.this["toretto"].id : ""
+  efs_mount_point           = var.efs_mount_point
 
   # This can be removed when toretto handles sigterm better 
   stop_timeout = 10
@@ -1554,6 +1567,9 @@ module "scheduler" {
   image_repository          = format("%s%s", "scheduler", var.image_repository_suffix)
   image_tag                 = local.scheduler_image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
+  efs_volume_id             = contains(var.efs_volume_enabled_services, "scheduler") ? aws_efs_file_system.this[0].id : ""
+  efs_access_point_id       = contains(var.efs_volume_enabled_services, "scheduler") ? aws_efs_access_point.this["scheduler"].id : ""
+  efs_mount_point           = var.efs_mount_point
 
   # Datadog
   datadog_agent_enabled            = var.datadog_agent_enabled
@@ -1755,6 +1771,32 @@ resource "aws_iam_role_policy" "datawatch_ecs_exec" {
     ]
   })
 }
+
+resource "aws_iam_role_policy" "datawatch_efs" {
+  count = local.create_datawatch_role && local.efs_volume_enabled ? 1 : 0
+  role  = aws_iam_role.datawatch[0].id
+  name  = "AllowECSExec"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "elasticfilesystem:ClientMount",
+          "elasticfilesystem:ClientWrite"
+        ],
+        "Resource" : "arn:aws:elasticfilesystem:${local.aws_region}:${local.aws_account_id}:file-system/*"
+        Condition = {
+          StringEquals = {
+            "aws:ResourceTag/stack" = local.name
+          }
+        }
+      }
+    ]
+  })
+}
+
+
 
 #======================================================
 # Datawatch - Redis
@@ -2065,6 +2107,9 @@ module "datawatch" {
   image_repository          = format("%s%s", "datawatch", var.image_repository_suffix)
   image_tag                 = local.datawatch_image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
+  efs_volume_id             = contains(var.efs_volume_enabled_services, "datawatch") ? aws_efs_file_system.this[0].id : ""
+  efs_access_point_id       = contains(var.efs_volume_enabled_services, "datawatch") ? aws_efs_access_point.this["datawatch"].id : ""
+  efs_mount_point           = var.efs_mount_point
 
   # Datadog
   datadog_agent_enabled            = var.datadog_agent_enabled
@@ -2139,6 +2184,9 @@ module "datawork" {
   image_tag                 = local.datawork_image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
   stop_timeout              = 120
+  efs_volume_id             = contains(var.efs_volume_enabled_services, "datawork") ? aws_efs_file_system.this[0].id : ""
+  efs_access_point_id       = contains(var.efs_volume_enabled_services, "datawork") ? aws_efs_access_point.this["datawork"].id : ""
+  efs_mount_point           = var.efs_mount_point
 
   # Datadog
   datadog_agent_enabled            = var.datadog_agent_enabled
@@ -2215,6 +2263,9 @@ module "lineagework" {
   image_tag                 = local.lineagework_image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
   stop_timeout              = 120
+  efs_volume_id             = contains(var.efs_volume_enabled_services, "lineagework") ? aws_efs_file_system.this[0].id : ""
+  efs_access_point_id       = contains(var.efs_volume_enabled_services, "lineagework") ? aws_efs_access_point.this["lineagework"].id : ""
+  efs_mount_point           = var.efs_mount_point
 
   # Datadog
   datadog_agent_enabled            = var.datadog_agent_enabled
@@ -2293,6 +2344,9 @@ module "metricwork" {
   image_tag                 = local.metricwork_image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
   stop_timeout              = 120
+  efs_volume_id             = contains(var.efs_volume_enabled_services, "metricwork") ? aws_efs_file_system.this[0].id : ""
+  efs_access_point_id       = contains(var.efs_volume_enabled_services, "metricwork") ? aws_efs_access_point.this["metricwork"].id : ""
+  efs_mount_point           = var.efs_mount_point
 
   # Datadog
   datadog_agent_enabled            = var.datadog_agent_enabled
