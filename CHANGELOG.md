@@ -1,3 +1,12 @@
+# [6.4.0](https://github.com/bigeyedata/terraform-modules/compare/v6.3.1...v6.4.0) (2024-06-14)
+
+
+### Features
+
+* add private API service (papi) 1 ([7cb575d](https://github.com/bigeyedata/terraform-modules/commit/7cb575de7163c8874fc4c85eae5fb871801ff578))
+
+
+
 ## [6.3.1](https://github.com/bigeyedata/terraform-modules/compare/v6.3.0...v6.3.1) (2024-06-13)
 
 
