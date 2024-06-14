@@ -119,6 +119,11 @@ variable "metricwork_domain_name" {
   type        = string
 }
 
+variable "papi_domain_name" {
+  description = "papi domain name"
+  type        = string
+}
+
 variable "scheduler_domain_name" {
   description = "scheduler domain name"
   type        = string
@@ -171,6 +176,11 @@ variable "lineagework_resource_name" {
 
 variable "metricwork_resource_name" {
   description = "metricwork resource name"
+  type        = string
+}
+
+variable "papi_resource_name" {
+  description = "papi resource name"
   type        = string
 }
 

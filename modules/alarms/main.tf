@@ -508,6 +508,32 @@ module "elb_metricwork" {
   error_rate_disabled    = true
 }
 
+module "elb_papi" {
+  source                         = "./elb"
+  stack                          = var.stack
+  app                            = "papi"
+  host_count_disabled            = var.elb_papi_host_count_disabled
+  host_count_datapoints_to_alarm = var.elb_papi_host_count_datapoints_to_alarm
+  host_count_evaluation_periods  = var.elb_papi_host_count_evaluation_periods
+  host_count_period              = var.elb_papi_host_count_period
+  host_count_sns_arns            = coalesce(var.elb_papi_host_count_sns_arns, [local.high_urgency_sns_topic_arn])
+  host_count_threshold           = var.elb_papi_host_count_threshold
+
+  response_time_disabled            = var.elb_papi_response_time_disabled
+  response_time_datapoints_to_alarm = var.elb_papi_response_time_datapoints_to_alarm
+  response_time_evaluation_periods  = var.elb_papi_response_time_evaluation_periods
+  response_time_period              = var.elb_papi_response_time_period
+  response_time_sns_arns            = coalesce(var.elb_papi_response_time_sns_arns, [local.low_urgency_sns_topic_arn])
+  response_time_threshold           = var.elb_papi_response_time_threshold
+
+  error_rate_disabled            = var.elb_papi_error_rate_disabled
+  error_rate_datapoints_to_alarm = var.elb_papi_error_rate_datapoints_to_alarm
+  error_rate_evaluation_periods  = var.elb_papi_error_rate_evaluation_periods
+  error_rate_period              = var.elb_papi_error_rate_period
+  error_rate_sns_arns            = coalesce(var.elb_papi_error_rate_sns_arns, [local.low_urgency_sns_topic_arn])
+  error_rate_threshold           = var.elb_papi_error_rate_threshold
+}
+
 module "elb_scheduler" {
   source                         = "./elb"
   stack                          = var.stack

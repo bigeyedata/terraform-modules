@@ -1589,6 +1589,114 @@ variable "elb_monocle_response_time_threshold" {
   default     = 120
 }
 
+variable "elb_papi_error_rate_datapoints_to_alarm" {
+  description = "The number of datapoints breaching threshold to alarm"
+  type        = number
+  default     = 3
+}
+
+variable "elb_papi_error_rate_disabled" {
+  description = "Whether to disable the specific alarm"
+  type        = bool
+  default     = false
+}
+
+variable "elb_papi_error_rate_evaluation_periods" {
+  description = "The number of periods over which the metric is evaluated"
+  type        = number
+  default     = 5
+}
+
+variable "elb_papi_error_rate_period" {
+  description = "The number of seconds over which the metric is evaluated"
+  type        = number
+  default     = 300
+}
+
+variable "elb_papi_error_rate_sns_arns" {
+  description = "The SNS topic arns to notify when the alarm fires"
+  type        = list(string)
+  default     = null
+}
+
+variable "elb_papi_error_rate_threshold" {
+  description = "Alarms when the metric is above this value"
+  type        = number
+  default     = 5
+}
+
+variable "elb_papi_host_count_datapoints_to_alarm" {
+  description = "The number of datapoints breaching threshold to alarm"
+  type        = number
+  default     = 3
+}
+
+variable "elb_papi_host_count_disabled" {
+  description = "Whether to disable the specific alarm"
+  type        = bool
+  default     = false
+}
+
+variable "elb_papi_host_count_evaluation_periods" {
+  description = "The number of periods over which the metric is evaluated"
+  type        = number
+  default     = 4
+}
+
+variable "elb_papi_host_count_period" {
+  description = "The number of seconds over which the metric is evaluated"
+  type        = number
+  default     = 900
+}
+
+variable "elb_papi_host_count_sns_arns" {
+  description = "The SNS topic arns to notify when the alarm fires"
+  type        = list(string)
+  default     = null
+}
+
+variable "elb_papi_host_count_threshold" {
+  description = "Alarms when the metric is below this value"
+  type        = number
+  default     = 0.5
+}
+
+variable "elb_papi_response_time_datapoints_to_alarm" {
+  description = "The number of datapoints breaching threshold to alarm"
+  type        = number
+  default     = 3
+}
+
+variable "elb_papi_response_time_disabled" {
+  description = "Whether to disable the specific alarm"
+  type        = bool
+  default     = false
+}
+
+variable "elb_papi_response_time_evaluation_periods" {
+  description = "The number of periods over which the metric is evaluated"
+  type        = number
+  default     = 4
+}
+
+variable "elb_papi_response_time_period" {
+  description = "The number of seconds over which the metric is evaluated"
+  type        = number
+  default     = 900
+}
+
+variable "elb_papi_response_time_sns_arns" {
+  description = "The SNS topic arns to notify when the alarm fires"
+  type        = list(string)
+  default     = null
+}
+
+variable "elb_papi_response_time_threshold" {
+  description = "Alarms when the metric is above this value"
+  type        = number
+  default     = 120
+}
+
 variable "elb_scheduler_error_rate_datapoints_to_alarm" {
   description = "The number of datapoints breaching threshold to alarm"
   type        = number
