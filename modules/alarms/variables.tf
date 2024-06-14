@@ -2056,3 +2056,327 @@ variable "elb_web_response_time_threshold" {
   type        = number
   default     = 120
 }
+
+variable "ecs_datawatch_mem_disabled" {
+  description = "Whether to disable the specific alarm"
+  type        = bool
+  default     = false
+}
+
+variable "ecs_datawatch_mem_dataponts_to_alarm" {
+  description = "The number of datapoints breaching threshold to alarm"
+  type        = number
+  default     = 4
+}
+
+variable "ecs_datawatch_mem_evaluation_periods" {
+  description = "The number of periods over which the metric is evaluated"
+  type        = number
+  default     = 5
+}
+
+variable "ecs_datawatch_mem_period" {
+  description = "The number of seconds over which the metric is evaluated"
+  type        = number
+  default     = 300
+}
+
+variable "ecs_datawatch_mem_sns_arns" {
+  description = "The SNS topic arns to notify when the alarm fires"
+  type        = list(string)
+  default     = null
+}
+
+variable "ecs_datawatch_mem_threshold" {
+  description = "Alarms when the metric is above this value"
+  type        = number
+  default     = 70
+}
+
+variable "ecs_datawork_mem_disabled" {
+  description = "Whether to disable the specific alarm"
+  type        = bool
+  default     = false
+}
+
+variable "ecs_datawork_mem_dataponts_to_alarm" {
+  description = "The number of datapoints breaching threshold to alarm"
+  type        = number
+  default     = 4
+}
+
+variable "ecs_datawork_mem_evaluation_periods" {
+  description = "The number of periods over which the metric is evaluated"
+  type        = number
+  default     = 5
+}
+
+variable "ecs_datawork_mem_period" {
+  description = "The number of seconds over which the metric is evaluated"
+  type        = number
+  default     = 300
+}
+
+variable "ecs_datawork_mem_sns_arns" {
+  description = "The SNS topic arns to notify when the alarm fires"
+  type        = list(string)
+  default     = null
+}
+
+variable "ecs_datawork_mem_threshold" {
+  description = "Alarms when the metric is above this value"
+  type        = number
+  default     = 70
+}
+
+variable "ecs_lineagework_mem_disabled" {
+  description = "Whether to disable the specific alarm"
+  type        = bool
+  default     = false
+}
+
+variable "ecs_lineagework_mem_dataponts_to_alarm" {
+  description = "The number of datapoints breaching threshold to alarm"
+  type        = number
+  default     = 4
+}
+
+variable "ecs_lineagework_mem_evaluation_periods" {
+  description = "The number of periods over which the metric is evaluated"
+  type        = number
+  default     = 5
+}
+
+variable "ecs_lineagework_mem_period" {
+  description = "The number of seconds over which the metric is evaluated"
+  type        = number
+  default     = 300
+}
+
+variable "ecs_lineagework_mem_sns_arns" {
+  description = "The SNS topic arns to notify when the alarm fires"
+  type        = list(string)
+  default     = null
+}
+
+variable "ecs_lineagework_mem_threshold" {
+  description = "Alarms when the metric is above this value"
+  type        = number
+  default     = 70
+}
+
+variable "ecs_metricwork_mem_disabled" {
+  description = "Whether to disable the specific alarm"
+  type        = bool
+  default     = false
+}
+
+variable "ecs_metricwork_mem_dataponts_to_alarm" {
+  description = "The number of datapoints breaching threshold to alarm"
+  type        = number
+  default     = 4
+}
+
+variable "ecs_metricwork_mem_evaluation_periods" {
+  description = "The number of periods over which the metric is evaluated"
+  type        = number
+  default     = 5
+}
+
+variable "ecs_metricwork_mem_period" {
+  description = "The number of seconds over which the metric is evaluated"
+  type        = number
+  default     = 300
+}
+
+variable "ecs_metricwork_mem_sns_arns" {
+  description = "The SNS topic arns to notify when the alarm fires"
+  type        = list(string)
+  default     = null
+}
+
+variable "ecs_metricwork_mem_threshold" {
+  description = "Alarms when the metric is above this value"
+  type        = number
+  default     = 70
+}
+
+variable "ecs_monocle_mem_disabled" {
+  description = "Whether to disable the specific alarm"
+  type        = bool
+  default     = false
+}
+
+variable "ecs_monocle_mem_dataponts_to_alarm" {
+  description = "The number of datapoints breaching threshold to alarm"
+  type        = number
+  default     = 4
+}
+
+variable "ecs_monocle_mem_evaluation_periods" {
+  description = "The number of periods over which the metric is evaluated"
+  type        = number
+  default     = 5
+}
+
+variable "ecs_monocle_mem_period" {
+  description = "The number of seconds over which the metric is evaluated"
+  type        = number
+  default     = 300
+}
+
+variable "ecs_monocle_mem_sns_arns" {
+  description = "The SNS topic arns to notify when the alarm fires"
+  type        = list(string)
+  default     = null
+}
+
+variable "ecs_monocle_mem_threshold" {
+  description = "Alarms when the metric is above this value"
+  type        = number
+  default     = 70
+}
+
+variable "ecs_papi_mem_disabled" {
+  description = "Whether to disable the specific alarm"
+  type        = bool
+  default     = false
+}
+
+variable "ecs_papi_mem_dataponts_to_alarm" {
+  description = "The number of datapoints breaching threshold to alarm"
+  type        = number
+  default     = 4
+}
+
+variable "ecs_papi_mem_evaluation_periods" {
+  description = "The number of periods over which the metric is evaluated"
+  type        = number
+  default     = 5
+}
+
+variable "ecs_papi_mem_period" {
+  description = "The number of seconds over which the metric is evaluated"
+  type        = number
+  default     = 300
+}
+
+variable "ecs_papi_mem_sns_arns" {
+  description = "The SNS topic arns to notify when the alarm fires"
+  type        = list(string)
+  default     = null
+}
+
+variable "ecs_papi_mem_threshold" {
+  description = "Alarms when the metric is above this value"
+  type        = number
+  default     = 70
+}
+
+variable "ecs_scheduler_mem_disabled" {
+  description = "Whether to disable the specific alarm"
+  type        = bool
+  default     = false
+}
+
+variable "ecs_scheduler_mem_dataponts_to_alarm" {
+  description = "The number of datapoints breaching threshold to alarm"
+  type        = number
+  default     = 4
+}
+
+variable "ecs_scheduler_mem_evaluation_periods" {
+  description = "The number of periods over which the metric is evaluated"
+  type        = number
+  default     = 5
+}
+
+variable "ecs_scheduler_mem_period" {
+  description = "The number of seconds over which the metric is evaluated"
+  type        = number
+  default     = 300
+}
+
+variable "ecs_scheduler_mem_sns_arns" {
+  description = "The SNS topic arns to notify when the alarm fires"
+  type        = list(string)
+  default     = null
+}
+
+variable "ecs_scheduler_mem_threshold" {
+  description = "Alarms when the metric is above this value"
+  type        = number
+  default     = 70
+}
+
+variable "ecs_toretto_mem_disabled" {
+  description = "Whether to disable the specific alarm"
+  type        = bool
+  default     = false
+}
+
+variable "ecs_toretto_mem_dataponts_to_alarm" {
+  description = "The number of datapoints breaching threshold to alarm"
+  type        = number
+  default     = 4
+}
+
+variable "ecs_toretto_mem_evaluation_periods" {
+  description = "The number of periods over which the metric is evaluated"
+  type        = number
+  default     = 5
+}
+
+variable "ecs_toretto_mem_period" {
+  description = "The number of seconds over which the metric is evaluated"
+  type        = number
+  default     = 300
+}
+
+variable "ecs_toretto_mem_sns_arns" {
+  description = "The SNS topic arns to notify when the alarm fires"
+  type        = list(string)
+  default     = null
+}
+
+variable "ecs_toretto_mem_threshold" {
+  description = "Alarms when the metric is above this value"
+  type        = number
+  default     = 70
+}
+
+variable "ecs_web_mem_disabled" {
+  description = "Whether to disable the specific alarm"
+  type        = bool
+  default     = false
+}
+
+variable "ecs_web_mem_dataponts_to_alarm" {
+  description = "The number of datapoints breaching threshold to alarm"
+  type        = number
+  default     = 4
+}
+
+variable "ecs_web_mem_evaluation_periods" {
+  description = "The number of periods over which the metric is evaluated"
+  type        = number
+  default     = 5
+}
+
+variable "ecs_web_mem_period" {
+  description = "The number of seconds over which the metric is evaluated"
+  type        = number
+  default     = 300
+}
+
+variable "ecs_web_mem_sns_arns" {
+  description = "The SNS topic arns to notify when the alarm fires"
+  type        = list(string)
+  default     = null
+}
+
+variable "ecs_web_mem_threshold" {
+  description = "Alarms when the metric is above this value"
+  type        = number
+  default     = 70
+}
