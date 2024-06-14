@@ -46,7 +46,9 @@ locals {
   # Get this from Bigeye Support.  Typically you will want to install the latest.
   image_tag = "1.50.0"
   # This will pull images directly from Bigeye's ECR repository.  It is recommended to cache the images in your own local ECR repository.
-  image_registry = "021451147547.dkr.ecr.us-west-2.amazonaws.com"
+  # If you receive an error for image unavailable, contact Bigeye support, we likely do not have our images in your region yet and
+  # will need to publish them.
+  image_registry = "021451147547.dkr.ecr.${local.aws_region}.amazonaws.com"
 
   # This is the email address that Bigeye email notifications will be sent from.  Don't change this value for this example.
   from_email = format("bigeye@%s", local.domain_name)
