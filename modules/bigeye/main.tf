@@ -1307,7 +1307,7 @@ module "monocle" {
       BACKLOG                    = "512"
       WORKERS                    = "2"
       TIMEOUT                    = "900"
-      DATAWATCH_ADDRESS          = "https://${local.datawatch_dns_name}"
+      DATAWATCH_ADDRESS          = "https://${local.papi_dns_name}"
     },
     local.sentry_event_level_env_variable,
     var.datadog_agent_enabled ? {
@@ -1449,7 +1449,7 @@ module "toretto" {
       BACKLOG                    = "512"
       WORKERS                    = "1"
       TIMEOUT                    = "900"
-      DATAWATCH_ADDRESS          = "https://${local.datawatch_dns_name}"
+      DATAWATCH_ADDRESS          = "https://${local.papi_dns_name}"
     },
     local.sentry_event_level_env_variable,
     var.toretto_additional_environment_vars,
@@ -1613,7 +1613,7 @@ module "scheduler" {
       INSTANCE              = var.instance
       PORT                  = var.scheduler_port
       DEPLOY_TYPE           = "AWS"
-      DATAWATCH_ADDRESS     = "https://${local.datawork_dns_name}"
+      DATAWATCH_ADDRESS     = "https://${local.papi_dns_name}"
       MAX_RAM_PERCENTAGE    = "85"
       SCHEDULER_ADDRESS     = "http://localhost:${var.scheduler_port}"
       SCHEDULER_THREADS     = var.scheduler_threads
