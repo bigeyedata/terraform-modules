@@ -1,3 +1,12 @@
+## [6.4.1](https://github.com/bigeyedata/terraform-modules/compare/v6.4.0...v6.4.1) (2024-06-18)
+
+
+### Bug Fixes
+
+* iam role policy name for datawatch efs access ([d57720a](https://github.com/bigeyedata/terraform-modules/commit/d57720aa5f975b28d0be0abe48add99115dc3279))
+
+
+
 # [6.4.0](https://github.com/bigeyedata/terraform-modules/compare/v6.3.1...v6.4.0) (2024-06-14)
 
 
