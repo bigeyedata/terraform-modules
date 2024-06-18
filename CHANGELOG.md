@@ -1,3 +1,12 @@
+# [6.5.0](https://github.com/bigeyedata/terraform-modules/compare/v6.4.1...v6.5.0) (2024-06-18)
+
+
+### Features
+
+* route internal API calls to papi service 2 ([133ea11](https://github.com/bigeyedata/terraform-modules/commit/133ea1124a58812a3c576258db10524ff7356343))
+
+
+
 ## [6.4.1](https://github.com/bigeyedata/terraform-modules/compare/v6.4.0...v6.4.1) (2024-06-18)
 
 
