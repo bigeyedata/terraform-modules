@@ -1796,7 +1796,7 @@ resource "aws_iam_role_policy" "datawatch_ecs_exec" {
 resource "aws_iam_role_policy" "datawatch_efs" {
   count = local.create_datawatch_role && local.efs_volume_enabled ? 1 : 0
   role  = aws_iam_role.datawatch[0].id
-  name  = "AllowECSExec"
+  name  = "AllowEFS"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
