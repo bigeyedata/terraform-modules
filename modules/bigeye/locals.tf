@@ -176,6 +176,8 @@ locals {
       ROBOT_PASSWORD         = local.robot_password_secret_arn
       BASE_ENCRYPTION_SECRET = local.base_datawatch_encryption_secret_arn
       BASE_SALT              = local.base_datawatch_salt_secret_arn
+      KMS_KEY_ID             = aws_kms_key.datawatch.key_id
+      USE_KMS                = var.datwatch_encrypt_secrets_with_kms_enabled
     },
     var.datawatch_additional_secret_arns,
   )
