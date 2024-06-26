@@ -2029,6 +2029,16 @@ resource "aws_secretsmanager_secret_version" "base_salt" {
   secret_string  = random_password.base_salt[0].result
   version_stages = ["AWSCURRENT"]
 }
+resource "aws_kms_alias" "encryption_key_alias" {
+  name          = format("alias/bigeye/%s/datawatch", local.name)
+  target_key_id = aws_kms_key.datawatch.key_id
+}
+resource "aws_kms_key" "datawatch" {
+  description         = "KMS key that we use to encrypt/decrypt secrets. This will be used for securely storing sensitive information such as connection info. One will be created if not provided."
+  enable_key_rotation = true
+  # enable when we get past 5.33.0
+  # rotation_period_in_days = 120
+}
 
 locals {
   datawatch_common_env_vars = {
