@@ -1,3 +1,12 @@
+# [6.6.0](https://github.com/bigeyedata/terraform-modules/compare/v6.5.0...v6.6.0) (2024-06-26)
+
+
+### Features
+
+* use KMS to encrypt secrets ([8d528c3](https://github.com/bigeyedata/terraform-modules/commit/8d528c31dbe341637ade0a780123df826d966e90))
+
+
+
 # [6.5.0](https://github.com/bigeyedata/terraform-modules/compare/v6.4.1...v6.5.0) (2024-06-18)
 
 
