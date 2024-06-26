@@ -1817,6 +1817,34 @@ resource "aws_iam_role_policy" "datawatch_efs" {
   })
 }
 
+resource "aws_iam_role_policy" "datawatch_kms" {
+  count = local.create_datawatch_role && var.datwatch_encrypt_secrets_with_kms_enabled ? 1 : 0
+  role  = aws_iam_role.datawatch[0].id
+  name  = "AllowKMS"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "kms:DescribeKey",
+          "kms:Decrypt",
+          "kms:Encrypt",
+          "kms:GenerateDataKey*",
+          "kms:ReEncrypt*",
+
+        ],
+        "Resource" : aws_kms_key.datawatch[0].arn
+        Condition = {
+          StringEquals = {
+            "aws:ResourceTag/stack" = local.name
+          }
+        }
+      }
+    ]
+  })
+}
+
 
 #======================================================
 # Datawatch - Redis
