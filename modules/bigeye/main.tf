@@ -1818,7 +1818,6 @@ resource "aws_iam_role_policy" "datawatch_efs" {
 }
 
 
-
 #======================================================
 # Datawatch - Redis
 #======================================================
@@ -2030,10 +2029,12 @@ resource "aws_secretsmanager_secret_version" "base_salt" {
   version_stages = ["AWSCURRENT"]
 }
 resource "aws_kms_alias" "encryption_key_alias" {
+  count         = var.datwatch_encrypt_secrets_with_kms_enabled ? 1 : 0
   name          = format("alias/bigeye/%s/datawatch", local.name)
-  target_key_id = aws_kms_key.datawatch.key_id
+  target_key_id = aws_kms_key.datawatch[0].key_id
 }
 resource "aws_kms_key" "datawatch" {
+  count               = var.datwatch_encrypt_secrets_with_kms_enabled ? 1 : 0
   description         = "KMS key that we use to encrypt/decrypt secrets. This will be used for securely storing sensitive information such as connection info. One will be created if not provided."
   enable_key_rotation = true
   # enable when we get past 5.33.0
@@ -2092,6 +2093,9 @@ locals {
 
     MTLS_KEY_PATH  = "/temporal/mtls.key"
     MTLS_CERT_PATH = "/temporal/mtls.pem"
+
+    USE_KMS    = var.datwatch_encrypt_secrets_with_kms_enabled
+    KMS_KEY_ID = var.datwatch_encrypt_secrets_with_kms_enabled ? aws_kms_key.datawatch[0].key_id : ""
   }
 }
 
