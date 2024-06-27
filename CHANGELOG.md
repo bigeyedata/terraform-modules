@@ -1,3 +1,13 @@
+## [6.6.1](https://github.com/bigeyedata/terraform-modules/compare/v6.6.0...v6.6.1) (2024-06-27)
+
+
+### Bug Fixes
+
+* add permissions for datawatch ECS task to use KMS key ([66da40f](https://github.com/bigeyedata/terraform-modules/commit/66da40f0cc38b88efd0bc159f85aee010d7b8249))
+* don't reference KMS unless feature is enabled ([1aa302a](https://github.com/bigeyedata/terraform-modules/commit/1aa302a5ff99671d0ece8f623c5061b50b08dd87))
+
+
+
 # [6.6.0](https://github.com/bigeyedata/terraform-modules/compare/v6.5.0...v6.6.0) (2024-06-26)
 
 
