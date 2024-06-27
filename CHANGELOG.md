@@ -1,3 +1,30 @@
+# [7.0.0](https://github.com/bigeyedata/terraform-modules/compare/v6.6.1...v7.0.0) (2024-06-27)
+
+
+* feat!: autoscale papi service ([c4f8c3a](https://github.com/bigeyedata/terraform-modules/commit/c4f8c3ad42e23b462c1b80905646dee618eadfeb))
+
+
+### Features
+
+* reduce Papi ECS service deregistration delay to 3 minutes ([2067655](https://github.com/bigeyedata/terraform-modules/commit/2067655b0361148239ce2a9d3fcd79181cbfb32d))
+
+
+### BREAKING CHANGES
+
+* Upgrading to this version will result downtime while
+the Papi (internal API service) ECS service is replaced with an
+autoscaling version.  The downtime can be avoided by manually
+running a terraform state move before running terraform apply:
+
+terraform state mv \
+'module.bigeye.module.papi.aws_ecs_service.controlled_count[0]' \
+'module.bigeye.module.papi.aws_ecs_service.uncontrolled_count[0]'
+
+This also speeds up the terraform apply by ~15 minutes as that is
+the current LB deregistration delay on the Papi service.
+
+
+
 ## [6.6.1](https://github.com/bigeyedata/terraform-modules/compare/v6.6.0...v6.6.1) (2024-06-27)
 
 
