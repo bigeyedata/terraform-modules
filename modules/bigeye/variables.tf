@@ -1924,9 +1924,9 @@ variable "papi_image_tag" {
 }
 
 variable "papi_desired_count" {
-  description = "The desired number of replicas"
+  description = "The desired number of replicas.  For autoscaling services, this becomes the max autoscaling capacity"
   type        = number
-  default     = 1
+  default     = 15
 }
 
 variable "papi_cpu" {
@@ -1971,6 +1971,17 @@ variable "papi_enable_ecs_exec" {
   default     = false
 }
 
+variable "papi_autoscaling_cpu_enabled" {
+  description = "Whether papi autoscaling is enabled. Note - if you change this variable, it changes the terraform resource that is created. You must run 'terraform state mv' in order to gracefully make this change"
+  type        = bool
+  default     = true
+}
+
+variable "papi_autoscaling_cpu_target" {
+  description = "% avg CPU util to use as autoscaling target"
+  type        = number
+  default     = 65
+}
 #======================================================
 # Application Variables - Scheduler
 #======================================================

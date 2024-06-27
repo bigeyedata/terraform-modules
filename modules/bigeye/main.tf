@@ -2477,14 +2477,15 @@ module "papi" {
   lb_subnet_ids                    = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids = concat(var.papi_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs      = var.internal_additional_ingress_cidrs
-  lb_deregistration_delay          = 900
+  lb_deregistration_delay          = 180
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
   lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "papi")
 
   # Task settings
-  desired_count             = var.papi_desired_count
+  control_desired_count     = var.papi_autoscaling_cpu_enabled ? false : true
+  desired_count             = var.papi_autoscaling_cpu_enabled ? 1 : var.papi_desired_count
   cpu                       = var.papi_cpu
   memory                    = var.papi_memory
   execution_role_arn        = local.ecs_role_arn
@@ -2524,4 +2525,31 @@ module "papi" {
   )
 
   secret_arns = local.datawatch_secret_arns
+}
+
+resource "aws_appautoscaling_target" "papi" {
+  count              = var.papi_autoscaling_cpu_enabled ? 1 : 0
+  depends_on         = [module.papi]
+  min_capacity       = 1
+  max_capacity       = var.papi_desired_count
+  resource_id        = format("service/%s/%s-papi", local.name, local.name)
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+}
+
+resource "aws_appautoscaling_policy" "papi" {
+  count              = var.papi_autoscaling_cpu_enabled ? 1 : 0
+  depends_on         = [aws_appautoscaling_target.papi]
+  name               = format("%s-papi-cpu", local.name)
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.papi[0].resource_id
+  scalable_dimension = aws_appautoscaling_target.papi[0].scalable_dimension
+  service_namespace  = aws_appautoscaling_target.papi[0].service_namespace
+  target_tracking_scaling_policy_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ECSServiceAverageCPUUtilization"
+    }
+
+    target_value = var.papi_autoscaling_cpu_target
+  }
 }
