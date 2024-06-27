@@ -2477,7 +2477,7 @@ module "papi" {
   lb_subnet_ids                    = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids = concat(var.papi_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs      = var.internal_additional_ingress_cidrs
-  lb_deregistration_delay          = 900
+  lb_deregistration_delay          = 180
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
