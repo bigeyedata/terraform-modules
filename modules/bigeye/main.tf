@@ -1835,11 +1835,6 @@ resource "aws_iam_role_policy" "datawatch_kms" {
 
         ],
         "Resource" : aws_kms_key.datawatch[0].arn
-        Condition = {
-          StringEquals = {
-            "aws:ResourceTag/stack" = local.name
-          }
-        }
       }
     ]
   })
