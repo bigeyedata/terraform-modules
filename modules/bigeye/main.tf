@@ -2062,6 +2062,7 @@ resource "aws_kms_key" "datawatch" {
   enable_key_rotation = true
   # enable when we get past 5.33.0
   # rotation_period_in_days = 120
+  tags = merge(local.tags, { app = "datawatch" })
 }
 
 locals {
