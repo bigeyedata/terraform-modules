@@ -1,3 +1,13 @@
+## [7.0.1](https://github.com/bigeyedata/terraform-modules/compare/v7.0.0...v7.0.1) (2024-06-29)
+
+
+### Bug Fixes
+
+* add tags to datawatch KMS key ([e6d8cd3](https://github.com/bigeyedata/terraform-modules/commit/e6d8cd3b4e5e66cf8cc7e71b5573ee0eb523e1e1))
+* remove broken condition in kms policy ([893d7b2](https://github.com/bigeyedata/terraform-modules/commit/893d7b27cc90f25cdc1c1283a845a8a9a6fd151f))
+
+
+
 # [7.0.0](https://github.com/bigeyedata/terraform-modules/compare/v6.6.1...v7.0.0) (2024-06-27)
 
 
