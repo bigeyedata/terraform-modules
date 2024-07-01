@@ -201,6 +201,12 @@ variable "top_level_dns_name" {
   }
 }
 
+variable "private_hosted_zone" {
+  description = "Whether the top level hosted zone is private or not"
+  type        = bool
+  default     = false
+}
+
 variable "vanity_alias" {
   description = "If specified, will serve as a top level alias subdomain"
   type        = string

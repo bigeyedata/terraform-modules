@@ -385,8 +385,9 @@ module "vpc_endpoints" {
 # DNS
 #======================================================
 data "aws_route53_zone" "this" {
-  count = var.create_dns_records ? 1 : 0
-  name  = "${var.top_level_dns_name}."
+  count        = var.create_dns_records ? 1 : 0
+  name         = "${var.top_level_dns_name}."
+  private_zone = var.private_hosted_zone
 }
 
 resource "aws_route53_record" "apex" {
