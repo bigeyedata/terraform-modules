@@ -1,37 +1,47 @@
 # [8.0.0](https://github.com/bigeyedata/terraform-modules/compare/v7.0.2...v8.0.0) (2024-07-02)
 
 
-* fix!: change default to false datawatch_encrypt_secrets_with_kms_enabled ([09acc39](https://github.com/bigeyedata/terraform-modules/commit/09acc39f6c4dcfe84ad66aebe8c85d6b066593e4))
+## Breaking Changes
+
+### Variable Rename
+
+[7b8a504](https://github.com/bigeyedata/terraform-modules/commit/50de5c1d19537a0e5c8e461281e2b5016f15d86b)
+
+The `datwatch_encrypt_secrets_with_kms_enabled` variable had a typo and
+has been renamed to `datawatch_encrypt_secrets_with_kms_enabled`.
+
+### Change Default KMS Setting
+
+[09acc39](https://github.com/bigeyedata/terraform-modules/commit/09acc39f6c4dcfe84ad66aebe8c85d6b066593e4)
+
+The `datawatch_encrypt_secrets_with_kms_enabled` flag enables KMS
+encryption in datawatch. As of `1.57.0` the feature is not yet GA, so
+this value is being changed to false.
+
+**Action required if**
+
+* Upgrading from a terraform version between `6.6.0` and `7.0.2`.
+* AND your application version is greater than `1.58.0`.
+
+If your installation does not meet the above conditions, no action is required.
+
+If you do meet the above conditions, then certain data has already been
+encrypted with KMS, and if you do not follow the steps below, then you
+will be at risk of data corruption.
+
+#### Recommendation
+
+You must set your
+`datawatch_encrypt_secrets_with_kms_enabled` variable to true.
+
+If you accidentally delete your KMS Key, you must cancel its deletion.
+Please refer to the AWS documentation on cancelling a key deletion
+[here](https://docs.aws.amazon.com/kms/latest/developerguide/deleting-keys-scheduling-key-deletion.html).
 
 
-### Features
+## Features
 
 * add ability to bring your own kms key for encryption ([19d1b77](https://github.com/bigeyedata/terraform-modules/commit/19d1b77d73a6b383e55dafd6ff7988fa4d620f7b))
-
-
-### BREAKING CHANGES
-
-* If you are upgrading from 6.6.0 or later to 8.0.0,
-and have application version greater than 1.57.0, then no action
-will result in corruption of your data.
-
-Recommendation: If upgrading from terraform version greater than 6.6.0
-but less than 8.0.0, and have application version 1.58.0 or higher,
-then you must set datawatch_encrypt_secrets_with_kms_enabled = true.
-If your application version is less than 1.57.0, then no action is
-required.
-
-Downtime: Yes if you do not follow these instructions. Otherwise no.
-If you encounter an error as part of this and yoru KMS key is
-accidentally deleted, then please make sure you reinstate your
-KMS key. KMS keys are only retained for a short period of time after
-deletion, allowing for recovery, so make sure you recover any
-accidentally KMS keys, otherwise your data will be irrecoverable.
-Only application versions 1.58.0 or greater are at risk of this.
-
-Steps: Upgrade to version 7.0.2, then set the
-datawatch_encrypt_secrets_with_kms_enabled variable
-to true, run terraform apply, and then upgrade to 8.0.0.
 
 
 
