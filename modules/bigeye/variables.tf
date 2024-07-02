@@ -1381,7 +1381,7 @@ variable "datawatch_base_salt_secret_arn" {
   default     = ""
 }
 
-variable "datwatch_encrypt_secrets_with_kms_enabled" {
+variable "datawatch_encrypt_secrets_with_kms_enabled" {
   description = "Flag for enabling KMS secret encryption. Setting this value to false after it has been set to true is NOT supported and will break your installation."
   type        = bool
   default     = false
