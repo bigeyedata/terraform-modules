@@ -117,6 +117,12 @@ locals {
   create_monocle_role   = var.monocle_task_role_arn == ""
   monocle_role_arn      = local.create_monocle_role ? aws_iam_role.monocle[0].arn : var.monocle_task_role_arn
 
+  # KMS
+  using_kms      = var.datawatch_encrypt_secrets_with_kms_enabled ? true : false
+  create_kms_key = var.datawatch_kms_key_arn == "" ? true : false
+  kms_key_arn    = local.create_kms_key ? aws_kms_key.datawatch[0].arn : data.aws_kms_key.datawatch[0].arn
+  kms_key_id     = local.create_kms_key ? aws_kms_key.datawatch[0].key_id : data.aws_kms_key.datawatch[0].id
+
   # Models bucket random name
   models_bucket_has_name_override = var.ml_models_s3_bucket_name_override == "" ? false : true
 

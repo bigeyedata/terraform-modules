@@ -1387,6 +1387,12 @@ variable "datwatch_encrypt_secrets_with_kms_enabled" {
   default     = false
 }
 
+variable "datawatch_kms_key_arn" {
+  description = "ARN of existing KMS Key to use for data encryption"
+  type        = string
+  default     = ""
+}
+
 variable "datawatch_db_name" {
   description = "The database name to use in the connection string for Datawatch apps. This is here because some RDS instances have been created with a blank DB name, so it can't be assumed the RDS DB name is a valid Database name for the connection string. If not specified, it will default to `datawatch_rds_db_name`"
   type        = string
