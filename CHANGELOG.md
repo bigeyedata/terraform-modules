@@ -1,3 +1,12 @@
+## [7.0.2](https://github.com/bigeyedata/terraform-modules/compare/v7.0.1...v7.0.2) (2024-07-02)
+
+
+### Bug Fixes
+
+* add setting private_hosted_zone to support private zones ([0e05741](https://github.com/bigeyedata/terraform-modules/commit/0e057411ec2ae9ce708171d6ce28e747da12f19b))
+
+
+
 ## [7.0.1](https://github.com/bigeyedata/terraform-modules/compare/v7.0.0...v7.0.1) (2024-06-29)
 
 
