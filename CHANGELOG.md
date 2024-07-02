@@ -1,3 +1,40 @@
+# [8.0.0](https://github.com/bigeyedata/terraform-modules/compare/v7.0.2...v8.0.0) (2024-07-02)
+
+
+* fix!: change default to false datawatch_encrypt_secrets_with_kms_enabled ([09acc39](https://github.com/bigeyedata/terraform-modules/commit/09acc39f6c4dcfe84ad66aebe8c85d6b066593e4))
+
+
+### Features
+
+* add ability to bring your own kms key for encryption ([19d1b77](https://github.com/bigeyedata/terraform-modules/commit/19d1b77d73a6b383e55dafd6ff7988fa4d620f7b))
+
+
+### BREAKING CHANGES
+
+* If you are upgrading from 6.6.0 or later to 8.0.0,
+and have application version greater than 1.57.0, then no action
+will result in corruption of your data.
+
+Recommendation: If upgrading from terraform version greater than 6.6.0
+but less than 8.0.0, and have application version 1.58.0 or higher,
+then you must set datawatch_encrypt_secrets_with_kms_enabled = true.
+If your application version is less than 1.57.0, then no action is
+required.
+
+Downtime: Yes if you do not follow these instructions. Otherwise no.
+If you encounter an error as part of this and yoru KMS key is
+accidentally deleted, then please make sure you reinstate your
+KMS key. KMS keys are only retained for a short period of time after
+deletion, allowing for recovery, so make sure you recover any
+accidentally KMS keys, otherwise your data will be irrecoverable.
+Only application versions 1.58.0 or greater are at risk of this.
+
+Steps: Upgrade to version 7.0.2, then set the
+datawatch_encrypt_secrets_with_kms_enabled variable
+to true, run terraform apply, and then upgrade to 8.0.0.
+
+
+
 ## [7.0.2](https://github.com/bigeyedata/terraform-modules/compare/v7.0.1...v7.0.2) (2024-07-02)
 
 
