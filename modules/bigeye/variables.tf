@@ -1384,7 +1384,7 @@ variable "datawatch_base_salt_secret_arn" {
 variable "datwatch_encrypt_secrets_with_kms_enabled" {
   description = "Flag for enabling KMS secret encryption. Setting this to false is not recommended unless KMS is not available in your AWS environment."
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "datawatch_db_name" {
