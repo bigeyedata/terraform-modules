@@ -1,3 +1,12 @@
+## [8.0.1](https://github.com/bigeyedata/terraform-modules/compare/v8.0.0...v8.0.1) (2024-07-03)
+
+
+### Bug Fixes
+
+* always create KMS IAM Policy if creating IAM Role ([af1ff1d](https://github.com/bigeyedata/terraform-modules/commit/af1ff1daca609555119ff9476e13f4b52e6b694e))
+
+
+
 # [8.0.0](https://github.com/bigeyedata/terraform-modules/compare/v7.0.2...v8.0.0) (2024-07-02)
 
 
