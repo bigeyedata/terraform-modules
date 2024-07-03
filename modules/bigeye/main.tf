@@ -1819,7 +1819,7 @@ resource "aws_iam_role_policy" "datawatch_efs" {
 }
 
 resource "aws_iam_role_policy" "datawatch_kms" {
-  count = local.create_datawatch_role && local.using_kms ? 1 : 0
+  count = local.create_datawatch_role ? 1 : 0
   role  = aws_iam_role.datawatch[0].id
   name  = "AllowKMS"
   policy = jsonencode({
