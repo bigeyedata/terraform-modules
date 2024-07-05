@@ -2064,12 +2064,11 @@ data "aws_kms_key" "datawatch" {
 }
 
 resource "aws_kms_key" "datawatch" {
-  count               = local.create_kms_key ? 1 : 0
-  description         = "KMS key that we use to encrypt/decrypt secrets. This will be used for securely storing sensitive information such as connection info. One will be created if not provided."
-  enable_key_rotation = true
-  # enable when we get past 5.33.0
-  # rotation_period_in_days = 120
-  tags = merge(local.tags, { app = "datawatch" })
+  count                   = local.create_kms_key ? 1 : 0
+  description             = "KMS key that we use to encrypt/decrypt secrets. This will be used for securely storing sensitive information such as connection info. One will be created if not provided."
+  enable_key_rotation     = true
+  rotation_period_in_days = 120
+  tags                    = merge(local.tags, { app = "datawatch" })
 }
 
 locals {
