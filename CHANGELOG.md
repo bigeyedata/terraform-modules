@@ -1,3 +1,28 @@
+# [9.0.0](https://github.com/bigeyedata/terraform-modules/compare/v8.0.1...v9.0.0) (2024-07-05)
+
+
+* fix!: upgrade AWS provider version from 5.33 to 5.50 ([0afcdc1](https://github.com/bigeyedata/terraform-modules/commit/0afcdc169cea92adde72da009000b0601b84f205))
+
+
+### Features
+
+* enable KMS key rotation ([05897ed](https://github.com/bigeyedata/terraform-modules/commit/05897ed613a738b0aed3151f1dbf3da6bf612796))
+* make KMS key rotation days configurable ([82f6bbf](https://github.com/bigeyedata/terraform-modules/commit/82f6bbfd907fe0e3938550b4c30b3104bf48a273))
+
+
+### BREAKING CHANGES
+
+* You must run `terraform init -upgrade` to upgrade
+your provider versions.
+
+Recommendation: Run `terraform init -upgrade`.
+
+Downtime: No.
+
+Steps: Run `terraform init -upgrade`.
+
+
+
 ## [8.0.1](https://github.com/bigeyedata/terraform-modules/compare/v8.0.0...v8.0.1) (2024-07-03)
 
 
