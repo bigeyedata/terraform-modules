@@ -611,3 +611,117 @@ module "elb_haproxy" {
   error_rate_sns_arns            = coalesce(var.elb_haproxy_error_rate_sns_arns, [local.low_urgency_sns_topic_arn])
   error_rate_threshold           = var.elb_haproxy_error_rate_threshold
 }
+
+#======================================================
+# ELB
+#======================================================
+
+module "ecs_datawatch" {
+  source                  = "./ecs"
+  stack                   = var.stack
+  app                     = "datawatch"
+  mem_disabled            = var.ecs_datawatch_mem_disabled
+  mem_datapoints_to_alarm = var.ecs_datawatch_mem_dataponts_to_alarm
+  mem_evaluation_periods  = var.ecs_datawatch_mem_evaluation_periods
+  mem_period              = var.ecs_datawatch_mem_period
+  mem_sns_arns            = coalesce(var.ecs_datawatch_mem_sns_arns, [local.low_urgency_sns_topic_arn])
+  mem_threshold           = var.ecs_datawatch_mem_threshold
+}
+
+module "ecs_datawork" {
+  source                  = "./ecs"
+  stack                   = var.stack
+  app                     = "datawork"
+  mem_disabled            = var.ecs_datawork_mem_disabled
+  mem_datapoints_to_alarm = var.ecs_datawork_mem_dataponts_to_alarm
+  mem_evaluation_periods  = var.ecs_datawork_mem_evaluation_periods
+  mem_period              = var.ecs_datawork_mem_period
+  mem_sns_arns            = coalesce(var.ecs_datawork_mem_sns_arns, [local.low_urgency_sns_topic_arn])
+  mem_threshold           = var.ecs_datawork_mem_threshold
+}
+
+module "ecs_lineagework" {
+  source                  = "./ecs"
+  stack                   = var.stack
+  app                     = "lineagework"
+  mem_disabled            = var.ecs_lineagework_mem_disabled
+  mem_datapoints_to_alarm = var.ecs_lineagework_mem_dataponts_to_alarm
+  mem_evaluation_periods  = var.ecs_lineagework_mem_evaluation_periods
+  mem_period              = var.ecs_lineagework_mem_period
+  mem_sns_arns            = coalesce(var.ecs_lineagework_mem_sns_arns, [local.low_urgency_sns_topic_arn])
+  mem_threshold           = var.ecs_lineagework_mem_threshold
+}
+
+module "ecs_metricwork" {
+  source                  = "./ecs"
+  stack                   = var.stack
+  app                     = "metricwork"
+  mem_disabled            = var.ecs_metricwork_mem_disabled
+  mem_datapoints_to_alarm = var.ecs_metricwork_mem_dataponts_to_alarm
+  mem_evaluation_periods  = var.ecs_metricwork_mem_evaluation_periods
+  mem_period              = var.ecs_metricwork_mem_period
+  mem_sns_arns            = coalesce(var.ecs_metricwork_mem_sns_arns, [local.low_urgency_sns_topic_arn])
+  mem_threshold           = var.ecs_metricwork_mem_threshold
+}
+
+module "ecs_monocle" {
+  source                  = "./ecs"
+  stack                   = var.stack
+  app                     = "monocle"
+  mem_disabled            = var.ecs_monocle_mem_disabled
+  mem_datapoints_to_alarm = var.ecs_monocle_mem_dataponts_to_alarm
+  mem_evaluation_periods  = var.ecs_monocle_mem_evaluation_periods
+  mem_period              = var.ecs_monocle_mem_period
+  mem_sns_arns            = coalesce(var.ecs_monocle_mem_sns_arns, [local.low_urgency_sns_topic_arn])
+  mem_threshold           = var.ecs_monocle_mem_threshold
+}
+
+module "ecs_papi" {
+  source                  = "./ecs"
+  stack                   = var.stack
+  app                     = "monocle"
+  mem_disabled            = var.ecs_papi_mem_disabled
+  mem_datapoints_to_alarm = var.ecs_papi_mem_dataponts_to_alarm
+  mem_evaluation_periods  = var.ecs_papi_mem_evaluation_periods
+  mem_period              = var.ecs_papi_mem_period
+  mem_sns_arns            = coalesce(var.ecs_papi_mem_sns_arns, [local.low_urgency_sns_topic_arn])
+  mem_threshold           = var.ecs_papi_mem_threshold
+}
+
+module "ecs_scheduler" {
+  source                  = "./ecs"
+  stack                   = var.stack
+  app                     = "scheduler"
+  mem_disabled            = var.ecs_scheduler_mem_disabled
+  mem_datapoints_to_alarm = var.ecs_scheduler_mem_dataponts_to_alarm
+  mem_evaluation_periods  = var.ecs_scheduler_mem_evaluation_periods
+  mem_period              = var.ecs_scheduler_mem_period
+  mem_sns_arns            = coalesce(var.ecs_scheduler_mem_sns_arns, [local.low_urgency_sns_topic_arn])
+  mem_threshold           = var.ecs_scheduler_mem_threshold
+}
+
+module "ecs_toretto" {
+  source                  = "./ecs"
+  stack                   = var.stack
+  app                     = "toretto"
+  mem_disabled            = var.ecs_toretto_mem_disabled
+  mem_datapoints_to_alarm = var.ecs_toretto_mem_dataponts_to_alarm
+  mem_evaluation_periods  = var.ecs_toretto_mem_evaluation_periods
+  mem_period              = var.ecs_toretto_mem_period
+  mem_sns_arns            = coalesce(var.ecs_toretto_mem_sns_arns, [local.low_urgency_sns_topic_arn])
+  mem_threshold           = var.ecs_toretto_mem_threshold
+}
+
+module "ecs_web" {
+  source                  = "./ecs"
+  stack                   = var.stack
+  app                     = "web"
+  mem_disabled            = var.ecs_web_mem_disabled
+  mem_datapoints_to_alarm = var.ecs_web_mem_dataponts_to_alarm
+  mem_evaluation_periods  = var.ecs_web_mem_evaluation_periods
+  mem_period              = var.ecs_web_mem_period
+  mem_sns_arns            = coalesce(var.ecs_web_mem_sns_arns, [local.low_urgency_sns_topic_arn])
+  mem_threshold           = var.ecs_web_mem_threshold
+}
+
+# TODO temporal ECS mem alarms
