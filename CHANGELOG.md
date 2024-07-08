@@ -1,3 +1,12 @@
+# [9.1.0](https://github.com/bigeyedata/terraform-modules/compare/v9.0.0...v9.1.0) (2024-07-08)
+
+
+### Features
+
+* add ECS mem util percent alarm ([8d4f6d8](https://github.com/bigeyedata/terraform-modules/commit/8d4f6d8a54da15f9f13c11b8bce3d68082230a53))
+
+
+
 # [9.0.0](https://github.com/bigeyedata/terraform-modules/compare/v8.0.1...v9.0.0) (2024-07-05)
 
 
