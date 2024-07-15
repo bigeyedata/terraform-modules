@@ -2017,6 +2017,24 @@ resource "aws_secretsmanager_secret_version" "robot_password" {
   version_stages = ["AWSCURRENT"]
 }
 
+resource "random_password" "robot_agent_api_key" {
+  count   = local.create_robot_agent_apikey_secret ? 1 : 0
+  length  = 40
+  special = false
+}
+resource "aws_secretsmanager_secret" "robot_agent_api_key" {
+  count                   = local.create_robot_agent_apikey_secret ? 1 : 0
+  name                    = format("bigeye/%s/datawatch/robot-agent-api-key", local.name)
+  recovery_window_in_days = local.secret_retention_days
+  tags                    = local.tags
+}
+resource "aws_secretsmanager_secret_version" "robot_agent_api_key" {
+  count          = local.create_robot_agent_apikey_secret ? 1 : 0
+  secret_id      = aws_secretsmanager_secret.robot_agent_api_key[0].id
+  secret_string  = "bigeye_agent_${random_password.robot_agent_api_key[0].result}"
+  version_stages = ["AWSCURRENT"]
+}
+
 resource "random_password" "base_encryption" {
   count   = local.create_base_dw_encryption_secret ? 1 : 0
   length  = 32
@@ -2208,7 +2226,7 @@ module "datawatch" {
 }
 
 module "datawork" {
-  depends_on = [aws_secretsmanager_secret_version.robot_password]
+  depends_on = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
   source     = "../simpleservice"
   app        = "datawork"
   instance   = var.instance
@@ -2289,7 +2307,7 @@ module "datawork" {
 }
 
 module "lineagework" {
-  depends_on = [aws_secretsmanager_secret_version.robot_password]
+  depends_on = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
   source     = "../simpleservice"
   app        = "lineagework"
   instance   = var.instance
@@ -2371,7 +2389,7 @@ module "lineagework" {
 }
 
 module "metricwork" {
-  depends_on = [aws_secretsmanager_secret_version.robot_password]
+  depends_on = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
   source     = "../simpleservice"
   app        = "metricwork"
   instance   = var.instance
@@ -2451,7 +2469,7 @@ module "metricwork" {
 }
 
 module "papi" {
-  depends_on = [aws_secretsmanager_secret_version.robot_password]
+  depends_on = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
   source     = "../simpleservice"
   app        = "papi"
   instance   = var.instance
