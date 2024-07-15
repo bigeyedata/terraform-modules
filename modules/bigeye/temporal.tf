@@ -381,7 +381,13 @@ locals {
     "frontend" = merge(
       local.temporal_environment_variables_general,
       {
-        SERVICES = "frontend"
+        SERVICES                                   = "frontend"
+        TEMPORAL_AUTH_AUTHORIZER                   = "default"
+        TEMPORAL_AUTH_CLAIM_MAPPER                 = "apikey"
+        TEMPORAL_TLS_INTERNODE_REQUIRE_CLIENT_AUTH = "true"
+        TEMPORAL_TLS_ALLOW_CLIENT_MTLS             = "true"
+        TEMPORAL_TLS_REQUIRE_CLIENT_AUTH           = "false"
+        TEMPORAL_API_KEY_VERIFICATION_ENDPOINT     = "https://${local.vanity_dns_name}/api/v1/agent-api-keys/verify"
       },
       var.temporal_additional_environment_vars,
       var.temporal_frontend_additional_environment_vars,
@@ -434,6 +440,19 @@ locals {
     var.temporal_additional_secret_arns,
   )
 
+  temporal_component_secret_arns = {
+    "frontend" = merge(
+      local.temporal_secret_arns,
+      {
+        TEMPORAL_API_KEY_CONSTANT_KEY = local.robot_agent_apikey_secret_arn
+      }
+    )
+    "internal-frontend" = local.temporal_secret_arns
+    "history"           = local.temporal_secret_arns
+    "matching"          = local.temporal_secret_arns
+    "worker"            = local.temporal_secret_arns
+  }
+
   log_configuration_def = var.temporal_logging_enabled ? var.awsfirelens_enabled ? {
     logDriver = "awsfirelens",
     options = {
@@ -455,7 +474,6 @@ locals {
 
   temporal_container_def_general = {
     image            = format("%s/%s%s:%s", local.image_registry, "temporal", var.image_repository_suffix, local.temporal_image_tag)
-    secrets          = [for k, v in local.temporal_secret_arns : { Name = k, ValueFrom = v }]
     logConfiguration = local.log_configuration_def
     portMappings = [
       # Frontend service membership
@@ -529,6 +547,7 @@ locals {
             "com.datadoghq.tags.service"   = "temporal-${local.temporal_svc_override_names[svc]}"
           }
         ) : {}
+        secrets     = [for k, v in local.temporal_component_secret_arns[svc] : { Name = k, ValueFrom = v }]
         environment = [for k, v in local.temporal_component_env_vars[svc] : { Name = k, Value = v }]
         mountPoints = contains(var.efs_volume_enabled_services, "temporal-${local.temporal_svc_override_names[svc]}") ? [{
           containerPath : var.efs_mount_point,
