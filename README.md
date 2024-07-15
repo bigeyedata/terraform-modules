@@ -26,15 +26,23 @@ a Bigeye stack. Other common configurations are also in the examples directory.
 For a full list of the configuration options, please review the
 [variables.tf](./modules/bigeye/variables.tf) in the main bigeye module.
 
-## Compatibility
+## Compatibility Matrix
 
-As features are released, newer versions of this terraform infrastructure are required.
-To prevent issues resulting from misalignment between the `image_tag` of the application
-and the module version, please consult this chart:
+Some infrastructure changes require application changes to be in place,
+and some application changes require infrastructure changes. This section
+of the README notes these changes.
 
-| Application Version | Terraform Module Version |
-| ------------------- | ------------------------ |
-| 1.48.0 | requires 3.12.0+ |
+This compatibility matrix is not exhaustive. It is added on a
+best-effort basis. The terraform-modules version refers to the version
+of the terraform module in this repository. The Application Version refers
+to the value of the `image_tag`, specifying the application image.
+It is always recommended to be on the latest
+terraform version and application version.
+
+| terraform-modules Version | Application Version | Comment |
+| ----------------- | ------------------- | ------- |
+| 9.2.0 | >= 1.57.0 | TF adds temporal settings that were released in app version 1.57.0 |
+| >= 3.12.0 | 1.48.0 | Application 1.48.0 requires at least terraform-modules version 3.12.0 |
 
 ## Upgrading
 
