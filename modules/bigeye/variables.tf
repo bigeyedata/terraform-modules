@@ -1369,6 +1369,12 @@ variable "datawatch_robot_password_secret_arn" {
   default     = ""
 }
 
+variable "datawatch_robot_agent_api_key_secret_arn" {
+  description = "ARN for the secretsmanager secret holding the Robot Agent API Key. If providing it yourself, format it with 'bigeye_agent_' followed by 40 random alphanumeric characters. One will be created if not provided"
+  type        = string
+  default     = ""
+}
+
 variable "datawatch_base_encryption_secret_arn" {
   description = "ARN for secretsmanager secret holding the base encryption secret. This will be used for securely storing sensitive information such as connection info. One will be created if not provided."
   type        = string

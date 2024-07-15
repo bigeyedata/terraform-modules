@@ -48,6 +48,8 @@ locals {
   redis_auth_token_secret_arn          = local.create_redis_auth_token_secret ? aws_secretsmanager_secret.redis_auth_token[0].arn : var.redis_auth_token_secret_arn
   create_robot_password_secret         = var.datawatch_robot_password_secret_arn == ""
   robot_password_secret_arn            = local.create_robot_password_secret ? aws_secretsmanager_secret.robot_password[0].arn : var.datawatch_robot_password_secret_arn
+  create_robot_agent_apikey_secret     = var.datawatch_robot_agent_api_key_secret_arn == ""
+  robot_agent_apikey_secret_arn        = local.create_robot_agent_apikey_secret ? aws_secretsmanager_secret.robot_agent_api_key[0].arn : var.datawatch_robot_agent_api_key_secret_arn
   create_base_dw_encryption_secret     = var.datawatch_base_encryption_secret_arn == ""
   base_datawatch_encryption_secret_arn = local.create_base_dw_encryption_secret ? aws_secretsmanager_secret.base_encryption[0].arn : var.datawatch_base_encryption_secret_arn
   create_base_dw_salt_secret           = var.datawatch_base_salt_secret_arn == ""
@@ -180,6 +182,7 @@ locals {
       MQ_BROKER_PASSWORD     = local.rabbitmq_user_password_secret_arn
       MYSQL_PASSWORD         = local.datawatch_rds_password_secret_arn
       ROBOT_PASSWORD         = local.robot_password_secret_arn
+      ROBOT_AGENT_API_KEY    = local.robot_agent_apikey_secret_arn
       BASE_ENCRYPTION_SECRET = local.base_datawatch_encryption_secret_arn
       BASE_SALT              = local.base_datawatch_salt_secret_arn
     },
