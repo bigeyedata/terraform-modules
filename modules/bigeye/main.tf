@@ -213,8 +213,8 @@ data "aws_vpc" "this" {
     }
 
     postcondition {
-      condition     = var.create_security_groups || length(var.papi_lb_extra_security_group_ids) > 0
-      error_message = "If create_security_groups is false, you must provide a security group for the papi lb using papi_lb_extra_security_group_ids (ports 80/443)"
+      condition     = var.create_security_groups || length(var.internalapi_lb_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide a security group for the internalapi lb using internalapi_lb_extra_security_group_ids (ports 80/443)"
     }
 
     postcondition {
@@ -273,8 +273,8 @@ data "aws_vpc" "this" {
     }
 
     postcondition {
-      condition     = var.create_security_groups || length(var.papi_extra_security_group_ids) > 0
-      error_message = "If create_security_groups is false, you must provide a security group for the papi ECS tasks using papi_extra_security_group_ids (port ${var.papi_port})"
+      condition     = var.create_security_groups || length(var.internalapi_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide a security group for the internalapi ECS tasks using internalapi_extra_security_group_ids (port ${var.internalapi_port})"
     }
 
     postcondition {
@@ -465,13 +465,13 @@ resource "aws_route53_record" "monocle" {
   records = [module.monocle.dns_name]
 }
 
-resource "aws_route53_record" "papi" {
+resource "aws_route53_record" "internalapi" {
   count   = var.create_dns_records ? 1 : 0
   zone_id = data.aws_route53_zone.this[0].zone_id
-  name    = local.papi_dns_name
+  name    = local.internalapi_dns_name
   type    = "CNAME"
   ttl     = 3600
-  records = [module.papi.dns_name]
+  records = [module.internalapi.dns_name]
 }
 
 resource "aws_route53_record" "web" {
@@ -693,7 +693,7 @@ module "bigeye_admin" {
   datawork_domain_name    = local.datawork_dns_name
   lineagework_domain_name = local.lineagework_dns_name
   metricwork_domain_name  = local.metricwork_dns_name
-  papi_domain_name        = local.papi_dns_name
+  internalapi_domain_name = local.internalapi_dns_name
   scheduler_domain_name   = local.scheduler_dns_name
 
   haproxy_resource_name     = "${local.name}-haproxy"
@@ -706,7 +706,7 @@ module "bigeye_admin" {
   datawork_resource_name    = "${local.name}-datawork"
   lineagework_resource_name = "${local.name}-lineagework"
   metricwork_resource_name  = "${local.name}-metricwork"
-  papi_resource_name        = "${local.name}-papi"
+  internalapi_resource_name = "${local.name}-internalapi"
   scheduler_resource_name   = "${local.name}-scheduler"
 
   datawatch_rds_identifier          = module.datawatch_rds.identifier
@@ -1308,7 +1308,7 @@ module "monocle" {
       BACKLOG                    = "512"
       WORKERS                    = "2"
       TIMEOUT                    = "900"
-      DATAWATCH_ADDRESS          = "https://${local.papi_dns_name}"
+      DATAWATCH_ADDRESS          = "https://${local.internalapi_dns_name}"
     },
     local.sentry_event_level_env_variable,
     var.datadog_agent_enabled ? {
@@ -1450,7 +1450,7 @@ module "toretto" {
       BACKLOG                    = "512"
       WORKERS                    = "1"
       TIMEOUT                    = "900"
-      DATAWATCH_ADDRESS          = "https://${local.papi_dns_name}"
+      DATAWATCH_ADDRESS          = "https://${local.internalapi_dns_name}"
     },
     local.sentry_event_level_env_variable,
     var.toretto_additional_environment_vars,
@@ -1614,7 +1614,7 @@ module "scheduler" {
       INSTANCE              = var.instance
       PORT                  = var.scheduler_port
       DEPLOY_TYPE           = "AWS"
-      DATAWATCH_ADDRESS     = "https://${local.papi_dns_name}"
+      DATAWATCH_ADDRESS     = "https://${local.internalapi_dns_name}"
       MAX_RAM_PERCENTAGE    = "85"
       SCHEDULER_ADDRESS     = "http://localhost:${var.scheduler_port}"
       SCHEDULER_THREADS     = var.scheduler_threads
@@ -1774,7 +1774,7 @@ resource "aws_iam_role_policy" "datawatch_secrets" {
 }
 
 resource "aws_iam_role_policy" "datawatch_ecs_exec" {
-  count = local.create_datawatch_role && (var.datawatch_enable_ecs_exec || var.datawork_enable_ecs_exec || var.lineagework_enable_ecs_exec || var.metricwork_enable_ecs_exec || var.papi_enable_ecs_exec) ? 1 : 0
+  count = local.create_datawatch_role && (var.datawatch_enable_ecs_exec || var.datawork_enable_ecs_exec || var.lineagework_enable_ecs_exec || var.metricwork_enable_ecs_exec || var.internalapi_enable_ecs_exec) ? 1 : 0
   role  = aws_iam_role.datawatch[0].id
   name  = "AllowECSExec"
   policy = jsonencode({
@@ -1884,7 +1884,7 @@ module "redis" {
     module.datawork.security_group_id,
     module.lineagework.security_group_id,
     module.metricwork.security_group_id,
-    module.papi.security_group_id,
+    module.internalapi.security_group_id,
   ] : []
   auth_token               = local.create_redis_auth_token_secret ? aws_secretsmanager_secret_version.redis_auth_token[0].secret_string : data.aws_secretsmanager_secret_version.byo_redis_auth_token[0].secret_string
   instance_type            = var.redis_instance_type
@@ -1945,7 +1945,7 @@ module "datawatch_rds" {
     module.datawork.security_group_id,
     module.lineagework.security_group_id,
     module.metricwork.security_group_id,
-    module.papi.security_group_id,
+    module.internalapi.security_group_id,
   ] : []
 
   # Settings
@@ -2468,25 +2468,25 @@ module "metricwork" {
   secret_arns = local.datawatch_secret_arns
 }
 
-module "papi" {
+module "internalapi" {
   depends_on = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
   source     = "../simpleservice"
-  app        = "papi"
+  app        = "internalapi"
   instance   = var.instance
   stack      = local.name
-  name       = "${local.name}-papi"
-  tags       = merge(local.tags, { app = "papi" })
+  name       = "${local.name}-internalapi"
+  tags       = merge(local.tags, { app = "internalapi" })
 
   vpc_id                        = local.vpc_id
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
   task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
-  additional_security_group_ids = concat(local.datawatch_additional_security_groups, var.papi_extra_security_group_ids)
-  traffic_port                  = var.papi_port
+  additional_security_group_ids = concat(local.datawatch_additional_security_groups, var.internalapi_extra_security_group_ids)
+  traffic_port                  = var.internalapi_port
   ecs_cluster_id                = aws_ecs_cluster.this.id
   fargate_version               = var.fargate_version
-  enable_execute_command        = var.papi_enable_ecs_exec
+  enable_execute_command        = var.internalapi_enable_ecs_exec
 
   # Load balancer
   healthcheck_path                 = "/health"
@@ -2495,27 +2495,27 @@ module "papi" {
   acm_certificate_arn              = local.acm_certificate_arn
   lb_idle_timeout                  = 900
   lb_subnet_ids                    = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids = concat(var.papi_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
+  lb_additional_security_group_ids = concat(var.internalapi_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs      = var.internal_additional_ingress_cidrs
   lb_deregistration_delay          = 180
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
-  lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "papi")
+  lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "internalapi")
 
   # Task settings
-  control_desired_count     = var.papi_autoscaling_cpu_enabled ? false : true
-  desired_count             = var.papi_autoscaling_cpu_enabled ? 1 : var.papi_desired_count
-  cpu                       = var.papi_cpu
-  memory                    = var.papi_memory
+  control_desired_count     = var.internalapi_autoscaling_cpu_enabled ? false : true
+  desired_count             = var.internalapi_autoscaling_cpu_enabled ? 1 : var.internalapi_desired_count
+  cpu                       = var.internalapi_cpu
+  memory                    = var.internalapi_memory
   execution_role_arn        = local.ecs_role_arn
   task_role_arn             = local.datawatch_role_arn
   image_registry            = local.image_registry
   image_repository          = format("%s%s", "datawatch", var.image_repository_suffix)
-  image_tag                 = local.papi_image_tag
+  image_tag                 = local.internalapi_image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
-  efs_volume_id             = contains(var.efs_volume_enabled_services, "papi") ? aws_efs_file_system.this[0].id : ""
-  efs_access_point_id       = contains(var.efs_volume_enabled_services, "papi") ? aws_efs_access_point.this["papi"].id : ""
+  efs_volume_id             = contains(var.efs_volume_enabled_services, "internalapi") ? aws_efs_file_system.this[0].id : ""
+  efs_access_point_id       = contains(var.efs_volume_enabled_services, "internalapi") ? aws_efs_access_point.this["internalapi"].id : ""
   efs_mount_point           = var.efs_mount_point
 
   # Datadog
@@ -2537,39 +2537,39 @@ module "papi" {
     local.datawatch_dd_env_vars,
     local.datawatch_common_env_vars,
     {
-      APP             = "papi"
+      APP             = "internalapi"
       WORKERS_ENABLED = "false"
-      HEAP_DUMP_PATH  = contains(var.efs_volume_enabled_services, "papi") ? var.efs_mount_point : ""
+      HEAP_DUMP_PATH  = contains(var.efs_volume_enabled_services, "internalapi") ? var.efs_mount_point : ""
     },
-    var.papi_additional_environment_vars,
+    var.internalapi_additional_environment_vars,
   )
 
   secret_arns = local.datawatch_secret_arns
 }
 
-resource "aws_appautoscaling_target" "papi" {
-  count              = var.papi_autoscaling_cpu_enabled ? 1 : 0
-  depends_on         = [module.papi]
+resource "aws_appautoscaling_target" "internalapi" {
+  count              = var.internalapi_autoscaling_cpu_enabled ? 1 : 0
+  depends_on         = [module.internalapi]
   min_capacity       = 1
-  max_capacity       = var.papi_desired_count
-  resource_id        = format("service/%s/%s-papi", local.name, local.name)
+  max_capacity       = var.internalapi_desired_count
+  resource_id        = format("service/%s/%s-internalapi", local.name, local.name)
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
 }
 
-resource "aws_appautoscaling_policy" "papi" {
-  count              = var.papi_autoscaling_cpu_enabled ? 1 : 0
-  depends_on         = [aws_appautoscaling_target.papi]
-  name               = format("%s-papi-cpu", local.name)
+resource "aws_appautoscaling_policy" "internalapi" {
+  count              = var.internalapi_autoscaling_cpu_enabled ? 1 : 0
+  depends_on         = [aws_appautoscaling_target.internalapi]
+  name               = format("%s-internalapi-cpu", local.name)
   policy_type        = "TargetTrackingScaling"
-  resource_id        = aws_appautoscaling_target.papi[0].resource_id
-  scalable_dimension = aws_appautoscaling_target.papi[0].scalable_dimension
-  service_namespace  = aws_appautoscaling_target.papi[0].service_namespace
+  resource_id        = aws_appautoscaling_target.internalapi[0].resource_id
+  scalable_dimension = aws_appautoscaling_target.internalapi[0].scalable_dimension
+  service_namespace  = aws_appautoscaling_target.internalapi[0].service_namespace
   target_tracking_scaling_policy_configuration {
     predefined_metric_specification {
       predefined_metric_type = "ECSServiceAverageCPUUtilization"
     }
 
-    target_value = var.papi_autoscaling_cpu_target
+    target_value = var.internalapi_autoscaling_cpu_target
   }
 }

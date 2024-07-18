@@ -1589,109 +1589,109 @@ variable "elb_monocle_response_time_threshold" {
   default     = 120
 }
 
-variable "elb_papi_error_rate_datapoints_to_alarm" {
+variable "elb_internalapi_error_rate_datapoints_to_alarm" {
   description = "The number of datapoints breaching threshold to alarm"
   type        = number
   default     = 3
 }
 
-variable "elb_papi_error_rate_disabled" {
+variable "elb_internalapi_error_rate_disabled" {
   description = "Whether to disable the specific alarm"
   type        = bool
   default     = false
 }
 
-variable "elb_papi_error_rate_evaluation_periods" {
+variable "elb_internalapi_error_rate_evaluation_periods" {
   description = "The number of periods over which the metric is evaluated"
   type        = number
   default     = 5
 }
 
-variable "elb_papi_error_rate_period" {
+variable "elb_internalapi_error_rate_period" {
   description = "The number of seconds over which the metric is evaluated"
   type        = number
   default     = 300
 }
 
-variable "elb_papi_error_rate_sns_arns" {
+variable "elb_internalapi_error_rate_sns_arns" {
   description = "The SNS topic arns to notify when the alarm fires"
   type        = list(string)
   default     = null
 }
 
-variable "elb_papi_error_rate_threshold" {
+variable "elb_internalapi_error_rate_threshold" {
   description = "Alarms when the metric is above this value"
   type        = number
   default     = 5
 }
 
-variable "elb_papi_host_count_datapoints_to_alarm" {
+variable "elb_internalapi_host_count_datapoints_to_alarm" {
   description = "The number of datapoints breaching threshold to alarm"
   type        = number
   default     = 3
 }
 
-variable "elb_papi_host_count_disabled" {
+variable "elb_internalapi_host_count_disabled" {
   description = "Whether to disable the specific alarm"
   type        = bool
   default     = false
 }
 
-variable "elb_papi_host_count_evaluation_periods" {
+variable "elb_internalapi_host_count_evaluation_periods" {
   description = "The number of periods over which the metric is evaluated"
   type        = number
   default     = 4
 }
 
-variable "elb_papi_host_count_period" {
+variable "elb_internalapi_host_count_period" {
   description = "The number of seconds over which the metric is evaluated"
   type        = number
   default     = 900
 }
 
-variable "elb_papi_host_count_sns_arns" {
+variable "elb_internalapi_host_count_sns_arns" {
   description = "The SNS topic arns to notify when the alarm fires"
   type        = list(string)
   default     = null
 }
 
-variable "elb_papi_host_count_threshold" {
+variable "elb_internalapi_host_count_threshold" {
   description = "Alarms when the metric is below this value"
   type        = number
   default     = 0.5
 }
 
-variable "elb_papi_response_time_datapoints_to_alarm" {
+variable "elb_internalapi_response_time_datapoints_to_alarm" {
   description = "The number of datapoints breaching threshold to alarm"
   type        = number
   default     = 3
 }
 
-variable "elb_papi_response_time_disabled" {
+variable "elb_internalapi_response_time_disabled" {
   description = "Whether to disable the specific alarm"
   type        = bool
   default     = false
 }
 
-variable "elb_papi_response_time_evaluation_periods" {
+variable "elb_internalapi_response_time_evaluation_periods" {
   description = "The number of periods over which the metric is evaluated"
   type        = number
   default     = 4
 }
 
-variable "elb_papi_response_time_period" {
+variable "elb_internalapi_response_time_period" {
   description = "The number of seconds over which the metric is evaluated"
   type        = number
   default     = 900
 }
 
-variable "elb_papi_response_time_sns_arns" {
+variable "elb_internalapi_response_time_sns_arns" {
   description = "The SNS topic arns to notify when the alarm fires"
   type        = list(string)
   default     = null
 }
 
-variable "elb_papi_response_time_threshold" {
+variable "elb_internalapi_response_time_threshold" {
   description = "Alarms when the metric is above this value"
   type        = number
   default     = 120
@@ -2345,37 +2345,37 @@ variable "ecs_monocle_mem_threshold" {
   default     = 70
 }
 
-variable "ecs_papi_mem_disabled" {
+variable "ecs_internalapi_mem_disabled" {
   description = "Whether to disable the specific alarm"
   type        = bool
   default     = false
 }
 
-variable "ecs_papi_mem_dataponts_to_alarm" {
+variable "ecs_internalapi_mem_dataponts_to_alarm" {
   description = "The number of datapoints breaching threshold to alarm"
   type        = number
   default     = 4
 }
 
-variable "ecs_papi_mem_evaluation_periods" {
+variable "ecs_internalapi_mem_evaluation_periods" {
   description = "The number of periods over which the metric is evaluated"
   type        = number
   default     = 5
 }
 
-variable "ecs_papi_mem_period" {
+variable "ecs_internalapi_mem_period" {
   description = "The number of seconds over which the metric is evaluated"
   type        = number
   default     = 300
 }
 
-variable "ecs_papi_mem_sns_arns" {
+variable "ecs_internalapi_mem_sns_arns" {
   description = "The SNS topic arns to notify when the alarm fires"
   type        = list(string)
   default     = null
 }
 
-variable "ecs_papi_mem_threshold" {
+variable "ecs_internalapi_mem_threshold" {
   description = "Alarms when the metric is above this value"
   type        = number
   default     = 70
