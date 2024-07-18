@@ -1,3 +1,13 @@
+# [9.2.0](https://github.com/bigeyedata/terraform-modules/compare/v9.1.0...v9.2.0) (2024-07-18)
+
+
+### Features
+
+* add robot agent api key secret ([c4abb90](https://github.com/bigeyedata/terraform-modules/commit/c4abb901b5a30d31926bfcf2b233d3da55957df8))
+* update temporal defaults to use apikey auth ([063db42](https://github.com/bigeyedata/terraform-modules/commit/063db427cf0b1f53754b4da509dba2e48f7e4985))
+
+
+
 # [9.1.0](https://github.com/bigeyedata/terraform-modules/compare/v9.0.0...v9.1.0) (2024-07-08)
 
 
