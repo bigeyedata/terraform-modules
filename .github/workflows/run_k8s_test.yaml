@@ -1,0 +1,13 @@
+name: Actions Runner Controller Demo
+on:
+  pull_request:
+    paths:
+      - .github/**/*
+
+jobs:
+  Explore-GitHub-Actions:
+    # You need to use the INSTALLATION_NAME from the previous step
+    runs-on: gh-runners-test-k8s-tf-modules
+    steps:
+    - run: echo "🎉 This job uses runner scale set runners!"
+
