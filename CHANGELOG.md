@@ -1,3 +1,19 @@
+# [10.0.0](https://github.com/bigeyedata/terraform-modules/compare/v9.2.0...v10.0.0) (2024-07-22)
+
+
+### Bug Fixes
+
+* rename papi service to internalapi ([fc65441](https://github.com/bigeyedata/terraform-modules/commit/fc65441de68752f5d49a4ec36a54a766fd655337))
+
+
+### BREAKING CHANGES
+
+* and remove them.
+* All variables with papi in the name need to
+be globally replaced with internalapi.
+
+
+
 # [9.2.0](https://github.com/bigeyedata/terraform-modules/compare/v9.1.0...v9.2.0) (2024-07-18)
 
 
