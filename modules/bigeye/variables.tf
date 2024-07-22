@@ -1939,69 +1939,69 @@ variable "metricwork_enable_ecs_exec" {
 }
 
 #======================================================
-# Application Variables - Papi
+# Application Variables - internalapi
 #======================================================
-variable "papi_image_tag" {
-  description = "The image tag to use for papi, defaults to the global `image_tag` if not specified"
+variable "internalapi_image_tag" {
+  description = "The image tag to use for internalapi, defaults to the global `image_tag` if not specified"
   type        = string
   default     = ""
 }
 
-variable "papi_desired_count" {
+variable "internalapi_desired_count" {
   description = "The desired number of replicas.  For autoscaling services, this becomes the max autoscaling capacity"
   type        = number
   default     = 15
 }
 
-variable "papi_cpu" {
+variable "internalapi_cpu" {
   description = "Amount of CPU to allocate"
   type        = number
   default     = 1024
 }
 
-variable "papi_memory" {
+variable "internalapi_memory" {
   description = "Amount of Memory in MB to allocate"
   type        = number
   default     = 4096
 }
 
-variable "papi_port" {
+variable "internalapi_port" {
   description = "The port to listen on"
   type        = number
   default     = 80
 }
 
-variable "papi_additional_environment_vars" {
+variable "internalapi_additional_environment_vars" {
   description = "Additional enviromnent variables to give the application"
   type        = map(string)
   default     = {}
 }
 
-variable "papi_extra_security_group_ids" {
-  description = "Additional security group ids to papi"
+variable "internalapi_extra_security_group_ids" {
+  description = "Additional security group ids to internalapi"
   type        = list(string)
   default     = []
 }
 
-variable "papi_lb_extra_security_group_ids" {
-  description = "Additional security group ids to papi ALB"
+variable "internalapi_lb_extra_security_group_ids" {
+  description = "Additional security group ids to internalapi ALB"
   type        = list(string)
   default     = []
 }
 
-variable "papi_enable_ecs_exec" {
+variable "internalapi_enable_ecs_exec" {
   description = "Whether to enable ECS exec"
   type        = bool
   default     = false
 }
 
-variable "papi_autoscaling_cpu_enabled" {
-  description = "Whether papi autoscaling is enabled. Note - if you change this variable, it changes the terraform resource that is created. You must run 'terraform state mv' in order to gracefully make this change"
+variable "internalapi_autoscaling_cpu_enabled" {
+  description = "Whether internalapi autoscaling is enabled. Note - if you change this variable, it changes the terraform resource that is created. You must run 'terraform state mv' in order to gracefully make this change"
   type        = bool
   default     = true
 }
 
-variable "papi_autoscaling_cpu_target" {
+variable "internalapi_autoscaling_cpu_target" {
   description = "% avg CPU util to use as autoscaling target"
   type        = number
   default     = 65

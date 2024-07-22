@@ -159,19 +159,19 @@ output "monocle_load_balancer_zone_id" {
   value       = module.monocle.zone_id
 }
 
-output "papi_dns_name" {
-  description = "DNS name for the papi service"
-  value       = local.papi_dns_name
+output "internalapi_dns_name" {
+  description = "DNS name for the internalapi service"
+  value       = local.internalapi_dns_name
 }
 
-output "papi_load_balancer_dns_name" {
-  description = "The dns name of the papi load balancer"
-  value       = module.papi.dns_name
+output "internalapi_load_balancer_dns_name" {
+  description = "The dns name of the internalapi load balancer"
+  value       = module.internalapi.dns_name
 }
 
-output "papi_load_balancer_zone_id" {
-  description = "The Route53 Zone ID of the papi load balancer"
-  value       = module.papi.zone_id
+output "internalapi_load_balancer_zone_id" {
+  description = "The Route53 Zone ID of the internalapi load balancer"
+  value       = module.internalapi.zone_id
 }
 
 output "scheduler_dns_name" {

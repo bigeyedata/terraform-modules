@@ -119,8 +119,8 @@ variable "metricwork_domain_name" {
   type        = string
 }
 
-variable "papi_domain_name" {
-  description = "papi domain name"
+variable "internalapi_domain_name" {
+  description = "internalapi domain name"
   type        = string
 }
 
@@ -179,8 +179,8 @@ variable "metricwork_resource_name" {
   type        = string
 }
 
-variable "papi_resource_name" {
-  description = "papi resource name"
+variable "internalapi_resource_name" {
+  description = "internalapi resource name"
   type        = string
 }
 
