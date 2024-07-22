@@ -10,4 +10,9 @@ jobs:
     runs-on: gh-runners-test-k8s-tf-modules
     steps:
     - run: echo "🎉 This job uses runner scale set runners!"
+  second-named-runner:
+    # You need to use the INSTALLATION_NAME from the previous step
+    runs-on: gh-runners-test-k8s-tf-modules-second
+    steps:
+    - run: echo "🎉 This job uses runner scale set runners!"
 
