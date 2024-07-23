@@ -8,10 +8,23 @@
 
 ### BREAKING CHANGES
 
-* and remove them.
+#### Variable rename
 * All variables with papi in the name need to
 be globally replaced with internalapi.
 
+#### Steps
+1. Run the following commands to remove the papi security group from the redis and RDS security groups
+> terraform destroy --target 'module.bigeye.module.redis.aws_vpc_security_group_ingress_rule.other_sgs[5]'
+>
+> terraform destroy --target 'module.bigeye.module.datawatch_rds.aws_vpc_security_group_ingress_rule.other_sgs[4]'
+>
+> terraform destroy --target 'module.bigeye.module.datawatch_rds.aws_vpc_security_group_ingress_rule.replica_other_sgs[4]'
+2. Rename variables in main.tf referencing papi (search and replace `papi` with `internalapi`)
+3. Change the module version of the bigeye module to v10.0.0
+4. terraform init && terraform apply
+5. If you are using the alarms module, now change the version of the alarms module to v10.0.0
+6. terraform init && terraform apply
+7. Done!
 
 
 # [9.2.0](https://github.com/bigeyedata/terraform-modules/compare/v9.1.0...v9.2.0) (2024-07-18)
