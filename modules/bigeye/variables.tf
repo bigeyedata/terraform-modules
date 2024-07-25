@@ -1349,6 +1349,118 @@ variable "temporal_system_visibility_persistence_max_write_qps" {
 }
 
 #======================================================
+# Application Variables - Temporal Clients (job executor)
+#======================================================
+variable "temporal_client_run_metrics_wf_exec_size" {
+  description = "Controls run-metrics.v1 workflow execution thread count"
+  type        = number
+  default     = 200
+}
+
+variable "temporal_client_run_metrics_act_exec_size" {
+  description = "Controls run-metrics.v1 activity execution thread count"
+  type        = number
+  default     = 200
+}
+
+variable "temporal_client_delete_source_wf_exec_size" {
+  description = "Controls delete-source.v1 workflow execution thread count"
+  type        = number
+  default     = 200
+}
+
+variable "temporal_client_delete_source_act_exec_size" {
+  description = "Controls delete-source.v1 activity execution thread count"
+  type        = number
+  default     = 200
+}
+
+variable "temporal_client_get_samples_wf_exec_size" {
+  description = "Controls get-samples.v1 workflow execution thread count"
+  type        = number
+  default     = 200
+}
+
+variable "temporal_client_get_samples_act_exec_size" {
+  description = "Controls get-samples.v1 activity execution thread count"
+  type        = number
+  default     = 200
+}
+
+variable "temporal_client_indexing_wf_exec_size" {
+  description = "Controls indexing.v1 workflow execution thread count"
+  type        = number
+  default     = 200
+}
+
+variable "temporal_client_indexing_act_exec_size" {
+  description = "Controls indexing.v1 activity execution thread count"
+  type        = number
+  default     = 200
+}
+
+variable "temporal_client_reconciliation_wf_exec_size" {
+  description = "Controls reconciliation workflow execution thread count.  This is used for reconciling metric run schedules."
+  type        = number
+  default     = 200
+}
+
+variable "temporal_client_reconciliation_act_exec_size" {
+  description = "Controls reconciliation activity execution thread count.  This is used for reconciling metric run schedules."
+  type        = number
+  default     = 200
+}
+
+variable "temporal_client_trigger_batch_metric_run_wf_exec_size" {
+  description = "Controls trigger-batch-metric-run workflow execution thread count"
+  type        = number
+  default     = 200
+}
+
+variable "temporal_client_trigger_batch_metric_run_act_exec_size" {
+  description = "Controls trigger-batch-metric-run activity execution thread count"
+  type        = number
+  default     = 200
+}
+
+variable "temporal_client_source_lineage_wf_exec_size" {
+  description = "Controls source-lineage workflow execution thread count"
+  type        = number
+  default     = 200
+}
+
+variable "temporal_client_source_lineage_act_exec_size" {
+  description = "Controls source-lineage activity execution thread count"
+  type        = number
+  default     = 200
+}
+
+variable "temporal_client_mc_lineage_wf_exec_size" {
+  description = "Controls metacenter-lineage workflow execution thread count"
+  type        = number
+  default     = 200
+}
+
+variable "temporal_client_mc_lineage_act_exec_size" {
+  description = "Controls metacenter-lineage activity execution thread count"
+  type        = number
+  default     = 200
+}
+
+variable "temporal_client_refresh_scorecard_wf_exec_size" {
+  description = "Controls refresh-scorecards workflow execution thread count.  This is used for refreshing data used in scorecards."
+  type        = number
+  default     = 200
+}
+
+variable "temporal_client_refresh_scorecard_act_exec_size" {
+  description = "Controls refresh-scorecards activity execution thread count.  This is used for refreshing data used in scorecards."
+  type        = number
+  default     = 200
+}
+
+
+#======================================================
 # Application Variables - Datawatch
 #======================================================
 variable "datawatch_image_tag" {
