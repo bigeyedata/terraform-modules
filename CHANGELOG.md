@@ -1,3 +1,12 @@
+# [10.1.0](https://github.com/bigeyedata/terraform-modules/compare/v10.0.0...v10.1.0) (2024-07-25)
+
+
+### Features
+
+* add env vars to control job executor parallelism ([2137cc9](https://github.com/bigeyedata/terraform-modules/commit/2137cc9d7bf3b86f2e799add1d76c8b45a205cbf))
+
+
+
 # [10.0.0](https://github.com/bigeyedata/terraform-modules/compare/v9.2.0...v10.0.0) (2024-07-22)
 
 
