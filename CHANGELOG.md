@@ -1,3 +1,12 @@
+## [10.1.1](https://github.com/bigeyedata/terraform-modules/compare/v10.1.0...v10.1.1) (2024-07-26)
+
+
+### Bug Fixes
+
+* reduce default value for scorecard refresh parallelism ([9903119](https://github.com/bigeyedata/terraform-modules/commit/9903119bdb2aadfa304d9e83b89a1516f965b952))
+
+
+
 # [10.1.0](https://github.com/bigeyedata/terraform-modules/compare/v10.0.0...v10.1.0) (2024-07-25)
 
 
