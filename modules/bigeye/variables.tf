@@ -1450,7 +1450,7 @@ variable "temporal_client_mc_lineage_act_exec_size" {
 variable "temporal_client_refresh_scorecard_wf_exec_size" {
   description = "Controls refresh-scorecards workflow execution thread count.  This is used for refreshing data used in scorecards."
   type        = number
-  default     = 200
+  default     = 5
 }
 
 variable "temporal_client_refresh_scorecard_act_exec_size" {
