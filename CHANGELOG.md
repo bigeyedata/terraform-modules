@@ -1,3 +1,12 @@
+## [10.1.2](https://github.com/bigeyedata/terraform-modules/compare/v10.1.1...v10.1.2) (2024-07-31)
+
+
+### Bug Fixes
+
+* reduce default value for reconciliation workflow workers ([b76da3f](https://github.com/bigeyedata/terraform-modules/commit/b76da3f1a77915f0deddcefde287d810e58a70a8))
+
+
+
 ## [10.1.1](https://github.com/bigeyedata/terraform-modules/compare/v10.1.0...v10.1.1) (2024-07-26)
 
 
