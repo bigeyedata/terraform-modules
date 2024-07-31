@@ -1402,7 +1402,7 @@ variable "temporal_client_indexing_act_exec_size" {
 variable "temporal_client_reconciliation_wf_exec_size" {
   description = "Controls reconciliation workflow execution thread count.  This is used for reconciling metric run schedules."
   type        = number
-  default     = 200
+  default     = 5
 }
 
 variable "temporal_client_reconciliation_act_exec_size" {
