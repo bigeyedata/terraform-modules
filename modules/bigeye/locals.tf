@@ -75,7 +75,7 @@ locals {
 
   # DNS
   base_dns_alias                          = coalesce(var.vanity_alias, local.name)
-  vanity_dns_name                         = "${local.base_dns_alias}.${var.top_level_dns_name}"
+  vanity_dns_name                         = var.use_top_level_dns_apex_as_vanity ? var.top_level_dns_name : "${local.base_dns_alias}.${var.top_level_dns_name}"
   datawatch_dns_name                      = "${local.base_dns_alias}-datawatch.${var.top_level_dns_name}"
   datawatch_mysql_vanity_dns_name         = "${local.base_dns_alias}-mysql.${var.top_level_dns_name}"
   datawatch_mysql_replica_vanity_dns_name = "${local.base_dns_alias}-mysql-ro.${var.top_level_dns_name}"
