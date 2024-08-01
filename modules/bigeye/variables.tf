@@ -208,10 +208,17 @@ variable "private_hosted_zone" {
 }
 
 variable "vanity_alias" {
-  description = "If specified, will serve as a top level alias subdomain"
+  description = "If specified, will serve as a prefix for domain names"
   type        = string
   default     = ""
 }
+
+variable "use_top_level_dns_apex_as_vanity" {
+  description = "If true, the top-level entrypoint domain for the application will be the APEX record of the Hosted Zone"
+  type        = bool
+  default     = false
+}
+
 #======================================================
 # ECS
 #======================================================
