@@ -1,3 +1,12 @@
+# [10.2.0](https://github.com/bigeyedata/terraform-modules/compare/v10.1.2...v10.2.0) (2024-08-01)
+
+
+### Features
+
+* add ability to use hosted zone apex as top level domain ([07f3257](https://github.com/bigeyedata/terraform-modules/commit/07f32575f84901c701ee89e6fbb3b7bed3843b9d))
+
+
+
 ## [10.1.2](https://github.com/bigeyedata/terraform-modules/compare/v10.1.1...v10.1.2) (2024-07-31)
 
 
