@@ -1466,6 +1466,17 @@ variable "temporal_client_refresh_scorecard_act_exec_size" {
   default     = 200
 }
 
+variable "temporal_client_monocle_invalidation_wf_exec_size" {
+  description = "Controls monocle-invalidation workflow execution thread count.  This is used for invalidating Monocle ML models for serving autothresholds."
+  type        = number
+  default     = 5
+}
+
+variable "temporal_client_monocle_invalidation_act_exec_size" {
+  description = "Controls monocle-invalidation activity execution thread count.  This is used for invalidating Monocle ML models for serving autothresholds."
+  type        = number
+  default     = 200
+}
 
 #======================================================
 # Application Variables - Datawatch
