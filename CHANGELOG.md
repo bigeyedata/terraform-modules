@@ -1,3 +1,12 @@
+# [10.3.0](https://github.com/bigeyedata/terraform-modules/compare/v10.2.0...v10.3.0) (2024-08-08)
+
+
+### Features
+
+* new Temporal task queue monocle-invalidation ([705af1e](https://github.com/bigeyedata/terraform-modules/commit/705af1eeb68f4a24d08f39303758df8822e9437b)), closes [#14885](https://github.com/bigeyedata/terraform-modules/issues/14885)
+
+
+
 # [10.2.0](https://github.com/bigeyedata/terraform-modules/compare/v10.1.2...v10.2.0) (2024-08-01)
 
 
