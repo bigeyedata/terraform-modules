@@ -2293,24 +2293,26 @@ module "datawork" {
     local.datawatch_dd_env_vars,
     local.datawatch_common_env_vars,
     {
-      APP                              = "datawork"
-      DATAWATCH_ADDRESS                = "http://localhost:${var.datawork_port}"
-      WORKERS_ENABLED                  = "true"
-      METRIC_RUN_WORKERS               = "1"
-      EXCLUDE_QUEUES                   = "trigger-batch-metric-run,source-lineage,metacenter-lineage"
-      HEAP_DUMP_PATH                   = contains(var.efs_volume_enabled_services, "datawork") ? var.efs_mount_point : ""
-      RUN_METRICS_WF_EXEC_SIZE         = var.temporal_client_run_metrics_wf_exec_size
-      RUN_METRICS_ACT_EXEC_SIZE        = var.temporal_client_run_metrics_act_exec_size
-      DELETE_SOURCE_WF_EXEC_SIZE       = var.temporal_client_delete_source_wf_exec_size
-      DELETE_SOURCE_ACT_EXEC_SIZE      = var.temporal_client_delete_source_act_exec_size
-      GET_SAMPLES_WF_EXEC_SIZE         = var.temporal_client_get_samples_wf_exec_size
-      GET_SAMPLES_ACT_EXEC_SIZE        = var.temporal_client_get_samples_act_exec_size
-      INDEXING_WF_EXEC_SIZE            = var.temporal_client_indexing_wf_exec_size
-      INDEXING_ACT_EXEC_SIZE           = var.temporal_client_indexing_act_exec_size
-      RECONCILIATION_WF_EXEC_SIZE      = var.temporal_client_reconciliation_wf_exec_size
-      RECONCILIATION_ACT_EXEC_SIZE     = var.temporal_client_reconciliation_act_exec_size
-      REFRESH_SCORECARDS_WF_EXEC_SIZE  = var.temporal_client_refresh_scorecard_wf_exec_size
-      REFRESH_SCORECARDS_ACT_EXEC_SIZE = var.temporal_client_refresh_scorecard_act_exec_size
+      APP                                = "datawork"
+      DATAWATCH_ADDRESS                  = "http://localhost:${var.datawork_port}"
+      WORKERS_ENABLED                    = "true"
+      METRIC_RUN_WORKERS                 = "1"
+      EXCLUDE_QUEUES                     = "trigger-batch-metric-run,source-lineage,metacenter-lineage"
+      HEAP_DUMP_PATH                     = contains(var.efs_volume_enabled_services, "datawork") ? var.efs_mount_point : ""
+      RUN_METRICS_WF_EXEC_SIZE           = var.temporal_client_run_metrics_wf_exec_size
+      RUN_METRICS_ACT_EXEC_SIZE          = var.temporal_client_run_metrics_act_exec_size
+      DELETE_SOURCE_WF_EXEC_SIZE         = var.temporal_client_delete_source_wf_exec_size
+      DELETE_SOURCE_ACT_EXEC_SIZE        = var.temporal_client_delete_source_act_exec_size
+      GET_SAMPLES_WF_EXEC_SIZE           = var.temporal_client_get_samples_wf_exec_size
+      GET_SAMPLES_ACT_EXEC_SIZE          = var.temporal_client_get_samples_act_exec_size
+      INDEXING_WF_EXEC_SIZE              = var.temporal_client_indexing_wf_exec_size
+      INDEXING_ACT_EXEC_SIZE             = var.temporal_client_indexing_act_exec_size
+      RECONCILIATION_WF_EXEC_SIZE        = var.temporal_client_reconciliation_wf_exec_size
+      RECONCILIATION_ACT_EXEC_SIZE       = var.temporal_client_reconciliation_act_exec_size
+      REFRESH_SCORECARDS_WF_EXEC_SIZE    = var.temporal_client_refresh_scorecard_wf_exec_size
+      REFRESH_SCORECARDS_ACT_EXEC_SIZE   = var.temporal_client_refresh_scorecard_act_exec_size
+      MONOCLE_INVALIDATION_WF_EXEC_SIZE  = var.temporal_client_monocle_invalidation_wf_exec_size
+      MONOCLE_INVALIDATION_ACT_EXEC_SIZE = var.temporal_client_monocle_invalidation_act_exec_size
     },
     var.datawork_additional_environment_vars,
   )
@@ -2390,7 +2392,7 @@ module "lineagework" {
       DATAWATCH_ADDRESS            = "http://localhost:${var.lineagework_port}"
       WORKERS_ENABLED              = "true"
       METRIC_RUN_WORKERS           = "1"
-      EXCLUDE_QUEUES               = "run-metrics.v1,delete-source.v1,get-samples.v1,collect-lineage.v1,indexing.v1,reconciliation,trigger-batch-metric-run,agent-heartbeat,refresh-scorecards"
+      EXCLUDE_QUEUES               = "run-metrics.v1,delete-source.v1,get-samples.v1,collect-lineage.v1,indexing.v1,reconciliation,trigger-batch-metric-run,agent-heartbeat,refresh-scorecards,monocle-invalidation"
       MQ_WORKERS_ENABLED           = "false"
       HEAP_DUMP_PATH               = contains(var.efs_volume_enabled_services, "lineagework") ? var.efs_mount_point : ""
       SOURCE_LINEAGE_WF_EXEC_SIZE  = var.temporal_client_source_lineage_wf_exec_size
