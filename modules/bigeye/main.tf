@@ -818,7 +818,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "models" {
     id     = "ExpireOldModels"
     status = "Enabled"
     expiration {
-      days = 30
+      days = 45
     }
   }
 }
