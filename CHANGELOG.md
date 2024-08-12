@@ -1,3 +1,12 @@
+# [10.4.0](https://github.com/bigeyedata/terraform-modules/compare/v10.3.0...v10.4.0) (2024-08-12)
+
+
+### Features
+
+* change autothreshold S3 file expiration to 45 days ([3caaa3d](https://github.com/bigeyedata/terraform-modules/commit/3caaa3db30536a156f4da3767425f663cbba0bd2))
+
+
+
 # [10.3.0](https://github.com/bigeyedata/terraform-modules/compare/v10.2.0...v10.3.0) (2024-08-08)
 
 
