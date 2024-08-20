@@ -1,3 +1,12 @@
+## [10.4.1](https://github.com/bigeyedata/terraform-modules/compare/v10.4.0...v10.4.1) (2024-08-20)
+
+
+### Bug Fixes
+
+* reduce default mc lineage workflow task pollers ([d482ffa](https://github.com/bigeyedata/terraform-modules/commit/d482ffa325f1a523bfe06d0d0ef9fb3f7488961e))
+
+
+
 # [10.4.0](https://github.com/bigeyedata/terraform-modules/compare/v10.3.0...v10.4.0) (2024-08-12)
 
 
