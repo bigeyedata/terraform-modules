@@ -2139,9 +2139,6 @@ locals {
     MAILER_USER         = local.byomailserver_smtp_user
     MAILER_FROM_ADDRESS = local.byomailserver_smtp_from_address
 
-    MTLS_KEY_PATH  = "/temporal/mtls.key"
-    MTLS_CERT_PATH = "/temporal/mtls.pem"
-
     USE_KMS    = local.using_kms
     KMS_KEY_ID = local.using_kms ? local.kms_key_id : ""
   }
