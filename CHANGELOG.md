@@ -1,3 +1,12 @@
+## [10.4.2](https://github.com/bigeyedata/terraform-modules/compare/v10.4.1...v10.4.2) (2024-08-29)
+
+
+### Bug Fixes
+
+* reduce default max metric run workflow slots to 5 ([5e9bd84](https://github.com/bigeyedata/terraform-modules/commit/5e9bd8491d45012a7b2cb3db1aba160d7a07a4ab))
+
+
+
 ## [10.4.1](https://github.com/bigeyedata/terraform-modules/compare/v10.4.0...v10.4.1) (2024-08-20)
 
 
