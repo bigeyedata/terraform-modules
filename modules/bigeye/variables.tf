@@ -1421,7 +1421,7 @@ variable "temporal_client_reconciliation_act_exec_size" {
 variable "temporal_client_trigger_batch_metric_run_wf_exec_size" {
   description = "Controls trigger-batch-metric-run workflow execution thread count"
   type        = number
-  default     = 200
+  default     = 5
 }
 
 variable "temporal_client_trigger_batch_metric_run_act_exec_size" {
