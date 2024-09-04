@@ -1,3 +1,23 @@
+# [11.0.0](https://github.com/bigeyedata/terraform-modules/compare/v10.4.2...v11.0.0) (2024-09-04)
+
+
+* feat!: remove support for mTLS connections from Datawatch ([2ffe314](https://github.com/bigeyedata/terraform-modules/commit/2ffe314b30f8e7a7bd3b5d9e36191a881d09a194))
+
+
+### BREAKING CHANGES
+
+* Two environment variables `MTLS_KEY_PATH` and
+`MTLS_CERT_PATH` were removed from Datawatch.
+
+Recommendation: Ensure you are using application version `1.57.0`
+or higher.
+
+Downtime: No
+
+Steps: None
+
+
+
 ## [10.4.2](https://github.com/bigeyedata/terraform-modules/compare/v10.4.1...v10.4.2) (2024-08-29)
 
 
