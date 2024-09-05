@@ -2120,7 +2120,6 @@ locals {
     FF_ANALYTICS_LOGGING_ENABLED    = var.datawatch_feature_analytics_logging_enabled
     FF_QUEUE_BACKFILL_ENABLED       = "true"
     FF_SEND_ANALYTICS_ENABLED       = var.datawatch_feature_analytics_send_enabled
-    MAX_RAM_PERCENTAGE              = var.datawatch_jvm_max_ram_pct
     REQUEST_AUTH_LOGGING_ENABLED    = var.datawatch_request_auth_logging_enabled
     REQUEST_BODY_LOGGING_ENABLED    = var.datawatch_request_body_logging_enabled
 
@@ -2212,9 +2211,10 @@ module "datawatch" {
     local.datawatch_dd_env_vars,
     local.datawatch_common_env_vars,
     {
-      APP             = "datawatch"
-      WORKERS_ENABLED = "false"
-      HEAP_DUMP_PATH  = contains(var.efs_volume_enabled_services, "datawatch") ? var.efs_mount_point : ""
+      APP                = "datawatch"
+      WORKERS_ENABLED    = "false"
+      MAX_RAM_PERCENTAGE = var.datawatch_jvm_max_ram_pct
+      HEAP_DUMP_PATH     = contains(var.efs_volume_enabled_services, "datawatch") ? var.efs_mount_point : ""
     },
     var.datawatch_additional_environment_vars,
   )
@@ -2293,6 +2293,7 @@ module "datawork" {
       APP                                = "datawork"
       DATAWATCH_ADDRESS                  = "http://localhost:${var.datawork_port}"
       WORKERS_ENABLED                    = "true"
+      MAX_RAM_PERCENTAGE                 = var.datawork_jvm_max_ram_pct
       METRIC_RUN_WORKERS                 = "1"
       EXCLUDE_QUEUES                     = "trigger-batch-metric-run,source-lineage,metacenter-lineage"
       HEAP_DUMP_PATH                     = contains(var.efs_volume_enabled_services, "datawork") ? var.efs_mount_point : ""
@@ -2388,6 +2389,7 @@ module "lineagework" {
       APP                          = "lineagework"
       DATAWATCH_ADDRESS            = "http://localhost:${var.lineagework_port}"
       WORKERS_ENABLED              = "true"
+      MAX_RAM_PERCENTAGE           = var.lineagework_jvm_max_ram_pct
       METRIC_RUN_WORKERS           = "1"
       EXCLUDE_QUEUES               = "run-metrics.v1,delete-source.v1,get-samples.v1,collect-lineage.v1,indexing.v1,reconciliation,trigger-batch-metric-run,agent-heartbeat,refresh-scorecards,monocle-invalidation"
       MQ_WORKERS_ENABLED           = "false"
@@ -2473,6 +2475,7 @@ module "metricwork" {
       APP                                    = "metricwork"
       DATAWATCH_ADDRESS                      = "http://localhost:${var.metricwork_port}"
       WORKERS_ENABLED                        = "true"
+      MAX_RAM_PERCENTAGE                     = var.metricwork_jvm_max_ram_pct
       METRIC_RUN_WORKERS                     = "1"
       SINGLE_QUEUE_OVERRIDE                  = "trigger-batch-metric-run"
       HEAP_DUMP_PATH                         = contains(var.efs_volume_enabled_services, "metricwork") ? var.efs_mount_point : ""
@@ -2554,9 +2557,11 @@ module "internalapi" {
     local.datawatch_dd_env_vars,
     local.datawatch_common_env_vars,
     {
-      APP             = "internalapi"
-      WORKERS_ENABLED = "false"
-      HEAP_DUMP_PATH  = contains(var.efs_volume_enabled_services, "internalapi") ? var.efs_mount_point : ""
+      APP                = "internalapi"
+      WORKERS_ENABLED    = "false"
+      MAX_RAM_PERCENTAGE = var.internalapi_jvm_max_ram_pct
+
+      HEAP_DUMP_PATH = contains(var.efs_volume_enabled_services, "internalapi") ? var.efs_mount_point : ""
     },
     var.internalapi_additional_environment_vars,
   )
