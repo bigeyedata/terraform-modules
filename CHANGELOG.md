@@ -1,3 +1,12 @@
+## [11.1.1](https://github.com/bigeyedata/terraform-modules/compare/v11.1.0...v11.1.1) (2024-09-06)
+
+
+### Bug Fixes
+
+* reduce datawatch and derivative service max JVM ram percent ([c2c266c](https://github.com/bigeyedata/terraform-modules/commit/c2c266c5b27b534539295146ee19e35a544bd406))
+
+
+
 # [11.1.0](https://github.com/bigeyedata/terraform-modules/compare/v11.0.0...v11.1.0) (2024-09-06)
 
 
