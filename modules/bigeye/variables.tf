@@ -1948,6 +1948,12 @@ variable "datawork_lb_extra_security_group_ids" {
   default     = []
 }
 
+variable "datawork_jvm_max_ram_pct" {
+  description = ""
+  type        = number
+  default     = 85
+}
+
 variable "datawork_enable_ecs_exec" {
   description = "Whether to enable ECS exec"
   type        = bool
@@ -2003,6 +2009,12 @@ variable "lineagework_lb_extra_security_group_ids" {
   description = "Additional security group ids to lineagework ALB"
   type        = list(string)
   default     = []
+}
+
+variable "lineagework_jvm_max_ram_pct" {
+  description = ""
+  type        = number
+  default     = 85
 }
 
 variable "lineagework_enable_ecs_exec" {
@@ -2062,6 +2074,12 @@ variable "metricwork_lb_extra_security_group_ids" {
   default     = []
 }
 
+variable "metricwork_jvm_max_ram_pct" {
+  description = ""
+  type        = number
+  default     = 85
+}
+
 variable "metricwork_enable_ecs_exec" {
   description = "Whether to enable ECS exec"
   type        = bool
@@ -2117,6 +2135,12 @@ variable "internalapi_lb_extra_security_group_ids" {
   description = "Additional security group ids to internalapi ALB"
   type        = list(string)
   default     = []
+}
+
+variable "internalapi_jvm_max_ram_pct" {
+  description = ""
+  type        = number
+  default     = 85
 }
 
 variable "internalapi_enable_ecs_exec" {
