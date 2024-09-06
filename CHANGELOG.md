@@ -1,3 +1,12 @@
+# [11.2.0](https://github.com/bigeyedata/terraform-modules/compare/v11.1.1...v11.2.0) (2024-09-06)
+
+
+### Features
+
+* add a feature flag to control a memory leak fix ([bb986af](https://github.com/bigeyedata/terraform-modules/commit/bb986af99cea60d5f1958aaf4ecabee468dcee99))
+
+
+
 ## [11.1.1](https://github.com/bigeyedata/terraform-modules/compare/v11.1.0...v11.1.1) (2024-09-06)
 
 
