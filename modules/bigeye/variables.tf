@@ -1855,6 +1855,13 @@ variable "datawatch_feature_analytics_send_enabled" {
   default     = false
 }
 
+variable "datawatch_feature_jvm_memory_leak_fix" {
+  description = "This flag can be set to true to turn on a JVM option to resolve a memory leak"
+  type        = bool
+  default     = false
+}
+
+
 variable "datawatch_request_body_logging_enabled" {
   description = "Whether request body logs are enabled"
   type        = bool
