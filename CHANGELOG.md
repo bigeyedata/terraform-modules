@@ -1,3 +1,12 @@
+# [11.1.0](https://github.com/bigeyedata/terraform-modules/compare/v11.0.0...v11.1.0) (2024-09-06)
+
+
+### Features
+
+* allow setting JVM MaxRAMPercentage for each service ([71eec8b](https://github.com/bigeyedata/terraform-modules/commit/71eec8b51a9b0b9e63a83ef53bf6964edb6d3c4c))
+
+
+
 # [11.0.0](https://github.com/bigeyedata/terraform-modules/compare/v10.4.2...v11.0.0) (2024-09-04)
 
 
