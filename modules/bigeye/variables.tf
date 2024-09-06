@@ -1888,7 +1888,7 @@ variable "datawatch_slack_has_dedicated_app" {
 variable "datawatch_jvm_max_ram_pct" {
   description = ""
   type        = number
-  default     = 85
+  default     = 80
 }
 
 variable "datawatch_enable_ecs_exec" {
@@ -1951,7 +1951,7 @@ variable "datawork_lb_extra_security_group_ids" {
 variable "datawork_jvm_max_ram_pct" {
   description = ""
   type        = number
-  default     = 85
+  default     = 80
 }
 
 variable "datawork_enable_ecs_exec" {
@@ -2014,7 +2014,7 @@ variable "lineagework_lb_extra_security_group_ids" {
 variable "lineagework_jvm_max_ram_pct" {
   description = ""
   type        = number
-  default     = 85
+  default     = 80
 }
 
 variable "lineagework_enable_ecs_exec" {
@@ -2077,7 +2077,7 @@ variable "metricwork_lb_extra_security_group_ids" {
 variable "metricwork_jvm_max_ram_pct" {
   description = ""
   type        = number
-  default     = 85
+  default     = 80
 }
 
 variable "metricwork_enable_ecs_exec" {
@@ -2140,7 +2140,7 @@ variable "internalapi_lb_extra_security_group_ids" {
 variable "internalapi_jvm_max_ram_pct" {
   description = ""
   type        = number
-  default     = 85
+  default     = 80
 }
 
 variable "internalapi_enable_ecs_exec" {
