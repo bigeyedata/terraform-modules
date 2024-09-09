@@ -2120,7 +2120,6 @@ locals {
     FF_ANALYTICS_LOGGING_ENABLED    = var.datawatch_feature_analytics_logging_enabled
     FF_QUEUE_BACKFILL_ENABLED       = "true"
     FF_SEND_ANALYTICS_ENABLED       = var.datawatch_feature_analytics_send_enabled
-    FF_JVM_MEMORY_LEAK_FIX_ENABLED  = var.datawatch_feature_jvm_memory_leak_fix
     REQUEST_AUTH_LOGGING_ENABLED    = var.datawatch_request_auth_logging_enabled
     REQUEST_BODY_LOGGING_ENABLED    = var.datawatch_request_body_logging_enabled
 
