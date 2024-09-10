@@ -1873,6 +1873,12 @@ variable "datawatch_request_auth_logging_enabled" {
   default     = false
 }
 
+variable "datawatch_class_loading_logging_enabled" {
+  description = "Verbose debug logging of every class load/unload event.  This is useful to trace out of memory due to compressed class space exhaustion.  Not recommended to set to true for production"
+  type        = bool
+  default     = false
+}
+
 variable "datawatch_stitch_schema_name" {
   description = "stitch schema name"
   type        = string
