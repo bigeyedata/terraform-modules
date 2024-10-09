@@ -1,3 +1,12 @@
+## [11.3.1](https://github.com/bigeyedata/terraform-modules/compare/v11.3.0...v11.3.1) (2024-10-09)
+
+
+### Bug Fixes
+
+* exclude issue-root-cause from lineagework service ([fb22038](https://github.com/bigeyedata/terraform-modules/commit/fb22038141e2c80375cf139b163b0bbd7f32d911))
+
+
+
 # [11.3.0](https://github.com/bigeyedata/terraform-modules/compare/v11.2.0...v11.3.0) (2024-09-10)
 
 
