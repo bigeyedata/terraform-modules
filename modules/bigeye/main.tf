@@ -2392,7 +2392,7 @@ module "lineagework" {
       WORKERS_ENABLED              = "true"
       MAX_RAM_PERCENTAGE           = var.lineagework_jvm_max_ram_pct
       METRIC_RUN_WORKERS           = "1"
-      EXCLUDE_QUEUES               = "run-metrics.v1,delete-source.v1,get-samples.v1,collect-lineage.v1,indexing.v1,reconciliation,trigger-batch-metric-run,agent-heartbeat,refresh-scorecards,monocle-invalidation"
+      EXCLUDE_QUEUES               = "run-metrics.v1,delete-source.v1,get-samples.v1,collect-lineage.v1,indexing.v1,reconciliation,trigger-batch-metric-run,agent-heartbeat,refresh-scorecards,monocle-invalidation,issue-root-cause"
       MQ_WORKERS_ENABLED           = "false"
       HEAP_DUMP_PATH               = contains(var.efs_volume_enabled_services, "lineagework") ? var.efs_mount_point : ""
       SOURCE_LINEAGE_WF_EXEC_SIZE  = var.temporal_client_source_lineage_wf_exec_size
