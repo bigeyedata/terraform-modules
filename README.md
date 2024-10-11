@@ -39,11 +39,12 @@ to the value of the `image_tag`, specifying the application image.
 It is always recommended to be on the latest
 terraform version and application version.
 
-| terraform-modules Version | Application Version | Comment |
-| ----------------- | ------------------- | ------- |
-| >= 9.2.0 | 1.65.0 | mTLS support in datawatch services removed, requires TF settings introduced in `9.2.0` |
-| 9.2.0 | >= 1.57.0 | TF adds temporal settings that were released in app version 1.57.0 |
-| >= 3.12.0 | 1.48.0 | Application 1.48.0 requires at least terraform-modules version 3.12.0 |
+| terraform-modules Version | Application Version | Comment                                                                                  |
+|---------------------------|-----------|------------------------------------------------------------------------------------------|
+| >= 11.4.0                 | 1.71.0    | migrate queue membership to "include" list that became available in app version `1.71.0` |
+| >= 9.2.0                  | 1.65.0    | mTLS support in datawatch services removed, requires TF settings introduced in `9.2.0`   |
+| 9.2.0                     | >= 1.57.0 | TF adds temporal settings that were released in app version 1.57.0                       |
+| >= 3.12.0                 | 1.48.0    | Application 1.48.0 requires at least terraform-modules version 3.12.0                    |
 
 ## Upgrading
 
