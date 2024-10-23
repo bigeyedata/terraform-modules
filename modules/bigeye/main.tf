@@ -2382,7 +2382,6 @@ module "lineagework" {
   awsfirelens_image   = var.awsfirelens_image
   awsfirelens_uri     = var.awsfirelens_uri
 
-  # lineagework should only subscribe to source-lineage and metacenter-lineage, ie exclude all other Temporal queues.
   environment_variables = merge(
     local.datawatch_dd_env_vars,
     local.datawatch_common_env_vars,
@@ -2392,7 +2391,7 @@ module "lineagework" {
       WORKERS_ENABLED              = "true"
       MAX_RAM_PERCENTAGE           = var.lineagework_jvm_max_ram_pct
       METRIC_RUN_WORKERS           = "1"
-      EXCLUDE_QUEUES               = "run-metrics.v1,delete-source.v1,get-samples.v1,collect-lineage.v1,indexing.v1,reconciliation,trigger-batch-metric-run,agent-heartbeat,refresh-scorecards,monocle-invalidation,issue-root-cause"
+      INCLUDE_QUEUES               = "source-lineage,metacenter-lineage"
       MQ_WORKERS_ENABLED           = "false"
       HEAP_DUMP_PATH               = contains(var.efs_volume_enabled_services, "lineagework") ? var.efs_mount_point : ""
       SOURCE_LINEAGE_WF_EXEC_SIZE  = var.temporal_client_source_lineage_wf_exec_size
@@ -2478,7 +2477,7 @@ module "metricwork" {
       WORKERS_ENABLED                        = "true"
       MAX_RAM_PERCENTAGE                     = var.metricwork_jvm_max_ram_pct
       METRIC_RUN_WORKERS                     = "1"
-      SINGLE_QUEUE_OVERRIDE                  = "trigger-batch-metric-run"
+      INCLUDE_QUEUES                         = "trigger-batch-metric-run"
       HEAP_DUMP_PATH                         = contains(var.efs_volume_enabled_services, "metricwork") ? var.efs_mount_point : ""
       TRIGGER_BATCH_METRIC_RUN_WF_EXEC_SIZE  = var.temporal_client_trigger_batch_metric_run_wf_exec_size
       TRIGGER_BATCH_METRIC_RUN_ACT_EXEC_SIZE = var.temporal_client_trigger_batch_metric_run_act_exec_size
