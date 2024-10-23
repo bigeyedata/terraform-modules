@@ -1,3 +1,12 @@
+# [11.4.0](https://github.com/bigeyedata/terraform-modules/compare/v11.3.1...v11.4.0) (2024-10-23)
+
+
+### Features
+
+* use an include queue list instead of exclude queue ([2e4d98e](https://github.com/bigeyedata/terraform-modules/commit/2e4d98e78dfa193e2ea093b964f38e93a1ab62ee))
+
+
+
 ## [11.3.1](https://github.com/bigeyedata/terraform-modules/compare/v11.3.0...v11.3.1) (2024-10-09)
 
 
