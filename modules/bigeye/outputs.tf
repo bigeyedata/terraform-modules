@@ -114,6 +114,21 @@ output "datawork_load_balancer_zone_id" {
   value       = module.datawork.zone_id
 }
 
+output "indexwork_dns_name" {
+  description = "DNS name for the indexwork service"
+  value       = local.indexwork_dns_name
+}
+
+output "indexwork_load_balancer_dns_name" {
+  description = "The dns name of the indexwork load balancer"
+  value       = module.indexwork.dns_name
+}
+
+output "indexwork_load_balancer_zone_id" {
+  description = "The Route53 Zone ID of the indexwork load balancer"
+  value       = module.indexwork.zone_id
+}
+
 output "lineagework_dns_name" {
   description = "DNS name for the lineagework service"
   value       = local.lineagework_dns_name

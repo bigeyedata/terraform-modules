@@ -478,6 +478,21 @@ module "elb_datawork" {
   error_rate_disabled    = true
 }
 
+module "elb_indexwork" {
+  source                         = "./elb"
+  stack                          = var.stack
+  app                            = "indexwork"
+  host_count_disabled            = var.elb_indexwork_host_count_disabled
+  host_count_datapoints_to_alarm = var.elb_indexwork_host_count_datapoints_to_alarm
+  host_count_evaluation_periods  = var.elb_indexwork_host_count_evaluation_periods
+  host_count_period              = var.elb_indexwork_host_count_period
+  host_count_sns_arns            = coalesce(var.elb_indexwork_host_count_sns_arns, [local.high_urgency_sns_topic_arn])
+  host_count_threshold           = var.elb_indexwork_host_count_threshold
+
+  response_time_disabled = true
+  error_rate_disabled    = true
+}
+
 module "elb_lineagework" {
   source                         = "./elb"
   stack                          = var.stack
@@ -638,6 +653,18 @@ module "ecs_datawork" {
   mem_period              = var.ecs_datawork_mem_period
   mem_sns_arns            = coalesce(var.ecs_datawork_mem_sns_arns, [local.low_urgency_sns_topic_arn])
   mem_threshold           = var.ecs_datawork_mem_threshold
+}
+
+module "ecs_indexwork" {
+  source                  = "./ecs"
+  stack                   = var.stack
+  app                     = "indexwork"
+  mem_disabled            = var.ecs_indexwork_mem_disabled
+  mem_datapoints_to_alarm = var.ecs_indexwork_mem_dataponts_to_alarm
+  mem_evaluation_periods  = var.ecs_indexwork_mem_evaluation_periods
+  mem_period              = var.ecs_indexwork_mem_period
+  mem_sns_arns            = coalesce(var.ecs_indexwork_mem_sns_arns, [local.low_urgency_sns_topic_arn])
+  mem_threshold           = var.ecs_indexwork_mem_threshold
 }
 
 module "ecs_lineagework" {

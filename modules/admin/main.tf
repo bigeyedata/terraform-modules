@@ -27,6 +27,7 @@ locals {
     TEMPORALUI_DOMAIN_NAME  = var.temporalui_domain_name
     DATAWATCH_DOMAIN_NAME   = var.datawatch_domain_name
     DATAWORK_DOMAIN_NAME    = var.datawork_domain_name
+    INDEXWORK_DOMAIN_NAME   = var.indexwork_domain_name
     LINEAGEWORK_DOMAIN_NAME = var.lineagework_domain_name
     METRICWORK_DOMAIN_NAME  = var.metricwork_domain_name
     INTERNALAPI_DOMAIN_NAME = var.internalapi_domain_name
@@ -40,6 +41,7 @@ locals {
     TEMPORALUI_ELB_NAME  = var.temporalui_resource_name
     DATAWATCH_ELB_NAME   = var.datawatch_resource_name
     DATAWORK_ELB_NAME    = var.datawork_resource_name
+    INDEXWORK_ELB_NAME   = var.indexwork_resource_name
     LINEAGEWORK_ELB_NAME = var.lineagework_resource_name
     METRICWORK_ELB_NAME  = var.metricwork_resource_name
     INTERNALAPI_ELB_NAME = var.internalapi_resource_name
@@ -53,6 +55,7 @@ locals {
     TEMPORALUI_ECS_NAME  = var.temporalui_resource_name
     DATAWATCH_ECS_NAME   = var.datawatch_resource_name
     DATAWORK_ECS_NAME    = var.datawork_resource_name
+    INDEXWORK_ECS_NAME   = var.indexwork_resource_name
     LINEAGEWORK_ECS_NAME = var.lineagework_resource_name
     METRICWORK_ECS_NAME  = var.metricwork_resource_name
     INTERNALAPI_ECS_NAME = var.internalapi_resource_name
