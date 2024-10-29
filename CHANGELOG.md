@@ -1,3 +1,12 @@
+# [11.5.0](https://github.com/bigeyedata/terraform-modules/compare/v11.4.0...v11.5.0) (2024-10-29)
+
+
+### Features
+
+* add indexwork service ([36d347d](https://github.com/bigeyedata/terraform-modules/commit/36d347d92b049881bcf75460acd11eaf08193373))
+
+
+
 # [11.4.0](https://github.com/bigeyedata/terraform-modules/compare/v11.3.1...v11.4.0) (2024-10-23)
 
 
