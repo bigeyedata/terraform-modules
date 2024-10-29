@@ -39,6 +39,15 @@ variable "enable_bigeye_admin_module" {
 }
 
 #======================================================
+# Short lived rollout flags
+#======================================================
+variable "indexwork_enabled" {
+  description = "Set to true to move the MQ queue for catalog indexing from datawork to indexwork"
+  type        = bool
+  default     = false
+}
+
+#======================================================
 # Access Logs
 #======================================================
 variable "elb_access_logs_enabled" {
@@ -1967,6 +1976,69 @@ variable "datawork_jvm_max_ram_pct" {
 }
 
 variable "datawork_enable_ecs_exec" {
+  description = "Whether to enable ECS exec"
+  type        = bool
+  default     = false
+}
+
+#======================================================
+# Application Variables - Indexwork
+#======================================================
+variable "indexwork_image_tag" {
+  description = "The image tag to use for indexwork, defaults to the global `image_tag` if not specified"
+  type        = string
+  default     = ""
+}
+
+variable "indexwork_desired_count" {
+  description = "The desired number of replicas"
+  type        = number
+  default     = 0
+}
+
+variable "indexwork_cpu" {
+  description = "Amount of CPU to allocate"
+  type        = number
+  default     = 1024
+}
+
+variable "indexwork_memory" {
+  description = "Amount of Memory in MB to allocate"
+  type        = number
+  default     = 4096
+}
+
+variable "indexwork_port" {
+  description = "The port to listen on"
+  type        = number
+  default     = 80
+}
+
+variable "indexwork_additional_environment_vars" {
+  description = "Additional enviromnent variables to give the application"
+  type        = map(string)
+  default     = {}
+}
+
+variable "indexwork_extra_security_group_ids" {
+  description = "Additional security group ids to indexwork"
+  type        = list(string)
+  default     = []
+}
+
+variable "indexwork_lb_extra_security_group_ids" {
+  description = "Additional security group ids to indexwork ALB"
+  type        = list(string)
+  default     = []
+}
+
+variable "indexwork_jvm_max_ram_pct" {
+  description = ""
+  type        = number
+  default     = 80
+}
+
+variable "indexwork_enable_ecs_exec" {
   description = "Whether to enable ECS exec"
   type        = bool
   default     = false

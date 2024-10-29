@@ -80,6 +80,7 @@ locals {
   datawatch_mysql_vanity_dns_name         = "${local.base_dns_alias}-mysql.${var.top_level_dns_name}"
   datawatch_mysql_replica_vanity_dns_name = "${local.base_dns_alias}-mysql-ro.${var.top_level_dns_name}"
   datawork_dns_name                       = "${local.base_dns_alias}-datawork.${var.top_level_dns_name}"
+  indexwork_dns_name                      = "${local.base_dns_alias}-indexwork.${var.top_level_dns_name}"
   lineagework_dns_name                    = "${local.base_dns_alias}-lineagework.${var.top_level_dns_name}"
   metricwork_dns_name                     = "${local.base_dns_alias}-metricwork.${var.top_level_dns_name}"
   internalapi_dns_name                    = "${local.base_dns_alias}-internalapi.${var.top_level_dns_name}"
@@ -137,6 +138,7 @@ locals {
   temporal_image_tag     = coalesce(var.temporal_image_tag, var.image_tag)
   datawatch_image_tag    = coalesce(var.datawatch_image_tag, var.image_tag)
   datawork_image_tag     = coalesce(var.datawork_image_tag, var.image_tag)
+  indexwork_image_tag    = coalesce(var.indexwork_image_tag, var.image_tag)
   lineagework_image_tag  = coalesce(var.lineagework_image_tag, var.image_tag)
   metricwork_image_tag   = coalesce(var.metricwork_image_tag, var.image_tag)
   internalapi_image_tag  = coalesce(var.internalapi_image_tag, var.image_tag)

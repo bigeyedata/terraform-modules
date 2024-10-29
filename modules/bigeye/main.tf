@@ -203,6 +203,11 @@ data "aws_vpc" "this" {
     }
 
     postcondition {
+      condition     = var.create_security_groups || length(var.indexwork_lb_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide a security group for the indexwork lb using indexwork_lb_extra_security_group_ids (ports 80/443)"
+    }
+
+    postcondition {
       condition     = var.create_security_groups || length(var.lineagework_lb_extra_security_group_ids) > 0
       error_message = "If create_security_groups is false, you must provide a security group for the lineagework lb using lineagework_lb_extra_security_group_ids (ports 80/443)"
     }
@@ -260,6 +265,11 @@ data "aws_vpc" "this" {
     postcondition {
       condition     = var.create_security_groups || length(var.datawork_extra_security_group_ids) > 0
       error_message = "If create_security_groups is false, you must provide a security group for the datawork ECS tasks using datawork_extra_security_group_ids (port ${var.datawork_port})"
+    }
+
+    postcondition {
+      condition     = var.create_security_groups || length(var.indexwork_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide a security group for the indexwork ECS tasks using indexwork_extra_security_group_ids (port ${var.indexwork_port})"
     }
 
     postcondition {
@@ -436,6 +446,15 @@ resource "aws_route53_record" "datawork" {
   type    = "CNAME"
   ttl     = 3600
   records = [module.datawork.dns_name]
+}
+
+resource "aws_route53_record" "indexwork" {
+  count   = var.create_dns_records ? 1 : 0
+  zone_id = data.aws_route53_zone.this[0].zone_id
+  name    = local.indexwork_dns_name
+  type    = "CNAME"
+  ttl     = 3600
+  records = [module.indexwork.dns_name]
 }
 
 resource "aws_route53_record" "lineagework" {
@@ -691,6 +710,7 @@ module "bigeye_admin" {
   temporalui_domain_name  = local.temporalui_dns_name
   datawatch_domain_name   = local.datawatch_dns_name
   datawork_domain_name    = local.datawork_dns_name
+  indexwork_domain_name   = local.indexwork_dns_name
   lineagework_domain_name = local.lineagework_dns_name
   metricwork_domain_name  = local.metricwork_dns_name
   internalapi_domain_name = local.internalapi_dns_name
@@ -704,6 +724,7 @@ module "bigeye_admin" {
   temporalui_resource_name  = "${local.name}-temporalui"
   datawatch_resource_name   = "${local.name}-datawatch"
   datawork_resource_name    = "${local.name}-datawork"
+  indexwork_resource_name   = "${local.name}-indexwork"
   lineagework_resource_name = "${local.name}-lineagework"
   metricwork_resource_name  = "${local.name}-metricwork"
   internalapi_resource_name = "${local.name}-internalapi"
@@ -1774,7 +1795,7 @@ resource "aws_iam_role_policy" "datawatch_secrets" {
 }
 
 resource "aws_iam_role_policy" "datawatch_ecs_exec" {
-  count = local.create_datawatch_role && (var.datawatch_enable_ecs_exec || var.datawork_enable_ecs_exec || var.lineagework_enable_ecs_exec || var.metricwork_enable_ecs_exec || var.internalapi_enable_ecs_exec) ? 1 : 0
+  count = local.create_datawatch_role && (var.datawatch_enable_ecs_exec || var.datawork_enable_ecs_exec || var.indexwork_enable_ecs_exec || var.lineagework_enable_ecs_exec || var.metricwork_enable_ecs_exec || var.internalapi_enable_ecs_exec) ? 1 : 0
   role  = aws_iam_role.datawatch[0].id
   name  = "AllowECSExec"
   policy = jsonencode({
@@ -1885,6 +1906,7 @@ module "redis" {
     module.lineagework.security_group_id,
     module.metricwork.security_group_id,
     module.internalapi.security_group_id,
+    module.indexwork.security_group_id,
   ] : []
   auth_token               = local.create_redis_auth_token_secret ? aws_secretsmanager_secret_version.redis_auth_token[0].secret_string : data.aws_secretsmanager_secret_version.byo_redis_auth_token[0].secret_string
   instance_type            = var.redis_instance_type
@@ -1940,12 +1962,15 @@ module "datawatch_rds" {
   extra_security_group_ids = concat(var.datawatch_rds_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   enable_multi_az          = var.redundant_infrastructure ? true : false
 
+  # Be mindful of the order when changing the membership of this var.  It is used in a count since the input is not known
+  # plan time, so can't be a for_each, thus changing ordering will cause resource destroy/recreate.
   allowed_client_security_group_ids = var.create_security_groups ? [
     module.datawatch.security_group_id,
     module.datawork.security_group_id,
     module.lineagework.security_group_id,
     module.metricwork.security_group_id,
     module.internalapi.security_group_id,
+    module.indexwork.security_group_id,
   ] : []
 
   # Settings
@@ -2297,6 +2322,7 @@ module "datawork" {
       MAX_RAM_PERCENTAGE                 = var.datawork_jvm_max_ram_pct
       METRIC_RUN_WORKERS                 = "1"
       EXCLUDE_QUEUES                     = "trigger-batch-metric-run,source-lineage,metacenter-lineage"
+      MQ_EXCLUDE_QUEUES                  = var.indexwork_enabled ? "dataset_index_op_v2" : ""
       HEAP_DUMP_PATH                     = contains(var.efs_volume_enabled_services, "datawork") ? var.efs_mount_point : ""
       RUN_METRICS_WF_EXEC_SIZE           = var.temporal_client_run_metrics_wf_exec_size
       RUN_METRICS_ACT_EXEC_SIZE          = var.temporal_client_run_metrics_act_exec_size
@@ -2314,6 +2340,89 @@ module "datawork" {
       MONOCLE_INVALIDATION_ACT_EXEC_SIZE = var.temporal_client_monocle_invalidation_act_exec_size
     },
     var.datawork_additional_environment_vars,
+  )
+
+  secret_arns = local.datawatch_secret_arns
+}
+
+module "indexwork" {
+  depends_on = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
+  source     = "../simpleservice"
+  app        = "indexwork"
+  instance   = var.instance
+  stack      = local.name
+  name       = "${local.name}-indexwork"
+  tags       = merge(local.tags, { app = "indexwork" })
+
+  vpc_id                        = local.vpc_id
+  vpc_cidr_block                = var.vpc_cidr_block
+  subnet_ids                    = local.application_subnet_ids
+  create_security_groups        = var.create_security_groups
+  task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
+  additional_security_group_ids = concat(local.datawatch_additional_security_groups, var.indexwork_extra_security_group_ids)
+  traffic_port                  = var.indexwork_port
+  ecs_cluster_id                = aws_ecs_cluster.this.id
+  fargate_version               = var.fargate_version
+  enable_execute_command        = var.indexwork_enable_ecs_exec
+
+  # Load balancer
+  healthcheck_path                 = "/health"
+  healthcheck_interval             = 90
+  ssl_policy                       = var.alb_ssl_policy
+  acm_certificate_arn              = local.acm_certificate_arn
+  lb_idle_timeout                  = 900
+  lb_subnet_ids                    = local.internal_service_alb_subnet_ids
+  lb_additional_security_group_ids = concat(var.indexwork_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
+  lb_additional_ingress_cidrs      = var.internal_additional_ingress_cidrs
+
+  lb_access_logs_enabled       = var.elb_access_logs_enabled
+  lb_access_logs_bucket_name   = var.elb_access_logs_bucket
+  lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "indexwork")
+
+  # Task settings
+  desired_count             = var.indexwork_desired_count
+  cpu                       = var.indexwork_cpu
+  memory                    = var.indexwork_memory
+  execution_role_arn        = local.ecs_role_arn
+  task_role_arn             = local.datawatch_role_arn
+  image_registry            = local.image_registry
+  image_repository          = format("%s%s", "datawatch", var.image_repository_suffix)
+  image_tag                 = local.indexwork_image_tag
+  cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
+  stop_timeout              = 120
+  efs_volume_id             = contains(var.efs_volume_enabled_services, "indexwork") ? aws_efs_file_system.this[0].id : ""
+  efs_access_point_id       = contains(var.efs_volume_enabled_services, "indexwork") ? aws_efs_access_point.this["indexwork"].id : ""
+  efs_mount_point           = var.efs_mount_point
+
+  # Datadog
+  datadog_agent_enabled            = var.datadog_agent_enabled
+  datadog_agent_image              = var.datadog_agent_image
+  datadog_agent_cpu                = var.datadog_agent_cpu
+  datadog_agent_memory             = var.datadog_agent_memory
+  datadog_agent_api_key_secret_arn = var.datadog_agent_api_key_secret_arn
+
+  # aws firelens
+  awsfirelens_cpu     = var.awsfirelens_cpu
+  awsfirelens_memory  = var.awsfirelens_memory
+  awsfirelens_enabled = var.awsfirelens_enabled
+  awsfirelens_host    = var.awsfirelens_host
+  awsfirelens_image   = var.awsfirelens_image
+  awsfirelens_uri     = var.awsfirelens_uri
+
+  environment_variables = merge(
+    local.datawatch_dd_env_vars,
+    local.datawatch_common_env_vars,
+    {
+      APP                      = "indexwork"
+      DATAWATCH_ADDRESS        = "http://localhost:${var.indexwork_port}"
+      WORKERS_ENABLED          = var.indexwork_enabled ? "true" : "false"
+      MAX_RAM_PERCENTAGE       = var.indexwork_jvm_max_ram_pct
+      METRIC_RUN_WORKERS       = "0"
+      MQ_INCLUDE_QUEUES        = "dataset_index_op_v2"
+      HEAP_DUMP_PATH           = contains(var.efs_volume_enabled_services, "indexwork") ? var.efs_mount_point : ""
+      TEMPORAL_WORKERS_ENABLED = "false"
+    },
+    var.indexwork_additional_environment_vars,
   )
 
   secret_arns = local.datawatch_secret_arns
