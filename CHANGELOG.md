@@ -1,3 +1,12 @@
+## [11.5.1](https://github.com/bigeyedata/terraform-modules/compare/v11.5.0...v11.5.1) (2024-10-30)
+
+
+### Bug Fixes
+
+* remove metricwork MQ workers ([ec304db](https://github.com/bigeyedata/terraform-modules/commit/ec304db9be4744d602a9c3847f965f093c0f064d))
+
+
+
 # [11.5.0](https://github.com/bigeyedata/terraform-modules/compare/v11.4.0...v11.5.0) (2024-10-29)
 
 
