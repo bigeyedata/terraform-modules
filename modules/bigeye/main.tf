@@ -2587,6 +2587,7 @@ module "metricwork" {
       MAX_RAM_PERCENTAGE                     = var.metricwork_jvm_max_ram_pct
       METRIC_RUN_WORKERS                     = "1"
       INCLUDE_QUEUES                         = "trigger-batch-metric-run"
+      MQ_WORKERS_ENABLED                     = "false"
       HEAP_DUMP_PATH                         = contains(var.efs_volume_enabled_services, "metricwork") ? var.efs_mount_point : ""
       TRIGGER_BATCH_METRIC_RUN_WF_EXEC_SIZE  = var.temporal_client_trigger_batch_metric_run_wf_exec_size
       TRIGGER_BATCH_METRIC_RUN_ACT_EXEC_SIZE = var.temporal_client_trigger_batch_metric_run_act_exec_size
