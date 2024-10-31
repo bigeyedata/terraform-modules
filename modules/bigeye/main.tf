@@ -2346,7 +2346,7 @@ module "datawork" {
 }
 
 locals {
-  # TODO clean this up when indexwork_enabled featureflag is cleaned up SRE-3855
+  # TODO clean this up when indexwork_enabled featureflag is cleaned up SRE-3866
   indexwork_autoscaling_enabled = var.indexwork_enabled && var.indexwork_autoscaling_enabled
 }
 
@@ -2438,7 +2438,7 @@ resource "aws_appautoscaling_target" "indexwork" {
   count              = local.indexwork_autoscaling_enabled ? 1 : 0
   depends_on         = [module.indexwork]
   min_capacity       = 0
-  max_capacity       = 100
+  max_capacity       = var.indexwork_autoscaling_max_count
   resource_id        = format("service/%s/%s-indexwork", local.name, local.name)
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
@@ -2457,26 +2457,18 @@ resource "aws_appautoscaling_policy" "indexwork" {
     cooldown                = 600
     metric_aggregation_type = "Average"
 
+    # Scale to 0 when there is no work on the queue
     step_adjustment {
-      scaling_adjustment          = var.indexwork_desired_count
-      metric_interval_upper_bound = var.indexwork_autoscaling_threshold_step1
+      scaling_adjustment          = 0
+      metric_interval_upper_bound = 1
     }
 
+    # Scale up when there is at least 1 job in the queue.  More fine grained scaling steps is not
+    # practical for MQ based services as we will loose in-flight jobs during scale-in since our MQ
+    # workers do not respect sigterm.
     step_adjustment {
-      scaling_adjustment          = var.indexwork_desired_count_step1
-      metric_interval_lower_bound = var.indexwork_autoscaling_threshold_step1
-      metric_interval_upper_bound = var.indexwork_autoscaling_threshold_step2
-    }
-
-    step_adjustment {
-      scaling_adjustment          = var.indexwork_desired_count_step2
-      metric_interval_lower_bound = var.indexwork_autoscaling_threshold_step2
-      metric_interval_upper_bound = var.indexwork_autoscaling_threshold_step3
-    }
-
-    step_adjustment {
-      scaling_adjustment          = var.indexwork_desired_count_step3
-      metric_interval_lower_bound = var.indexwork_autoscaling_threshold_step3
+      scaling_adjustment          = var.indexwork_autoscaling_max_count
+      metric_interval_lower_bound = 1
     }
   }
 }

@@ -1991,7 +1991,7 @@ variable "indexwork_image_tag" {
 }
 
 variable "indexwork_desired_count" {
-  description = "The desired number of replicas"
+  description = "The desired number of replicas.  If autoscaling is enabled, this is largely ignored and should be left at 0.  See var.indexwork_autoscaling_max_count."
   type        = number
   default     = 0
 }
@@ -2044,48 +2044,18 @@ variable "indexwork_enable_ecs_exec" {
   default     = false
 }
 
+# TODO set to true after FF is cleaned up SRE-3866
 variable "indexwork_autoscaling_enabled" {
-  description = "Whether autoscaling is enabled. Note - if you change this variable, it changes the terraform resource that is created. You must run 'terraform state mv' in order to gracefully make this change"
+  description = "Whether autoscaling is enabled."
   type        = bool
-  default     = true
+  default     = false
 }
 
-variable "indexwork_autoscaling_threshold_step1" {
-  description = "The first autothreshold metric step"
+variable "indexwork_autoscaling_max_count" {
+  description = "When there is work in the queue, the indexwork will scale up to this number of instances."
   type        = number
-  default     = 1
+  default     = 8
 }
-
-variable "indexwork_autoscaling_threshold_step2" {
-  description = "The second autothreshold metric step"
-  type        = number
-  default     = 1000
-}
-
-variable "indexwork_autoscaling_threshold_step3" {
-  description = "The third and final autothreshold metric step"
-  type        = number
-  default     = 10000
-}
-
-variable "indexwork_desired_count_step1" {
-  description = "How many tasks to run after reaching the first autoscaling step"
-  type        = number
-  default     = 1
-}
-
-variable "indexwork_desired_count_step2" {
-  description = "How many tasks to run after reaching the second autoscaling step"
-  type        = number
-  default     = 2
-}
-
-variable "indexwork_desired_count_step3" {
-  description = "How many tasks to run after reaching the third and final autoscaling step"
-  type        = number
-  default     = 4
-}
-
 
 #======================================================
 # Application Variables - Lineagework
