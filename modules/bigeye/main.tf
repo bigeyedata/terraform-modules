@@ -2345,6 +2345,11 @@ module "datawork" {
   secret_arns = local.datawatch_secret_arns
 }
 
+locals {
+  # TODO clean this up when indexwork_enabled featureflag is cleaned up SRE-3866
+  indexwork_autoscaling_enabled = var.indexwork_enabled && var.indexwork_autoscaling_enabled
+}
+
 module "indexwork" {
   depends_on = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
   source     = "../simpleservice"
@@ -2380,6 +2385,7 @@ module "indexwork" {
   lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "indexwork")
 
   # Task settings
+  control_desired_count     = local.indexwork_autoscaling_enabled ? false : true
   desired_count             = var.indexwork_desired_count
   cpu                       = var.indexwork_cpu
   memory                    = var.indexwork_memory
@@ -2426,6 +2432,66 @@ module "indexwork" {
   )
 
   secret_arns = local.datawatch_secret_arns
+}
+
+resource "aws_appautoscaling_target" "indexwork" {
+  count              = local.indexwork_autoscaling_enabled ? 1 : 0
+  depends_on         = [module.indexwork]
+  min_capacity       = 0
+  max_capacity       = var.indexwork_autoscaling_max_count
+  resource_id        = format("service/%s/%s-indexwork", local.name, local.name)
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+}
+
+resource "aws_appautoscaling_policy" "indexwork" {
+  count              = local.indexwork_autoscaling_enabled ? 1 : 0
+  depends_on         = [aws_appautoscaling_target.indexwork]
+  name               = format("%s-indexwork-autoscaling", local.name)
+  policy_type        = "StepScaling"
+  resource_id        = aws_appautoscaling_target.indexwork[0].resource_id
+  scalable_dimension = aws_appautoscaling_target.indexwork[0].scalable_dimension
+  service_namespace  = aws_appautoscaling_target.indexwork[0].service_namespace
+  step_scaling_policy_configuration {
+    adjustment_type         = "ExactCapacity"
+    cooldown                = 600
+    metric_aggregation_type = "Average"
+
+    # Scale to 0 when there is no work on the queue
+    step_adjustment {
+      scaling_adjustment          = 0
+      metric_interval_upper_bound = 1
+    }
+
+    # Scale up when there is at least 1 job in the queue.  More fine grained scaling steps is not
+    # practical for MQ based services as we will loose in-flight jobs during scale-in since our MQ
+    # workers do not respect sigterm.
+    step_adjustment {
+      scaling_adjustment          = var.indexwork_autoscaling_max_count
+      metric_interval_lower_bound = 1
+    }
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "indexwork" {
+  count           = local.indexwork_autoscaling_enabled && local.create_rabbitmq ? 1 : 0
+  alarm_name      = format("%s-indexwork autoscaling", local.name)
+  actions_enabled = true
+  alarm_actions   = [aws_appautoscaling_policy.indexwork[0].arn]
+  metric_name     = "MessageCount"
+  namespace       = "AWS/AmazonMQ"
+  statistic       = "Average"
+  dimensions = {
+    Broker      = module.rabbitmq[0].name
+    VirtualHost = "/"
+    Queue       = "dataset_index_op_v2"
+  }
+  period              = 300
+  evaluation_periods  = 1
+  datapoints_to_alarm = 1
+  threshold           = 0
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  treat_missing_data  = "missing"
 }
 
 module "lineagework" {
