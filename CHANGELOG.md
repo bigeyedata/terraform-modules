@@ -1,3 +1,17 @@
+# [11.6.0](https://github.com/bigeyedata/terraform-modules/compare/v11.5.1...v11.6.0) (2024-10-31)
+
+
+### Bug Fixes
+
+* reduce indexwork autoscaling to 1 step ([e6821b9](https://github.com/bigeyedata/terraform-modules/commit/e6821b98d887dc59b0ff580f43154e35005b9dd1))
+
+
+### Features
+
+* autoscale indexwork service ([764df5e](https://github.com/bigeyedata/terraform-modules/commit/764df5e5180cce676afa9cd2cb23c762dfed3ff0))
+
+
+
 ## [11.5.1](https://github.com/bigeyedata/terraform-modules/compare/v11.5.0...v11.5.1) (2024-10-30)
 
 
