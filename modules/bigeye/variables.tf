@@ -2054,7 +2054,7 @@ variable "indexwork_autoscaling_enabled" {
 variable "indexwork_autoscaling_max_count" {
   description = "When there is work in the queue, the indexwork will scale up to this number of instances."
   type        = number
-  default     = 8
+  default     = 2
 }
 
 #======================================================
