@@ -1,3 +1,12 @@
+# [11.7.0](https://github.com/bigeyedata/terraform-modules/compare/v11.6.0...v11.7.0) (2024-11-01)
+
+
+### Features
+
+* reduce default indexwork instance count ([06ae1be](https://github.com/bigeyedata/terraform-modules/commit/06ae1be854da854c867fc72536de460deaef2b7a))
+
+
+
 # [11.6.0](https://github.com/bigeyedata/terraform-modules/compare/v11.5.1...v11.6.0) (2024-10-31)
 
 
