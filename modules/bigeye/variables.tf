@@ -41,11 +41,6 @@ variable "enable_bigeye_admin_module" {
 #======================================================
 # Short lived rollout flags
 #======================================================
-variable "indexwork_enabled" {
-  description = "Set to true to move the MQ queue for catalog indexing from datawork to indexwork"
-  type        = bool
-  default     = false
-}
 
 #======================================================
 # Access Logs
@@ -1990,16 +1985,10 @@ variable "indexwork_image_tag" {
   default     = ""
 }
 
-variable "indexwork_desired_count" {
-  description = "The desired number of replicas.  If autoscaling is enabled, this is largely ignored and should be left at 0.  See var.indexwork_autoscaling_max_count."
-  type        = number
-  default     = 0
-}
-
 variable "indexwork_cpu" {
   description = "Amount of CPU to allocate"
   type        = number
-  default     = 1024
+  default     = 2048
 }
 
 variable "indexwork_memory" {
@@ -2040,13 +2029,6 @@ variable "indexwork_jvm_max_ram_pct" {
 
 variable "indexwork_enable_ecs_exec" {
   description = "Whether to enable ECS exec"
-  type        = bool
-  default     = false
-}
-
-# TODO set to true after FF is cleaned up SRE-3866
-variable "indexwork_autoscaling_enabled" {
-  description = "Whether autoscaling is enabled."
   type        = bool
   default     = false
 }

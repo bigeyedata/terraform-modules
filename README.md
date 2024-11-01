@@ -40,13 +40,26 @@ It is always recommended to be on the latest
 terraform version and application version.
 
 | terraform-modules Version | Application Version | Comment                                                                                  |
-|---------------------------|-----------|------------------------------------------------------------------------------------------|
-| >= 11.4.0                 | 1.71.0    | migrate queue membership to "include" list that became available in app version `1.71.0` |
-| >= 9.2.0                  | 1.65.0    | mTLS support in datawatch services removed, requires TF settings introduced in `9.2.0`   |
-| 9.2.0                     | >= 1.57.0 | TF adds temporal settings that were released in app version 1.57.0                       |
-| >= 3.12.0                 | 1.48.0    | Application 1.48.0 requires at least terraform-modules version 3.12.0                    |
+|---------------------------|---------------------|------------------------------------------------------------------------------------------|
+| >= 12.0.0                 | 1.73.0              | dedicated indexwork service for catalog indexing operations                              |
+| >= 11.4.0                 | 1.71.0              | migrate queue membership to "include" list that became available in app version `1.71.0` |
+| >= 9.2.0                  | 1.65.0              | mTLS support in datawatch services removed, requires TF settings introduced in `9.2.0`   |
+| 9.2.0                     | >= 1.57.0           | TF adds temporal settings that were released in app version 1.57.0                       |
+| >= 3.12.0                 | 1.48.0              | Application 1.48.0 requires at least terraform-modules version 3.12.0                    |
 
 ## Upgrading
+
+### Upgrading to 12.0.0
+
+The following feature flags will need to be removed from your config if you
+are using them:
+
+- indexwork_enabled
+- indexwork_autoscaling_enabled
+
+### Upgrading to 10.0.0
+
+All variables with papi in the name need to be globally replaced with internalapi.
 
 ### Upgrading to 1.0.0
 
