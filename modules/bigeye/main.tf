@@ -2322,7 +2322,7 @@ module "datawork" {
       MAX_RAM_PERCENTAGE                 = var.datawork_jvm_max_ram_pct
       METRIC_RUN_WORKERS                 = "1"
       EXCLUDE_QUEUES                     = "trigger-batch-metric-run,source-lineage,metacenter-lineage"
-      MQ_EXCLUDE_QUEUES                  = var.indexwork_enabled ? "dataset_index_op_v2" : ""
+      MQ_EXCLUDE_QUEUES                  = "dataset_index_op_v2"
       HEAP_DUMP_PATH                     = contains(var.efs_volume_enabled_services, "datawork") ? var.efs_mount_point : ""
       RUN_METRICS_WF_EXEC_SIZE           = var.temporal_client_run_metrics_wf_exec_size
       RUN_METRICS_ACT_EXEC_SIZE          = var.temporal_client_run_metrics_act_exec_size
@@ -2343,11 +2343,6 @@ module "datawork" {
   )
 
   secret_arns = local.datawatch_secret_arns
-}
-
-locals {
-  # TODO clean this up when indexwork_enabled featureflag is cleaned up SRE-3866
-  indexwork_autoscaling_enabled = var.indexwork_enabled && var.indexwork_autoscaling_enabled
 }
 
 module "indexwork" {
@@ -2385,8 +2380,8 @@ module "indexwork" {
   lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "indexwork")
 
   # Task settings
-  control_desired_count     = local.indexwork_autoscaling_enabled ? false : true
-  desired_count             = var.indexwork_desired_count
+  control_desired_count     = false
+  desired_count             = 0
   cpu                       = var.indexwork_cpu
   memory                    = var.indexwork_memory
   execution_role_arn        = local.ecs_role_arn
@@ -2421,7 +2416,7 @@ module "indexwork" {
     {
       APP                      = "indexwork"
       DATAWATCH_ADDRESS        = "http://localhost:${var.indexwork_port}"
-      WORKERS_ENABLED          = var.indexwork_enabled ? "true" : "false"
+      WORKERS_ENABLED          = "true"
       MAX_RAM_PERCENTAGE       = var.indexwork_jvm_max_ram_pct
       METRIC_RUN_WORKERS       = "0"
       MQ_INCLUDE_QUEUES        = "dataset_index_op_v2"
@@ -2435,7 +2430,6 @@ module "indexwork" {
 }
 
 resource "aws_appautoscaling_target" "indexwork" {
-  count              = local.indexwork_autoscaling_enabled ? 1 : 0
   depends_on         = [module.indexwork]
   min_capacity       = 0
   max_capacity       = var.indexwork_autoscaling_max_count
@@ -2445,13 +2439,12 @@ resource "aws_appautoscaling_target" "indexwork" {
 }
 
 resource "aws_appautoscaling_policy" "indexwork" {
-  count              = local.indexwork_autoscaling_enabled ? 1 : 0
   depends_on         = [aws_appautoscaling_target.indexwork]
   name               = format("%s-indexwork-autoscaling", local.name)
   policy_type        = "StepScaling"
-  resource_id        = aws_appautoscaling_target.indexwork[0].resource_id
-  scalable_dimension = aws_appautoscaling_target.indexwork[0].scalable_dimension
-  service_namespace  = aws_appautoscaling_target.indexwork[0].service_namespace
+  resource_id        = aws_appautoscaling_target.indexwork.resource_id
+  scalable_dimension = aws_appautoscaling_target.indexwork.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.indexwork.service_namespace
   step_scaling_policy_configuration {
     adjustment_type         = "ExactCapacity"
     cooldown                = 600
@@ -2474,10 +2467,9 @@ resource "aws_appautoscaling_policy" "indexwork" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "indexwork" {
-  count           = local.indexwork_autoscaling_enabled && local.create_rabbitmq ? 1 : 0
   alarm_name      = format("%s-indexwork autoscaling", local.name)
   actions_enabled = true
-  alarm_actions   = [aws_appautoscaling_policy.indexwork[0].arn]
+  alarm_actions   = [aws_appautoscaling_policy.indexwork.arn]
   metric_name     = "MessageCount"
   namespace       = "AWS/AmazonMQ"
   statistic       = "Average"
