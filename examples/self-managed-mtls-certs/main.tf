@@ -15,7 +15,7 @@ data "aws_secretsmanager_secret" "ca_bundle" {
 }
 
 module "bigeye" {
-  source      = "git::https://github.com/bigeyedata/terraform-modules//modules/bigeye?ref=v11.7.0"
+  source      = "git::https://github.com/bigeyedata/terraform-modules//modules/bigeye?ref=v12.0.0"
   environment = "test"
   instance    = "bigeye"
 
