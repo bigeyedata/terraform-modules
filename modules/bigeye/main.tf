@@ -2322,7 +2322,7 @@ module "datawork" {
       MAX_RAM_PERCENTAGE                 = var.datawork_jvm_max_ram_pct
       METRIC_RUN_WORKERS                 = "0"
       EXCLUDE_QUEUES                     = "trigger-batch-metric-run,source-lineage,metacenter-lineage"
-      MQ_EXCLUDE_QUEUES                  = "dataset_index_op_v2,metric_batch"
+      MQ_EXCLUDE_QUEUES                  = format("dataset_index_op_v2,metric_batch%s", var.migrate_lineage_mq_queue_enabled ? ",lineage" : "")
       HEAP_DUMP_PATH                     = contains(var.efs_volume_enabled_services, "datawork") ? var.efs_mount_point : ""
       RUN_METRICS_WF_EXEC_SIZE           = var.temporal_client_run_metrics_wf_exec_size
       RUN_METRICS_ACT_EXEC_SIZE          = var.temporal_client_run_metrics_act_exec_size
@@ -2559,7 +2559,8 @@ module "lineagework" {
       MAX_RAM_PERCENTAGE           = var.lineagework_jvm_max_ram_pct
       METRIC_RUN_WORKERS           = "0"
       INCLUDE_QUEUES               = "source-lineage,metacenter-lineage"
-      MQ_WORKERS_ENABLED           = "false"
+      MQ_WORKERS_ENABLED           = var.migrate_lineage_mq_queue_enabled ? "true" : "false"
+      MQ_INCLUDE_QUEUES            = var.migrate_lineage_mq_queue_enabled ? "lineage" : ""
       HEAP_DUMP_PATH               = contains(var.efs_volume_enabled_services, "lineagework") ? var.efs_mount_point : ""
       SOURCE_LINEAGE_WF_EXEC_SIZE  = var.temporal_client_source_lineage_wf_exec_size
       SOURCE_LINEAGE_ACT_EXEC_SIZE = var.temporal_client_source_lineage_act_exec_size
