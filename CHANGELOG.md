@@ -1,3 +1,19 @@
+# [12.0.0](https://github.com/bigeyedata/terraform-modules/compare/v11.7.0...v12.0.0) (2024-11-01)
+
+
+* feat!: rollout indexwork service ([04d8624](https://github.com/bigeyedata/terraform-modules/commit/04d8624ae75b06a6670168359af1f0e3b12caf00))
+
+
+### BREAKING CHANGES
+
+* The following feature flags will need to be removed
+from your config if you are using them:
+
+- indexwork_enabled
+- indexwork_autoscaling_enabled
+
+
+
 # [11.7.0](https://github.com/bigeyedata/terraform-modules/compare/v11.6.0...v11.7.0) (2024-11-01)
 
 
