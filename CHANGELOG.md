@@ -1,3 +1,12 @@
+## [12.0.1](https://github.com/bigeyedata/terraform-modules/compare/v12.0.0...v12.0.1) (2024-11-04)
+
+
+### Bug Fixes
+
+* update queue membership for MQ based metric runs ([2973e4a](https://github.com/bigeyedata/terraform-modules/commit/2973e4a0777d83682e33495a8d83786fffa34866))
+
+
+
 # [12.0.0](https://github.com/bigeyedata/terraform-modules/compare/v11.7.0...v12.0.0) (2024-11-01)
 
 
