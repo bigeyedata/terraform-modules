@@ -1807,7 +1807,7 @@ variable "datawatch_desired_count" {
 variable "datawatch_cpu" {
   description = "Amount of CPU to allocate"
   type        = number
-  default     = 1024
+  default     = 2048
 }
 
 variable "datawatch_memory" {
