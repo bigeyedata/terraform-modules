@@ -1,10 +1,22 @@
-## [12.0.1](https://github.com/bigeyedata/terraform-modules/compare/v12.0.0...v12.0.1) (2024-11-04)
+# [12.1.0](https://github.com/bigeyedata/terraform-modules/compare/v12.0.0...v12.1.0) (2024-11-04)
 
 
 ### Bug Fixes
 
 * update queue membership for MQ based metric runs ([2973e4a](https://github.com/bigeyedata/terraform-modules/commit/2973e4a0777d83682e33495a8d83786fffa34866))
 
+
+### Features
+
+* add flag to migrate lineage MQ work to lineagework ([9b1f468](https://github.com/bigeyedata/terraform-modules/commit/9b1f468f58b105f8cad57a7101fd1675e7e0805e))
+
+
+## [12.0.1](https://github.com/bigeyedata/terraform-modules/compare/v12.0.0...v12.0.1) (2024-11-04)
+
+
+### Bug Fixes
+
+* update queue membership for MQ based metric runs ([2973e4a](https://github.com/bigeyedata/terraform-modules/commit/2973e4a0777d83682e33495a8d83786fffa34866))
 
 
 # [12.0.0](https://github.com/bigeyedata/terraform-modules/compare/v11.7.0...v12.0.0) (2024-11-01)
