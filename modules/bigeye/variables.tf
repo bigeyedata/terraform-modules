@@ -2056,7 +2056,7 @@ variable "lineagework_image_tag" {
 variable "lineagework_desired_count" {
   description = "The desired number of replicas"
   type        = number
-  default     = 1
+  default     = 0
 }
 
 variable "lineagework_cpu" {
