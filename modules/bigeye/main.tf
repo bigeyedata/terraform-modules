@@ -2447,8 +2447,8 @@ resource "aws_appautoscaling_policy" "indexwork" {
   service_namespace  = aws_appautoscaling_target.indexwork.service_namespace
   step_scaling_policy_configuration {
     adjustment_type         = "ExactCapacity"
-    cooldown                = 600
-    metric_aggregation_type = "Average"
+    cooldown                = 300
+    metric_aggregation_type = "Minimum"
 
     # Scale to 0 when there is no work on the queue
     step_adjustment {
