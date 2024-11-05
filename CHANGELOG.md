@@ -1,3 +1,12 @@
+# [12.4.0](https://github.com/bigeyedata/terraform-modules/compare/v12.3.0...v12.4.0) (2024-11-05)
+
+
+### Features
+
+* disable lineagework service by default ([474f20a](https://github.com/bigeyedata/terraform-modules/commit/474f20aeee343f52857dff5f1abc4a23defc9b43))
+
+
+
 # [12.3.0](https://github.com/bigeyedata/terraform-modules/compare/v12.2.0...v12.3.0) (2024-11-05)
 
 
