@@ -1,3 +1,13 @@
+# [12.3.0](https://github.com/bigeyedata/terraform-modules/compare/v12.2.0...v12.3.0) (2024-11-05)
+
+
+### Features
+
+* increase datawatch default cpu ([901c893](https://github.com/bigeyedata/terraform-modules/commit/901c8938113955ee6512dbe429ccd60e2a29e7c9))
+* scale indexwork in faster ([8e0efaf](https://github.com/bigeyedata/terraform-modules/commit/8e0efaf1be646d5274d26cbea6891a144bf2e3be))
+
+
+
 # [12.2.0](https://github.com/bigeyedata/terraform-modules/compare/v12.0.1...v12.2.0) (2024-11-04)
 
 
