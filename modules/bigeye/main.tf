@@ -2148,6 +2148,7 @@ locals {
     REQUEST_AUTH_LOGGING_ENABLED    = var.datawatch_request_auth_logging_enabled
     REQUEST_BODY_LOGGING_ENABLED    = var.datawatch_request_body_logging_enabled
     CLASS_LOADING_LOGGING_ENABLED   = var.datawatch_class_loading_logging_enabled
+    MAX_REQUEST_SIZE                = var.datawatch_max_request_size
 
     AUTH0_DOMAIN            = var.auth0_domain
     EXTERNAL_LOGGING_LEVEL  = var.datawatch_external_logging_level
