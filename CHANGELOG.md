@@ -1,3 +1,12 @@
+# [12.5.0](https://github.com/bigeyedata/terraform-modules/compare/v12.4.0...v12.5.0) (2024-11-08)
+
+
+### Features
+
+* add env var to control request size for datawatch ([#363](https://github.com/bigeyedata/terraform-modules/issues/363)) ([17edd39](https://github.com/bigeyedata/terraform-modules/commit/17edd39000040f485d0d4e04cdfa87d314c5e022))
+
+
+
 # [12.4.0](https://github.com/bigeyedata/terraform-modules/compare/v12.3.0...v12.4.0) (2024-11-05)
 
 
