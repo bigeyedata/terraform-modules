@@ -1918,6 +1918,12 @@ variable "datawatch_enable_ecs_exec" {
   default     = false
 }
 
+variable "datawatch_max_request_size" {
+  description = "Controls the max request size for API calls to datawatch. It is unusual to need to adjust this, contact Bigeye support."
+  default     = "100000000"
+  type        = string
+}
+
 #======================================================
 # Application Variables - Datawork
 #======================================================
