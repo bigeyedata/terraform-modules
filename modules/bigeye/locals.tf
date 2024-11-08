@@ -34,6 +34,21 @@ locals {
   create_rabbitmq               = var.byo_rabbitmq_endpoint == ""
   rabbitmq_endpoint             = local.create_rabbitmq ? module.rabbitmq[0].endpoint : var.byo_rabbitmq_endpoint
   rabbitmq_cluster_mode_enabled = var.rabbitmq_cluster_enabled == null ? var.redundant_infrastructure : var.rabbitmq_cluster_enabled
+  # compact() will strip the empty elements
+  datawork_mq_exclude_queues = join(",", compact([
+    "dataset_index_op_v2",
+    "metric_batch",
+    var.migrate_lineage_mq_queue_enabled ? "lineage" : "",
+    var.migrate_catalog_indexing_mq_queue_enabled ? "catalog_index_v2" : "",
+  ]))
+  indexwork_mq_include_queues = join(",", compact([
+    "dataset_index_op_v2",
+    var.migrate_catalog_indexing_mq_queue_enabled ? "catalog_index_v2" : "",
+  ]))
+  lineagework_mq_include_queues = join(",", compact([
+    var.migrate_lineage_mq_queue_enabled ? "lineage" : ""
+  ]))
+  metricwork_mq_include_queues = "metric_batch"
 
   # AWS Account
   aws_account_id = data.aws_caller_identity.current.account_id

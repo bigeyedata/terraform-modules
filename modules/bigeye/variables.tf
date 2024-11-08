@@ -47,6 +47,12 @@ variable "migrate_lineage_mq_queue_enabled" {
   default     = false
 }
 
+variable "migrate_catalog_indexing_mq_queue_enabled" {
+  description = "When true, move the catalog_index_v2 MQ queue to the indexwork service.  This is experimental, not recommended for production."
+  type        = bool
+  default     = false
+}
+
 #======================================================
 # Access Logs
 #======================================================
