@@ -1931,6 +1931,70 @@ variable "datawatch_max_request_size" {
 }
 
 #======================================================
+# Application Variables - Backfillwork
+#======================================================
+variable "backfillwork_image_tag" {
+  description = "The image tag to use for backfillwork, defaults to the global `image_tag` if not specified"
+  type        = string
+  default     = ""
+}
+
+variable "backfillwork_cpu" {
+  description = "Amount of CPU to allocate"
+  type        = number
+  default     = 1024
+}
+
+variable "backfillwork_memory" {
+  description = "Amount of Memory in MB to allocate"
+  type        = number
+  default     = 4096
+}
+
+variable "backfillwork_port" {
+  description = "The port to listen on"
+  type        = number
+  default     = 80
+}
+
+variable "backfillwork_additional_environment_vars" {
+  description = "Additional enviromnent variables to give the application"
+  type        = map(string)
+  default     = {}
+}
+
+variable "backfillwork_extra_security_group_ids" {
+  description = "Additional security group ids to backfillwork"
+  type        = list(string)
+  default     = []
+}
+
+variable "backfillwork_lb_extra_security_group_ids" {
+  description = "Additional security group ids to backfillwork ALB"
+  type        = list(string)
+  default     = []
+}
+
+variable "backfillwork_jvm_max_ram_pct" {
+  description = ""
+  type        = number
+  default     = 80
+}
+
+variable "backfillwork_enable_ecs_exec" {
+  description = "Whether to enable ECS exec"
+  type        = bool
+  default     = false
+}
+
+variable "backfillwork_autoscaling_max_count" {
+  description = "When there is work in the queue, the backfillwork will scale up to this number of instances."
+  type        = number
+  default     = 2
+}
+
+
+#======================================================
 # Application Variables - Datawork
 #======================================================
 variable "datawork_image_tag" {

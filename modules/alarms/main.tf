@@ -463,6 +463,21 @@ module "elb_datawatch" {
   error_rate_threshold           = var.elb_datawatch_error_rate_threshold
 }
 
+module "elb_backfillwork" {
+  source                         = "./elb"
+  stack                          = var.stack
+  app                            = "backfillwork"
+  host_count_disabled            = var.elb_backfillwork_host_count_disabled
+  host_count_datapoints_to_alarm = var.elb_backfillwork_host_count_datapoints_to_alarm
+  host_count_evaluation_periods  = var.elb_backfillwork_host_count_evaluation_periods
+  host_count_period              = var.elb_backfillwork_host_count_period
+  host_count_sns_arns            = coalesce(var.elb_backfillwork_host_count_sns_arns, [local.high_urgency_sns_topic_arn])
+  host_count_threshold           = var.elb_backfillwork_host_count_threshold
+
+  response_time_disabled = true
+  error_rate_disabled    = true
+}
+
 module "elb_datawork" {
   source                         = "./elb"
   stack                          = var.stack
@@ -641,6 +656,18 @@ module "ecs_datawatch" {
   mem_period              = var.ecs_datawatch_mem_period
   mem_sns_arns            = coalesce(var.ecs_datawatch_mem_sns_arns, [local.low_urgency_sns_topic_arn])
   mem_threshold           = var.ecs_datawatch_mem_threshold
+}
+
+module "ecs_backfillwork" {
+  source                  = "./ecs"
+  stack                   = var.stack
+  app                     = "backfillwork"
+  mem_disabled            = var.ecs_backfillwork_mem_disabled
+  mem_datapoints_to_alarm = var.ecs_backfillwork_mem_dataponts_to_alarm
+  mem_evaluation_periods  = var.ecs_backfillwork_mem_evaluation_periods
+  mem_period              = var.ecs_backfillwork_mem_period
+  mem_sns_arns            = coalesce(var.ecs_backfillwork_mem_sns_arns, [local.low_urgency_sns_topic_arn])
+  mem_threshold           = var.ecs_backfillwork_mem_threshold
 }
 
 module "ecs_datawork" {
