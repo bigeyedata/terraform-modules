@@ -1920,15 +1920,18 @@ module "redis" {
   additional_ingress_cidrs = var.internal_additional_ingress_cidrs
   subnet_group_name        = local.elasticache_subnet_group_name
   extra_security_group_ids = concat(var.redis_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
+
+  # Be mindful of the order when changing the membership of this var.  It is used in a count since the input is not known
+  # plan time, so can't be a for_each, thus changing ordering will cause resource destroy/recreate.
   allowed_client_security_group_ids = var.create_security_groups ? [
     module.scheduler.security_group_id,
     module.datawatch.security_group_id,
     module.datawork.security_group_id,
-    module.backfillwork.security_group_id,
     module.lineagework.security_group_id,
     module.metricwork.security_group_id,
     module.internalapi.security_group_id,
     module.indexwork.security_group_id,
+    module.backfillwork.security_group_id,
   ] : []
   auth_token               = local.create_redis_auth_token_secret ? aws_secretsmanager_secret_version.redis_auth_token[0].secret_string : data.aws_secretsmanager_secret_version.byo_redis_auth_token[0].secret_string
   instance_type            = var.redis_instance_type
