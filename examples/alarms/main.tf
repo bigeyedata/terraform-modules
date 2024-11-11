@@ -1,5 +1,5 @@
 module "bigeye" {
-  source      = "git::https://github.com/bigeyedata/terraform-modules//modules/bigeye?ref=v12.7.0"
+  source      = "git::https://github.com/bigeyedata/terraform-modules//modules/bigeye?ref=v12.7.1"
   environment = "test"
   instance    = "bigeye"
 
@@ -12,7 +12,7 @@ module "bigeye" {
 
 # Alarms module
 module "alarms" {
-  source                           = "git::https://github.com/bigeyedata/terraform-modules//modules/alarms?ref=v12.7.0"
+  source                           = "git::https://github.com/bigeyedata/terraform-modules//modules/alarms?ref=v12.7.1"
   stack                            = module.bigeye.stack_name
   datawatch_rds_identifier         = module.bigeye.datawatch_rds_identifier
   datawatch_rds_replica_identifier = module.bigeye.datawatch_rds_replica_identifier

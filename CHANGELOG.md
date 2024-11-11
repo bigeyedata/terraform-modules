@@ -1,3 +1,12 @@
+## [12.7.1](https://github.com/bigeyedata/terraform-modules/compare/v12.7.0...v12.7.1) (2024-11-11)
+
+
+### Bug Fixes
+
+* fix security group id order ([#368](https://github.com/bigeyedata/terraform-modules/issues/368)) ([4855f8f](https://github.com/bigeyedata/terraform-modules/commit/4855f8f8699210b159777df9a7459aa7e4038dd3))
+
+
+
 # [12.7.0](https://github.com/bigeyedata/terraform-modules/compare/v12.6.0...v12.7.0) (2024-11-11)
 
 
