@@ -1,3 +1,12 @@
+# [12.7.0](https://github.com/bigeyedata/terraform-modules/compare/v12.6.0...v12.7.0) (2024-11-11)
+
+
+### Features
+
+* add backfillwork service ([#366](https://github.com/bigeyedata/terraform-modules/issues/366)) ([7575f92](https://github.com/bigeyedata/terraform-modules/commit/7575f92a10494fa801e430a377cab3f195d9d990))
+
+
+
 # [12.6.0](https://github.com/bigeyedata/terraform-modules/compare/v12.5.0...v12.6.0) (2024-11-11)
 
 
