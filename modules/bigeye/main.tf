@@ -2323,7 +2323,7 @@ module "datawork" {
       MAX_RAM_PERCENTAGE                 = var.datawork_jvm_max_ram_pct
       METRIC_RUN_WORKERS                 = "0"
       EXCLUDE_QUEUES                     = "trigger-batch-metric-run,source-lineage,metacenter-lineage"
-      MQ_EXCLUDE_QUEUES                  = format("dataset_index_op_v2,metric_batch%s", var.migrate_lineage_mq_queue_enabled ? ",lineage" : "")
+      MQ_EXCLUDE_QUEUES                  = local.datawork_mq_exclude_queues
       HEAP_DUMP_PATH                     = contains(var.efs_volume_enabled_services, "datawork") ? var.efs_mount_point : ""
       RUN_METRICS_WF_EXEC_SIZE           = var.temporal_client_run_metrics_wf_exec_size
       RUN_METRICS_ACT_EXEC_SIZE          = var.temporal_client_run_metrics_act_exec_size
@@ -2420,7 +2420,7 @@ module "indexwork" {
       WORKERS_ENABLED          = "true"
       MAX_RAM_PERCENTAGE       = var.indexwork_jvm_max_ram_pct
       METRIC_RUN_WORKERS       = "0"
-      MQ_INCLUDE_QUEUES        = "dataset_index_op_v2"
+      MQ_INCLUDE_QUEUES        = local.indexwork_mq_include_queues
       HEAP_DUMP_PATH           = contains(var.efs_volume_enabled_services, "indexwork") ? var.efs_mount_point : ""
       TEMPORAL_WORKERS_ENABLED = "false"
     },
@@ -2439,9 +2439,10 @@ resource "aws_appautoscaling_target" "indexwork" {
   service_namespace  = "ecs"
 }
 
-resource "aws_appautoscaling_policy" "indexwork" {
+resource "aws_appautoscaling_policy" "indexwork_catalog" {
+  count              = var.migrate_catalog_indexing_mq_queue_enabled ? 1 : 0
   depends_on         = [aws_appautoscaling_target.indexwork]
-  name               = format("%s-indexwork-autoscaling", local.name)
+  name               = format("%s-indexwork-catalog-autoscaling", local.name)
   policy_type        = "StepScaling"
   resource_id        = aws_appautoscaling_target.indexwork.resource_id
   scalable_dimension = aws_appautoscaling_target.indexwork.scalable_dimension
@@ -2467,13 +2468,62 @@ resource "aws_appautoscaling_policy" "indexwork" {
   }
 }
 
-resource "aws_cloudwatch_metric_alarm" "indexwork" {
-  alarm_name      = format("%s-indexwork autoscaling", local.name)
+resource "aws_cloudwatch_metric_alarm" "indexwork_catalog" {
+  count           = var.migrate_catalog_indexing_mq_queue_enabled ? 1 : 0
+  alarm_name      = format("%s-indexwork catalog autoscaling", local.name)
   actions_enabled = true
-  alarm_actions   = [aws_appautoscaling_policy.indexwork.arn]
+  alarm_actions   = [aws_appautoscaling_policy.indexwork_catalog[0].arn]
   metric_name     = "MessageCount"
   namespace       = "AWS/AmazonMQ"
-  statistic       = "Average"
+  statistic       = "Minimum"
+  dimensions = {
+    Broker      = module.rabbitmq[0].name
+    VirtualHost = "/"
+    Queue       = "catalog_index_v2"
+  }
+  period              = 300
+  evaluation_periods  = 1
+  datapoints_to_alarm = 1
+  threshold           = 0
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  treat_missing_data  = "missing"
+}
+
+resource "aws_appautoscaling_policy" "indexwork_dataset" {
+  depends_on         = [aws_appautoscaling_target.indexwork]
+  name               = format("%s-indexwork-dataset-autoscaling", local.name)
+  policy_type        = "StepScaling"
+  resource_id        = aws_appautoscaling_target.indexwork.resource_id
+  scalable_dimension = aws_appautoscaling_target.indexwork.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.indexwork.service_namespace
+  step_scaling_policy_configuration {
+    adjustment_type         = "ExactCapacity"
+    cooldown                = 300
+    metric_aggregation_type = "Minimum"
+
+    # Scale to 0 when there is no work on the queue
+    step_adjustment {
+      scaling_adjustment          = 0
+      metric_interval_upper_bound = 1
+    }
+
+    # Scale up when there is at least 1 job in the queue.  More fine grained scaling steps is not
+    # practical for MQ based services as we will loose in-flight jobs during scale-in since our MQ
+    # workers do not respect sigterm.
+    step_adjustment {
+      scaling_adjustment          = var.indexwork_autoscaling_max_count
+      metric_interval_lower_bound = 1
+    }
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "indexwork_dataset" {
+  alarm_name      = format("%s-indexwork dataset autoscaling", local.name)
+  actions_enabled = true
+  alarm_actions   = [aws_appautoscaling_policy.indexwork_dataset.arn]
+  metric_name     = "MessageCount"
+  namespace       = "AWS/AmazonMQ"
+  statistic       = "Minimum"
   dimensions = {
     Broker      = module.rabbitmq[0].name
     VirtualHost = "/"
@@ -2561,7 +2611,7 @@ module "lineagework" {
       METRIC_RUN_WORKERS           = "0"
       INCLUDE_QUEUES               = "source-lineage,metacenter-lineage"
       MQ_WORKERS_ENABLED           = var.migrate_lineage_mq_queue_enabled ? "true" : "false"
-      MQ_INCLUDE_QUEUES            = var.migrate_lineage_mq_queue_enabled ? "lineage" : ""
+      MQ_INCLUDE_QUEUES            = local.lineagework_mq_include_queues
       HEAP_DUMP_PATH               = contains(var.efs_volume_enabled_services, "lineagework") ? var.efs_mount_point : ""
       SOURCE_LINEAGE_WF_EXEC_SIZE  = var.temporal_client_source_lineage_wf_exec_size
       SOURCE_LINEAGE_ACT_EXEC_SIZE = var.temporal_client_source_lineage_act_exec_size
@@ -2647,7 +2697,7 @@ module "metricwork" {
       MAX_RAM_PERCENTAGE                     = var.metricwork_jvm_max_ram_pct
       METRIC_RUN_WORKERS                     = "1"
       INCLUDE_QUEUES                         = "trigger-batch-metric-run"
-      MQ_INCLUDE_QUEUES                      = "metric_batch"
+      MQ_INCLUDE_QUEUES                      = local.metricwork_mq_include_queues
       HEAP_DUMP_PATH                         = contains(var.efs_volume_enabled_services, "metricwork") ? var.efs_mount_point : ""
       TRIGGER_BATCH_METRIC_RUN_WF_EXEC_SIZE  = var.temporal_client_trigger_batch_metric_run_wf_exec_size
       TRIGGER_BATCH_METRIC_RUN_ACT_EXEC_SIZE = var.temporal_client_trigger_batch_metric_run_act_exec_size
