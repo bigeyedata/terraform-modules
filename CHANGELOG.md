@@ -1,3 +1,12 @@
+# [12.6.0](https://github.com/bigeyedata/terraform-modules/compare/v12.5.0...v12.6.0) (2024-11-11)
+
+
+### Features
+
+* add flag to migrate lineage MQ work to lineagework ([5e5ed7f](https://github.com/bigeyedata/terraform-modules/commit/5e5ed7fb852e5aea703f1fd0093f70680a7dfd6d))
+
+
+
 # [12.5.0](https://github.com/bigeyedata/terraform-modules/compare/v12.4.0...v12.5.0) (2024-11-08)
 
 
