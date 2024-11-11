@@ -198,6 +198,11 @@ data "aws_vpc" "this" {
     }
 
     postcondition {
+      condition     = var.create_security_groups || length(var.backfillwork_lb_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide a security group for the backfillwork lb using backfillwork_lb_extra_security_group_ids (ports 80/443)"
+    }
+
+    postcondition {
       condition     = var.create_security_groups || length(var.datawork_lb_extra_security_group_ids) > 0
       error_message = "If create_security_groups is false, you must provide a security group for the datawork lb using datawork_lb_extra_security_group_ids (ports 80/443)"
     }
@@ -260,6 +265,11 @@ data "aws_vpc" "this" {
     postcondition {
       condition     = var.create_security_groups || length(var.datawatch_extra_security_group_ids) > 0
       error_message = "If create_security_groups is false, you must provide a security group for the datawatch ECS tasks using datawatch_extra_security_group_ids (ports ${var.datawatch_port})"
+    }
+
+    postcondition {
+      condition     = var.create_security_groups || length(var.backfillwork_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide a security group for the backfillwork ECS tasks using backfillwork_extra_security_group_ids (port ${var.backfillwork_port})"
     }
 
     postcondition {
@@ -437,6 +447,15 @@ resource "aws_route53_record" "datawatch_mysql_replica" {
   type    = "CNAME"
   ttl     = 300
   records = [module.datawatch_rds.replica_dns_name]
+}
+
+resource "aws_route53_record" "backfillwork" {
+  count   = var.create_dns_records ? 1 : 0
+  zone_id = data.aws_route53_zone.this[0].zone_id
+  name    = local.backfillwork_dns_name
+  type    = "CNAME"
+  ttl     = 3600
+  records = [module.backfillwork.dns_name]
 }
 
 resource "aws_route53_record" "datawork" {
@@ -702,33 +721,35 @@ module "bigeye_admin" {
 
   stack_name = local.name
 
-  haproxy_domain_name     = local.vanity_dns_name
-  web_domain_name         = local.web_dns_name
-  monocle_domain_name     = local.monocle_dns_name
-  toretto_domain_name     = local.toretto_dns_name
-  temporal_domain_name    = local.temporal_dns_name
-  temporalui_domain_name  = local.temporalui_dns_name
-  datawatch_domain_name   = local.datawatch_dns_name
-  datawork_domain_name    = local.datawork_dns_name
-  indexwork_domain_name   = local.indexwork_dns_name
-  lineagework_domain_name = local.lineagework_dns_name
-  metricwork_domain_name  = local.metricwork_dns_name
-  internalapi_domain_name = local.internalapi_dns_name
-  scheduler_domain_name   = local.scheduler_dns_name
+  haproxy_domain_name      = local.vanity_dns_name
+  web_domain_name          = local.web_dns_name
+  monocle_domain_name      = local.monocle_dns_name
+  toretto_domain_name      = local.toretto_dns_name
+  temporal_domain_name     = local.temporal_dns_name
+  temporalui_domain_name   = local.temporalui_dns_name
+  datawatch_domain_name    = local.datawatch_dns_name
+  datawork_domain_name     = local.datawork_dns_name
+  backfillwork_domain_name = local.backfillwork_dns_name
+  indexwork_domain_name    = local.indexwork_dns_name
+  lineagework_domain_name  = local.lineagework_dns_name
+  metricwork_domain_name   = local.metricwork_dns_name
+  internalapi_domain_name  = local.internalapi_dns_name
+  scheduler_domain_name    = local.scheduler_dns_name
 
-  haproxy_resource_name     = "${local.name}-haproxy"
-  web_resource_name         = "${local.name}-web"
-  monocle_resource_name     = "${local.name}-monocle"
-  toretto_resource_name     = "${local.name}-toretto"
-  temporal_resource_name    = "${local.name}-temporal"
-  temporalui_resource_name  = "${local.name}-temporalui"
-  datawatch_resource_name   = "${local.name}-datawatch"
-  datawork_resource_name    = "${local.name}-datawork"
-  indexwork_resource_name   = "${local.name}-indexwork"
-  lineagework_resource_name = "${local.name}-lineagework"
-  metricwork_resource_name  = "${local.name}-metricwork"
-  internalapi_resource_name = "${local.name}-internalapi"
-  scheduler_resource_name   = "${local.name}-scheduler"
+  haproxy_resource_name      = "${local.name}-haproxy"
+  web_resource_name          = "${local.name}-web"
+  monocle_resource_name      = "${local.name}-monocle"
+  toretto_resource_name      = "${local.name}-toretto"
+  temporal_resource_name     = "${local.name}-temporal"
+  temporalui_resource_name   = "${local.name}-temporalui"
+  datawatch_resource_name    = "${local.name}-datawatch"
+  datawork_resource_name     = "${local.name}-datawork"
+  backfillwork_resource_name = "${local.name}-backfillwork"
+  indexwork_resource_name    = "${local.name}-indexwork"
+  lineagework_resource_name  = "${local.name}-lineagework"
+  metricwork_resource_name   = "${local.name}-metricwork"
+  internalapi_resource_name  = "${local.name}-internalapi"
+  scheduler_resource_name    = "${local.name}-scheduler"
 
   datawatch_rds_identifier          = module.datawatch_rds.identifier
   datawatch_rds_hostname            = module.datawatch_rds.primary_dns_name
@@ -1795,7 +1816,7 @@ resource "aws_iam_role_policy" "datawatch_secrets" {
 }
 
 resource "aws_iam_role_policy" "datawatch_ecs_exec" {
-  count = local.create_datawatch_role && (var.datawatch_enable_ecs_exec || var.datawork_enable_ecs_exec || var.indexwork_enable_ecs_exec || var.lineagework_enable_ecs_exec || var.metricwork_enable_ecs_exec || var.internalapi_enable_ecs_exec) ? 1 : 0
+  count = local.create_datawatch_role && (var.datawatch_enable_ecs_exec || var.backfillwork_enable_ecs_exec || var.datawork_enable_ecs_exec || var.indexwork_enable_ecs_exec || var.lineagework_enable_ecs_exec || var.metricwork_enable_ecs_exec || var.internalapi_enable_ecs_exec) ? 1 : 0
   role  = aws_iam_role.datawatch[0].id
   name  = "AllowECSExec"
   policy = jsonencode({
@@ -1903,6 +1924,7 @@ module "redis" {
     module.scheduler.security_group_id,
     module.datawatch.security_group_id,
     module.datawork.security_group_id,
+    module.backfillwork.security_group_id,
     module.lineagework.security_group_id,
     module.metricwork.security_group_id,
     module.internalapi.security_group_id,
@@ -1971,6 +1993,7 @@ module "datawatch_rds" {
     module.metricwork.security_group_id,
     module.internalapi.security_group_id,
     module.indexwork.security_group_id,
+    module.backfillwork.security_group_id,
   ] : []
 
   # Settings
@@ -2346,6 +2369,88 @@ module "datawork" {
   secret_arns = local.datawatch_secret_arns
 }
 
+module "backfillwork" {
+  depends_on = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
+  source     = "../simpleservice"
+  app        = "backfillwork"
+  instance   = var.instance
+  stack      = local.name
+  name       = "${local.name}-backfillwork"
+  tags       = merge(local.tags, { app = "backfillwork" })
+
+  vpc_id                        = local.vpc_id
+  vpc_cidr_block                = var.vpc_cidr_block
+  subnet_ids                    = local.application_subnet_ids
+  create_security_groups        = var.create_security_groups
+  task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
+  additional_security_group_ids = concat(local.datawatch_additional_security_groups, var.backfillwork_extra_security_group_ids)
+  traffic_port                  = var.backfillwork_port
+  ecs_cluster_id                = aws_ecs_cluster.this.id
+  fargate_version               = var.fargate_version
+  enable_execute_command        = var.backfillwork_enable_ecs_exec
+
+  # Load balancer
+  healthcheck_path                 = "/health"
+  healthcheck_interval             = 90
+  ssl_policy                       = var.alb_ssl_policy
+  acm_certificate_arn              = local.acm_certificate_arn
+  lb_idle_timeout                  = 900
+  lb_subnet_ids                    = local.internal_service_alb_subnet_ids
+  lb_additional_security_group_ids = concat(var.backfillwork_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
+  lb_additional_ingress_cidrs      = var.internal_additional_ingress_cidrs
+
+  lb_access_logs_enabled       = var.elb_access_logs_enabled
+  lb_access_logs_bucket_name   = var.elb_access_logs_bucket
+  lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "backfillwork")
+
+  # Task settings
+  desired_count             = 0
+  cpu                       = var.backfillwork_cpu
+  memory                    = var.backfillwork_memory
+  execution_role_arn        = local.ecs_role_arn
+  task_role_arn             = local.datawatch_role_arn
+  image_registry            = local.image_registry
+  image_repository          = format("%s%s", "datawatch", var.image_repository_suffix)
+  image_tag                 = local.backfillwork_image_tag
+  cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
+  stop_timeout              = 120
+  efs_volume_id             = contains(var.efs_volume_enabled_services, "backfillwork") ? aws_efs_file_system.this[0].id : ""
+  efs_access_point_id       = contains(var.efs_volume_enabled_services, "backfillwork") ? aws_efs_access_point.this["backfillwork"].id : ""
+  efs_mount_point           = var.efs_mount_point
+
+  # Datadog
+  datadog_agent_enabled            = var.datadog_agent_enabled
+  datadog_agent_image              = var.datadog_agent_image
+  datadog_agent_cpu                = var.datadog_agent_cpu
+  datadog_agent_memory             = var.datadog_agent_memory
+  datadog_agent_api_key_secret_arn = var.datadog_agent_api_key_secret_arn
+
+  # aws firelens
+  awsfirelens_cpu     = var.awsfirelens_cpu
+  awsfirelens_memory  = var.awsfirelens_memory
+  awsfirelens_enabled = var.awsfirelens_enabled
+  awsfirelens_host    = var.awsfirelens_host
+  awsfirelens_image   = var.awsfirelens_image
+  awsfirelens_uri     = var.awsfirelens_uri
+
+  environment_variables = merge(
+    local.datawatch_dd_env_vars,
+    local.datawatch_common_env_vars,
+    {
+      APP                      = "backfillwork"
+      DATAWATCH_ADDRESS        = "http://localhost:${var.backfillwork_port}"
+      WORKERS_ENABLED          = "true"
+      MAX_RAM_PERCENTAGE       = var.backfillwork_jvm_max_ram_pct
+      METRIC_RUN_WORKERS       = "0"
+      MQ_INCLUDE_QUEUES        = local.backfillwork_mq_include_queues_str
+      HEAP_DUMP_PATH           = contains(var.efs_volume_enabled_services, "backfillwork") ? var.efs_mount_point : ""
+      TEMPORAL_WORKERS_ENABLED = "false"
+    },
+    var.backfillwork_additional_environment_vars,
+  )
+  secret_arns = local.datawatch_secret_arns
+}
+
 module "indexwork" {
   depends_on = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
   source     = "../simpleservice"
@@ -2428,6 +2533,111 @@ module "indexwork" {
   )
 
   secret_arns = local.datawatch_secret_arns
+}
+
+resource "aws_appautoscaling_target" "backfillwork" {
+  depends_on         = [module.backfillwork]
+  min_capacity       = 0
+  max_capacity       = var.backfillwork_autoscaling_max_count
+  resource_id        = format("service/%s/%s-backfillwork", local.name, local.name)
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+}
+
+resource "aws_appautoscaling_policy" "backfillwork_backfill" {
+  depends_on         = [aws_appautoscaling_target.backfillwork]
+  name               = format("%s-backfillwork-backfill-autoscaling", local.name)
+  policy_type        = "StepScaling"
+  resource_id        = aws_appautoscaling_target.backfillwork.resource_id
+  scalable_dimension = aws_appautoscaling_target.backfillwork.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.backfillwork.service_namespace
+  step_scaling_policy_configuration {
+    adjustment_type         = "ExactCapacity"
+    cooldown                = 300
+    metric_aggregation_type = "Minimum"
+
+    # Scale to 0 when there is no work on the queue
+    step_adjustment {
+      scaling_adjustment          = 0
+      metric_interval_upper_bound = 1
+    }
+
+    # Scale up when there is at least 1 job in the queue.  More fine grained scaling steps is not
+    # practical for MQ based services as we will loose in-flight jobs during scale-in since our MQ
+    # workers do not respect sigterm.
+    step_adjustment {
+      scaling_adjustment          = var.backfillwork_autoscaling_max_count
+      metric_interval_lower_bound = 1
+    }
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "backfillwork_backfill" {
+  alarm_name      = format("%s-backfillwork backfill autoscaling", local.name)
+  actions_enabled = true
+  alarm_actions   = [aws_appautoscaling_policy.backfillwork_backfill.arn]
+  metric_name     = "MessageCount"
+  namespace       = "AWS/AmazonMQ"
+  statistic       = "Minimum"
+  dimensions = {
+    Broker      = module.rabbitmq[0].name
+    VirtualHost = "/"
+    Queue       = "backfill"
+  }
+  period              = 300
+  evaluation_periods  = 1
+  datapoints_to_alarm = 1
+  threshold           = 0
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  treat_missing_data  = "missing"
+}
+
+resource "aws_appautoscaling_policy" "backfillwork_posthoc" {
+  depends_on         = [aws_appautoscaling_target.backfillwork]
+  name               = format("%s-backfillwork-posthoc-autoscaling", local.name)
+  policy_type        = "StepScaling"
+  resource_id        = aws_appautoscaling_target.backfillwork.resource_id
+  scalable_dimension = aws_appautoscaling_target.backfillwork.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.backfillwork.service_namespace
+  step_scaling_policy_configuration {
+    adjustment_type         = "ExactCapacity"
+    cooldown                = 300
+    metric_aggregation_type = "Minimum"
+
+    # Scale to 0 when there is no work on the queue
+    step_adjustment {
+      scaling_adjustment          = 0
+      metric_interval_upper_bound = 1
+    }
+
+    # Scale up when there is at least 1 job in the queue.  More fine grained scaling steps is not
+    # practical for MQ based services as we will loose in-flight jobs during scale-in since our MQ
+    # workers do not respect sigterm.
+    step_adjustment {
+      scaling_adjustment          = var.backfillwork_autoscaling_max_count
+      metric_interval_lower_bound = 1
+    }
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "backfillwork_posthoc" {
+  alarm_name      = format("%s-backfillwork posthoc autoscaling", local.name)
+  actions_enabled = true
+  alarm_actions   = [aws_appautoscaling_policy.backfillwork_posthoc.arn]
+  metric_name     = "MessageCount"
+  namespace       = "AWS/AmazonMQ"
+  statistic       = "Minimum"
+  dimensions = {
+    Broker      = module.rabbitmq[0].name
+    VirtualHost = "/"
+    Queue       = "posthoc"
+  }
+  period              = 300
+  evaluation_periods  = 1
+  datapoints_to_alarm = 1
+  threshold           = 0
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  treat_missing_data  = "missing"
 }
 
 resource "aws_appautoscaling_target" "indexwork" {

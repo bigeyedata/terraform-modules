@@ -104,6 +104,11 @@ variable "datawatch_domain_name" {
   type        = string
 }
 
+variable "backfillwork_domain_name" {
+  description = "backfillwork domain name"
+  type        = string
+}
+
 variable "datawork_domain_name" {
   description = "datawork domain name"
   type        = string
@@ -166,6 +171,11 @@ variable "temporalui_resource_name" {
 
 variable "datawatch_resource_name" {
   description = "datawatch resource name"
+  type        = string
+}
+
+variable "backfillwork_resource_name" {
+  description = "backfillwork resource name"
   type        = string
 }
 

@@ -99,6 +99,21 @@ output "datawatch_load_balancer_zone_id" {
   value       = module.datawatch.zone_id
 }
 
+output "backfillwork_dns_name" {
+  description = "DNS name for the backfillwork service"
+  value       = local.backfillwork_dns_name
+}
+
+output "backfillwork_load_balancer_dns_name" {
+  description = "The dns name of the backfillwork load balancer"
+  value       = module.backfillwork.dns_name
+}
+
+output "backfillwork_load_balancer_zone_id" {
+  description = "The Route53 Zone ID of the backfillwork load balancer"
+  value       = module.backfillwork.zone_id
+}
+
 output "datawork_dns_name" {
   description = "DNS name for the datawork service"
   value       = local.datawork_dns_name
