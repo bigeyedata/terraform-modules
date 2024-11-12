@@ -1,3 +1,12 @@
+## [12.7.2](https://github.com/bigeyedata/terraform-modules/compare/v12.7.1...v12.7.2) (2024-11-12)
+
+
+### Bug Fixes
+
+* update autoscaling for services scaling on multiple queues ([2728086](https://github.com/bigeyedata/terraform-modules/commit/272808681c6e22b075ad913b1c05d9c13e9b56b8))
+
+
+
 ## [12.7.1](https://github.com/bigeyedata/terraform-modules/compare/v12.7.0...v12.7.1) (2024-11-11)
 
 
