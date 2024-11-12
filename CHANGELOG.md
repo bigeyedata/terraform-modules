@@ -1,3 +1,21 @@
+# [13.0.0](https://github.com/bigeyedata/terraform-modules/compare/v12.7.2...v13.0.0) (2024-11-12)
+
+
+* feat!: roll out lineage and catalog indexing queue migrations ([08c3e3f](https://github.com/bigeyedata/terraform-modules/commit/08c3e3f98fa69f39c45f58e230d7c024ac7c079f))
+
+
+### BREAKING CHANGES
+
+* The following bigeye module variables have been removed:
+- migrate_lineage_mq_queue_enabled
+- migrate_catalog_indexing_mq_queue_enabled
+
+Remove these from your configuration before upgrading to this version
+of the Bigeye terraform module.  If these have not been set
+before, no action is required.
+
+
+
 ## [12.7.2](https://github.com/bigeyedata/terraform-modules/compare/v12.7.1...v12.7.2) (2024-11-12)
 
 
