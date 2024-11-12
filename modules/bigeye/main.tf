@@ -2620,7 +2620,7 @@ module "indexwork" {
       WORKERS_ENABLED          = "true"
       MAX_RAM_PERCENTAGE       = var.indexwork_jvm_max_ram_pct
       METRIC_RUN_WORKERS       = "0"
-      MQ_INCLUDE_QUEUES        = local.indexwork_mq_include_queues
+      MQ_INCLUDE_QUEUES        = local.indexwork_mq_include_queues_str
       HEAP_DUMP_PATH           = contains(var.efs_volume_enabled_services, "indexwork") ? var.efs_mount_point : ""
       TEMPORAL_WORKERS_ENABLED = "false"
     },
@@ -2640,7 +2640,6 @@ resource "aws_appautoscaling_target" "indexwork" {
 }
 
 resource "aws_appautoscaling_policy" "indexwork" {
-  count              = var.migrate_catalog_indexing_mq_queue_enabled ? 1 : 0
   depends_on         = [aws_appautoscaling_target.indexwork]
   name               = format("%s-indexwork-catalog-autoscaling", local.name)
   policy_type        = "StepScaling"
@@ -2669,10 +2668,9 @@ resource "aws_appautoscaling_policy" "indexwork" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "indexwork" {
-  count               = var.migrate_catalog_indexing_mq_queue_enabled ? 1 : 0
   alarm_name          = "${local.name}-indexwork autoscaling"
   actions_enabled     = true
-  alarm_actions       = [aws_appautoscaling_policy.indexwork[0].arn]
+  alarm_actions       = [aws_appautoscaling_policy.indexwork.arn]
   evaluation_periods  = 1
   datapoints_to_alarm = 1
   threshold           = 0
@@ -2797,8 +2795,8 @@ module "lineagework" {
       MAX_RAM_PERCENTAGE           = var.lineagework_jvm_max_ram_pct
       METRIC_RUN_WORKERS           = "0"
       INCLUDE_QUEUES               = "source-lineage,metacenter-lineage"
-      MQ_WORKERS_ENABLED           = var.migrate_lineage_mq_queue_enabled ? "true" : "false"
-      MQ_INCLUDE_QUEUES            = local.lineagework_mq_include_queues
+      MQ_WORKERS_ENABLED           = "true"
+      MQ_INCLUDE_QUEUES            = local.lineagework_mq_include_queues_str
       HEAP_DUMP_PATH               = contains(var.efs_volume_enabled_services, "lineagework") ? var.efs_mount_point : ""
       SOURCE_LINEAGE_WF_EXEC_SIZE  = var.temporal_client_source_lineage_wf_exec_size
       SOURCE_LINEAGE_ACT_EXEC_SIZE = var.temporal_client_source_lineage_act_exec_size
@@ -2884,7 +2882,7 @@ module "metricwork" {
       MAX_RAM_PERCENTAGE                     = var.metricwork_jvm_max_ram_pct
       METRIC_RUN_WORKERS                     = "1"
       INCLUDE_QUEUES                         = "trigger-batch-metric-run"
-      MQ_INCLUDE_QUEUES                      = local.metricwork_mq_include_queues
+      MQ_INCLUDE_QUEUES                      = local.metricwork_mq_include_queues_str
       HEAP_DUMP_PATH                         = contains(var.efs_volume_enabled_services, "metricwork") ? var.efs_mount_point : ""
       TRIGGER_BATCH_METRIC_RUN_WF_EXEC_SIZE  = var.temporal_client_trigger_batch_metric_run_wf_exec_size
       TRIGGER_BATCH_METRIC_RUN_ACT_EXEC_SIZE = var.temporal_client_trigger_batch_metric_run_act_exec_size

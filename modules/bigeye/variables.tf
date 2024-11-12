@@ -41,17 +41,6 @@ variable "enable_bigeye_admin_module" {
 #======================================================
 # Short lived rollout flags
 #======================================================
-variable "migrate_lineage_mq_queue_enabled" {
-  description = "When true, move the lineage MQ queue to the lineagework service.  This is experimental, not recommended for production."
-  type        = bool
-  default     = false
-}
-
-variable "migrate_catalog_indexing_mq_queue_enabled" {
-  description = "When true, move the catalog_index_v2 MQ queue to the indexwork service.  This is experimental, not recommended for production."
-  type        = bool
-  default     = false
-}
 
 #======================================================
 # Access Logs
