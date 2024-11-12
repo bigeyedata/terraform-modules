@@ -2454,6 +2454,98 @@ module "backfillwork" {
   secret_arns = local.datawatch_secret_arns
 }
 
+resource "aws_appautoscaling_target" "backfillwork" {
+  depends_on         = [module.backfillwork]
+  min_capacity       = 0
+  max_capacity       = var.backfillwork_autoscaling_max_count
+  resource_id        = format("service/%s/%s-backfillwork", local.name, local.name)
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+}
+
+resource "aws_appautoscaling_policy" "backfillwork" {
+  depends_on         = [aws_appautoscaling_target.backfillwork]
+  name               = format("%s-backfillwork-catalog-autoscaling", local.name)
+  policy_type        = "StepScaling"
+  resource_id        = aws_appautoscaling_target.backfillwork.resource_id
+  scalable_dimension = aws_appautoscaling_target.backfillwork.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.backfillwork.service_namespace
+  step_scaling_policy_configuration {
+    adjustment_type         = "ExactCapacity"
+    cooldown                = 300
+    metric_aggregation_type = "Minimum"
+
+    # Scale to 0 when there is no work on the queue
+    step_adjustment {
+      scaling_adjustment          = 0
+      metric_interval_upper_bound = 1
+    }
+
+    # Scale up when there is at least 1 job in the queue.  More fine grained scaling steps is not
+    # practical for MQ based services as we will loose in-flight jobs during scale-in since our MQ
+    # workers do not respect sigterm.
+    step_adjustment {
+      scaling_adjustment          = var.backfillwork_autoscaling_max_count
+      metric_interval_lower_bound = 1
+    }
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "backfillwork" {
+  alarm_name          = "${local.name}-backfillwork autoscaling"
+  actions_enabled     = true
+  alarm_actions       = [aws_appautoscaling_policy.backfillwork.arn]
+  evaluation_periods  = 1
+  datapoints_to_alarm = 1
+  threshold           = 0
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  treat_missing_data  = "missing"
+  tags                = {}
+  # (12 unchanged attributes hidden)
+
+  metric_query {
+    id          = "m1"
+    period      = 0
+    return_data = false
+
+    metric {
+      dimensions = {
+        "Broker"      = local.name
+        "Queue"       = "backfill"
+        "VirtualHost" = "/"
+      }
+      metric_name = "MessageCount"
+      namespace   = "AWS/AmazonMQ"
+      period      = 300
+      stat        = "Minimum"
+    }
+  }
+  metric_query {
+    id          = "m2"
+    period      = 0
+    return_data = false
+
+    metric {
+      dimensions = {
+        "Broker"      = local.name
+        "Queue"       = "posthoc"
+        "VirtualHost" = "/"
+      }
+      metric_name = "MessageCount"
+      namespace   = "AWS/AmazonMQ"
+      period      = 300
+      stat        = "Minimum"
+    }
+  }
+  metric_query {
+    expression  = "SUM(METRICS())"
+    id          = "e1"
+    label       = "sum queued messages across queues"
+    period      = 0
+    return_data = true
+  }
+}
+
 module "indexwork" {
   depends_on = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
   source     = "../simpleservice"
@@ -2538,111 +2630,6 @@ module "indexwork" {
   secret_arns = local.datawatch_secret_arns
 }
 
-resource "aws_appautoscaling_target" "backfillwork" {
-  depends_on         = [module.backfillwork]
-  min_capacity       = 0
-  max_capacity       = var.backfillwork_autoscaling_max_count
-  resource_id        = format("service/%s/%s-backfillwork", local.name, local.name)
-  scalable_dimension = "ecs:service:DesiredCount"
-  service_namespace  = "ecs"
-}
-
-resource "aws_appautoscaling_policy" "backfillwork_backfill" {
-  depends_on         = [aws_appautoscaling_target.backfillwork]
-  name               = format("%s-backfillwork-backfill-autoscaling", local.name)
-  policy_type        = "StepScaling"
-  resource_id        = aws_appautoscaling_target.backfillwork.resource_id
-  scalable_dimension = aws_appautoscaling_target.backfillwork.scalable_dimension
-  service_namespace  = aws_appautoscaling_target.backfillwork.service_namespace
-  step_scaling_policy_configuration {
-    adjustment_type         = "ExactCapacity"
-    cooldown                = 300
-    metric_aggregation_type = "Minimum"
-
-    # Scale to 0 when there is no work on the queue
-    step_adjustment {
-      scaling_adjustment          = 0
-      metric_interval_upper_bound = 1
-    }
-
-    # Scale up when there is at least 1 job in the queue.  More fine grained scaling steps is not
-    # practical for MQ based services as we will loose in-flight jobs during scale-in since our MQ
-    # workers do not respect sigterm.
-    step_adjustment {
-      scaling_adjustment          = var.backfillwork_autoscaling_max_count
-      metric_interval_lower_bound = 1
-    }
-  }
-}
-
-resource "aws_cloudwatch_metric_alarm" "backfillwork_backfill" {
-  alarm_name      = format("%s-backfillwork backfill autoscaling", local.name)
-  actions_enabled = true
-  alarm_actions   = [aws_appautoscaling_policy.backfillwork_backfill.arn]
-  metric_name     = "MessageCount"
-  namespace       = "AWS/AmazonMQ"
-  statistic       = "Minimum"
-  dimensions = {
-    Broker      = module.rabbitmq[0].name
-    VirtualHost = "/"
-    Queue       = "backfill"
-  }
-  period              = 300
-  evaluation_periods  = 1
-  datapoints_to_alarm = 1
-  threshold           = 0
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  treat_missing_data  = "missing"
-}
-
-resource "aws_appautoscaling_policy" "backfillwork_posthoc" {
-  depends_on         = [aws_appautoscaling_target.backfillwork]
-  name               = format("%s-backfillwork-posthoc-autoscaling", local.name)
-  policy_type        = "StepScaling"
-  resource_id        = aws_appautoscaling_target.backfillwork.resource_id
-  scalable_dimension = aws_appautoscaling_target.backfillwork.scalable_dimension
-  service_namespace  = aws_appautoscaling_target.backfillwork.service_namespace
-  step_scaling_policy_configuration {
-    adjustment_type         = "ExactCapacity"
-    cooldown                = 300
-    metric_aggregation_type = "Minimum"
-
-    # Scale to 0 when there is no work on the queue
-    step_adjustment {
-      scaling_adjustment          = 0
-      metric_interval_upper_bound = 1
-    }
-
-    # Scale up when there is at least 1 job in the queue.  More fine grained scaling steps is not
-    # practical for MQ based services as we will loose in-flight jobs during scale-in since our MQ
-    # workers do not respect sigterm.
-    step_adjustment {
-      scaling_adjustment          = var.backfillwork_autoscaling_max_count
-      metric_interval_lower_bound = 1
-    }
-  }
-}
-
-resource "aws_cloudwatch_metric_alarm" "backfillwork_posthoc" {
-  alarm_name      = format("%s-backfillwork posthoc autoscaling", local.name)
-  actions_enabled = true
-  alarm_actions   = [aws_appautoscaling_policy.backfillwork_posthoc.arn]
-  metric_name     = "MessageCount"
-  namespace       = "AWS/AmazonMQ"
-  statistic       = "Minimum"
-  dimensions = {
-    Broker      = module.rabbitmq[0].name
-    VirtualHost = "/"
-    Queue       = "posthoc"
-  }
-  period              = 300
-  evaluation_periods  = 1
-  datapoints_to_alarm = 1
-  threshold           = 0
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  treat_missing_data  = "missing"
-}
-
 resource "aws_appautoscaling_target" "indexwork" {
   depends_on         = [module.indexwork]
   min_capacity       = 0
@@ -2652,7 +2639,7 @@ resource "aws_appautoscaling_target" "indexwork" {
   service_namespace  = "ecs"
 }
 
-resource "aws_appautoscaling_policy" "indexwork_catalog" {
+resource "aws_appautoscaling_policy" "indexwork" {
   count              = var.migrate_catalog_indexing_mq_queue_enabled ? 1 : 0
   depends_on         = [aws_appautoscaling_target.indexwork]
   name               = format("%s-indexwork-catalog-autoscaling", local.name)
@@ -2681,73 +2668,60 @@ resource "aws_appautoscaling_policy" "indexwork_catalog" {
   }
 }
 
-resource "aws_cloudwatch_metric_alarm" "indexwork_catalog" {
-  count           = var.migrate_catalog_indexing_mq_queue_enabled ? 1 : 0
-  alarm_name      = format("%s-indexwork catalog autoscaling", local.name)
-  actions_enabled = true
-  alarm_actions   = [aws_appautoscaling_policy.indexwork_catalog[0].arn]
-  metric_name     = "MessageCount"
-  namespace       = "AWS/AmazonMQ"
-  statistic       = "Minimum"
-  dimensions = {
-    Broker      = module.rabbitmq[0].name
-    VirtualHost = "/"
-    Queue       = "catalog_index_v2"
-  }
-  period              = 300
+resource "aws_cloudwatch_metric_alarm" "indexwork" {
+  count               = var.migrate_catalog_indexing_mq_queue_enabled ? 1 : 0
+  alarm_name          = "${local.name}-indexwork autoscaling"
+  actions_enabled     = true
+  alarm_actions       = [aws_appautoscaling_policy.indexwork[0].arn]
   evaluation_periods  = 1
   datapoints_to_alarm = 1
   threshold           = 0
   comparison_operator = "GreaterThanOrEqualToThreshold"
   treat_missing_data  = "missing"
-}
+  tags                = {}
+  # (12 unchanged attributes hidden)
 
-resource "aws_appautoscaling_policy" "indexwork_dataset" {
-  depends_on         = [aws_appautoscaling_target.indexwork]
-  name               = format("%s-indexwork-dataset-autoscaling", local.name)
-  policy_type        = "StepScaling"
-  resource_id        = aws_appautoscaling_target.indexwork.resource_id
-  scalable_dimension = aws_appautoscaling_target.indexwork.scalable_dimension
-  service_namespace  = aws_appautoscaling_target.indexwork.service_namespace
-  step_scaling_policy_configuration {
-    adjustment_type         = "ExactCapacity"
-    cooldown                = 300
-    metric_aggregation_type = "Minimum"
+  metric_query {
+    id          = "m1"
+    period      = 0
+    return_data = false
 
-    # Scale to 0 when there is no work on the queue
-    step_adjustment {
-      scaling_adjustment          = 0
-      metric_interval_upper_bound = 1
-    }
-
-    # Scale up when there is at least 1 job in the queue.  More fine grained scaling steps is not
-    # practical for MQ based services as we will loose in-flight jobs during scale-in since our MQ
-    # workers do not respect sigterm.
-    step_adjustment {
-      scaling_adjustment          = var.indexwork_autoscaling_max_count
-      metric_interval_lower_bound = 1
+    metric {
+      dimensions = {
+        "Broker"      = local.name
+        "Queue"       = "dataset_index_op_v2"
+        "VirtualHost" = "/"
+      }
+      metric_name = "MessageCount"
+      namespace   = "AWS/AmazonMQ"
+      period      = 300
+      stat        = "Minimum"
     }
   }
-}
+  metric_query {
+    id          = "m2"
+    period      = 0
+    return_data = false
 
-resource "aws_cloudwatch_metric_alarm" "indexwork_dataset" {
-  alarm_name      = format("%s-indexwork dataset autoscaling", local.name)
-  actions_enabled = true
-  alarm_actions   = [aws_appautoscaling_policy.indexwork_dataset.arn]
-  metric_name     = "MessageCount"
-  namespace       = "AWS/AmazonMQ"
-  statistic       = "Minimum"
-  dimensions = {
-    Broker      = module.rabbitmq[0].name
-    VirtualHost = "/"
-    Queue       = "dataset_index_op_v2"
+    metric {
+      dimensions = {
+        "Broker"      = local.name
+        "Queue"       = "catalog_index_v2"
+        "VirtualHost" = "/"
+      }
+      metric_name = "MessageCount"
+      namespace   = "AWS/AmazonMQ"
+      period      = 300
+      stat        = "Minimum"
+    }
   }
-  period              = 300
-  evaluation_periods  = 1
-  datapoints_to_alarm = 1
-  threshold           = 0
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  treat_missing_data  = "missing"
+  metric_query {
+    expression  = "SUM(METRICS())"
+    id          = "e1"
+    label       = "sum queued messages across queues"
+    period      = 0
+    return_data = true
+  }
 }
 
 module "lineagework" {
