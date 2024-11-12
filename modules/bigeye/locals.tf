@@ -43,24 +43,27 @@ locals {
 
   datawork_mq_exclude_queues = join(",",
     concat(
-      compact([
-        "dataset_index_op_v2",
-        "metric_batch",
-        var.migrate_lineage_mq_queue_enabled ? "lineage" : "",
-        var.migrate_catalog_indexing_mq_queue_enabled ? "catalog_index_v2" : "",
-      ]),
       local.backfillwork_mq_include_queues,
+      local.indexwork_mq_include_queues,
+      local.lineagework_mq_include_queues,
+      local.metricwork_mq_include_queues,
     )
   )
 
-  indexwork_mq_include_queues = join(",", compact([
+  indexwork_mq_include_queues = compact([
     "dataset_index_op_v2",
-    var.migrate_catalog_indexing_mq_queue_enabled ? "catalog_index_v2" : "",
-  ]))
-  lineagework_mq_include_queues = join(",", compact([
-    var.migrate_lineage_mq_queue_enabled ? "lineage" : ""
-  ]))
-  metricwork_mq_include_queues = "metric_batch"
+    "catalog_index_v2",
+  ])
+  indexwork_mq_include_queues_str = join(",", local.indexwork_mq_include_queues)
+
+  lineagework_mq_include_queues = compact([
+    "lineage"
+  ])
+  lineagework_mq_include_queues_str = join(",", local.lineagework_mq_include_queues)
+  metricwork_mq_include_queues = compact([
+    "metric_batch"
+  ])
+  metricwork_mq_include_queues_str = join(",", local.metricwork_mq_include_queues)
 
   # AWS Account
   aws_account_id = data.aws_caller_identity.current.account_id
