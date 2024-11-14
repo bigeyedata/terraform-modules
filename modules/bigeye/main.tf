@@ -2582,7 +2582,7 @@ module "indexwork" {
 
   # Task settings
   control_desired_count     = false
-  desired_count             = 0
+  desired_count             = var.indexwork_desired_count
   cpu                       = var.indexwork_cpu
   memory                    = var.indexwork_memory
   execution_role_arn        = local.ecs_role_arn
@@ -2628,98 +2628,6 @@ module "indexwork" {
   )
 
   secret_arns = local.datawatch_secret_arns
-}
-
-resource "aws_appautoscaling_target" "indexwork" {
-  depends_on         = [module.indexwork]
-  min_capacity       = 0
-  max_capacity       = var.indexwork_autoscaling_max_count
-  resource_id        = format("service/%s/%s-indexwork", local.name, local.name)
-  scalable_dimension = "ecs:service:DesiredCount"
-  service_namespace  = "ecs"
-}
-
-resource "aws_appautoscaling_policy" "indexwork" {
-  depends_on         = [aws_appautoscaling_target.indexwork]
-  name               = format("%s-indexwork-catalog-autoscaling", local.name)
-  policy_type        = "StepScaling"
-  resource_id        = aws_appautoscaling_target.indexwork.resource_id
-  scalable_dimension = aws_appautoscaling_target.indexwork.scalable_dimension
-  service_namespace  = aws_appautoscaling_target.indexwork.service_namespace
-  step_scaling_policy_configuration {
-    adjustment_type         = "ExactCapacity"
-    cooldown                = 300
-    metric_aggregation_type = "Minimum"
-
-    # Scale to 0 when there is no work on the queue
-    step_adjustment {
-      scaling_adjustment          = 0
-      metric_interval_upper_bound = 1
-    }
-
-    # Scale up when there is at least 1 job in the queue.  More fine grained scaling steps is not
-    # practical for MQ based services as we will loose in-flight jobs during scale-in since our MQ
-    # workers do not respect sigterm.
-    step_adjustment {
-      scaling_adjustment          = var.indexwork_autoscaling_max_count
-      metric_interval_lower_bound = 1
-    }
-  }
-}
-
-resource "aws_cloudwatch_metric_alarm" "indexwork" {
-  alarm_name          = "${local.name}-indexwork autoscaling"
-  actions_enabled     = true
-  alarm_actions       = [aws_appautoscaling_policy.indexwork.arn]
-  evaluation_periods  = 1
-  datapoints_to_alarm = 1
-  threshold           = 0
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  treat_missing_data  = "missing"
-  tags                = {}
-  # (12 unchanged attributes hidden)
-
-  metric_query {
-    id          = "m1"
-    period      = 0
-    return_data = false
-
-    metric {
-      dimensions = {
-        "Broker"      = local.name
-        "Queue"       = "dataset_index_op_v2"
-        "VirtualHost" = "/"
-      }
-      metric_name = "MessageCount"
-      namespace   = "AWS/AmazonMQ"
-      period      = 300
-      stat        = "Minimum"
-    }
-  }
-  metric_query {
-    id          = "m2"
-    period      = 0
-    return_data = false
-
-    metric {
-      dimensions = {
-        "Broker"      = local.name
-        "Queue"       = "catalog_index_v2"
-        "VirtualHost" = "/"
-      }
-      metric_name = "MessageCount"
-      namespace   = "AWS/AmazonMQ"
-      period      = 300
-      stat        = "Minimum"
-    }
-  }
-  metric_query {
-    expression  = "SUM(METRICS())"
-    id          = "e1"
-    label       = "sum queued messages across queues"
-    period      = 0
-    return_data = true
-  }
 }
 
 module "lineagework" {

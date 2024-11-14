@@ -2055,6 +2055,12 @@ variable "indexwork_image_tag" {
   default     = ""
 }
 
+variable "indexwork_desired_count" {
+  description = "The desired number of replicas"
+  type        = number
+  default     = 2
+}
+
 variable "indexwork_cpu" {
   description = "Amount of CPU to allocate"
   type        = number
@@ -2101,12 +2107,6 @@ variable "indexwork_enable_ecs_exec" {
   description = "Whether to enable ECS exec"
   type        = bool
   default     = false
-}
-
-variable "indexwork_autoscaling_max_count" {
-  description = "When there is work in the queue, the indexwork will scale up to this number of instances."
-  type        = number
-  default     = 2
 }
 
 #======================================================
