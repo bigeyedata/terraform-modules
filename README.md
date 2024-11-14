@@ -49,6 +49,16 @@ terraform version and application version.
 
 ## Upgrading
 
+### Upgrading to 14.0.0
+
+The following variable will need to be removed from your config if you
+are using it. 
+
+- indexwork_autoscaling_max_count
+
+It has been replaced with `var.indexwork_desired_count` to control the
+instance count for the indexwork service.
+
 ### Upgrading to 13.0.0
 
 The following feature flags will need to be removed from your config if you
