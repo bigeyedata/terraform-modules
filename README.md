@@ -9,9 +9,9 @@ the Bigeye stack into an AWS Environment.
 
 [Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli#install-terraform)
 
-- at least version 1.0.  We find that
-`tfenv` ([link](https://github.com/tfutils/tfenv)) is a useful way to install
-& manage Terraform versions
+- at least version 1.0. We find that
+  `tfenv` ([link](https://github.com/tfutils/tfenv)) is a useful way to install
+  & manage Terraform versions
 
 ### AWS
 
@@ -52,7 +52,7 @@ terraform version and application version.
 ### Upgrading to 14.0.0
 
 The following variable will need to be removed from your config if you
-are using it. 
+are using it.
 
 - indexwork_autoscaling_max_count
 
@@ -81,7 +81,7 @@ All variables with papi in the name need to be globally replaced with internalap
 
 ### Upgrading to 1.0.0
 
->IMPORTANT - There are a few breaking changes in this release.
+> IMPORTANT - There are a few breaking changes in this release.
 
 Please refer to the [changelog](./CHANGELOG.md#100-2023-12-22)
 for more instructions.
