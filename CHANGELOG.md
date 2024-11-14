@@ -1,3 +1,17 @@
+# [14.0.0](https://github.com/bigeyedata/terraform-modules/compare/v13.0.0...v14.0.0) (2024-11-14)
+
+
+* fix!: disable autoscaling for indexwork service ([8e53564](https://github.com/bigeyedata/terraform-modules/commit/8e5356422a05fdd67621b7f78886cd624df3b9ff))
+
+
+### BREAKING CHANGES
+
+* The following variable has been removed
+
+- indexwork_autoscaling_max_count
+
+
+
 # [13.0.0](https://github.com/bigeyedata/terraform-modules/compare/v12.7.2...v13.0.0) (2024-11-12)
 
 
