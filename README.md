@@ -49,6 +49,14 @@ terraform version and application version.
 
 ## Upgrading
 
+### Upgrading to 13.0.0
+
+The following feature flags will need to be removed from your config if you
+are using them:
+
+- migrate_lineage_mq_queue_enabled
+- migrate_catalog_indexing_mq_queue_enabled
+
 ### Upgrading to 12.0.0
 
 The following feature flags will need to be removed from your config if you
