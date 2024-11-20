@@ -2581,7 +2581,7 @@ module "indexwork" {
   lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "indexwork")
 
   # Task settings
-  control_desired_count     = false
+  control_desired_count     = var.indexwork_autoscaling_enabled ? false : true
   desired_count             = var.indexwork_desired_count
   cpu                       = var.indexwork_cpu
   memory                    = var.indexwork_memory

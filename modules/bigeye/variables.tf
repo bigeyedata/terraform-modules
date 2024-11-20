@@ -2055,6 +2055,12 @@ variable "indexwork_image_tag" {
   default     = ""
 }
 
+variable "indexwork_autoscaling_enabled" {
+  description = "Whether indexwork autoscaling is enabled. Note - if you change this variable, it changes the terraform resource that is created. You must run 'terraform state mv' in order to gracefully make this change"
+  type        = bool
+  default     = true
+}
+
 variable "indexwork_desired_count" {
   description = "The desired number of replicas"
   type        = number
