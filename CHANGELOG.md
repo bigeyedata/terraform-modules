@@ -1,3 +1,12 @@
+# [14.1.0](https://github.com/bigeyedata/terraform-modules/compare/v14.0.0...v14.1.0) (2024-11-20)
+
+
+### Features
+
+* make indexwork autoscaling configurable via variable ([#377](https://github.com/bigeyedata/terraform-modules/issues/377)) ([1cc3f34](https://github.com/bigeyedata/terraform-modules/commit/1cc3f349248fabfa37444b7e11b901d893b406ca))
+
+
+
 # [14.0.0](https://github.com/bigeyedata/terraform-modules/compare/v13.0.0...v14.0.0) (2024-11-14)
 
 
