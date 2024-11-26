@@ -2348,7 +2348,7 @@ module "datawork" {
       WORKERS_ENABLED                    = "true"
       MAX_RAM_PERCENTAGE                 = var.datawork_jvm_max_ram_pct
       METRIC_RUN_WORKERS                 = "0"
-      EXCLUDE_QUEUES                     = "trigger-batch-metric-run,source-lineage,metacenter-lineage"
+      EXCLUDE_QUEUES                     = local.datawork_temporal_exclude_queues_str
       MQ_EXCLUDE_QUEUES                  = local.datawork_mq_exclude_queues
       HEAP_DUMP_PATH                     = contains(var.efs_volume_enabled_services, "datawork") ? var.efs_mount_point : ""
       RUN_METRICS_WF_EXEC_SIZE           = var.temporal_client_run_metrics_wf_exec_size
@@ -2702,7 +2702,7 @@ module "lineagework" {
       WORKERS_ENABLED              = "true"
       MAX_RAM_PERCENTAGE           = var.lineagework_jvm_max_ram_pct
       METRIC_RUN_WORKERS           = "0"
-      INCLUDE_QUEUES               = "source-lineage,metacenter-lineage"
+      INCLUDE_QUEUES               = local.lineagework_temporal_include_queues_str
       MQ_WORKERS_ENABLED           = "true"
       MQ_INCLUDE_QUEUES            = local.lineagework_mq_include_queues_str
       HEAP_DUMP_PATH               = contains(var.efs_volume_enabled_services, "lineagework") ? var.efs_mount_point : ""
@@ -2789,7 +2789,7 @@ module "metricwork" {
       WORKERS_ENABLED                        = "true"
       MAX_RAM_PERCENTAGE                     = var.metricwork_jvm_max_ram_pct
       METRIC_RUN_WORKERS                     = "1"
-      INCLUDE_QUEUES                         = "trigger-batch-metric-run"
+      INCLUDE_QUEUES                         = local.metricwork_temporal_include_queues_str
       MQ_INCLUDE_QUEUES                      = local.metricwork_mq_include_queues_str
       HEAP_DUMP_PATH                         = contains(var.efs_volume_enabled_services, "metricwork") ? var.efs_mount_point : ""
       TRIGGER_BATCH_METRIC_RUN_WF_EXEC_SIZE  = var.temporal_client_trigger_batch_metric_run_wf_exec_size
