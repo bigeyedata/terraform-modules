@@ -2348,7 +2348,7 @@ module "datawork" {
       WORKERS_ENABLED                    = "true"
       MAX_RAM_PERCENTAGE                 = var.datawork_jvm_max_ram_pct
       METRIC_RUN_WORKERS                 = "0"
-      EXCLUDE_QUEUES                     = "trigger-batch-metric-run,source-lineage,metacenter-lineage"
+      EXCLUDE_QUEUES                     = local.datawork_temporal_exclude_queues_str
       MQ_EXCLUDE_QUEUES                  = local.datawork_mq_exclude_queues
       HEAP_DUMP_PATH                     = contains(var.efs_volume_enabled_services, "datawork") ? var.efs_mount_point : ""
       RUN_METRICS_WF_EXEC_SIZE           = var.temporal_client_run_metrics_wf_exec_size
@@ -2357,8 +2357,6 @@ module "datawork" {
       DELETE_SOURCE_ACT_EXEC_SIZE        = var.temporal_client_delete_source_act_exec_size
       GET_SAMPLES_WF_EXEC_SIZE           = var.temporal_client_get_samples_wf_exec_size
       GET_SAMPLES_ACT_EXEC_SIZE          = var.temporal_client_get_samples_act_exec_size
-      INDEXING_WF_EXEC_SIZE              = var.temporal_client_indexing_wf_exec_size
-      INDEXING_ACT_EXEC_SIZE             = var.temporal_client_indexing_act_exec_size
       RECONCILIATION_WF_EXEC_SIZE        = var.temporal_client_reconciliation_wf_exec_size
       RECONCILIATION_ACT_EXEC_SIZE       = var.temporal_client_reconciliation_act_exec_size
       REFRESH_SCORECARDS_WF_EXEC_SIZE    = var.temporal_client_refresh_scorecard_wf_exec_size
@@ -2615,14 +2613,16 @@ module "indexwork" {
     local.datawatch_dd_env_vars,
     local.datawatch_common_env_vars,
     {
-      APP                      = "indexwork"
-      DATAWATCH_ADDRESS        = "http://localhost:${var.indexwork_port}"
-      WORKERS_ENABLED          = "true"
-      MAX_RAM_PERCENTAGE       = var.indexwork_jvm_max_ram_pct
-      METRIC_RUN_WORKERS       = "0"
-      MQ_INCLUDE_QUEUES        = local.indexwork_mq_include_queues_str
-      HEAP_DUMP_PATH           = contains(var.efs_volume_enabled_services, "indexwork") ? var.efs_mount_point : ""
-      TEMPORAL_WORKERS_ENABLED = "false"
+      APP                    = "indexwork"
+      DATAWATCH_ADDRESS      = "http://localhost:${var.indexwork_port}"
+      WORKERS_ENABLED        = "true"
+      MAX_RAM_PERCENTAGE     = var.indexwork_jvm_max_ram_pct
+      METRIC_RUN_WORKERS     = "0"
+      INCLUDE_QUEUES         = local.indexwork_temporal_include_queues_str
+      MQ_INCLUDE_QUEUES      = local.indexwork_mq_include_queues_str
+      HEAP_DUMP_PATH         = contains(var.efs_volume_enabled_services, "indexwork") ? var.efs_mount_point : ""
+      INDEXING_WF_EXEC_SIZE  = var.temporal_client_indexing_wf_exec_size
+      INDEXING_ACT_EXEC_SIZE = var.temporal_client_indexing_act_exec_size
     },
     var.indexwork_additional_environment_vars,
   )
@@ -2702,7 +2702,7 @@ module "lineagework" {
       WORKERS_ENABLED              = "true"
       MAX_RAM_PERCENTAGE           = var.lineagework_jvm_max_ram_pct
       METRIC_RUN_WORKERS           = "0"
-      INCLUDE_QUEUES               = "source-lineage,metacenter-lineage"
+      INCLUDE_QUEUES               = local.lineagework_temporal_include_queues_str
       MQ_WORKERS_ENABLED           = "true"
       MQ_INCLUDE_QUEUES            = local.lineagework_mq_include_queues_str
       HEAP_DUMP_PATH               = contains(var.efs_volume_enabled_services, "lineagework") ? var.efs_mount_point : ""
@@ -2789,7 +2789,7 @@ module "metricwork" {
       WORKERS_ENABLED                        = "true"
       MAX_RAM_PERCENTAGE                     = var.metricwork_jvm_max_ram_pct
       METRIC_RUN_WORKERS                     = "1"
-      INCLUDE_QUEUES                         = "trigger-batch-metric-run"
+      INCLUDE_QUEUES                         = local.metricwork_temporal_include_queues_str
       MQ_INCLUDE_QUEUES                      = local.metricwork_mq_include_queues_str
       HEAP_DUMP_PATH                         = contains(var.efs_volume_enabled_services, "metricwork") ? var.efs_mount_point : ""
       TRIGGER_BATCH_METRIC_RUN_WF_EXEC_SIZE  = var.temporal_client_trigger_batch_metric_run_wf_exec_size
