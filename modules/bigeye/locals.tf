@@ -31,15 +31,18 @@ locals {
   rabbitmq_subnet_group_ids       = local.create_vpc ? module.vpc[0].elasticache_subnets : var.byovpc_rabbitmq_subnet_ids
 
   # Temporal Task Queues
-  lineage_temporal_queues    = ["source-lineage", "metacenter-lineage"]
-  metric_run_temporal_queues = ["trigger-batch-metric-run"]
+  catalog_indexing_temporal_queues = ["indexing.v1"]
+  lineage_temporal_queues          = ["source-lineage", "metacenter-lineage"]
+  metric_run_temporal_queues       = ["trigger-batch-metric-run"]
 
   datawork_temporal_exclude_queues_str = join(",",
     concat(
+      local.catalog_indexing_temporal_queues,
       local.lineage_temporal_queues,
       local.metric_run_temporal_queues
     )
   )
+  indexwork_temporal_include_queues_str   = join(",", local.catalog_indexing_temporal_queues)
   lineagework_temporal_include_queues_str = join(",", local.lineage_temporal_queues)
   metricwork_temporal_include_queues_str  = join(",", local.metric_run_temporal_queues)
 
