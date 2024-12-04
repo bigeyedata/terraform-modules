@@ -49,6 +49,22 @@ terraform version and application version.
 
 ## Upgrading
 
+### Upgrading to 15.0.0
+
+The following vars have been removed:
+
+- var.monocle_autoscaling_enabled
+- var.monocle_max_count
+- var.monocle_autoscaling_request_count_target
+- var.indexwork_autoscaling_enabled
+- var.internalapi_autoscaling_cpu_enabled
+- var.internalapi_autoscaling_cpu_target
+
+Instead, use:
+
+- var.internalapi_autoscaling_config
+- var.monocle_autoscaling_config
+
 ### Upgrading to 14.0.0
 
 The following variable will need to be removed from your config if you
