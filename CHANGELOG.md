@@ -1,3 +1,25 @@
+# [15.0.0](https://github.com/bigeyedata/terraform-modules/compare/v14.1.0...v15.0.0) (2024-12-06)
+
+
+* feat!: allow specifying autoscaling algo for internalapi and monocle (#380) ([ec95813](https://github.com/bigeyedata/terraform-modules/commit/ec95813bc3b37268026cee86dc6b5d4d5bd77ade)), closes [#380](https://github.com/bigeyedata/terraform-modules/issues/380)
+
+
+### BREAKING CHANGES
+
+* The following vars have been removed:
+- var.indexwork_autoscaling_enabled
+- var.internalapi_autoscaling_cpu_enabled
+- var.internalapi_autoscaling_cpu_target
+- var.monocle_autoscaling_enabled
+- var.monocle_max_count
+- var.monocle_autoscaling_request_count_target
+
+The following vars have been added:
+- var.internalapi_autoscaling_config
+- var.monocle_autoscaling_config
+
+
+
 # [14.1.0](https://github.com/bigeyedata/terraform-modules/compare/v14.0.0...v14.1.0) (2024-11-20)
 
 
