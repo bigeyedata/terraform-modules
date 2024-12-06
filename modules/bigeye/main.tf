@@ -1308,7 +1308,7 @@ module "monocle" {
   lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "monocle")
 
   # Task settings
-  control_desired_count     = var.monocle_autoscaling_enabled ? false : true
+  control_desired_count     = var.monocle_autoscaling_config.type == "none"
   desired_count             = var.monocle_desired_count
   cpu                       = var.monocle_cpu
   memory                    = var.monocle_memory
@@ -1379,25 +1379,39 @@ module "monocle" {
 }
 
 resource "aws_appautoscaling_target" "monocle" {
-  count              = var.monocle_autoscaling_enabled ? 1 : 0
+  count              = var.monocle_autoscaling_config.type == "none" ? 0 : 1
   depends_on         = [module.monocle]
-  min_capacity       = var.monocle_desired_count
-  max_capacity       = var.monocle_max_count
+  min_capacity       = var.monocle_autoscaling_config.min_capacity
+  max_capacity       = var.monocle_autoscaling_config.max_capacity
   resource_id        = format("service/%s/%s-monocle", local.name, local.name)
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
 }
 
-resource "aws_appautoscaling_policy" "monocle" {
-  count              = var.monocle_autoscaling_enabled ? 1 : 0
-  depends_on         = [aws_appautoscaling_target.monocle]
-  name               = format("%s-monocle-autoscaling", local.name)
+resource "aws_appautoscaling_policy" "monocle_cpu_utilization" {
+  count              = var.monocle_autoscaling_config.type == "cpu_utilization" ? 1 : 0
+  name               = format("%s-monocle-cpu-utilization", local.name)
   policy_type        = "TargetTrackingScaling"
   resource_id        = aws_appautoscaling_target.monocle[0].resource_id
   scalable_dimension = aws_appautoscaling_target.monocle[0].scalable_dimension
   service_namespace  = aws_appautoscaling_target.monocle[0].service_namespace
   target_tracking_scaling_policy_configuration {
-    target_value       = var.monocle_autoscaling_request_count_target
+    predefined_metric_specification {
+      predefined_metric_type = "ECSServiceAverageCPUUtilization"
+    }
+    target_value = var.monocle_autoscaling_config.target_utilization
+  }
+}
+
+resource "aws_appautoscaling_policy" "monocle_request_count_per_target" {
+  count              = var.monocle_autoscaling_config.type == "request_count_per_target" ? 1 : 0
+  name               = format("%s-monocle-request-count-per-target", local.name)
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.monocle[0].resource_id
+  scalable_dimension = aws_appautoscaling_target.monocle[0].scalable_dimension
+  service_namespace  = aws_appautoscaling_target.monocle[0].service_namespace
+  target_tracking_scaling_policy_configuration {
+    target_value       = var.monocle_autoscaling_config.target_utilization
     scale_in_cooldown  = 300
     scale_out_cooldown = 300
     predefined_metric_specification {
@@ -2579,7 +2593,6 @@ module "indexwork" {
   lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "indexwork")
 
   # Task settings
-  control_desired_count     = var.indexwork_autoscaling_enabled ? false : true
   desired_count             = var.indexwork_desired_count
   cpu                       = var.indexwork_cpu
   memory                    = var.indexwork_memory
@@ -2837,8 +2850,8 @@ module "internalapi" {
   lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "internalapi")
 
   # Task settings
-  control_desired_count     = var.internalapi_autoscaling_cpu_enabled ? false : true
-  desired_count             = var.internalapi_autoscaling_cpu_enabled ? 1 : var.internalapi_desired_count
+  control_desired_count     = var.internalapi_autoscaling_config.type == "none"
+  desired_count             = var.internalapi_desired_count
   cpu                       = var.internalapi_cpu
   memory                    = var.internalapi_memory
   execution_role_arn        = local.ecs_role_arn
@@ -2883,19 +2896,19 @@ module "internalapi" {
 }
 
 resource "aws_appautoscaling_target" "internalapi" {
-  count              = var.internalapi_autoscaling_cpu_enabled ? 1 : 0
+  count              = var.internalapi_autoscaling_config.type == "none" ? 0 : 1
   depends_on         = [module.internalapi]
-  min_capacity       = 1
-  max_capacity       = var.internalapi_desired_count
+  min_capacity       = var.internalapi_autoscaling_config.min_capacity
+  max_capacity       = var.internalapi_autoscaling_config.max_capacity
   resource_id        = format("service/%s/%s-internalapi", local.name, local.name)
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
 }
 
-resource "aws_appautoscaling_policy" "internalapi" {
-  count              = var.internalapi_autoscaling_cpu_enabled ? 1 : 0
+resource "aws_appautoscaling_policy" "internalapi_cpu_utilization" {
+  count              = var.internalapi_autoscaling_config.type == "cpu_utilization" ? 1 : 0
   depends_on         = [aws_appautoscaling_target.internalapi]
-  name               = format("%s-internalapi-cpu", local.name)
+  name               = format("%s-internalapi-cpu-utilization", local.name)
   policy_type        = "TargetTrackingScaling"
   resource_id        = aws_appautoscaling_target.internalapi[0].resource_id
   scalable_dimension = aws_appautoscaling_target.internalapi[0].scalable_dimension
@@ -2904,7 +2917,23 @@ resource "aws_appautoscaling_policy" "internalapi" {
     predefined_metric_specification {
       predefined_metric_type = "ECSServiceAverageCPUUtilization"
     }
+    target_value = var.internalapi_autoscaling_config.target_utilization
+  }
+}
 
-    target_value = var.internalapi_autoscaling_cpu_target
+resource "aws_appautoscaling_policy" "internalapi_request_count_per_target" {
+  count              = var.internalapi_autoscaling_config.type == "request_count_per_target" ? 1 : 0
+  depends_on         = [aws_appautoscaling_target.internalapi]
+  name               = format("%s-internalapi-request-count-per-target", local.name)
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.internalapi[0].resource_id
+  scalable_dimension = aws_appautoscaling_target.internalapi[0].scalable_dimension
+  service_namespace  = aws_appautoscaling_target.internalapi[0].service_namespace
+  target_tracking_scaling_policy_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ALBRequestCountPerTarget"
+      resource_label         = format("%s/%s", module.internalapi.load_balancer_full_name, module.internalapi.target_group_full_name)
+    }
+    target_value = var.internalapi_autoscaling_config.target_utilization
   }
 }

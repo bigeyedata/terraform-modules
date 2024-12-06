@@ -572,9 +572,9 @@ variable "monocle_image_tag" {
 }
 
 variable "monocle_desired_count" {
-  description = "The desired number of replicas"
+  description = "Initial capacity before autoscaling adjustments"
   type        = number
-  default     = 1
+  default     = 2
 }
 
 variable "monocle_cpu" {
@@ -619,24 +619,6 @@ variable "monocle_lb_extra_security_group_ids" {
   default     = []
 }
 
-variable "monocle_autoscaling_enabled" {
-  description = "Whether monocle autoscaling is enabled. Note - if you change this variable, it changes the terraform resource that is created. You must run 'terraform state mv' in order to gracefully make this change"
-  type        = bool
-  default     = false
-}
-
-variable "monocle_max_count" {
-  description = "The maximum number of monocle instances allowed"
-  type        = number
-  default     = 3
-}
-
-variable "monocle_autoscaling_request_count_target" {
-  description = "The scaling target for number of requests per instance"
-  type        = number
-  default     = 15
-}
-
 variable "ml_models_s3_bucket_name_override" {
   description = "Override for the monocle ML models bucket. Use of this variable is not recommended."
   type        = string
@@ -647,6 +629,25 @@ variable "monocle_enable_ecs_exec" {
   description = "Whether to enable ECS exec"
   type        = bool
   default     = false
+}
+
+variable "monocle_autoscaling_config" {
+  type = object({
+    min_capacity       = number
+    max_capacity       = number
+    type               = string
+    target_utilization = number
+  })
+  default = {
+    min_capacity       = 2
+    max_capacity       = 10
+    type               = "request_count_per_target"
+    target_utilization = 15
+  }
+  validation {
+    condition     = contains(["none", "cpu_utilization", "request_count_per_target"], var.monocle_autoscaling_config.type)
+    error_message = "Must be one of: none, cpu_utilization, request_count_per_target"
+  }
 }
 
 #======================================================
@@ -2055,12 +2056,6 @@ variable "indexwork_image_tag" {
   default     = ""
 }
 
-variable "indexwork_autoscaling_enabled" {
-  description = "Whether indexwork autoscaling is enabled. Note - if you change this variable, it changes the terraform resource that is created. You must run 'terraform state mv' in order to gracefully make this change"
-  type        = bool
-  default     = true
-}
-
 variable "indexwork_desired_count" {
   description = "The desired number of replicas"
   type        = number
@@ -2251,9 +2246,9 @@ variable "internalapi_image_tag" {
 }
 
 variable "internalapi_desired_count" {
-  description = "The desired number of replicas.  For autoscaling services, this becomes the max autoscaling capacity"
+  description = "Initial capacity before autoscaling adjustments"
   type        = number
-  default     = 15
+  default     = 2
 }
 
 variable "internalapi_cpu" {
@@ -2304,16 +2299,24 @@ variable "internalapi_enable_ecs_exec" {
   default     = false
 }
 
-variable "internalapi_autoscaling_cpu_enabled" {
-  description = "Whether internalapi autoscaling is enabled. Note - if you change this variable, it changes the terraform resource that is created. You must run 'terraform state mv' in order to gracefully make this change"
-  type        = bool
-  default     = true
-}
-
-variable "internalapi_autoscaling_cpu_target" {
-  description = "% avg CPU util to use as autoscaling target"
-  type        = number
-  default     = 65
+variable "internalapi_autoscaling_config" {
+  type = object({
+    min_capacity       = number
+    max_capacity       = number
+    type               = string
+    target_utilization = number
+  })
+  default = {
+    min_capacity = 2
+    max_capacity = 15
+    # If CPU scaling is leading to OOM or other overloading due to bursts, switch to request_count_per_target or increase the min capacity.
+    type               = "cpu_utilization"
+    target_utilization = 65
+  }
+  validation {
+    condition     = contains(["none", "cpu_utilization", "request_count_per_target"], var.internalapi_autoscaling_config.type)
+    error_message = "Must be one of: none, cpu_utilization, request_count_per_target"
+  }
 }
 #======================================================
 # Application Variables - Scheduler
