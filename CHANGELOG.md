@@ -1,3 +1,15 @@
+# [16.0.0](https://github.com/bigeyedata/terraform-modules/compare/v15.0.0...v16.0.0) (2024-12-10)
+
+
+* fix!: remove autoscaling from backfillwork ([bc89cfb](https://github.com/bigeyedata/terraform-modules/commit/bc89cfb50c7a23a7a2279e4babd461a74bd388b6))
+
+
+### BREAKING CHANGES
+
+* - var.backfillwork_autoscaling_max_count has been removed
+
+
+
 # [15.0.0](https://github.com/bigeyedata/terraform-modules/compare/v14.1.0...v15.0.0) (2024-12-06)
 
 
