@@ -2419,7 +2419,7 @@ module "backfillwork" {
   lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "backfillwork")
 
   # Task settings
-  desired_count             = 0
+  desired_count             = var.backfillwork_desired_count
   cpu                       = var.backfillwork_cpu
   memory                    = var.backfillwork_memory
   execution_role_arn        = local.ecs_role_arn
@@ -2464,98 +2464,6 @@ module "backfillwork" {
     var.backfillwork_additional_environment_vars,
   )
   secret_arns = local.datawatch_secret_arns
-}
-
-resource "aws_appautoscaling_target" "backfillwork" {
-  depends_on         = [module.backfillwork]
-  min_capacity       = 0
-  max_capacity       = var.backfillwork_autoscaling_max_count
-  resource_id        = format("service/%s/%s-backfillwork", local.name, local.name)
-  scalable_dimension = "ecs:service:DesiredCount"
-  service_namespace  = "ecs"
-}
-
-resource "aws_appautoscaling_policy" "backfillwork" {
-  depends_on         = [aws_appautoscaling_target.backfillwork]
-  name               = format("%s-backfillwork-catalog-autoscaling", local.name)
-  policy_type        = "StepScaling"
-  resource_id        = aws_appautoscaling_target.backfillwork.resource_id
-  scalable_dimension = aws_appautoscaling_target.backfillwork.scalable_dimension
-  service_namespace  = aws_appautoscaling_target.backfillwork.service_namespace
-  step_scaling_policy_configuration {
-    adjustment_type         = "ExactCapacity"
-    cooldown                = 300
-    metric_aggregation_type = "Minimum"
-
-    # Scale to 0 when there is no work on the queue
-    step_adjustment {
-      scaling_adjustment          = 0
-      metric_interval_upper_bound = 1
-    }
-
-    # Scale up when there is at least 1 job in the queue.  More fine grained scaling steps is not
-    # practical for MQ based services as we will loose in-flight jobs during scale-in since our MQ
-    # workers do not respect sigterm.
-    step_adjustment {
-      scaling_adjustment          = var.backfillwork_autoscaling_max_count
-      metric_interval_lower_bound = 1
-    }
-  }
-}
-
-resource "aws_cloudwatch_metric_alarm" "backfillwork" {
-  alarm_name          = "${local.name}-backfillwork autoscaling"
-  actions_enabled     = true
-  alarm_actions       = [aws_appautoscaling_policy.backfillwork.arn]
-  evaluation_periods  = 1
-  datapoints_to_alarm = 1
-  threshold           = 0
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  treat_missing_data  = "missing"
-  tags                = {}
-  # (12 unchanged attributes hidden)
-
-  metric_query {
-    id          = "m1"
-    period      = 0
-    return_data = false
-
-    metric {
-      dimensions = {
-        "Broker"      = local.name
-        "Queue"       = "backfill"
-        "VirtualHost" = "/"
-      }
-      metric_name = "MessageCount"
-      namespace   = "AWS/AmazonMQ"
-      period      = 300
-      stat        = "Minimum"
-    }
-  }
-  metric_query {
-    id          = "m2"
-    period      = 0
-    return_data = false
-
-    metric {
-      dimensions = {
-        "Broker"      = local.name
-        "Queue"       = "posthoc"
-        "VirtualHost" = "/"
-      }
-      metric_name = "MessageCount"
-      namespace   = "AWS/AmazonMQ"
-      period      = 300
-      stat        = "Minimum"
-    }
-  }
-  metric_query {
-    expression  = "SUM(METRICS())"
-    id          = "e1"
-    label       = "sum queued messages across queues"
-    period      = 0
-    return_data = true
-  }
 }
 
 module "indexwork" {

@@ -49,6 +49,12 @@ terraform version and application version.
 
 ## Upgrading
 
+### Upgrading to 16.0.0
+
+The following var has been removed:
+
+- backfillwork_autoscaling_max_count
+
 ### Upgrading to 15.0.0
 
 The following vars have been removed:

@@ -1929,6 +1929,12 @@ variable "backfillwork_image_tag" {
   default     = ""
 }
 
+variable "backfillwork_desired_count" {
+  description = "The desired number of replicas"
+  type        = number
+  default     = 1
+}
+
 variable "backfillwork_cpu" {
   description = "Amount of CPU to allocate"
   type        = number
@@ -1975,12 +1981,6 @@ variable "backfillwork_enable_ecs_exec" {
   description = "Whether to enable ECS exec"
   type        = bool
   default     = false
-}
-
-variable "backfillwork_autoscaling_max_count" {
-  description = "When there is work in the queue, the backfillwork will scale up to this number of instances."
-  type        = number
-  default     = 2
 }
 
 
