@@ -1,3 +1,12 @@
+# [16.1.0](https://github.com/bigeyedata/terraform-modules/compare/v16.0.0...v16.1.0) (2025-01-07)
+
+
+### Features
+
+* set lineagework instance count to 1 ([5d738a0](https://github.com/bigeyedata/terraform-modules/commit/5d738a087cde2572bb0c323a2671e5d434f0f3eb))
+
+
+
 # [16.0.0](https://github.com/bigeyedata/terraform-modules/compare/v15.0.0...v16.0.0) (2024-12-10)
 
 
