@@ -1,3 +1,12 @@
+# [16.2.0](https://github.com/bigeyedata/terraform-modules/compare/v16.1.0...v16.2.0) (2025-01-08)
+
+
+### Features
+
+* allow setting issue-root-cause temporal client settings ([dd60754](https://github.com/bigeyedata/terraform-modules/commit/dd60754cf57df8b9b6fcc653cf66291612cbede1))
+
+
+
 # [16.1.0](https://github.com/bigeyedata/terraform-modules/compare/v16.0.0...v16.1.0) (2025-01-07)
 
 
