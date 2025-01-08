@@ -2371,6 +2371,8 @@ module "datawork" {
       DELETE_SOURCE_ACT_EXEC_SIZE        = var.temporal_client_delete_source_act_exec_size
       GET_SAMPLES_WF_EXEC_SIZE           = var.temporal_client_get_samples_wf_exec_size
       GET_SAMPLES_ACT_EXEC_SIZE          = var.temporal_client_get_samples_act_exec_size
+      ISSUE_ROOT_CAUSE_WF_EXEC_SIZE      = var.temporal_client_issue_root_cause_wf_exec_size
+      ISSUE_ROOT_CAUSE_ACT_EXEC_SIZE     = var.temporal_client_issue_root_cause_act_exec_size
       RECONCILIATION_WF_EXEC_SIZE        = var.temporal_client_reconciliation_wf_exec_size
       RECONCILIATION_ACT_EXEC_SIZE       = var.temporal_client_reconciliation_act_exec_size
       REFRESH_SCORECARDS_WF_EXEC_SIZE    = var.temporal_client_refresh_scorecard_wf_exec_size
