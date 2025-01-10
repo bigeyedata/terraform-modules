@@ -1,3 +1,12 @@
+# [16.3.0](https://github.com/bigeyedata/terraform-modules/compare/v16.2.0...v16.3.0) (2025-01-10)
+
+
+### Features
+
+* allow control of temporal parallelism on datawork service ([bb4d33b](https://github.com/bigeyedata/terraform-modules/commit/bb4d33b68b2bbec778de166c401f5bf498af641c))
+
+
+
 # [16.2.0](https://github.com/bigeyedata/terraform-modules/compare/v16.1.0...v16.2.0) (2025-01-08)
 
 
