@@ -1387,6 +1387,18 @@ variable "temporal_client_delete_source_act_exec_size" {
   default     = 200
 }
 
+variable "temporal_client_external_ticket_wf_exec_size" {
+  description = "Controls external-ticket workflow execution thread count"
+  type        = number
+  default     = 200
+}
+
+variable "temporal_client_external_ticket_act_exec_size" {
+  description = "Controls external-ticket activity execution thread count"
+  type        = number
+  default     = 200
+}
+
 variable "temporal_client_get_samples_wf_exec_size" {
   description = "Controls get-samples.v1 workflow execution thread count"
   type        = number
@@ -1411,6 +1423,30 @@ variable "temporal_client_indexing_act_exec_size" {
   default     = 200
 }
 
+variable "temporal_client_issue_ai_overview_wf_exec_size" {
+  description = "Controls issue-ai-overview workflow execution thread count"
+  type        = number
+  default     = 200
+}
+
+variable "temporal_client_issue_ai_overview_act_exec_size" {
+  description = "Controls issue-ai-overview activity execution thread count"
+  type        = number
+  default     = 200
+}
+
+variable "temporal_client_issue_notify_wf_exec_size" {
+  description = "Controls issue-notify workflow execution thread count"
+  type        = number
+  default     = 200
+}
+
+variable "temporal_client_issue_notify_act_exec_size" {
+  description = "Controls issue-notify activity execution thread count"
+  type        = number
+  default     = 200
+}
+
 variable "temporal_client_issue_root_cause_wf_exec_size" {
   description = "Controls issue-root-cause workflow execution thread count"
   type        = number
@@ -1423,6 +1459,17 @@ variable "temporal_client_issue_root_cause_act_exec_size" {
   default     = 4
 }
 
+variable "temporal_client_issue_update_wf_exec_size" {
+  description = "Controls issue-update workflow execution thread count"
+  type        = number
+  default     = 200
+}
+
+variable "temporal_client_issue_update_act_exec_size" {
+  description = "Controls issue-update activity execution thread count"
+  type        = number
+  default     = 200
+}
 
 variable "temporal_client_reconciliation_wf_exec_size" {
   description = "Controls reconciliation workflow execution thread count.  This is used for reconciling metric run schedules."
