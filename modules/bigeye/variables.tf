@@ -2297,6 +2297,70 @@ variable "metricwork_enable_ecs_exec" {
 }
 
 #======================================================
+# Application Variables - Rootcausework
+#======================================================
+variable "rootcausework_image_tag" {
+  description = "The image tag to use for rootcausework, defaults to the global `image_tag` if not specified"
+  type        = string
+  default     = ""
+}
+
+variable "rootcausework_desired_count" {
+  description = "The desired number of replicas"
+  type        = number
+  default     = 1
+}
+
+variable "rootcausework_cpu" {
+  description = "Amount of CPU to allocate"
+  type        = number
+  default     = 1024
+}
+
+variable "rootcausework_memory" {
+  description = "Amount of Memory in MB to allocate"
+  type        = number
+  default     = 4096
+}
+
+variable "rootcausework_port" {
+  description = "The port to listen on"
+  type        = number
+  default     = 80
+}
+
+variable "rootcausework_additional_environment_vars" {
+  description = "Additional enviromnent variables to give the application"
+  type        = map(string)
+  default     = {}
+}
+
+variable "rootcausework_extra_security_group_ids" {
+  description = "Additional security group ids to rootcausework"
+  type        = list(string)
+  default     = []
+}
+
+variable "rootcausework_lb_extra_security_group_ids" {
+  description = "Additional security group ids to rootcausework ALB"
+  type        = list(string)
+  default     = []
+}
+
+variable "rootcausework_jvm_max_ram_pct" {
+  description = ""
+  type        = number
+  default     = 80
+}
+
+variable "rootcausework_enable_ecs_exec" {
+  description = "Whether to enable ECS exec"
+  type        = bool
+  default     = false
+}
+
+
+#======================================================
 # Application Variables - internalapi
 #======================================================
 variable "internalapi_image_tag" {
