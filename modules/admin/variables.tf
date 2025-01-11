@@ -129,6 +129,11 @@ variable "metricwork_domain_name" {
   type        = string
 }
 
+variable "rootcausework_domain_name" {
+  description = "rootcausework domain name"
+  type        = string
+}
+
 variable "internalapi_domain_name" {
   description = "internalapi domain name"
   type        = string
@@ -196,6 +201,11 @@ variable "lineagework_resource_name" {
 
 variable "metricwork_resource_name" {
   description = "metricwork resource name"
+  type        = string
+}
+
+variable "rootcausework_resource_name" {
+  description = "rootcausework resource name"
   type        = string
 }
 
