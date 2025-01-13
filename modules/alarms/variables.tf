@@ -1553,37 +1553,37 @@ variable "elb_metricwork_host_count_threshold" {
   default     = 0.5
 }
 
-variable "elb_rootcausework_host_count_datapoints_to_alarm" {
+variable "elb_rootcause_host_count_datapoints_to_alarm" {
   description = "The number of datapoints breaching threshold to alarm"
   type        = number
   default     = 3
 }
 
-variable "elb_rootcausework_host_count_disabled" {
+variable "elb_rootcause_host_count_disabled" {
   description = "Whether to disable the specific alarm"
   type        = bool
   default     = false
 }
 
-variable "elb_rootcausework_host_count_evaluation_periods" {
+variable "elb_rootcause_host_count_evaluation_periods" {
   description = "The number of periods over which the metric is evaluated"
   type        = number
   default     = 4
 }
 
-variable "elb_rootcausework_host_count_period" {
+variable "elb_rootcause_host_count_period" {
   description = "The number of seconds over which the metric is evaluated"
   type        = number
   default     = 900
 }
 
-variable "elb_rootcausework_host_count_sns_arns" {
+variable "elb_rootcause_host_count_sns_arns" {
   description = "The SNS topic arns to notify when the alarm fires"
   type        = list(string)
   default     = null
 }
 
-variable "elb_rootcausework_host_count_threshold" {
+variable "elb_rootcause_host_count_threshold" {
   description = "Alarms when the metric is below this value"
   type        = number
   default     = 0.5
@@ -2489,37 +2489,37 @@ variable "ecs_metricwork_mem_threshold" {
   default     = 70
 }
 
-variable "ecs_rootcausework_mem_disabled" {
+variable "ecs_rootcause_mem_disabled" {
   description = "Whether to disable the specific alarm"
   type        = bool
   default     = false
 }
 
-variable "ecs_rootcausework_mem_dataponts_to_alarm" {
+variable "ecs_rootcause_mem_dataponts_to_alarm" {
   description = "The number of datapoints breaching threshold to alarm"
   type        = number
   default     = 4
 }
 
-variable "ecs_rootcausework_mem_evaluation_periods" {
+variable "ecs_rootcause_mem_evaluation_periods" {
   description = "The number of periods over which the metric is evaluated"
   type        = number
   default     = 5
 }
 
-variable "ecs_rootcausework_mem_period" {
+variable "ecs_rootcause_mem_period" {
   description = "The number of seconds over which the metric is evaluated"
   type        = number
   default     = 300
 }
 
-variable "ecs_rootcausework_mem_sns_arns" {
+variable "ecs_rootcause_mem_sns_arns" {
   description = "The SNS topic arns to notify when the alarm fires"
   type        = list(string)
   default     = null
 }
 
-variable "ecs_rootcausework_mem_threshold" {
+variable "ecs_rootcause_mem_threshold" {
   description = "Alarms when the metric is above this value"
   type        = number
   default     = 70

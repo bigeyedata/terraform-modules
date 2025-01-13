@@ -44,10 +44,10 @@ locals {
       local.metric_run_temporal_queues
     )
   )
-  indexwork_temporal_include_queues_str     = join(",", local.catalog_indexing_temporal_queues)
-  lineagework_temporal_include_queues_str   = join(",", local.lineage_temporal_queues)
-  metricwork_temporal_include_queues_str    = join(",", local.metric_run_temporal_queues)
-  rootcausework_temporal_include_queues_str = join(",", local.root_cause_temporal_queues)
+  indexwork_temporal_include_queues_str   = join(",", local.catalog_indexing_temporal_queues)
+  lineagework_temporal_include_queues_str = join(",", local.lineage_temporal_queues)
+  metricwork_temporal_include_queues_str  = join(",", local.metric_run_temporal_queues)
+  rootcause_temporal_include_queues_str   = join(",", local.root_cause_temporal_queues)
 
   # Rabbit MQ
   create_rabbitmq               = var.byo_rabbitmq_endpoint == ""
@@ -133,7 +133,7 @@ locals {
   indexwork_dns_name                      = "${local.base_dns_alias}-indexwork.${var.top_level_dns_name}"
   lineagework_dns_name                    = "${local.base_dns_alias}-lineagework.${var.top_level_dns_name}"
   metricwork_dns_name                     = "${local.base_dns_alias}-metricwork.${var.top_level_dns_name}"
-  rootcausework_dns_name                  = "${local.base_dns_alias}-rootcausework.${var.top_level_dns_name}"
+  rootcause_dns_name                      = "${local.base_dns_alias}-rootcause.${var.top_level_dns_name}"
   internalapi_dns_name                    = "${local.base_dns_alias}-internalapi.${var.top_level_dns_name}"
   temporal_dns_name                       = "${local.base_dns_alias}-workflows.${var.top_level_dns_name}"
   temporalui_dns_name                     = "${local.base_dns_alias}-workflows-admin.${var.top_level_dns_name}"
@@ -181,22 +181,22 @@ locals {
   models_bucket_has_name_override = var.ml_models_s3_bucket_name_override == "" ? false : true
 
   # Docker image tags
-  haproxy_image_tag       = coalesce(var.haproxy_image_tag, var.image_tag)
-  web_image_tag           = coalesce(var.web_image_tag, var.image_tag)
-  monocle_image_tag       = coalesce(var.monocle_image_tag, var.image_tag)
-  toretto_image_tag       = coalesce(var.toretto_image_tag, var.image_tag)
-  temporalui_image_tag    = coalesce(var.temporalui_image_tag, var.image_tag)
-  temporal_image_tag      = coalesce(var.temporal_image_tag, var.image_tag)
-  datawatch_image_tag     = coalesce(var.datawatch_image_tag, var.image_tag)
-  datawork_image_tag      = coalesce(var.datawork_image_tag, var.image_tag)
-  backfillwork_image_tag  = coalesce(var.backfillwork_image_tag, var.image_tag)
-  indexwork_image_tag     = coalesce(var.indexwork_image_tag, var.image_tag)
-  lineagework_image_tag   = coalesce(var.lineagework_image_tag, var.image_tag)
-  metricwork_image_tag    = coalesce(var.metricwork_image_tag, var.image_tag)
-  rootcausework_image_tag = coalesce(var.rootcausework_image_tag, var.image_tag)
-  internalapi_image_tag   = coalesce(var.internalapi_image_tag, var.image_tag)
-  scheduler_image_tag     = coalesce(var.scheduler_image_tag, var.image_tag)
-  bigeye_admin_image_tag  = coalesce(var.bigeye_admin_image_tag, var.image_tag)
+  haproxy_image_tag      = coalesce(var.haproxy_image_tag, var.image_tag)
+  web_image_tag          = coalesce(var.web_image_tag, var.image_tag)
+  monocle_image_tag      = coalesce(var.monocle_image_tag, var.image_tag)
+  toretto_image_tag      = coalesce(var.toretto_image_tag, var.image_tag)
+  temporalui_image_tag   = coalesce(var.temporalui_image_tag, var.image_tag)
+  temporal_image_tag     = coalesce(var.temporal_image_tag, var.image_tag)
+  datawatch_image_tag    = coalesce(var.datawatch_image_tag, var.image_tag)
+  datawork_image_tag     = coalesce(var.datawork_image_tag, var.image_tag)
+  backfillwork_image_tag = coalesce(var.backfillwork_image_tag, var.image_tag)
+  indexwork_image_tag    = coalesce(var.indexwork_image_tag, var.image_tag)
+  lineagework_image_tag  = coalesce(var.lineagework_image_tag, var.image_tag)
+  metricwork_image_tag   = coalesce(var.metricwork_image_tag, var.image_tag)
+  rootcause_image_tag    = coalesce(var.rootcause_image_tag, var.image_tag)
+  internalapi_image_tag  = coalesce(var.internalapi_image_tag, var.image_tag)
+  scheduler_image_tag    = coalesce(var.scheduler_image_tag, var.image_tag)
+  bigeye_admin_image_tag = coalesce(var.bigeye_admin_image_tag, var.image_tag)
 
   auth0_secrets_map = var.auth0_client_id_secretsmanager_arn == "" ? {} : {
     AUTH0_CLIENT_ID     = var.auth0_client_id_secretsmanager_arn

@@ -129,8 +129,8 @@ variable "metricwork_domain_name" {
   type        = string
 }
 
-variable "rootcausework_domain_name" {
-  description = "rootcausework domain name"
+variable "rootcause_domain_name" {
+  description = "rootcause domain name"
   type        = string
 }
 
@@ -204,8 +204,8 @@ variable "metricwork_resource_name" {
   type        = string
 }
 
-variable "rootcausework_resource_name" {
-  description = "rootcausework resource name"
+variable "rootcause_resource_name" {
+  description = "rootcause resource name"
   type        = string
 }
 
