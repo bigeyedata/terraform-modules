@@ -538,16 +538,16 @@ module "elb_metricwork" {
   error_rate_disabled    = true
 }
 
-module "elb_rootcausework" {
+module "elb_rootcause" {
   source                         = "./elb"
   stack                          = var.stack
-  app                            = "rootcausework"
-  host_count_disabled            = var.elb_rootcausework_host_count_disabled
-  host_count_datapoints_to_alarm = var.elb_rootcausework_host_count_datapoints_to_alarm
-  host_count_evaluation_periods  = var.elb_rootcausework_host_count_evaluation_periods
-  host_count_period              = var.elb_rootcausework_host_count_period
-  host_count_sns_arns            = coalesce(var.elb_rootcausework_host_count_sns_arns, [local.high_urgency_sns_topic_arn])
-  host_count_threshold           = var.elb_rootcausework_host_count_threshold
+  app                            = "rootcause"
+  host_count_disabled            = var.elb_rootcause_host_count_disabled
+  host_count_datapoints_to_alarm = var.elb_rootcause_host_count_datapoints_to_alarm
+  host_count_evaluation_periods  = var.elb_rootcause_host_count_evaluation_periods
+  host_count_period              = var.elb_rootcause_host_count_period
+  host_count_sns_arns            = coalesce(var.elb_rootcause_host_count_sns_arns, [local.high_urgency_sns_topic_arn])
+  host_count_threshold           = var.elb_rootcause_host_count_threshold
 
   response_time_disabled = true
   error_rate_disabled    = true
@@ -733,16 +733,16 @@ module "ecs_metricwork" {
   mem_threshold           = var.ecs_metricwork_mem_threshold
 }
 
-module "ecs_rootcausework" {
+module "ecs_rootcause" {
   source                  = "./ecs"
   stack                   = var.stack
-  app                     = "rootcausework"
-  mem_disabled            = var.ecs_rootcausework_mem_disabled
-  mem_datapoints_to_alarm = var.ecs_rootcausework_mem_dataponts_to_alarm
-  mem_evaluation_periods  = var.ecs_rootcausework_mem_evaluation_periods
-  mem_period              = var.ecs_rootcausework_mem_period
-  mem_sns_arns            = coalesce(var.ecs_rootcausework_mem_sns_arns, [local.low_urgency_sns_topic_arn])
-  mem_threshold           = var.ecs_rootcausework_mem_threshold
+  app                     = "rootcause"
+  mem_disabled            = var.ecs_rootcause_mem_disabled
+  mem_datapoints_to_alarm = var.ecs_rootcause_mem_dataponts_to_alarm
+  mem_evaluation_periods  = var.ecs_rootcause_mem_evaluation_periods
+  mem_period              = var.ecs_rootcause_mem_period
+  mem_sns_arns            = coalesce(var.ecs_rootcause_mem_sns_arns, [local.low_urgency_sns_topic_arn])
+  mem_threshold           = var.ecs_rootcause_mem_threshold
 }
 
 module "ecs_monocle" {
