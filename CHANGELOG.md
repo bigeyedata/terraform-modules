@@ -1,3 +1,12 @@
+# [16.4.0](https://github.com/bigeyedata/terraform-modules/compare/v16.3.0...v16.4.0) (2025-01-13)
+
+
+### Features
+
+* add dedicated ECS service for issue-root-cause ([55558fb](https://github.com/bigeyedata/terraform-modules/commit/55558fbb008fab85d0e91f52b4995c121e54c2e0))
+
+
+
 # [16.3.0](https://github.com/bigeyedata/terraform-modules/compare/v16.2.0...v16.3.0) (2025-01-10)
 
 
