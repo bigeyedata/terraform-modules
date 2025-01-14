@@ -1,3 +1,12 @@
+## [16.4.1](https://github.com/bigeyedata/terraform-modules/compare/v16.4.0...v16.4.1) (2025-01-14)
+
+
+### Bug Fixes
+
+* shorten name of rootcausework to rootcause ([f7d4732](https://github.com/bigeyedata/terraform-modules/commit/f7d47327d7350b88ab7727141d60299fd72dc940))
+
+
+
 # [16.4.0](https://github.com/bigeyedata/terraform-modules/compare/v16.3.0...v16.4.0) (2025-01-13)
 
 
