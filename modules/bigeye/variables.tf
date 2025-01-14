@@ -1363,6 +1363,30 @@ variable "temporal_system_visibility_persistence_max_write_qps" {
 #======================================================
 # Application Variables - Temporal Clients (job executor)
 #======================================================
+variable "temporal_client_agent_heartbeat_wf_exec_size" {
+  description = "Controls agent-heartbeat workflow execution thread count"
+  type        = number
+  default     = 200
+}
+
+variable "temporal_client_agent_heartbeat_act_exec_size" {
+  description = "Controls agent-heartbeat activity execution thread count"
+  type        = number
+  default     = 200
+}
+
+variable "temporal_client_collect_lineage_wf_exec_size" {
+  description = "Controls collect-lineage workflow execution thread count"
+  type        = number
+  default     = 200
+}
+
+variable "temporal_client_collect_lineage_act_exec_size" {
+  description = "Controls collect-lineage activity execution thread count"
+  type        = number
+  default     = 200
+}
+
 variable "temporal_client_run_metrics_wf_exec_size" {
   description = "Controls run-metrics.v1 workflow execution thread count"
   type        = number
