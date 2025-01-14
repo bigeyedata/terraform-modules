@@ -2389,6 +2389,10 @@ module "datawork" {
       EXCLUDE_QUEUES                     = local.datawork_temporal_exclude_queues_str
       MQ_EXCLUDE_QUEUES                  = local.datawork_mq_exclude_queues
       HEAP_DUMP_PATH                     = contains(var.efs_volume_enabled_services, "datawork") ? var.efs_mount_point : ""
+      AGENT_HEARTBEAT_WF_EXEC_SIZE       = var.temporal_client_agent_heartbeat_wf_exec_size
+      AGENT_HEARTBEAT_ACT_EXEC_SIZE      = var.temporal_client_agent_heartbeat_act_exec_size
+      COLLECT_LINEAGE_WF_EXEC_SIZE       = var.temporal_client_collect_lineage_wf_exec_size
+      COLLECT_LINEAGE_ACT_EXEC_SIZE      = var.temporal_client_collect_lineage_act_exec_size
       RUN_METRICS_WF_EXEC_SIZE           = var.temporal_client_run_metrics_wf_exec_size
       RUN_METRICS_ACT_EXEC_SIZE          = var.temporal_client_run_metrics_act_exec_size
       DELETE_SOURCE_WF_EXEC_SIZE         = var.temporal_client_delete_source_wf_exec_size
