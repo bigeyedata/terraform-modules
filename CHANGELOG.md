@@ -1,3 +1,12 @@
+# [16.5.0](https://github.com/bigeyedata/terraform-modules/compare/v16.4.1...v16.5.0) (2025-01-14)
+
+
+### Features
+
+* allow control of temporal parallelism remaining queues ([faee33d](https://github.com/bigeyedata/terraform-modules/commit/faee33d4d45f18161c683a2b1e95a1391e14e515))
+
+
+
 ## [16.4.1](https://github.com/bigeyedata/terraform-modules/compare/v16.4.0...v16.4.1) (2025-01-14)
 
 
