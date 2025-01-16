@@ -1,5 +1,5 @@
 module "bigeye" {
-  source      = "git::https://github.com/bigeyedata/terraform-modules//modules/bigeye?ref=v16.5.0"
+  source      = "git::https://github.com/bigeyedata/terraform-modules//modules/bigeye?ref=v16.6.0"
   environment = "test"
   instance    = "bigeye"
 
