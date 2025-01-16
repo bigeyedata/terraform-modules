@@ -9,8 +9,11 @@ terraform {
 }
 
 resource "aws_mq_broker" "queue" {
-  broker_name                = var.name
-  auto_minor_version_upgrade = false
+  broker_name = var.name
+  # If someone has changed from the original 3.11.20, enable auto minor version upgrade as that is
+  # what AWS requires starting with 3.13 anyways.
+  auto_minor_version_upgrade = var.engine_version == "3.11.20" ? false : true
+  apply_immediately          = true
   deployment_mode            = var.deployment_mode
   engine_type                = "RabbitMQ"
   engine_version             = var.engine_version
