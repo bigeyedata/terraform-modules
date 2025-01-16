@@ -1,3 +1,12 @@
+# [16.6.0](https://github.com/bigeyedata/terraform-modules/compare/v16.5.0...v16.6.0) (2025-01-16)
+
+
+### Features
+
+* enable auto minor version upgrade for rabbitmq ([b53735f](https://github.com/bigeyedata/terraform-modules/commit/b53735f30e54c6bbd2b155a46845ed737a3eca3c))
+
+
+
 # [16.5.0](https://github.com/bigeyedata/terraform-modules/compare/v16.4.1...v16.5.0) (2025-01-14)
 
 
