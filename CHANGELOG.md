@@ -1,3 +1,12 @@
+# [17.1.0](https://github.com/bigeyedata/terraform-modules/compare/v17.0.0...v17.1.0) (2025-01-17)
+
+
+### Features
+
+* enable datawatch_request_body_logging_enabled everywhere ([24d0b7f](https://github.com/bigeyedata/terraform-modules/commit/24d0b7f0b6886bbffca78a0736ce65e3741ba285))
+
+
+
 # [17.0.0](https://github.com/bigeyedata/terraform-modules/compare/v16.6.0...v17.0.0) (2025-01-17)
 
 
