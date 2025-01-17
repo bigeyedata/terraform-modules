@@ -49,6 +49,12 @@ terraform version and application version.
 
 ## Upgrading
 
+### Upgrading to 17.0.0
+
+The minimum version of the `hashicorp/aws` module has been increased to
+5.68.0.  If your install has the version pinned to something lower,
+increase the version to at least 5.68.0 and run `terraform init -upgrade`.
+
 ### Upgrading to 16.0.0
 
 The following var has been removed:
