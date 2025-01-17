@@ -1,3 +1,17 @@
+# [17.0.0](https://github.com/bigeyedata/terraform-modules/compare/v16.6.0...v17.0.0) (2025-01-17)
+
+
+* fix!: increase minimum hashicorp/aws version to 5.68.0 ([3649e74](https://github.com/bigeyedata/terraform-modules/commit/3649e743cf9a7e24bffa12f12eca325154731baa))
+
+
+### BREAKING CHANGES
+
+* If your installhas the "hashicorp/aws" provider version pinned to
+something lower than 5.68.0, increase the version to at least 5.68.0
+and run `terraform init -upgrade`.
+
+
+
 # [16.6.0](https://github.com/bigeyedata/terraform-modules/compare/v16.5.0...v16.6.0) (2025-01-16)
 
 
