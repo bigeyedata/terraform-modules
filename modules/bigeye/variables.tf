@@ -1951,9 +1951,9 @@ variable "datawatch_feature_jvm_memory_leak_fix" {
 }
 
 variable "datawatch_request_body_logging_enabled" {
-  description = "Whether request body logs are enabled"
+  description = "DEPRECATED: This flag will no longer do anything.  It will be removed in a future release"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "datawatch_request_auth_logging_enabled" {
