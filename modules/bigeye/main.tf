@@ -2210,7 +2210,7 @@ locals {
     FF_QUEUE_BACKFILL_ENABLED       = "true"
     FF_SEND_ANALYTICS_ENABLED       = var.datawatch_feature_analytics_send_enabled
     REQUEST_AUTH_LOGGING_ENABLED    = var.datawatch_request_auth_logging_enabled
-    REQUEST_BODY_LOGGING_ENABLED    = var.datawatch_request_body_logging_enabled
+    REQUEST_BODY_LOGGING_ENABLED    = true
     CLASS_LOADING_LOGGING_ENABLED   = var.datawatch_class_loading_logging_enabled
     MAX_REQUEST_SIZE                = var.datawatch_max_request_size
 
