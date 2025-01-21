@@ -2276,7 +2276,7 @@ variable "elb_web_response_time_threshold" {
 variable "ecs_datawatch_mem_disabled" {
   description = "Whether to disable the specific alarm"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "ecs_datawatch_mem_dataponts_to_alarm" {
@@ -2312,7 +2312,7 @@ variable "ecs_datawatch_mem_threshold" {
 variable "ecs_backfillwork_mem_disabled" {
   description = "Whether to disable the specific alarm"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "ecs_backfillwork_mem_dataponts_to_alarm" {
@@ -2348,7 +2348,7 @@ variable "ecs_backfillwork_mem_threshold" {
 variable "ecs_datawork_mem_disabled" {
   description = "Whether to disable the specific alarm"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "ecs_datawork_mem_dataponts_to_alarm" {
@@ -2384,7 +2384,7 @@ variable "ecs_datawork_mem_threshold" {
 variable "ecs_indexwork_mem_disabled" {
   description = "Whether to disable the specific alarm"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "ecs_indexwork_mem_dataponts_to_alarm" {
@@ -2420,7 +2420,7 @@ variable "ecs_indexwork_mem_threshold" {
 variable "ecs_lineagework_mem_disabled" {
   description = "Whether to disable the specific alarm"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "ecs_lineagework_mem_dataponts_to_alarm" {
@@ -2456,7 +2456,7 @@ variable "ecs_lineagework_mem_threshold" {
 variable "ecs_metricwork_mem_disabled" {
   description = "Whether to disable the specific alarm"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "ecs_metricwork_mem_dataponts_to_alarm" {
@@ -2492,7 +2492,7 @@ variable "ecs_metricwork_mem_threshold" {
 variable "ecs_rootcause_mem_disabled" {
   description = "Whether to disable the specific alarm"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "ecs_rootcause_mem_dataponts_to_alarm" {
@@ -2564,7 +2564,7 @@ variable "ecs_monocle_mem_threshold" {
 variable "ecs_internalapi_mem_disabled" {
   description = "Whether to disable the specific alarm"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "ecs_internalapi_mem_dataponts_to_alarm" {
