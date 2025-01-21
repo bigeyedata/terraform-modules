@@ -1,3 +1,12 @@
+## [17.1.1](https://github.com/bigeyedata/terraform-modules/compare/v17.1.0...v17.1.1) (2025-01-21)
+
+
+### Bug Fixes
+
+* disable worker service mem util alarms ([d0f4a2d](https://github.com/bigeyedata/terraform-modules/commit/d0f4a2d8005ac729a10f2d04afcfc37b55db7c02))
+
+
+
 # [17.1.0](https://github.com/bigeyedata/terraform-modules/compare/v17.0.0...v17.1.0) (2025-01-17)
 
 
