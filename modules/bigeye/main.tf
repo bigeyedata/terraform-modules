@@ -2966,3 +2966,21 @@ resource "aws_appautoscaling_policy" "internalapi_request_count_per_target" {
     target_value = var.internalapi_autoscaling_config.target_utilization
   }
 }
+
+module "solr-1" {
+  source            = "../solr-single-instance"
+  subnet            = module.vpc[0].public_subnets[0]
+  resource_name     = "${local.name}-solr-1"
+  vpc_id            = module.vpc[0].vpc_id
+  ecs_cluster_name  = aws_ecs_cluster.this.name
+  availability_zone = module.vpc[0].azs[0]
+
+  refresh_instance_on_launch_template_change = true
+}
+
+resource "aws_ecs_cluster_capacity_providers" "this" {
+  cluster_name       = aws_ecs_cluster.this.name
+  capacity_providers = [
+    module.solr-1.aws_ecs_capacity_provider_name
+  ]
+}
