@@ -22,7 +22,7 @@ resource "aws_launch_template" "solr" {
 
   instance_type = var.instance_type
   network_interfaces {
-    associate_public_ip_address = true
+    associate_public_ip_address = false
     security_groups             = [module.ecs-solr-sg.security_group_id]
   }
 
@@ -34,29 +34,12 @@ resource "aws_launch_template" "solr" {
     "#cloud-config",
     # https://cloudinit.readthedocs.io/en/latest/topics/modules.html
     yamlencode({
-      ssh_pwauth : false # Disable password-based login
-
-      # Adding users is a temporary workaround for troubleshooting.
-      # Uncomment and update as needed
-      # TODO: replace with SSM
-
-      users : [
-        {
-          name : "roman"
-          gecos : "Roman Vrublevskiy"
-          shell : "/bin/bash"
-          sudo : "ALL=(ALL) NOPASSWD:ALL"
-          groups : ["users", "admin"]
-          ssh_authorized_keys : ["ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF8nF4fFjrX4cI4kvXaCyvofottWU07Jg91XswhuqPNL roman@bigeye.com"]
-        },
-      ]
-
       write_files : [
         {
           path : "/root/variables.sh",
           content : join("\n", [
             "VAR_VOLUME_ID=${aws_ebs_volume.ebs_volume.id}",
-            "VAR_ECS_CLUSTER=${data.aws_ecs_cluster.this.cluster_name}"
+            "VAR_ECS_CLUSTER=${data.aws_ecs_cluster.this.cluster_name}",
           ]),
           permissions : "0660",
         },
@@ -69,6 +52,10 @@ resource "aws_launch_template" "solr" {
       runcmd : ["/root/runonce.sh"]
     })
   ]))
+
+  metadata_options {
+    http_tokens = "required"
+  }
 }
 
 resource "aws_autoscaling_group" "solr" {
@@ -119,9 +106,19 @@ resource "aws_autoscaling_group" "solr" {
 
 # Find the latest ECS-optimized AMI for the region
 data "aws_ssm_parameter" "ecs_optimized_ami" {
-  name = "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id"
+  # name = "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id"
+  name = "/aws/service/ecs/optimized-ami/amazon-linux-2023/recommended/image_id"
 }
 
+data "aws_vpc" "this" {
+  id = var.vpc_id
+}
+
+variable "additional_ingress_cidr_blocks" {
+  description = ""
+  type        = list(string)
+  default     = []
+}
 module "ecs-solr-sg" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "5.2.0"
@@ -129,14 +126,23 @@ module "ecs-solr-sg" {
   name            = var.resource_name
   use_name_prefix = false
   vpc_id          = var.vpc_id
-  ingress_cidr_blocks = [
-    "150.221.136.138/32",
-    "10.0.0.0/8",
-  ]
+  ingress_cidr_blocks = flatten([
+    data.aws_vpc.this.cidr_block,
+    var.additional_ingress_cidr_blocks
+    ]
+  )
+
+  # ingress_with_cidr_blocks = [
+  #   {
+  #     "cidr_blocks" = "10.0.0.0/8,150.221.136.138/32"
+  #     "rule"        = "ssh-tcp"
+  #     "description" = "SSH"
+  #   },
+  # ]
 
   ingress_rules = [
     "solr-tcp",
-    "ssh-tcp",
+    # "ssh-tcp",
   ]
 
   egress_rules = [
@@ -187,8 +193,12 @@ data "aws_iam_policy_document" "solr-instance-role-inline-policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_instance_role_policy" {
+  for_each = toset([
+    "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role",
+    "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
+  ])
   role       = aws_iam_role.solr-ecs-instance-role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
+  policy_arn = each.value
 }
 
 resource "aws_iam_instance_profile" "ecs_instance_profile" {

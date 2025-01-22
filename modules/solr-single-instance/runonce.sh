@@ -8,13 +8,43 @@ error_handler() {
     shutdown -h now
 }
 
+get_metadata_and_curl() {
+  # URL passed as argument
+  local url="$1"
+
+  # Determine if we have IMDSv2 enabled (by checking the existence of the token endpoint)
+  local token=""
+  if curl -s --head --request GET "http://169.254.169.254/latest/api/token" | grep -q "HTTP/1.1 400 Bad Request"; then
+    # If the IMDSv2 token endpoint returns 400, it's IMDSv1
+    echo "IMDSv1 detected (no token required)" >&2
+  else
+    # If the IMDSv2 token endpoint exists, IMDSv2 is in use and requires a token
+    echo "IMDSv2 detected (token required)" >&2
+    # Get the session token for IMDSv2
+    token=$(curl -s --request PUT --header "X-aws-ec2-metadata-token-ttl-seconds: 21600" "http://169.254.169.254/latest/api/token")
+    if [[ -z "$token" ]]; then
+      echo "Failed to retrieve token for IMDSv2"
+      return 1
+    fi
+  fi
+
+  # Now use curl to access the metadata or another URL with the proper token (if IMDSv2)
+  if [[ -n "$token" ]]; then
+    # Use IMDSv2 token in the header for curl request
+    curl -s --header "X-aws-ec2-metadata-token: $token" "$url"
+  else
+    # No token needed for IMDSv1
+    curl -s "$url"
+  fi
+}
+
 # Set up trap to catch any error and call error_handler
 trap 'error_handler' ERR
 
 set -e
 
 # Variables
-INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
+INSTANCE_ID=$(get_metadata_and_curl http://169.254.169.254/latest/meta-data/instance-id)
 DEVICE_NAME="/dev/xvdf"
 MOUNT_POINT="/mnt/solr-data"
 
@@ -23,9 +53,9 @@ mkdir -p $MOUNT_POINT
 # Retry settings
 RETRY_INTERVAL=5  # Retry interval in seconds
 
-yum install -y aws-cli
+yum install -y aws-cli ec2-instance-connect
 
-REGION=$(curl http://169.254.169.254/latest/meta-data/placement/availability-zone | sed 's/.$//')
+REGION=$(get_metadata_and_curl http://169.254.169.254/latest/meta-data/placement/availability-zone | sed 's/.$//')
 export AWS_REGION=$REGION
 export AWS_DEFAULT_REGION=$REGION # for aws-cli v1 compatibility
 
