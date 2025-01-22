@@ -114,11 +114,6 @@ data "aws_vpc" "this" {
   id = var.vpc_id
 }
 
-variable "additional_ingress_cidr_blocks" {
-  description = ""
-  type        = list(string)
-  default     = []
-}
 module "ecs-solr-sg" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "5.2.0"
@@ -126,23 +121,18 @@ module "ecs-solr-sg" {
   name            = var.resource_name
   use_name_prefix = false
   vpc_id          = var.vpc_id
-  ingress_cidr_blocks = flatten([
-    data.aws_vpc.this.cidr_block,
-    var.additional_ingress_cidr_blocks
-    ]
-  )
 
-  # ingress_with_cidr_blocks = [
-  #   {
-  #     "cidr_blocks" = "10.0.0.0/8,150.221.136.138/32"
-  #     "rule"        = "ssh-tcp"
-  #     "description" = "SSH"
-  #   },
-  # ]
-
-  ingress_rules = [
-    "solr-tcp",
-    # "ssh-tcp",
+  ingress_with_cidr_blocks = [
+    {
+      "cidr_blocks" = "${data.aws_vpc.this.cidr_block}"
+      "rule"        = "solr-tcp"
+      "description" = "Solr service"
+    },
+    {
+      "cidr_blocks" = "${data.aws_vpc.this.cidr_block}"
+      "rule"        = "ssh-tcp"
+      "description" = "SSH"
+    },
   ]
 
   egress_rules = [
@@ -330,6 +320,7 @@ resource "aws_ecs_service" "solr" {
 resource "aws_ebs_volume" "ebs_volume" {
   availability_zone = var.availability_zone
   size              = var.ebs_volume_size
+  type              = "gp3"
   tags = {
     Name = var.resource_name
   }
