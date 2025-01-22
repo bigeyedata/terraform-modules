@@ -2969,7 +2969,7 @@ resource "aws_appautoscaling_policy" "internalapi_request_count_per_target" {
 
 module "solr-1" {
   source            = "../solr-single-instance"
-  subnet            = module.vpc[0].public_subnets[0]
+  subnet            = module.vpc[0].private_subnets[0]
   resource_name     = "${local.name}-solr-1"
   vpc_id            = module.vpc[0].vpc_id
   ecs_cluster_name  = aws_ecs_cluster.this.name
