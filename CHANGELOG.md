@@ -1,3 +1,12 @@
+## [17.1.3](https://github.com/bigeyedata/terraform-modules/compare/v17.1.2...v17.1.3) (2025-01-22)
+
+
+### Bug Fixes
+
+* increase parallism for trigger-batch-metric-run activity queue ([35d53d7](https://github.com/bigeyedata/terraform-modules/commit/35d53d72947db557a44aa6522643ea77a13a3ffa))
+
+
+
 ## [17.1.2](https://github.com/bigeyedata/terraform-modules/compare/v17.1.1...v17.1.2) (2025-01-22)
 
 
