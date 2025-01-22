@@ -1,3 +1,12 @@
+## [17.1.2](https://github.com/bigeyedata/terraform-modules/compare/v17.1.1...v17.1.2) (2025-01-22)
+
+
+### Bug Fixes
+
+* update default temporal client parallelism settings ([d3be719](https://github.com/bigeyedata/terraform-modules/commit/d3be719cec4442cd0a90dd9c1a2ae0e56e0bef8d))
+
+
+
 ## [17.1.1](https://github.com/bigeyedata/terraform-modules/compare/v17.1.0...v17.1.1) (2025-01-21)
 
 
