@@ -95,7 +95,7 @@ module "bringyourown" {
 }
 
 module "bigeye" {
-  source             = "git::https://github.com/bigeyedata/terraform-modules//modules/bigeye?ref=v17.1.3"
+  source             = "git::https://github.com/bigeyedata/terraform-modules//modules/bigeye?ref=v17.1.4"
   environment        = local.environment
   instance           = local.instance
   top_level_dns_name = local.domain_name
