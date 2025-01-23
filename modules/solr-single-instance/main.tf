@@ -8,12 +8,16 @@ terraform {
   }
 }
 
+locals {
+  name = "${var.env_name}-${var.service_name}"
+}
+
 data "aws_caller_identity" "this" {}
 
 data "aws_region" "current" {}
 
 resource "aws_launch_template" "solr" {
-  name     = var.resource_name
+  name     = local.name
   image_id = data.aws_ssm_parameter.ecs_optimized_ami.value
 
   iam_instance_profile {
@@ -59,7 +63,7 @@ resource "aws_launch_template" "solr" {
 }
 
 resource "aws_autoscaling_group" "solr" {
-  name                = var.resource_name
+  name                = local.name
   desired_capacity    = 1
   min_size            = 1
   max_size            = 1
@@ -91,7 +95,7 @@ resource "aws_autoscaling_group" "solr" {
 
   tag {
     key                 = "Name"
-    value               = var.resource_name
+    value               = local.name
     propagate_at_launch = true
   }
 
@@ -118,7 +122,7 @@ module "ecs-solr-service-sg" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "5.2.0"
 
-  name            = "${var.resource_name}-ecs-svc"
+  name            = "${local.name}-ecs-svc"
   use_name_prefix = false
   vpc_id          = var.vpc_id
 
@@ -144,7 +148,7 @@ module "ecs-solr-ec2-instance-sg" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "5.2.0"
 
-  name            = "${var.resource_name}-ec2-instance"
+  name            = "${local.name}-ec2-instance"
   use_name_prefix = false
   vpc_id          = var.vpc_id
 
@@ -167,7 +171,7 @@ module "ecs-solr-ec2-instance-sg" {
 }
 
 resource "aws_iam_role" "solr-ecs-instance-role" {
-  name = var.resource_name
+  name = local.name
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -203,7 +207,7 @@ data "aws_iam_policy_document" "solr-instance-role-inline-policy" {
     condition {
       test     = "StringEquals"
       variable = "ec2:ResourceTag/Name"
-      values   = [var.resource_name]
+      values   = [local.name]
     }
   }
 }
@@ -218,22 +222,22 @@ resource "aws_iam_role_policy_attachment" "ecs_instance_role_policy" {
 }
 
 resource "aws_iam_instance_profile" "ecs_instance_profile" {
-  name = var.resource_name
+  name = local.name
   role = aws_iam_role.solr-ecs-instance-role.name
 }
 
 resource "aws_cloudwatch_log_group" "solr" {
-  name              = var.resource_name
+  name              = local.name
   retention_in_days = 14
 }
 
 resource "aws_ecs_task_definition" "solr" {
-  family = var.resource_name
+  family = local.name
   cpu    = 1 * 1024
   memory = 1 * 1024
   container_definitions = jsonencode([
     {
-      name      = var.resource_name
+      name      = local.name
       image     = "solr:9.7.0"
       essential = true
       portMappings = [
@@ -248,12 +252,12 @@ resource "aws_ecs_task_definition" "solr" {
         options = {
           awslogs-group         = aws_cloudwatch_log_group.solr.name
           awslogs-region        = data.aws_region.current.name
-          awslogs-stream-prefix = var.resource_name
+          awslogs-stream-prefix = local.name
         }
       }
       mountPoints = [
         {
-          sourceVolume  = var.resource_name
+          sourceVolume  = local.name
           containerPath = "/var/solr"
           readOnly      = false
         }
@@ -280,7 +284,7 @@ resource "aws_ecs_task_definition" "solr" {
 
   volume {
     configure_at_launch = false
-    name                = var.resource_name
+    name                = local.name
     host_path           = "/mnt/solr-data" # Path on the EC2 instance to bind mount.
   }
 
@@ -292,7 +296,7 @@ data "aws_ecs_cluster" "this" {
 
 # ECS Capacity Provider (linked to ASG)
 resource "aws_ecs_capacity_provider" "this" {
-  name = var.resource_name
+  name = local.name
 
   auto_scaling_group_provider {
     auto_scaling_group_arn = aws_autoscaling_group.solr.arn
@@ -305,7 +309,7 @@ resource "aws_ecs_capacity_provider" "this" {
 }
 
 resource "aws_ecs_service" "solr" {
-  name                              = var.resource_name
+  name                              = local.name
   cluster                           = data.aws_ecs_cluster.this.id
   task_definition                   = "${aws_ecs_task_definition.solr.id}:${aws_ecs_task_definition.solr.revision}"
   desired_count                     = 1
@@ -336,6 +340,10 @@ resource "aws_ecs_service" "solr" {
   deployment_maximum_percent         = 100 # This allows ECS to run up to 100% of the desired count of tasks during a deployment
   deployment_minimum_healthy_percent = 0   # This allows ECS to stop old tasks first before starting new ones
 
+  service_registries {
+    registry_arn = aws_service_discovery_service.this.arn
+  }
+
 
   # deployment_circuit_breaker {
   #   enable   = true
@@ -348,6 +356,31 @@ resource "aws_ebs_volume" "ebs_volume" {
   size              = var.ebs_volume_size
   type              = "gp3"
   tags = {
-    Name = var.resource_name
+    Name = local.name
+  }
+}
+
+variable "service_discovery_private_dns_namespace_name" {
+  description = "Service Discovery Private DNS Namespace ID."
+  type        = string
+}
+
+data "aws_service_discovery_dns_namespace" "this" {
+  name = var.service_discovery_private_dns_namespace_name
+  type = "DNS_PRIVATE"
+}
+
+resource "aws_service_discovery_service" "this" {
+  name = var.service_name
+
+  dns_config {
+    namespace_id = data.aws_service_discovery_dns_namespace.this.id
+
+    dns_records {
+      ttl  = 10
+      type = "A"
+    }
+
+    routing_policy = "MULTIVALUE"
   }
 }

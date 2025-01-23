@@ -3,8 +3,13 @@ variable "subnet" {
   type        = string
 }
 
-variable "resource_name" {
-  description = "This name will be used by all managed resource."
+variable "env_name" {
+  description = "Name of the environment."
+  type        = string
+}
+
+variable "service_name" {
+  description = "Name of this service instance."
   type        = string
 }
 

@@ -2970,13 +2970,15 @@ resource "aws_appautoscaling_policy" "internalapi_request_count_per_target" {
 module "solr-1" {
   source            = "../solr-single-instance"
   subnet            = module.vpc[0].private_subnets[0]
-  resource_name     = "${local.name}-solr-1"
+  env_name          = local.name
+  service_name      = "solr-1"
   vpc_id            = module.vpc[0].vpc_id
   ecs_cluster_name  = aws_ecs_cluster.this.name
   availability_zone = module.vpc[0].azs[0]
   instance_type     = var.solr_instance_type
 
-  refresh_instance_on_launch_template_change = true
+  service_discovery_private_dns_namespace_name = aws_service_discovery_private_dns_namespace.this.name
+  refresh_instance_on_launch_template_change   = true
 }
 
 resource "aws_ecs_cluster_capacity_providers" "this" {
@@ -2984,4 +2986,9 @@ resource "aws_ecs_cluster_capacity_providers" "this" {
   capacity_providers = [
     module.solr-1.aws_ecs_capacity_provider_name
   ]
+}
+
+resource "aws_service_discovery_private_dns_namespace" "this" {
+  name = "${local.name}.local"
+  vpc  = module.vpc[0].vpc_id
 }
