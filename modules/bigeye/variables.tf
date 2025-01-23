@@ -1366,13 +1366,13 @@ variable "temporal_system_visibility_persistence_max_write_qps" {
 variable "temporal_client_agent_heartbeat_wf_exec_size" {
   description = "Controls agent-heartbeat workflow execution thread count"
   type        = number
-  default     = 10
+  default     = 5
 }
 
 variable "temporal_client_agent_heartbeat_act_exec_size" {
   description = "Controls agent-heartbeat activity execution thread count"
   type        = number
-  default     = 10
+  default     = 20
 }
 
 variable "temporal_client_collect_lineage_wf_exec_size" {
@@ -1384,7 +1384,7 @@ variable "temporal_client_collect_lineage_wf_exec_size" {
 variable "temporal_client_collect_lineage_act_exec_size" {
   description = "Controls collect-lineage activity execution thread count"
   type        = number
-  default     = 2
+  default     = 5
 }
 
 variable "temporal_client_run_metrics_wf_exec_size" {
@@ -1396,7 +1396,7 @@ variable "temporal_client_run_metrics_wf_exec_size" {
 variable "temporal_client_run_metrics_act_exec_size" {
   description = "Controls run-metrics.v1 activity execution thread count"
   type        = number
-  default     = 8
+  default     = 10
 }
 
 variable "temporal_client_delete_source_wf_exec_size" {
@@ -1408,7 +1408,7 @@ variable "temporal_client_delete_source_wf_exec_size" {
 variable "temporal_client_delete_source_act_exec_size" {
   description = "Controls delete-source.v1 activity execution thread count"
   type        = number
-  default     = 2
+  default     = 5
 }
 
 variable "temporal_client_external_ticket_wf_exec_size" {
@@ -1420,7 +1420,7 @@ variable "temporal_client_external_ticket_wf_exec_size" {
 variable "temporal_client_external_ticket_act_exec_size" {
   description = "Controls external-ticket activity execution thread count"
   type        = number
-  default     = 2
+  default     = 5
 }
 
 variable "temporal_client_get_samples_wf_exec_size" {
@@ -1432,7 +1432,7 @@ variable "temporal_client_get_samples_wf_exec_size" {
 variable "temporal_client_get_samples_act_exec_size" {
   description = "Controls get-samples.v1 activity execution thread count"
   type        = number
-  default     = 2
+  default     = 5
 }
 
 variable "temporal_client_indexing_wf_exec_size" {
@@ -1444,7 +1444,7 @@ variable "temporal_client_indexing_wf_exec_size" {
 variable "temporal_client_indexing_act_exec_size" {
   description = "Controls indexing.v1 activity execution thread count"
   type        = number
-  default     = 2
+  default     = 5
 }
 
 variable "temporal_client_issue_ai_overview_wf_exec_size" {
@@ -1456,7 +1456,7 @@ variable "temporal_client_issue_ai_overview_wf_exec_size" {
 variable "temporal_client_issue_ai_overview_act_exec_size" {
   description = "Controls issue-ai-overview activity execution thread count"
   type        = number
-  default     = 2
+  default     = 5
 }
 
 variable "temporal_client_issue_notify_wf_exec_size" {
@@ -1468,7 +1468,7 @@ variable "temporal_client_issue_notify_wf_exec_size" {
 variable "temporal_client_issue_notify_act_exec_size" {
   description = "Controls issue-notify activity execution thread count"
   type        = number
-  default     = 2
+  default     = 5
 }
 
 variable "temporal_client_issue_root_cause_wf_exec_size" {
@@ -1480,7 +1480,7 @@ variable "temporal_client_issue_root_cause_wf_exec_size" {
 variable "temporal_client_issue_root_cause_act_exec_size" {
   description = "Controls issue-root-cause activity execution thread count"
   type        = number
-  default     = 2
+  default     = 10
 }
 
 variable "temporal_client_issue_update_wf_exec_size" {
@@ -1492,7 +1492,7 @@ variable "temporal_client_issue_update_wf_exec_size" {
 variable "temporal_client_issue_update_act_exec_size" {
   description = "Controls issue-update activity execution thread count"
   type        = number
-  default     = 2
+  default     = 5
 }
 
 variable "temporal_client_reconciliation_wf_exec_size" {
@@ -1504,7 +1504,7 @@ variable "temporal_client_reconciliation_wf_exec_size" {
 variable "temporal_client_reconciliation_act_exec_size" {
   description = "Controls reconciliation activity execution thread count.  This is used for reconciling metric run schedules."
   type        = number
-  default     = 2
+  default     = 5
 }
 
 variable "temporal_client_trigger_batch_metric_run_wf_exec_size" {
@@ -1516,7 +1516,7 @@ variable "temporal_client_trigger_batch_metric_run_wf_exec_size" {
 variable "temporal_client_trigger_batch_metric_run_act_exec_size" {
   description = "Controls trigger-batch-metric-run activity execution thread count"
   type        = number
-  default     = 5
+  default     = 100
 }
 
 variable "temporal_client_source_lineage_wf_exec_size" {
@@ -1528,7 +1528,7 @@ variable "temporal_client_source_lineage_wf_exec_size" {
 variable "temporal_client_source_lineage_act_exec_size" {
   description = "Controls source-lineage activity execution thread count"
   type        = number
-  default     = 2
+  default     = 5
 }
 
 variable "temporal_client_mc_lineage_wf_exec_size" {
@@ -1540,7 +1540,7 @@ variable "temporal_client_mc_lineage_wf_exec_size" {
 variable "temporal_client_mc_lineage_act_exec_size" {
   description = "Controls metacenter-lineage activity execution thread count"
   type        = number
-  default     = 2
+  default     = 10
 }
 
 variable "temporal_client_refresh_scorecard_wf_exec_size" {
@@ -1552,7 +1552,7 @@ variable "temporal_client_refresh_scorecard_wf_exec_size" {
 variable "temporal_client_refresh_scorecard_act_exec_size" {
   description = "Controls refresh-scorecards activity execution thread count.  This is used for refreshing data used in scorecards."
   type        = number
-  default     = 2
+  default     = 10
 }
 
 variable "temporal_client_monocle_invalidation_wf_exec_size" {
@@ -1564,7 +1564,7 @@ variable "temporal_client_monocle_invalidation_wf_exec_size" {
 variable "temporal_client_monocle_invalidation_act_exec_size" {
   description = "Controls monocle-invalidation activity execution thread count.  This is used for invalidating Monocle ML models for serving autothresholds."
   type        = number
-  default     = 2
+  default     = 5
 }
 
 #======================================================
