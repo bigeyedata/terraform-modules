@@ -23,7 +23,7 @@ resource "aws_launch_template" "solr" {
   instance_type = var.instance_type
   network_interfaces {
     associate_public_ip_address = false
-    security_groups             = [module.ecs-solr-sg.security_group_id]
+    security_groups             = [module.ecs-solr-ec2-instance-sg.security_group_id]
   }
 
   lifecycle {
@@ -114,11 +114,11 @@ data "aws_vpc" "this" {
   id = var.vpc_id
 }
 
-module "ecs-solr-sg" {
+module "ecs-solr-service-sg" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "5.2.0"
 
-  name            = var.resource_name
+  name            = "${var.resource_name}-ecs-svc"
   use_name_prefix = false
   vpc_id          = var.vpc_id
 
@@ -128,12 +128,38 @@ module "ecs-solr-sg" {
       "rule"        = "solr-tcp"
       "description" = "Solr service"
     },
-    {
-      "cidr_blocks" = "${data.aws_vpc.this.cidr_block}"
-      "rule"        = "ssh-tcp"
-      "description" = "SSH"
-    },
+    # {
+    #   "cidr_blocks" = "${data.aws_vpc.this.cidr_block}"
+    #   "rule"        = "ssh-tcp"
+    #   "description" = "SSH"
+    # },
   ]
+
+  egress_rules = [
+    "all-tcp",
+  ]
+}
+
+module "ecs-solr-ec2-instance-sg" {
+  source  = "terraform-aws-modules/security-group/aws"
+  version = "5.2.0"
+
+  name            = "${var.resource_name}-ec2-instance"
+  use_name_prefix = false
+  vpc_id          = var.vpc_id
+
+  # ingress_with_cidr_blocks = [
+  #   {
+  #     "cidr_blocks" = "${data.aws_vpc.this.cidr_block}"
+  #     "rule"        = "solr-tcp"
+  #     "description" = "Solr service"
+  #   },
+  #   {
+  #     "cidr_blocks" = "${data.aws_vpc.this.cidr_block}"
+  #     "rule"        = "ssh-tcp"
+  #     "description" = "SSH"
+  #   },
+  # ]
 
   egress_rules = [
     "all-tcp",
@@ -241,8 +267,8 @@ resource "aws_ecs_task_definition" "solr" {
       ]
     }
   ])
-  # network_mode = "awsvpc"
-  network_mode = "host"
+  network_mode = "awsvpc"
+  # network_mode = "host"
   requires_compatibilities = [
     "EC2",
   ]
@@ -291,13 +317,13 @@ resource "aws_ecs_service" "solr" {
 
 
   # network_configuration only works with awsvpc network
-  # network_configuration {
-  #   # assign_public_ip = true
-  #   security_groups = [
-  #     module.ecs-solr-sg.security_group_id
-  #   ]
-  #   subnets = [var.subnet]
-  # }
+  network_configuration {
+    # assign_public_ip = true
+    security_groups = [
+      module.ecs-solr-service-sg.security_group_id
+    ]
+    subnets = [var.subnet]
+  }
 
   capacity_provider_strategy {
     capacity_provider = aws_ecs_capacity_provider.this.name

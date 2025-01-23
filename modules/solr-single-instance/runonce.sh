@@ -98,7 +98,6 @@ NEW_PARTITION=false
 if [ -z "$PARTITIONS" ]; then
     echo "No partitions found on /dev/${NVME_DEVICE_NAME}. Creating a new partition."
 
-
     # Use parted to create a new partition
     yum install -y parted
     parted -s "/dev/${NVME_DEVICE_NAME}" mklabel gpt
