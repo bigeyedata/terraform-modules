@@ -1,3 +1,12 @@
+## [17.1.4](https://github.com/bigeyedata/terraform-modules/compare/v17.1.3...v17.1.4) (2025-01-23)
+
+
+### Bug Fixes
+
+* update default temporal wf and exec counts to final values ([26f9129](https://github.com/bigeyedata/terraform-modules/commit/26f912964d598118e2b9557a0022a3761360204c))
+
+
+
 ## [17.1.3](https://github.com/bigeyedata/terraform-modules/compare/v17.1.2...v17.1.3) (2025-01-22)
 
 
