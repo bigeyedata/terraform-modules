@@ -88,19 +88,22 @@ if [ ! -b "$DEVICE_NAME" ]; then
     error_handler
 fi
 
-# Check if there are existing partitions on the device
-PARTITIONS=$(cat /proc/partitions | awk '{print $4}' | grep -E "${DEVICE_NAME##*/}[0-9]+" || echo "")
+NVME_DEVICE_NAME=$(lsblk $DEVICE_NAME --output NAME --noheadings --nodeps)
 
-PARTITION="${DEVICE_NAME}1"
+# Check if there are existing partitions on the device
+PARTITIONS=$(cat /proc/partitions | awk '{print $4}' | grep -E "${NVME_DEVICE_NAME}p[0-9]+" || echo "")
+
+PARTITION="/dev/${NVME_DEVICE_NAME}p1"
 NEW_PARTITION=false
 if [ -z "$PARTITIONS" ]; then
-    echo "No partitions found on $DEVICE_NAME. Creating a new partition."
+    echo "No partitions found on /dev/${NVME_DEVICE_NAME}. Creating a new partition."
+
 
     # Use parted to create a new partition
     yum install -y parted
-    parted -s $DEVICE_NAME mklabel gpt
+    parted -s "/dev/${NVME_DEVICE_NAME}" mklabel gpt
     # Create a partition from 1MB to the end of the volume, type xfs
-    parted -s $DEVICE_NAME mkpart primary xfs  1MB 100%
+    parted -s "/dev/${NVME_DEVICE_NAME}" mkpart primary xfs  1MB 100%
 
     # Check if the partition was created successfully
     if [ ! -b "$PARTITION" ]; then
@@ -114,7 +117,7 @@ if [ -z "$PARTITIONS" ]; then
     echo "Partition $PARTITION formatted with xfs."
     NEW_PARTITION=true
 else
-    echo "Partitions already exist on $DEVICE_NAME."
+    echo "Partitions already exist on $NVME_DEVICE_NAME."
     echo "Partitions found: $PARTITIONS"
 fi
 

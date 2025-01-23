@@ -40,11 +40,11 @@ variable "availability_zone" {
 
 variable "ebs_volume_size" {
   type    = string
-  default = 5
+  default = 100
 }
 
 variable "instance_type" {
   description = "EC2 instance type to use as capacity provider."
   type        = string
-  default     = "t2.medium"
+  default     = "t3.medium"
 }

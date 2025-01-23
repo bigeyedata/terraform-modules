@@ -2538,3 +2538,11 @@ variable "bigeye_admin_image_tag" {
   default     = ""
 }
 
+#======================================================
+# Application Variables - solr
+#======================================================
+variable "solr_instance_type" {
+  description = "EC2 instance type to use as capacity provider for solr."
+  type        = string
+  default     = "t3.medium"
+}

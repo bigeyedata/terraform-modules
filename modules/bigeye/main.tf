@@ -2974,12 +2974,13 @@ module "solr-1" {
   vpc_id            = module.vpc[0].vpc_id
   ecs_cluster_name  = aws_ecs_cluster.this.name
   availability_zone = module.vpc[0].azs[0]
+  instance_type     = var.solr_instance_type
 
   refresh_instance_on_launch_template_change = true
 }
 
 resource "aws_ecs_cluster_capacity_providers" "this" {
-  cluster_name       = aws_ecs_cluster.this.name
+  cluster_name = aws_ecs_cluster.this.name
   capacity_providers = [
     module.solr-1.aws_ecs_capacity_provider_name
   ]
