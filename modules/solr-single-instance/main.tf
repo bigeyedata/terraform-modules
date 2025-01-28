@@ -127,15 +127,12 @@ module "ecs-solr-service-sg" {
 
   ingress_with_cidr_blocks = [
     {
-      "cidr_blocks" = "${data.aws_vpc.this.cidr_block}"
-      "rule"        = "solr-tcp"
-      "description" = "Solr service"
+      cidr_blocks = "${data.aws_vpc.this.cidr_block}"
+      description = "Solr service"
+      protocol    = "tcp"
+      from_port   = 8983
+      to_port     = 8983
     },
-    # {
-    #   "cidr_blocks" = "${data.aws_vpc.this.cidr_block}"
-    #   "rule"        = "ssh-tcp"
-    #   "description" = "SSH"
-    # },
   ]
 
   egress_rules = [
@@ -150,19 +147,6 @@ module "ecs-solr-ec2-instance-sg" {
   name            = "${local.name}-ec2-instance"
   use_name_prefix = false
   vpc_id          = var.vpc_id
-
-  # ingress_with_cidr_blocks = [
-  #   {
-  #     "cidr_blocks" = "${data.aws_vpc.this.cidr_block}"
-  #     "rule"        = "solr-tcp"
-  #     "description" = "Solr service"
-  #   },
-  #   {
-  #     "cidr_blocks" = "${data.aws_vpc.this.cidr_block}"
-  #     "rule"        = "ssh-tcp"
-  #     "description" = "SSH"
-  #   },
-  # ]
 
   egress_rules = [
     "all-tcp",
