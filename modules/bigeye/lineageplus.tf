@@ -1,13 +1,13 @@
 module "solr" {
   count             = var.lineageplus_enabled ? 1 : 0
   source            = "../solr-single-instance"
-  solr_subnet       = module.vpc[0].private_subnets[0]
-  alb_subnets       = module.vpc[0].public_subnets
+  solr_subnet       = local.application_subnet_ids[0]
+  alb_subnets       = local.public_alb_subnet_ids
   env_instance_name = local.name
   service_name      = "solr"
-  vpc_id            = module.vpc[0].vpc_id
+  vpc_id            = local.vpc_id
   ecs_cluster_name  = aws_ecs_cluster.this.name
-  availability_zone = module.vpc[0].azs[0]
+  availability_zone = local.vpc_availability_zones[0]
   instance_type     = var.solr_instance_type
 
   acm_certificate_arn = local.acm_certificate_arn
