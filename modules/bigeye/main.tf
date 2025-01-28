@@ -709,7 +709,7 @@ resource "aws_ecs_cluster_capacity_providers" "this" {
   count        = var.lineageplus_enabled ? 1 : 0
   cluster_name = aws_ecs_cluster.this.name
   capacity_providers = [
-    module.solr[0].aws_ecs_capacity_provider_name
+    module.lineageplus_solr[0].aws_ecs_capacity_provider_name
   ]
 }
 

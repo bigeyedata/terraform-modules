@@ -1,4 +1,4 @@
-module "solr" {
+module "lineageplus_solr" {
   count             = var.lineageplus_enabled ? 1 : 0
   source            = "../solr-single-instance"
   subnet_id         = local.application_subnet_ids[0]
