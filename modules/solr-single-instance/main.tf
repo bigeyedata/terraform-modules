@@ -9,7 +9,7 @@ terraform {
 }
 
 locals {
-  name = "${var.env_name}-${var.service_name}"
+  name = "${var.env_instance_name}-${var.service_name}"
 }
 
 data "aws_caller_identity" "this" {}

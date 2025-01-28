@@ -8,8 +8,8 @@ variable "alb_subnets" {
   type        = list(string)
 }
 
-variable "env_name" {
-  description = "Name of the environment."
+variable "env_instance_name" {
+  description = "Name of the environment instance."
   type        = string
 }
 

@@ -2972,7 +2972,7 @@ module "solr" {
   source            = "../solr-single-instance"
   solr_subnet       = module.vpc[0].private_subnets[0]
   alb_subnets       = module.vpc[0].public_subnets
-  env_name          = local.name
+  env_instance_name = local.name
   service_name      = "solr"
   vpc_id            = module.vpc[0].vpc_id
   ecs_cluster_name  = aws_ecs_cluster.this.name
