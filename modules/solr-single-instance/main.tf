@@ -67,7 +67,7 @@ resource "aws_autoscaling_group" "solr" {
   desired_capacity    = 1
   min_size            = 1
   max_size            = 1
-  vpc_zone_identifier = [var.solr_subnet]
+  vpc_zone_identifier = [var.subnet_id]
 
   launch_template {
     id      = aws_launch_template.solr.id
@@ -307,7 +307,7 @@ resource "aws_ecs_service" "solr" {
     security_groups = [
       module.ecs-solr-service-sg.security_group_id
     ]
-    subnets = [var.solr_subnet]
+    subnets = [var.subnet_id]
   }
 
   capacity_provider_strategy {
@@ -373,7 +373,7 @@ module "alb" {
 
   name    = local.name
   vpc_id  = var.vpc_id
-  subnets = var.alb_subnets
+  subnets = var.lb_subnet_ids
 
   enable_deletion_protection = false
 

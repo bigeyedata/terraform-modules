@@ -1,9 +1,9 @@
-variable "solr_subnet" {
+variable "subnet_id" {
   description = "VPC subnet where this instance will run."
   type        = string
 }
 
-variable "alb_subnets" {
+variable "lb_subnet_ids" {
   description = "VPC subnets for ALB attachments."
   type        = list(string)
 }

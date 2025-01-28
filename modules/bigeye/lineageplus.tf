@@ -1,8 +1,8 @@
 module "solr" {
   count             = var.lineageplus_enabled ? 1 : 0
   source            = "../solr-single-instance"
-  solr_subnet       = local.application_subnet_ids[0]
-  alb_subnets       = local.public_alb_subnet_ids
+  subnet_id         = local.application_subnet_ids[0]
+  lb_subnet_ids     = local.public_alb_subnet_ids
   env_instance_name = local.name
   service_name      = "solr"
   vpc_id            = local.vpc_id
