@@ -214,15 +214,18 @@ resource "aws_cloudwatch_log_group" "solr" {
   retention_in_days = 14
 }
 
+data "aws_ec2_instance_type" "this" {
+  instance_type = var.instance_type
+}
+
 resource "aws_ecs_task_definition" "solr" {
   family = local.name
-  cpu    = 3.5 * 1024
-  memory = 15 * 1024
   container_definitions = jsonencode([
     {
-      name      = local.name
-      image     = "solr:9.7.0"
-      essential = true
+      name              = local.name
+      image             = "solr:9.7.0"
+      memoryReservation = ceil(data.aws_ec2_instance_type.this.memory_size * 0.8)
+      essential         = true
       portMappings = [
         {
           protocol      = "tcp"
