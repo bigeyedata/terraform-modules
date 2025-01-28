@@ -80,3 +80,9 @@ variable "dns_name" {
   type        = string
   default     = ""
 }
+
+variable "elb_access_logs_bucket_config" {
+  description = "S3 bucket to send ALB logs to."
+  type        = map(string)
+  default     = {}
+}

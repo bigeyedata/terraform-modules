@@ -404,6 +404,8 @@ module "alb" {
     }
   }
 
+  access_logs = lookup(var.elb_access_logs_bucket_config, "enabled", false) == false ? {} : var.elb_access_logs_bucket_config
+
   listeners = {
     http-https-redirect = {
       port     = 80
