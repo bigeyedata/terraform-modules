@@ -2539,7 +2539,7 @@ variable "bigeye_admin_image_tag" {
 }
 
 #======================================================
-# Application Variables - lineageplus
+# Application Variables - lineageplus_solr
 #======================================================
 variable "lineageplus_enabled" {
   description = "Whether or not leneageplus components should be deployed."
@@ -2547,7 +2547,7 @@ variable "lineageplus_enabled" {
   default     = false
 }
 
-variable "solr_instance_type" {
+variable "lineageplus_solr_instance_type" {
   description = "EC2 instance type to use as capacity provider for solr."
   type        = string
   default     = "t3.medium"

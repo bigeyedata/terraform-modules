@@ -8,7 +8,7 @@ module "solr" {
   vpc_id            = local.vpc_id
   ecs_cluster_name  = aws_ecs_cluster.this.name
   availability_zone = local.vpc_availability_zones[0]
-  instance_type     = var.solr_instance_type
+  instance_type     = var.lineageplus_solr_instance_type
 
   acm_certificate_arn = local.acm_certificate_arn
   dns_name            = var.create_dns_records ? local.solr_dns_name : ""
