@@ -232,8 +232,8 @@ resource "aws_cloudwatch_log_group" "solr" {
 
 resource "aws_ecs_task_definition" "solr" {
   family = local.name
-  cpu    = 1 * 1024
-  memory = 1 * 1024
+  cpu    = 3.5 * 1024
+  memory = 15 * 1024
   container_definitions = jsonencode([
     {
       name      = local.name
@@ -357,6 +357,7 @@ resource "aws_ebs_volume" "ebs_volume" {
   availability_zone = var.availability_zone
   size              = var.ebs_volume_size
   type              = "gp3"
+  encrypted         = true
   tags = {
     Name = local.name
   }
