@@ -2541,6 +2541,12 @@ variable "bigeye_admin_image_tag" {
 #======================================================
 # Application Variables - solr
 #======================================================
+variable "deploy_solr" {
+  description = "Whether or not solr instance should be created."
+  type        = bool
+  default     = false
+}
+
 variable "solr_instance_type" {
   description = "EC2 instance type to use as capacity provider for solr."
   type        = string

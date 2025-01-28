@@ -2968,6 +2968,7 @@ resource "aws_appautoscaling_policy" "internalapi_request_count_per_target" {
 }
 
 module "solr" {
+  count             = var.deploy_solr ? 1 : 0
   source            = "../solr-single-instance"
   solr_subnet       = module.vpc[0].private_subnets[0]
   alb_subnets       = module.vpc[0].public_subnets
@@ -2992,9 +2993,10 @@ module "solr" {
 }
 
 resource "aws_ecs_cluster_capacity_providers" "this" {
+  count        = var.deploy_solr ? 1 : 0
   cluster_name = aws_ecs_cluster.this.name
   capacity_providers = [
-    module.solr.aws_ecs_capacity_provider_name
+    module.solr[0].aws_ecs_capacity_provider_name
   ]
 }
 
