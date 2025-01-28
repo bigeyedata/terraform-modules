@@ -67,7 +67,7 @@ resource "aws_autoscaling_group" "solr" {
   desired_capacity    = 1
   min_size            = 1
   max_size            = 1
-  vpc_zone_identifier = [var.subnet]
+  vpc_zone_identifier = [var.solr_subnet]
 
   launch_template {
     id      = aws_launch_template.solr.id
@@ -110,7 +110,6 @@ resource "aws_autoscaling_group" "solr" {
 
 # Find the latest ECS-optimized AMI for the region
 data "aws_ssm_parameter" "ecs_optimized_ami" {
-  # name = "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id"
   name = "/aws/service/ecs/optimized-ami/amazon-linux-2023/recommended/image_id"
 }
 
@@ -316,9 +315,6 @@ resource "aws_ecs_service" "solr" {
   scheduling_strategy               = "REPLICA"
   enable_ecs_managed_tags           = true
   health_check_grace_period_seconds = 60
-  # uncomment after provider >=5.62.0
-  # force_delete                      = true
-
 
   # network_configuration only works with awsvpc network
   network_configuration {
@@ -326,7 +322,7 @@ resource "aws_ecs_service" "solr" {
     security_groups = [
       module.ecs-solr-service-sg.security_group_id
     ]
-    subnets = [var.subnet]
+    subnets = [var.solr_subnet]
   }
 
   capacity_provider_strategy {
@@ -342,6 +338,12 @@ resource "aws_ecs_service" "solr" {
 
   service_registries {
     registry_arn = aws_service_discovery_service.this.arn
+  }
+
+  load_balancer {
+    container_name   = local.name
+    container_port   = var.solr_traffic_port
+    target_group_arn = module.alb.target_groups["solr"].arn
   }
 
 
@@ -382,5 +384,86 @@ resource "aws_service_discovery_service" "this" {
     }
 
     routing_policy = "MULTIVALUE"
+  }
+}
+
+module "alb" {
+  source  = "terraform-aws-modules/alb/aws"
+  version = "9.10.0"
+
+  name    = local.name
+  vpc_id  = var.vpc_id
+  subnets = var.alb_subnets
+
+  # Security Group
+  security_group_ingress_rules = {
+    all_http = {
+      from_port   = 80
+      to_port     = 80
+      ip_protocol = "tcp"
+      description = "HTTP web traffic"
+      cidr_ipv4   = "0.0.0.0/0"
+    }
+    all_https = {
+      from_port   = 443
+      to_port     = 443
+      ip_protocol = "tcp"
+      description = "HTTPS web traffic"
+      cidr_ipv4   = "0.0.0.0/0"
+    }
+  }
+  security_group_egress_rules = {
+    all = {
+      ip_protocol = "-1"
+      cidr_ipv4   = data.aws_vpc.this.cidr_block
+    }
+  }
+
+  listeners = {
+    http-https-redirect = {
+      port     = 80
+      protocol = "HTTP"
+      redirect = {
+        port        = "443"
+        protocol    = "HTTPS"
+        status_code = "HTTP_301"
+      }
+    }
+    https = {
+      port            = 443
+      protocol        = "HTTPS"
+      certificate_arn = var.acm_certificate_arn
+
+      forward = {
+        target_group_key = "solr"
+      }
+    }
+  }
+
+  target_groups = {
+    solr = {
+      name              = local.name
+      create_attachment = false
+      protocol          = "HTTP"
+      port              = var.solr_traffic_port
+      target_type       = "ip"
+      vpc_id            = var.vpc_id
+      health_check = {
+        enabled = true
+        path    = "/solr/#/login"
+      }
+    }
+  }
+}
+
+resource "aws_route53_record" "solr" {
+  count   = var.dns_name != "" && var.route53_zone_id != "" ? 1 : 0
+  zone_id = var.route53_zone_id
+  name    = var.dns_name
+  type    = "A"
+  alias {
+    name                   = module.alb.dns_name
+    zone_id                = module.alb.zone_id
+    evaluate_target_health = true
   }
 }

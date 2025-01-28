@@ -142,6 +142,7 @@ locals {
   toretto_dns_name                        = "${local.base_dns_alias}-toretto.${var.top_level_dns_name}"
   scheduler_dns_name                      = "${local.base_dns_alias}-scheduler.${var.top_level_dns_name}"
   web_dns_name                            = "${local.base_dns_alias}-web.${var.top_level_dns_name}"
+  solr_dns_name                           = "${local.base_dns_alias}-solr.${var.top_level_dns_name}"
 
   # RDS DNS - if create_dns_records is disabled, using the RDS-provided DNS name is a more reliable way of getting up and running
   use_rds_vanity_names     = var.create_dns_records ? true : false

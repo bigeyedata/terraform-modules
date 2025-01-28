@@ -1,6 +1,11 @@
-variable "subnet" {
+variable "solr_subnet" {
   description = "VPC subnet where this instance will run."
   type        = string
+}
+
+variable "alb_subnets" {
+  description = "VPC subnets for ALB attachments."
+  type        = list(string)
 }
 
 variable "env_name" {
@@ -52,4 +57,26 @@ variable "instance_type" {
   description = "EC2 instance type to use as capacity provider."
   type        = string
   default     = "t3.medium"
+}
+
+variable "acm_certificate_arn" {
+  description = "ARN pointing to the certificate to terminate HTTPS traffic"
+  type        = string
+}
+
+variable "solr_traffic_port" {
+  type    = number
+  default = 8983
+}
+
+variable "route53_zone_id" {
+  description = "DNS record will be created in this zone."
+  type        = string
+  default     = ""
+}
+
+variable "dns_name" {
+  description = "The name for Route53 DNS record."
+  type        = string
+  default     = ""
 }
