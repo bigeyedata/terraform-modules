@@ -1,5 +1,6 @@
 #!/bin/bash -x
 
+# shellcheck disable=SC1091
 source /root/variables.sh
 
 # Function to run in case of an error
@@ -62,9 +63,8 @@ export AWS_DEFAULT_REGION=$REGION # for aws-cli v1 compatibility
 attach_volume() {
     echo "Attaching volume $VAR_VOLUME_ID to instance $INSTANCE_ID as $DEVICE_NAME..."
 
-    aws ec2 attach-volume --volume-id "$VAR_VOLUME_ID" --instance-id "$INSTANCE_ID" --device "$DEVICE_NAME"
-
-    if [ $? -eq 0 ]; then
+    if aws ec2 attach-volume --volume-id "$VAR_VOLUME_ID" --instance-id "$INSTANCE_ID" --device "$DEVICE_NAME"
+    then
         echo "attach-volume call has been successful."
         sleep 5 # it needs some time to attach
         return 0  # Success
@@ -91,7 +91,7 @@ fi
 NVME_DEVICE_NAME=$(lsblk $DEVICE_NAME --output NAME --noheadings --nodeps)
 
 # Check if there are existing partitions on the device
-PARTITIONS=$(cat /proc/partitions | awk '{print $4}' | grep -E "${NVME_DEVICE_NAME}p[0-9]+" || echo "")
+PARTITIONS=$(awk '{print $4}' < /proc/partitions | grep -E "${NVME_DEVICE_NAME}p[0-9]+" || echo "")
 
 PARTITION="/dev/${NVME_DEVICE_NAME}p1"
 NEW_PARTITION=false
@@ -126,4 +126,4 @@ if [ $NEW_PARTITION == "true" ]; then
     chown -R 8983 $MOUNT_POINT # 8983 is solr userid inside the container
 fi
 
-echo ECS_CLUSTER=$VAR_ECS_CLUSTER > /etc/ecs/ecs.config
+echo ECS_CLUSTER="$VAR_ECS_CLUSTER" > /etc/ecs/ecs.config
