@@ -2539,10 +2539,10 @@ variable "bigeye_admin_image_tag" {
 }
 
 #======================================================
-# Application Variables - solr
+# Application Variables - lineageplus
 #======================================================
-variable "deploy_solr" {
-  description = "Whether or not solr instance should be created."
+variable "lineageplus_enabled" {
+  description = "Whether or not leneageplus components should be deployed."
   type        = bool
   default     = false
 }

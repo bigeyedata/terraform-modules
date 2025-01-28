@@ -1,5 +1,5 @@
 module "solr" {
-  count             = var.deploy_solr ? 1 : 0
+  count             = var.lineageplus_enabled ? 1 : 0
   source            = "../solr-single-instance"
   solr_subnet       = module.vpc[0].private_subnets[0]
   alb_subnets       = module.vpc[0].public_subnets
