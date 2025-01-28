@@ -331,11 +331,10 @@ resource "aws_ecs_service" "solr" {
     target_group_arn = module.alb.target_groups["solr"].arn
   }
 
-
-  # deployment_circuit_breaker {
-  #   enable   = true
-  #   rollback = true
-  # }
+  deployment_circuit_breaker {
+    enable   = false
+    rollback = false
+  }
 }
 
 resource "aws_ebs_volume" "ebs_volume" {
