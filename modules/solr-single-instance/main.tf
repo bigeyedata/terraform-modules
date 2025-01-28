@@ -303,9 +303,7 @@ resource "aws_ecs_service" "solr" {
   enable_ecs_managed_tags           = true
   health_check_grace_period_seconds = 60
 
-  # network_configuration only works with awsvpc network
   network_configuration {
-    # assign_public_ip = true
     security_groups = [
       module.ecs-solr-service-sg.security_group_id
     ]
