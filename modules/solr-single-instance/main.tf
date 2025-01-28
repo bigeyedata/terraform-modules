@@ -347,11 +347,6 @@ resource "aws_ebs_volume" "ebs_volume" {
   }
 }
 
-variable "service_discovery_private_dns_namespace_name" {
-  description = "Service Discovery Private DNS Namespace ID."
-  type        = string
-}
-
 data "aws_service_discovery_dns_namespace" "this" {
   name = var.service_discovery_private_dns_namespace_name
   type = "DNS_PRIVATE"

@@ -86,3 +86,8 @@ variable "elb_access_logs_bucket_config" {
   type        = map(string)
   default     = {}
 }
+
+variable "service_discovery_private_dns_namespace_name" {
+  description = "Service Discovery Private DNS Namespace ID."
+  type        = string
+}
