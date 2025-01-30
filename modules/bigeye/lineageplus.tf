@@ -3,7 +3,7 @@ module "lineageplus_solr" {
   source            = "../solr-single-instance"
   subnet_id         = local.application_subnet_ids[0]
   lb_subnet_ids     = local.public_alb_subnet_ids
-  env_instance_name = local.name
+  instance          = local.name
   name              = "solr"
   vpc_id            = local.vpc_id
   ecs_cluster_name  = aws_ecs_cluster.this.name

@@ -8,7 +8,7 @@ variable "lb_subnet_ids" {
   type        = list(string)
 }
 
-variable "env_instance_name" {
+variable "instance" {
   description = "Name of the environment instance."
   type        = string
 }
