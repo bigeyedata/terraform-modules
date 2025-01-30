@@ -23,12 +23,6 @@ variable "vpc_id" {
   type        = string
 }
 
-variable "solr_clients_sgs" {
-  description = "List of security group IDs that will have access to this solr server."
-  type        = list(string)
-  default     = []
-}
-
 variable "refresh_instance_on_launch_template_change" {
   description = <<EOD
     Whether or not the instance should be recreated immediately on every template change.
