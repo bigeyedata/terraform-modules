@@ -9,7 +9,7 @@ terraform {
 }
 
 locals {
-  name = "${var.env_instance_name}-${var.service_name}"
+  name = "${var.env_instance_name}-${var.name}"
 }
 
 data "aws_caller_identity" "this" {}
@@ -226,6 +226,11 @@ resource "aws_ecs_task_definition" "solr" {
       image             = "solr:9.7.0"
       memoryReservation = ceil(data.aws_ec2_instance_type.this.memory_size * 0.8)
       essential         = true
+      environment : [
+        { name : "SOLR_HOME", "value" : "/var/solr/metacenter_home/utilities/metacenter_search_server/solrmulticore" },
+        { name : "SOLR_DATA_HOME", "value" : "/var/solr/metacenter_home/utilities/caches/indexing" },
+        { name : "SOLR_HEAP", "value" : "4g" },
+      ],
       portMappings = [
         {
           protocol      = "tcp"
@@ -258,7 +263,6 @@ resource "aws_ecs_task_definition" "solr" {
     }
   ])
   network_mode = "awsvpc"
-  # network_mode = "host"
   requires_compatibilities = [
     "EC2",
   ]
@@ -273,7 +277,6 @@ resource "aws_ecs_task_definition" "solr" {
     name                = local.name
     host_path           = "/mnt/solr-data" # Path on the EC2 instance to bind mount.
   }
-
 }
 
 data "aws_ecs_cluster" "this" {
@@ -353,7 +356,7 @@ data "aws_service_discovery_dns_namespace" "this" {
 }
 
 resource "aws_service_discovery_service" "this" {
-  name = var.service_name
+  name = var.name
 
   dns_config {
     namespace_id = data.aws_service_discovery_dns_namespace.this.id
@@ -426,12 +429,13 @@ module "alb" {
 
   target_groups = {
     solr = {
-      name              = local.name
-      create_attachment = false
-      protocol          = "HTTP"
-      port              = var.solr_traffic_port
-      target_type       = "ip"
-      vpc_id            = var.vpc_id
+      name                 = local.name
+      create_attachment    = false
+      protocol             = "HTTP"
+      port                 = var.solr_traffic_port
+      target_type          = "ip"
+      deregistration_delay = 0
+      vpc_id               = var.vpc_id
       health_check = {
         enabled = true
         path    = "/solr/#/login"

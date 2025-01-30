@@ -13,7 +13,7 @@ variable "env_instance_name" {
   type        = string
 }
 
-variable "service_name" {
+variable "name" {
   description = "Name of this service instance."
   type        = string
 }
