@@ -63,24 +63,25 @@ export AWS_DEFAULT_REGION=$REGION # for aws-cli v1 compatibility
 attach_volume() {
     echo "Attaching volume $VAR_VOLUME_ID to instance $INSTANCE_ID as $DEVICE_NAME..."
 
-    if aws ec2 attach-volume --volume-id "$VAR_VOLUME_ID" --instance-id "$INSTANCE_ID" --device "$DEVICE_NAME"
-    then
-        echo "attach-volume call has been successful."
-        sleep 5 # it needs some time to attach
-        return 0  # Success
-    else
-        echo "Failed to attach volume $VAR_VOLUME_ID."
-        return 1  # Failure
-    fi
+    START_TIME=$SECONDS
+    MAX_DURATION=180  # Total retry duration in seconds (3 minutes)
+    while [ $((SECONDS - START_TIME)) -lt $MAX_DURATION ] && [ ! -b "$DEVICE_NAME" ]; do
+        if aws ec2 attach-volume --volume-id "$VAR_VOLUME_ID" --instance-id "$INSTANCE_ID" --device "$DEVICE_NAME"
+        then
+            echo "attach-volume call has been successful."
+            sleep 5 # it needs some time to attach
+            return 0  # Success
+        else
+            echo "Failed to attach volume $VAR_VOLUME_ID."
+            sleep $RETRY_INTERVAL
+            ELAPSED=$((SECONDS - START_TIME))
+            echo "Retrying... Elapsed time: ${ELAPSED} seconds, remaining $((MAX_DURATION - ELAPSED)) seconds."
+        fi
+    done
+    return 1  # Failure
 }
 
-START_TIME=$SECONDS
-MAX_DURATION=180  # Total retry duration in seconds (3 minutes)
-while [ $((SECONDS - START_TIME)) -lt $MAX_DURATION ] && [ ! -b "$DEVICE_NAME" ]; do
-    attach_volume && break
-    echo "Retrying... (elapsed time: $((SECONDS - START_TIME)) seconds)"
-    sleep $RETRY_INTERVAL
-done
+attach_volume
 
 # Double check that device exists
 if [ ! -b "$DEVICE_NAME" ]; then
