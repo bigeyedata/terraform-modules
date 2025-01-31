@@ -350,16 +350,11 @@ resource "aws_ebs_volume" "ebs_volume" {
   }
 }
 
-data "aws_service_discovery_dns_namespace" "this" {
-  name = var.service_discovery_private_dns_namespace_name
-  type = "DNS_PRIVATE"
-}
-
 resource "aws_service_discovery_service" "this" {
   name = var.name
 
   dns_config {
-    namespace_id = data.aws_service_discovery_dns_namespace.this.id
+    namespace_id = var.service_discovery_private_dns_namespace_id
 
     dns_records {
       ttl  = 10
@@ -404,7 +399,11 @@ module "alb" {
     }
   }
 
-  access_logs = lookup(var.elb_access_logs_bucket_config, "enabled", false) == false ? {} : var.elb_access_logs_bucket_config
+  access_logs = var.lb_access_logs_enabled ? {
+    enabled = var.lb_access_logs_enabled
+    bucket  = var.lb_access_logs_bucket_name
+    prefix  = var.lb_access_logs_bucket_prefix
+  } : {}
 
   listeners = {
     http-https-redirect = {

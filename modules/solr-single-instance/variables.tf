@@ -81,7 +81,25 @@ variable "elb_access_logs_bucket_config" {
   default     = {}
 }
 
-variable "service_discovery_private_dns_namespace_name" {
+variable "lb_access_logs_enabled" {
+  description = "A boolean indicating whether access logs are enabled"
+  type        = bool
+  default     = false
+}
+
+variable "lb_access_logs_bucket_name" {
+  description = "The name of the bucket where ALB access logs will be sent. Required if lb_access_logs_enabled is true"
+  type        = string
+  default     = ""
+}
+
+variable "lb_access_logs_bucket_prefix" {
+  description = "If lb_access_logs_enabled is true, this is the prefix under which access logs will be written"
+  type        = string
+  default     = ""
+}
+
+variable "service_discovery_private_dns_namespace_id" {
   description = "Service Discovery Private DNS Namespace ID."
   type        = string
 }
