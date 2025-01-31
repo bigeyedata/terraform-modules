@@ -59,8 +59,9 @@ variable "acm_certificate_arn" {
 }
 
 variable "solr_traffic_port" {
-  type    = number
-  default = 8983
+  description = "Default solr port is 8983, but we run it on 80."
+  type        = number
+  default     = 80
 }
 
 variable "route53_zone_id" {

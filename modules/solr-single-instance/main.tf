@@ -130,8 +130,8 @@ module "ecs-solr-service-sg" {
       cidr_blocks = "${data.aws_vpc.this.cidr_block}"
       description = "Solr service"
       protocol    = "tcp"
-      from_port   = 8983
-      to_port     = 8983
+      from_port   = var.solr_traffic_port
+      to_port     = var.solr_traffic_port
     },
   ]
 
@@ -230,12 +230,13 @@ resource "aws_ecs_task_definition" "solr" {
         { name : "SOLR_HOME", "value" : "/var/solr/metacenter_home/utilities/metacenter_search_server/solrmulticore" },
         { name : "SOLR_DATA_HOME", "value" : "/var/solr/metacenter_home/utilities/caches/indexing" },
         { name : "SOLR_HEAP", "value" : "4g" },
+        { name : "SOLR_PORT", "value" : tostring(var.solr_traffic_port) },
       ],
       portMappings = [
         {
           protocol      = "tcp"
-          containerPort = 8983
-          hostPort      = 8983
+          containerPort = var.solr_traffic_port
+          hostPort      = var.solr_traffic_port
         }
       ]
       logConfiguration = {
@@ -433,7 +434,8 @@ module "alb" {
 
   target_groups = {
     solr = {
-      name                 = local.name
+      # name_prefix can only be 6 chars long
+      name_prefix          = substr(local.name, 0, 6)
       create_attachment    = false
       protocol             = "HTTP"
       port                 = var.solr_traffic_port
@@ -443,6 +445,9 @@ module "alb" {
       health_check = {
         enabled = true
         path    = "/solr/#/login"
+      }
+      tags = {
+        Name = local.name
       }
     }
   }
