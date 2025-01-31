@@ -345,6 +345,11 @@ resource "aws_ebs_volume" "ebs_volume" {
   size              = var.ebs_volume_size
   type              = "gp3"
   encrypted         = true
+
+  lifecycle {
+    prevent_destroy = true
+  }
+
   tags = {
     Name = local.name
   }
