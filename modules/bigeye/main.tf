@@ -705,6 +705,14 @@ resource "aws_iam_role_policy" "ecs_secrets" {
   })
 }
 
+resource "aws_ecs_cluster_capacity_providers" "this" {
+  count        = var.lineageplus_enabled ? 1 : 0
+  cluster_name = aws_ecs_cluster.this.name
+  capacity_providers = [
+    module.lineageplus_solr[0].aws_ecs_capacity_provider_name
+  ]
+}
+
 #======================================================
 # Cloudwatch Logs
 #======================================================
@@ -2966,3 +2974,9 @@ resource "aws_appautoscaling_policy" "internalapi_request_count_per_target" {
     target_value = var.internalapi_autoscaling_config.target_utilization
   }
 }
+
+resource "aws_service_discovery_private_dns_namespace" "this" {
+  name = "${local.name}.internal"
+  vpc  = module.vpc[0].vpc_id
+}
+
