@@ -1,3 +1,12 @@
+# [17.2.0](https://github.com/bigeyedata/terraform-modules/compare/v17.1.4...v17.2.0) (2025-02-03)
+
+
+### Features
+
+* add tf module for Apache solr on ECS ([#410](https://github.com/bigeyedata/terraform-modules/issues/410)) ([a6ffc9a](https://github.com/bigeyedata/terraform-modules/commit/a6ffc9a84b42df35fa0ca3d900cf9e552a3b7d71))
+
+
+
 ## [17.1.4](https://github.com/bigeyedata/terraform-modules/compare/v17.1.3...v17.1.4) (2025-01-23)
 
 
