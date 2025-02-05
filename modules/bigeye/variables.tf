@@ -2553,6 +2553,17 @@ variable "lineageplus_solr_instance_type" {
   default     = "t3.medium"
 }
 
+variable "lineageplus_solr_image_repository_suffix" {
+  description = "The repository suffix. For example if the repository is solr/test, the suffix is /test"
+  type        = string
+  default     = ""
+}
+
+variable "lineageplus_solr_image_tag" {
+  description = "The image tag to use for lineageplus solr service."
+  type        = string
+}
+
 #======================================================
 # Cloudfront Variables
 #======================================================

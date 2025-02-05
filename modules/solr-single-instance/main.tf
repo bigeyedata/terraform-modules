@@ -223,12 +223,12 @@ resource "aws_ecs_task_definition" "solr" {
   container_definitions = jsonencode([
     {
       name              = local.name
-      image             = "solr:9.7.0"
+      image             = "${var.image_registry}/${var.image_repository}:${var.image_tag}"
       memoryReservation = ceil(data.aws_ec2_instance_type.this.memory_size * 0.8)
       essential         = true
       environment : [
-        { name : "SOLR_HOME", "value" : "/var/solr/metacenter_home/utilities/metacenter_search_server/solrmulticore" },
-        { name : "SOLR_DATA_HOME", "value" : "/var/solr/metacenter_home/utilities/caches/indexing" },
+        { name : "SOLR_HOME", "value" : "/var/solr/configs" },
+        { name : "SOLR_DATA_HOME", "value" : "/var/solr/data" },
         { name : "SOLR_HEAP", "value" : "4g" },
         { name : "SOLR_PORT", "value" : tostring(var.solr_traffic_port) },
       ],
@@ -249,8 +249,8 @@ resource "aws_ecs_task_definition" "solr" {
       }
       mountPoints = [
         {
-          sourceVolume  = local.name
-          containerPath = "/var/solr"
+          sourceVolume  = "${local.name}-data"
+          containerPath = "/var/solr/data"
           readOnly      = false
         }
       ]
@@ -275,8 +275,8 @@ resource "aws_ecs_task_definition" "solr" {
 
   volume {
     configure_at_launch = false
-    name                = local.name
-    host_path           = "/mnt/solr-data" # Path on the EC2 instance to bind mount.
+    name                = "${local.name}-data"
+    host_path           = "/mnt/solr-data/data" # Path on the EC2 instance to bind mount.
   }
 }
 
