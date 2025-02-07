@@ -1,3 +1,12 @@
+# [17.3.0](https://github.com/bigeyedata/terraform-modules/compare/v17.2.1...v17.3.0) (2025-02-07)
+
+
+### Features
+
+* add option to use Cloudfront in front of the app ([e139d85](https://github.com/bigeyedata/terraform-modules/commit/e139d85ef9d46baa7ef210fc44e02645cadd45c6))
+
+
+
 ## [17.2.1](https://github.com/bigeyedata/terraform-modules/compare/v17.2.0...v17.2.1) (2025-02-07)
 
 
