@@ -2977,6 +2977,6 @@ resource "aws_appautoscaling_policy" "internalapi_request_count_per_target" {
 
 resource "aws_service_discovery_private_dns_namespace" "this" {
   name = "${local.name}.internal"
-  vpc  = length(var.byovpc_vpc_id) > 0 ? var.byovpc_vpc_id : module.vpc[0].vpc_id
+  vpc  = local.vpc_id
 }
 
