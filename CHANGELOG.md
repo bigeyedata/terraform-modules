@@ -1,3 +1,12 @@
+## [17.2.1](https://github.com/bigeyedata/terraform-modules/compare/v17.2.0...v17.2.1) (2025-02-07)
+
+
+### Bug Fixes
+
+* add byovpc support for aws_service_discovery_private_dns_namespace ([#414](https://github.com/bigeyedata/terraform-modules/issues/414)) ([496edab](https://github.com/bigeyedata/terraform-modules/commit/496edab19c453fb8723c9d7b094dd4cc7febab19))
+
+
+
 # [17.2.0](https://github.com/bigeyedata/terraform-modules/compare/v17.1.4...v17.2.0) (2025-02-03)
 
 
