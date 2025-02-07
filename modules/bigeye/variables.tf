@@ -2552,3 +2552,30 @@ variable "lineageplus_solr_instance_type" {
   type        = string
   default     = "t3.medium"
 }
+
+#======================================================
+# Cloudfront Variables
+#======================================================
+variable "cloudfront_enabled" {
+  description = "A var.cloudfront_logging_bucket and var.cloudfront_acm_certificate_arn also need to be set in addition to setting this var to true to enable Cloudfront in front of the Bigeye app stack."
+  type        = bool
+  default     = false
+}
+
+variable "cloudfront_logging_bucket" {
+  description = "A logging S3 bucket is required for Cloudfront distributions"
+  type        = string
+  default     = ""
+}
+
+variable "cloudfront_acm_certificate_arn" {
+  description = "An ACM cert is required for Cloudfront distributions"
+  type        = string
+  default     = ""
+}
+
+variable "cloudfront_compression_enabled" {
+  description = ""
+  type        = bool
+  default     = true
+}

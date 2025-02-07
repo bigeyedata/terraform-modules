@@ -427,8 +427,8 @@ resource "aws_route53_record" "apex" {
   name    = local.vanity_dns_name
   type    = "A"
   alias {
-    name                   = module.haproxy.dns_name
-    zone_id                = module.haproxy.zone_id
+    name                   = var.cloudfront_enabled ? module.cloudfront[0].cloudfront_distribution_domain_name : module.haproxy.dns_name
+    zone_id                = var.cloudfront_enabled ? module.cloudfront[0].cloudfront_distribution_hosted_zone_id : module.haproxy.zone_id
     evaluate_target_health = false
   }
 }
