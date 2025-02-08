@@ -1,5 +1,5 @@
 module "lineageplus_solr" {
-  count             = var.lineageplus_enabled ? 1 : 0
+  count             = var.lineageplus_enabled && length(var.lineageplus_solr_image_tag) > 0 ? 1 : 0
   source            = "../solr-single-instance"
   subnet_id         = local.application_subnet_ids[0]
   lb_subnet_ids     = local.public_alb_subnet_ids
