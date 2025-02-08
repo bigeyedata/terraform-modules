@@ -1,3 +1,12 @@
+# [17.4.0](https://github.com/bigeyedata/terraform-modules/compare/v17.3.0...v17.4.0) (2025-02-08)
+
+
+### Features
+
+* bake static configs inside the image ([#412](https://github.com/bigeyedata/terraform-modules/issues/412)) ([9d0de18](https://github.com/bigeyedata/terraform-modules/commit/9d0de1855112f4e3d61ad289c9516c529ece7831))
+
+
+
 # [17.3.0](https://github.com/bigeyedata/terraform-modules/compare/v17.2.1...v17.3.0) (2025-02-07)
 
 
