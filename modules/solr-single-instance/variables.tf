@@ -104,3 +104,19 @@ variable "service_discovery_private_dns_namespace_id" {
   description = "Service Discovery Private DNS Namespace ID."
   type        = string
 }
+
+variable "image_registry" {
+  description = "The container image registry"
+  type        = string
+}
+
+variable "image_repository" {
+  description = "The repository name within the registry for the container"
+  type        = string
+}
+
+variable "image_tag" {
+  description = "The image tag of the container"
+  type        = string
+}
+

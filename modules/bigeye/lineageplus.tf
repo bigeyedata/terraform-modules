@@ -20,4 +20,8 @@ module "lineageplus_solr" {
 
   service_discovery_private_dns_namespace_id = aws_service_discovery_private_dns_namespace.this.id
   refresh_instance_on_launch_template_change = true
+
+  image_registry   = local.image_registry
+  image_repository = "solr${var.lineageplus_solr_image_repository_suffix}"
+  image_tag        = var.lineageplus_solr_image_tag
 }
