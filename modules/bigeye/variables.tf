@@ -2562,6 +2562,7 @@ variable "lineageplus_solr_image_repository_suffix" {
 variable "lineageplus_solr_image_tag" {
   description = "The image tag to use for lineageplus solr service."
   type        = string
+  default     = ""
 }
 
 #======================================================
