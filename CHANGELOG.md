@@ -1,3 +1,12 @@
+## [17.4.1](https://github.com/bigeyedata/terraform-modules/compare/v17.4.0...v17.4.1) (2025-02-11)
+
+
+### Bug Fixes
+
+* make var.lineageplus_solr_image_tag optional ([#418](https://github.com/bigeyedata/terraform-modules/issues/418)) ([0780252](https://github.com/bigeyedata/terraform-modules/commit/0780252249e1af00662ba855ef226329fd3f2543))
+
+
+
 # [17.4.0](https://github.com/bigeyedata/terraform-modules/compare/v17.3.0...v17.4.0) (2025-02-08)
 
 
