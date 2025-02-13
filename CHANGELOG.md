@@ -1,3 +1,12 @@
+# [17.5.0](https://github.com/bigeyedata/terraform-modules/compare/v17.4.1...v17.5.0) (2025-02-13)
+
+
+### Features
+
+* improve Cloudfront caching strategy ([84e6ed9](https://github.com/bigeyedata/terraform-modules/commit/84e6ed9a4f2d0a5d9055e427c9da59097f48a903))
+
+
+
 ## [17.4.1](https://github.com/bigeyedata/terraform-modules/compare/v17.4.0...v17.4.1) (2025-02-11)
 
 
