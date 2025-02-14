@@ -1,3 +1,12 @@
+# [17.6.0](https://github.com/bigeyedata/terraform-modules/compare/v17.5.0...v17.6.0) (2025-02-14)
+
+
+### Features
+
+* add DD_TRACE_128_BIT_TRACEID_LOGGING_ENABLED env var ([#422](https://github.com/bigeyedata/terraform-modules/issues/422)) ([74740dd](https://github.com/bigeyedata/terraform-modules/commit/74740ddef7caca52deb0b844031fc71b8ae2a9db))
+
+
+
 # [17.5.0](https://github.com/bigeyedata/terraform-modules/compare/v17.4.1...v17.5.0) (2025-02-13)
 
 
