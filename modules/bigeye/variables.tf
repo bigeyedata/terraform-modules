@@ -2585,7 +2585,23 @@ variable "lineageplus_solr_desired_count" {
 # Cloudfront Variables
 #======================================================
 variable "cloudfront_enabled" {
-  description = "A var.cloudfront_logging_bucket and var.cloudfront_acm_certificate_arn also need to be set in addition to setting this var to true to enable Cloudfront in front of the Bigeye app stack."
+  description = <<EOT
+This controls whether a Cloudfront distribution is created.  This should be set to true before
+setting var.cloudfront_route_static_asset_traffic to true to avoid a brief downtime due to a race
+between DNS update and Cloudfront distribution creation.   var.cloudfront_route_static_asset_traffic
+should be set to false before setting this variable to false for the same reason.
+A var.cloudfront_logging_bucket and var.cloudfront_acm_certificate_arn also need to be set in
+addition to setting this var to true to enable Cloudfront in front of the Bigeye app stack.
+EOT
+  type        = bool
+  default     = false
+}
+
+variable "cloudfront_route_static_asset_traffic" {
+  description = <<EOT
+This flag controls the DNS entry Bigeye uses for static assets.  Set to true to point DNS at Cloudfront
+for static assets.  See also var.cloudfront_enabled
+EOT
   type        = bool
   default     = false
 }
@@ -2606,4 +2622,10 @@ variable "cloudfront_compression_enabled" {
   description = ""
   type        = bool
   default     = true
+}
+
+variable "cloudfront_origin_read_timeout" {
+  description = "How long Cloudfront waits for a response from the origin (or time Cloudfront will wait for the next packet)"
+  type        = number
+  default     = 60
 }

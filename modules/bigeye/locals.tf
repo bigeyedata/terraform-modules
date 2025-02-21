@@ -125,6 +125,7 @@ locals {
   # DNS
   base_dns_alias                          = coalesce(var.vanity_alias, local.name)
   vanity_dns_name                         = var.use_top_level_dns_apex_as_vanity ? var.top_level_dns_name : "${local.base_dns_alias}.${var.top_level_dns_name}"
+  static_asset_dns_name                   = var.use_top_level_dns_apex_as_vanity ? "static.${var.top_level_dns_name}" : "${local.base_dns_alias}-static.${var.top_level_dns_name}"
   datawatch_dns_name                      = "${local.base_dns_alias}-datawatch.${var.top_level_dns_name}"
   datawatch_mysql_vanity_dns_name         = "${local.base_dns_alias}-mysql.${var.top_level_dns_name}"
   datawatch_mysql_replica_vanity_dns_name = "${local.base_dns_alias}-mysql-ro.${var.top_level_dns_name}"
@@ -142,7 +143,11 @@ locals {
   toretto_dns_name                        = "${local.base_dns_alias}-toretto.${var.top_level_dns_name}"
   scheduler_dns_name                      = "${local.base_dns_alias}-scheduler.${var.top_level_dns_name}"
   web_dns_name                            = "${local.base_dns_alias}-web.${var.top_level_dns_name}"
-  lineageplus_solr_dns_name               = "${local.base_dns_alias}-lineageplus-solr.${var.top_level_dns_name}"
+  web_static_asset_root = (
+    var.cloudfront_enabled && var.cloudfront_route_static_asset_traffic ?
+    module.cloudfront[0].cloudfront_distribution_domain_name : module.haproxy.dns_name
+  )
+  lineageplus_solr_dns_name = "${local.base_dns_alias}-lineageplus-solr.${var.top_level_dns_name}"
 
   # RDS DNS - if create_dns_records is disabled, using the RDS-provided DNS name is a more reliable way of getting up and running
   use_rds_vanity_names     = var.create_dns_records ? true : false
