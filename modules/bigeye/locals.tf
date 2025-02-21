@@ -145,7 +145,7 @@ locals {
   web_dns_name                            = "${local.base_dns_alias}-web.${var.top_level_dns_name}"
   web_static_asset_root = (
     var.cloudfront_enabled && var.cloudfront_route_static_asset_traffic ?
-    module.cloudfront[0].cloudfront_distribution_domain_name : module.haproxy.dns_name
+    module.cloudfront[0].cloudfront_distribution_domain_name : local.vanity_dns_name
   )
   lineageplus_solr_dns_name = "${local.base_dns_alias}-lineageplus-solr.${var.top_level_dns_name}"
 

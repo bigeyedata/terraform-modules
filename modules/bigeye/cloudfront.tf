@@ -13,7 +13,7 @@ locals {
   cloudfront_ordered_cache_behavior_defaults = {
     target_origin_id           = "bigeye"
     cache_policy_name          = "Managed-CachingOptimized"
-    origin_request_policy_name = "Managed-AllViewer"
+    origin_request_policy_name = "Managed-CORS-CustomOrigin"
     viewer_protocol_policy     = "redirect-to-https"
     compress                   = true
     use_forwarded_values       = false
@@ -31,7 +31,7 @@ module "cloudfront" {
   source = "terraform-aws-modules/cloudfront/aws"
   count  = var.cloudfront_enabled ? 1 : 0
 
-  aliases             = [local.vanity_dns_name]
+  aliases             = [local.static_asset_dns_name]
   comment             = local.name
   enabled             = true
   is_ipv6_enabled     = true
@@ -45,7 +45,7 @@ module "cloudfront" {
 
   origin = {
     bigeye = {
-      domain_name         = module.haproxy.dns_name
+      domain_name         = local.vanity_dns_name
       connection_attempts = 3
       connection_timeout  = 10
       custom_origin_config = {
