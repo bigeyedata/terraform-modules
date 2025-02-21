@@ -442,7 +442,7 @@ resource "aws_route53_record" "static" {
     name = local.web_static_asset_root
     zone_id = (
       var.cloudfront_enabled && var.cloudfront_route_static_asset_traffic ?
-      module.cloudfront[0].cloudfront_distribution_hosted_zone_id : module.haproxy.zone_id
+      module.cloudfront[0].cloudfront_distribution_hosted_zone_id : aws_route53_record.apex[0].zone_id
     )
     evaluate_target_health = false
   }
@@ -1161,7 +1161,7 @@ module "web" {
       INSTANCE          = var.instance
       DOCKER_ENV        = var.environment
       APP_ENVIRONMENT   = var.environment
-      STATIC_ASSET_ROOT = local.web_static_asset_root
+      STATIC_ASSET_ROOT = "https://${var.create_dns_records ? aws_route53_record.static[0].fqdn : local.vanity_dns_name}"
       NODE_ENV          = "production"
       PORT              = var.web_port
       DROPWIZARD_HOST   = "https://${local.datawatch_dns_name}"
