@@ -427,8 +427,26 @@ resource "aws_route53_record" "apex" {
   name    = local.vanity_dns_name
   type    = "A"
   alias {
-    name                   = var.cloudfront_enabled ? module.cloudfront[0].cloudfront_distribution_domain_name : module.haproxy.dns_name
-    zone_id                = var.cloudfront_enabled ? module.cloudfront[0].cloudfront_distribution_hosted_zone_id : module.haproxy.zone_id
+    name                   = module.haproxy.dns_name
+    zone_id                = module.haproxy.zone_id
+    evaluate_target_health = false
+  }
+}
+
+resource "aws_route53_record" "static" {
+  count   = var.create_dns_records ? 1 : 0
+  zone_id = data.aws_route53_zone.this[0].zone_id
+  name    = local.static_asset_dns_name
+  type    = "A"
+  alias {
+    name = (
+      var.cloudfront_enabled && var.cloudfront_route_static_asset_traffic ?
+      module.cloudfront[0].cloudfront_distribution_domain_name : module.haproxy.dns_name
+    )
+    zone_id = (
+      var.cloudfront_enabled && var.cloudfront_route_static_asset_traffic ?
+      module.cloudfront[0].cloudfront_distribution_hosted_zone_id : module.haproxy.zone_id
+    )
     evaluate_target_health = false
   }
 }
