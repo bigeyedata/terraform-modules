@@ -1,3 +1,12 @@
+## [17.8.1](https://github.com/bigeyedata/terraform-modules/compare/v17.8.0...v17.8.1) (2025-02-21)
+
+
+### Bug Fixes
+
+* update dns to only route static assets to cloudfront ([#425](https://github.com/bigeyedata/terraform-modules/issues/425)) ([26140aa](https://github.com/bigeyedata/terraform-modules/commit/26140aa5bc66715e0f46890955d56969f60a85bd))
+
+
+
 # [17.8.0](https://github.com/bigeyedata/terraform-modules/compare/v17.7.1...v17.8.0) (2025-02-21)
 
 
