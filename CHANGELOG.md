@@ -1,3 +1,12 @@
+# [17.8.0](https://github.com/bigeyedata/terraform-modules/compare/v17.7.1...v17.8.0) (2025-02-21)
+
+
+### Features
+
+* add new lineageplus_solr variables ([#426](https://github.com/bigeyedata/terraform-modules/issues/426)) ([8022069](https://github.com/bigeyedata/terraform-modules/commit/8022069868267ca280483f56aeea1675ee542074))
+
+
+
 ## [17.7.1](https://github.com/bigeyedata/terraform-modules/compare/v17.7.0...v17.7.1) (2025-02-21)
 
 
