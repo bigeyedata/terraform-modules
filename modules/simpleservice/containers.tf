@@ -70,7 +70,6 @@ locals {
   ) : {}
   datadog_service_environment_variables = var.datadog_agent_enabled ? {
     DATADOG_ENABLED                          = "true"
-    DD_TRACE_128_BIT_TRACEID_LOGGING_ENABLED = "true"
     DD_SERVICE                               = var.app
     DD_TAGS                                  = "app:${var.app} instance:${var.instance} stack:${var.stack}"
     DD_ENV                                   = var.stack
