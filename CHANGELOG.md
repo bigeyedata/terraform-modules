@@ -1,3 +1,12 @@
+## [17.7.1](https://github.com/bigeyedata/terraform-modules/compare/v17.7.0...v17.7.1) (2025-02-21)
+
+
+### Reverts
+
+* Revert "feat: add DD_TRACE_128_BIT_TRACEID_LOGGING_ENABLED env var (#422)" ([1201115](https://github.com/bigeyedata/terraform-modules/commit/1201115ed792af7d3d88283268e57c580ec99c0a)), closes [#422](https://github.com/bigeyedata/terraform-modules/issues/422)
+
+
+
 # [17.7.0](https://github.com/bigeyedata/terraform-modules/compare/v17.6.0...v17.7.0) (2025-02-21)
 
 
