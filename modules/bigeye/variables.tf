@@ -432,7 +432,7 @@ variable "rabbitmq_cluster_enabled" {
 variable "rabbitmq_engine_version" {
   description = "Engine version for RabbitMQ. See - https://docs.aws.amazon.com/amazon-mq/latest/developer-guide/rabbitmq-version-management.html"
   type        = string
-  default     = "3.11.20"
+  default     = "3.13"
 }
 
 variable "rabbitmq_maintenance_day" {
@@ -1013,7 +1013,7 @@ variable "temporal_rds_root_user_password_secret_arn" {
 variable "temporal_rds_engine_version" {
   description = "The mysql engine version"
   type        = string
-  default     = "8.0.32"
+  default     = "8.0.40"
 }
 
 variable "temporal_rds_enable_performance_insights" {
@@ -1681,7 +1681,7 @@ variable "datawatch_rds_root_user_password_secret_arn" {
 variable "datawatch_rds_engine_version" {
   description = "The mysql engine version"
   type        = string
-  default     = "8.0.32"
+  default     = "8.0.40"
 }
 
 variable "datawatch_rds_enable_performance_insights" {
