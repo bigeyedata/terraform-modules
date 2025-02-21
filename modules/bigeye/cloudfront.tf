@@ -37,7 +37,7 @@ module "cloudfront" {
   is_ipv6_enabled     = true
   price_class         = "PriceClass_All"
   http_version        = "http2and3"
-  wait_for_deployment = false
+  wait_for_deployment = true
   logging_config = {
     bucket = var.cloudfront_logging_bucket
     prefix = "bigeye.com"
@@ -53,7 +53,7 @@ module "cloudfront" {
         https_port               = 443
         origin_keepalive_timeout = 5
         origin_protocol_policy   = "https-only"
-        origin_read_timeout      = 30
+        origin_read_timeout      = var.cloudfront_origin_read_timeout
         origin_ssl_protocols     = ["TLSv1.2"]
       }
     }
