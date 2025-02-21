@@ -439,10 +439,7 @@ resource "aws_route53_record" "static" {
   name    = local.static_asset_dns_name
   type    = "A"
   alias {
-    name = (
-      var.cloudfront_enabled && var.cloudfront_route_static_asset_traffic ?
-      module.cloudfront[0].cloudfront_distribution_domain_name : module.haproxy.dns_name
-    )
+    name = local.web_static_asset_root
     zone_id = (
       var.cloudfront_enabled && var.cloudfront_route_static_asset_traffic ?
       module.cloudfront[0].cloudfront_distribution_hosted_zone_id : module.haproxy.zone_id
@@ -1164,6 +1161,7 @@ module "web" {
       INSTANCE          = var.instance
       DOCKER_ENV        = var.environment
       APP_ENVIRONMENT   = var.environment
+      STATIC_ASSET_ROOT = local.web_static_asset_root
       NODE_ENV          = "production"
       PORT              = var.web_port
       DROPWIZARD_HOST   = "https://${local.datawatch_dns_name}"
