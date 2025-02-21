@@ -218,6 +218,12 @@ data "aws_ec2_instance_type" "this" {
   instance_type = var.instance_type
 }
 
+locals {
+  solr_default_opts = [
+    "-Dfile.encoding=UTF-8",
+  ]
+}
+
 resource "aws_ecs_task_definition" "solr" {
   family = local.name
   container_definitions = jsonencode([
@@ -231,6 +237,7 @@ resource "aws_ecs_task_definition" "solr" {
         { name : "SOLR_DATA_HOME", "value" : "/var/solr/data" },
         { name : "SOLR_HEAP", "value" : "4g" },
         { name : "SOLR_PORT", "value" : tostring(var.solr_traffic_port) },
+        { name : "SOLR_OPTS", "value" : join(" ", concat(local.solr_default_opts, var.solr_opts)) },
       ],
       portMappings = [
         {
@@ -302,7 +309,7 @@ resource "aws_ecs_service" "solr" {
   name                              = local.name
   cluster                           = data.aws_ecs_cluster.this.id
   task_definition                   = "${aws_ecs_task_definition.solr.id}:${aws_ecs_task_definition.solr.revision}"
-  desired_count                     = 1
+  desired_count                     = var.desired_count
   scheduling_strategy               = "REPLICA"
   enable_ecs_managed_tags           = true
   health_check_grace_period_seconds = 60

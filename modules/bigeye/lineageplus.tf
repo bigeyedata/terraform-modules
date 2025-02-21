@@ -24,4 +24,6 @@ module "lineageplus_solr" {
   image_registry   = local.image_registry
   image_repository = "solr${var.lineageplus_solr_image_repository_suffix}"
   image_tag        = var.lineageplus_solr_image_tag
+  solr_opts        = var.lineageplus_solr_opts
+  desired_count    = var.lineageplus_solr_desired_count
 }

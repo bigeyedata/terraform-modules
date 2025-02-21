@@ -120,3 +120,18 @@ variable "image_tag" {
   type        = string
 }
 
+variable "solr_opts" {
+  description = "Additional options to pass to solr startup script."
+  type        = list(string)
+  default     = []
+}
+
+variable "desired_count" {
+  description = "This variable takes only 0 or 1 and is intended to allow stopping solr service for data volume maintenance."
+  type        = number
+  default     = 1
+  validation {
+    condition     = contains([0, 1], var.desired_count)
+    error_message = "The value must be either 0 or 1."
+  }
+}
