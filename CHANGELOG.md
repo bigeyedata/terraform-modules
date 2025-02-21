@@ -1,3 +1,12 @@
+# [17.7.0](https://github.com/bigeyedata/terraform-modules/compare/v17.6.0...v17.7.0) (2025-02-21)
+
+
+### Features
+
+* update default rabbitmq and mysql versions ([73bba8f](https://github.com/bigeyedata/terraform-modules/commit/73bba8f1b8fb2f1689a45d98f841613e2b076534))
+
+
+
 # [17.6.0](https://github.com/bigeyedata/terraform-modules/compare/v17.5.0...v17.6.0) (2025-02-14)
 
 
