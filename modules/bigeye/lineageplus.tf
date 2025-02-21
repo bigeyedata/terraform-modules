@@ -25,5 +25,5 @@ module "lineageplus_solr" {
   image_repository = "solr${var.lineageplus_solr_image_repository_suffix}"
   image_tag        = var.lineageplus_solr_image_tag
   solr_opts        = var.lineageplus_solr_opts
-  number_of_tasks  = var.lineageplus_solr_number_of_tasks
+  desired_count    = var.lineageplus_solr_desired_count
 }

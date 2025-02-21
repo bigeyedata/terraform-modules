@@ -309,7 +309,7 @@ resource "aws_ecs_service" "solr" {
   name                              = local.name
   cluster                           = data.aws_ecs_cluster.this.id
   task_definition                   = "${aws_ecs_task_definition.solr.id}:${aws_ecs_task_definition.solr.revision}"
-  desired_count                     = var.number_of_tasks
+  desired_count                     = var.desired_count
   scheduling_strategy               = "REPLICA"
   enable_ecs_managed_tags           = true
   health_check_grace_period_seconds = 60

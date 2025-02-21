@@ -2571,12 +2571,12 @@ variable "lineageplus_solr_opts" {
   default     = []
 }
 
-variable "lineageplus_solr_number_of_tasks" {
+variable "lineageplus_solr_desired_count" {
   description = "This variable takes only 0 or 1 and is intended to allow stopping solr service for data volume maintenance."
   type        = number
   default     = 1
   validation {
-    condition     = contains([0, 1], var.lineageplus_solr_number_of_tasks)
+    condition     = contains([0, 1], var.lineageplus_solr_desired_count)
     error_message = "The value must be either 0 or 1."
   }
 }
