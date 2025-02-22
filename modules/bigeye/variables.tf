@@ -2581,6 +2581,12 @@ variable "lineageplus_solr_desired_count" {
   }
 }
 
+variable "lineageplus_solr_heap_size" {
+  description = "Amount of memory to allocate for solr heap. Will be set for -Xms and -Xmx java options."
+  type        = string
+  default     = ""
+}
+
 #======================================================
 # Cloudfront Variables
 #======================================================

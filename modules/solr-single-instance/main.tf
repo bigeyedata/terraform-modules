@@ -235,7 +235,7 @@ resource "aws_ecs_task_definition" "solr" {
       environment : [
         { name : "SOLR_HOME", "value" : "/var/solr/configs" },
         { name : "SOLR_DATA_HOME", "value" : "/var/solr/data" },
-        { name : "SOLR_HEAP", "value" : "4g" },
+        { name : "SOLR_HEAP", "value" : var.solr_heap_size },
         { name : "SOLR_PORT", "value" : tostring(var.solr_traffic_port) },
         { name : "SOLR_OPTS", "value" : join(" ", concat(local.solr_default_opts, var.solr_opts)) },
       ],
