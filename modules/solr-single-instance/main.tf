@@ -222,6 +222,7 @@ locals {
   solr_default_opts = [
     "-Dfile.encoding=UTF-8",
   ]
+  solr_default_heap_size = ceil(data.aws_ec2_instance_type.this.memory_size * 0.8)
 }
 
 resource "aws_ecs_task_definition" "solr" {
@@ -230,12 +231,12 @@ resource "aws_ecs_task_definition" "solr" {
     {
       name              = local.name
       image             = "${var.image_registry}/${var.image_repository}:${var.image_tag}"
-      memoryReservation = ceil(data.aws_ec2_instance_type.this.memory_size * 0.8)
+      memoryReservation = local.solr_default_heap_size
       essential         = true
       environment : [
         { name : "SOLR_HOME", "value" : "/var/solr/configs" },
         { name : "SOLR_DATA_HOME", "value" : "/var/solr/data" },
-        { name : "SOLR_HEAP", "value" : var.solr_heap_size },
+        { name : "SOLR_HEAP", "value" : length(var.solr_heap_size) > 0 ? var.solr_heap_size : "${local.solr_default_heap_size}M" },
         { name : "SOLR_PORT", "value" : tostring(var.solr_traffic_port) },
         { name : "SOLR_OPTS", "value" : join(" ", concat(local.solr_default_opts, var.solr_opts)) },
       ],

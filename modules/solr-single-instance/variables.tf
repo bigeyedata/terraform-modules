@@ -137,7 +137,7 @@ variable "desired_count" {
 }
 
 variable "solr_heap_size" {
-  description = "Amount of memory to allocate for solr heap. Will be set for -Xms and -Xmx java options."
+  description = "Amount of memory to allocate for solr heap. Will be set for -Xms and -Xmx java options. Default is 80% of instance memory."
   type        = string
   default     = ""
 }
