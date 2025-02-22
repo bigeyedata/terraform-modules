@@ -1,3 +1,12 @@
+# [17.9.0](https://github.com/bigeyedata/terraform-modules/compare/v17.8.1...v17.9.0) (2025-02-22)
+
+
+### Features
+
+* make solr heap configurable via variable ([#434](https://github.com/bigeyedata/terraform-modules/issues/434)) ([389b40c](https://github.com/bigeyedata/terraform-modules/commit/389b40c6c343c612a80692cd19b4698f27c0a6e9))
+
+
+
 ## [17.8.1](https://github.com/bigeyedata/terraform-modules/compare/v17.8.0...v17.8.1) (2025-02-21)
 
 
