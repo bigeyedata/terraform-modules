@@ -1,3 +1,12 @@
+## [17.9.1](https://github.com/bigeyedata/terraform-modules/compare/v17.9.0...v17.9.1) (2025-02-23)
+
+
+### Bug Fixes
+
+* add https:// prefix to static asset root ([e642952](https://github.com/bigeyedata/terraform-modules/commit/e64295217fc51ac4da5a605e8b63468c96cfd653))
+
+
+
 # [17.9.0](https://github.com/bigeyedata/terraform-modules/compare/v17.8.1...v17.9.0) (2025-02-22)
 
 
