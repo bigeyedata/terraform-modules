@@ -1,3 +1,12 @@
+## [17.9.2](https://github.com/bigeyedata/terraform-modules/compare/v17.9.1...v17.9.2) (2025-02-25)
+
+
+### Bug Fixes
+
+* update CORS response headers for Cloudfront ([76ecc45](https://github.com/bigeyedata/terraform-modules/commit/76ecc45f0755aa5179e07b7b852d7cd1d40e36e7))
+
+
+
 ## [17.9.1](https://github.com/bigeyedata/terraform-modules/compare/v17.9.0...v17.9.1) (2025-02-23)
 
 
