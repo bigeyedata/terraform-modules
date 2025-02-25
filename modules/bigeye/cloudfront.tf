@@ -11,14 +11,15 @@ locals {
     "/*.woff2",
   ]
   cloudfront_ordered_cache_behavior_defaults = {
-    target_origin_id           = "bigeye"
-    cache_policy_name          = "Managed-CachingOptimized"
-    origin_request_policy_name = "Managed-CORS-CustomOrigin"
-    viewer_protocol_policy     = "redirect-to-https"
-    compress                   = true
-    use_forwarded_values       = false
-    allowed_methods            = ["GET", "HEAD"]
-    cached_methods             = ["GET", "HEAD"]
+    target_origin_id             = "bigeye"
+    cache_policy_name            = "Managed-CachingOptimized"
+    origin_request_policy_name   = "Managed-CORS-CustomOrigin"
+    response_headers_policy_name = "Managed-CORS-With-Preflight"
+    viewer_protocol_policy       = "redirect-to-https"
+    compress                     = true
+    use_forwarded_values         = false
+    allowed_methods              = ["GET", "HEAD"]
+    cached_methods               = ["GET", "HEAD"]
   }
   cloudfront_ordered_cache_behavior = [
     for path_pattern in local.static_object_path_patterns : merge(
