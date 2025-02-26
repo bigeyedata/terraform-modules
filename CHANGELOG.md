@@ -1,3 +1,12 @@
+## [17.9.3](https://github.com/bigeyedata/terraform-modules/compare/v17.9.2...v17.9.3) (2025-02-26)
+
+
+### Bug Fixes
+
+* allow OPTIONS calls for Cloudfront ([77a65c4](https://github.com/bigeyedata/terraform-modules/commit/77a65c4115e8fddcb2fd20c3a14ca9dea2feab64))
+
+
+
 ## [17.9.2](https://github.com/bigeyedata/terraform-modules/compare/v17.9.1...v17.9.2) (2025-02-25)
 
 
