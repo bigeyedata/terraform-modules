@@ -2587,6 +2587,12 @@ variable "lineageplus_solr_heap_size" {
   default     = ""
 }
 
+variable "lineageplus_solr_ebs_volume_size" {
+  description = "Size of EBS volume attached to EC2 container instance running solr, in GB"
+  type        = number
+  default     = 100
+}
+
 #======================================================
 # Cloudfront Variables
 #======================================================

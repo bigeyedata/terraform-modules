@@ -27,4 +27,5 @@ module "lineageplus_solr" {
   solr_opts        = var.lineageplus_solr_opts
   desired_count    = var.lineageplus_solr_desired_count
   solr_heap_size   = var.lineageplus_solr_heap_size
+  ebs_volume_size  = var.lineageplus_solr_ebs_volume_size
 }
