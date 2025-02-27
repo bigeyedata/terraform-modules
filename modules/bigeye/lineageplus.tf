@@ -21,11 +21,13 @@ module "lineageplus_solr" {
   service_discovery_private_dns_namespace_id = aws_service_discovery_private_dns_namespace.this.id
   refresh_instance_on_launch_template_change = true
 
-  image_registry   = local.image_registry
-  image_repository = "solr${var.lineageplus_solr_image_repository_suffix}"
-  image_tag        = var.lineageplus_solr_image_tag
-  solr_opts        = var.lineageplus_solr_opts
-  desired_count    = var.lineageplus_solr_desired_count
-  solr_heap_size   = var.lineageplus_solr_heap_size
-  ebs_volume_size  = var.lineageplus_solr_ebs_volume_size
+  image_registry        = local.image_registry
+  image_repository      = "solr${var.lineageplus_solr_image_repository_suffix}"
+  image_tag             = var.lineageplus_solr_image_tag
+  solr_opts             = var.lineageplus_solr_opts
+  desired_count         = var.lineageplus_solr_desired_count
+  solr_heap_size        = var.lineageplus_solr_heap_size
+  ebs_volume_size       = var.lineageplus_solr_ebs_volume_size
+  ebs_volume_iops       = var.lineageplus_solr_ebs_volume_iops
+  ebs_volume_throughput = var.lineageplus_solr_ebs_volume_throughput
 }
