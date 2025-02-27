@@ -48,14 +48,14 @@ variable "ebs_volume_size" {
 }
 variable "ebs_volume_iops" {
   description = "Set iops to the value supported by your instance type. https://docs.aws.amazon.com/ec2/latest/instancetypes/gp.html"
-  type    = number
-  default = 3000
+  type        = number
+  default     = 3000
 }
 
 variable "ebs_volume_throughput" {
   description = "Set throughput to the value supported by your instance type. https://docs.aws.amazon.com/ec2/latest/instancetypes/gp.html"
-  type    = number
-  default = 125
+  type        = number
+  default     = 125
 }
 
 variable "instance_type" {
