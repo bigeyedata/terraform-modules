@@ -2587,6 +2587,24 @@ variable "lineageplus_solr_heap_size" {
   default     = ""
 }
 
+variable "lineageplus_solr_ebs_volume_size" {
+  description = "Size of EBS volume attached to EC2 container instance running solr, in GB"
+  type        = number
+  default     = 100
+}
+
+variable "lineageplus_solr_ebs_volume_iops" {
+  description = "Set iops to the value supported by your instance type. https://docs.aws.amazon.com/ec2/latest/instancetypes/gp.html"
+  type        = number
+  default     = 3000
+}
+
+variable "lineageplus_solr_ebs_volume_throughput" {
+  description = "Set throughput to the value supported by your instance type. https://docs.aws.amazon.com/ec2/latest/instancetypes/gp.html"
+  type        = number
+  default     = 125
+}
+
 #======================================================
 # Cloudfront Variables
 #======================================================

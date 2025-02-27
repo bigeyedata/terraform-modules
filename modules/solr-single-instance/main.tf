@@ -352,6 +352,8 @@ resource "aws_ecs_service" "solr" {
 resource "aws_ebs_volume" "ebs_volume" {
   availability_zone = var.availability_zone
   size              = var.ebs_volume_size
+  iops              = var.ebs_volume_iops
+  throughput        = var.ebs_volume_throughput
   type              = "gp3"
   encrypted         = true
 
