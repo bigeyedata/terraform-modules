@@ -1,3 +1,12 @@
+# [17.10.0](https://github.com/bigeyedata/terraform-modules/compare/v17.9.3...v17.10.0) (2025-02-27)
+
+
+### Features
+
+* add variables for solr EBS volume configuration ([d271e92](https://github.com/bigeyedata/terraform-modules/commit/d271e92a8a2b516f48cab600dda3ccfaae03f9a3))
+
+
+
 ## [17.9.3](https://github.com/bigeyedata/terraform-modules/compare/v17.9.2...v17.9.3) (2025-02-26)
 
 
