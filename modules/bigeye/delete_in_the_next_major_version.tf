@@ -54,3 +54,8 @@ moved {
   from = aws_route53_record.toretto[0]
   to   = module.toretto.aws_route53_record.this[0]
 }
+
+moved {
+  from = aws_route53_record.scheduler[0]
+  to   = module.scheduler.aws_route53_record.this[0]
+}

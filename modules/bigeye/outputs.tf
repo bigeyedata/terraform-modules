@@ -221,7 +221,7 @@ output "internalapi_load_balancer_zone_id" {
 
 output "scheduler_dns_name" {
   description = "DNS name for the scheduler service"
-  value       = local.scheduler_dns_name
+  value       = module.scheduler.dns_name
 }
 
 output "scheduler_load_balancer_dns_name" {

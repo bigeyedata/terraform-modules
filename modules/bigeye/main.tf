@@ -466,15 +466,6 @@ resource "aws_route53_record" "datawatch_mysql_replica" {
   records = [module.datawatch_rds.replica_dns_name]
 }
 
-resource "aws_route53_record" "scheduler" {
-  count   = var.create_dns_records ? 1 : 0
-  zone_id = data.aws_route53_zone.this[0].zone_id
-  name    = local.scheduler_dns_name
-  type    = "CNAME"
-  ttl     = 3600
-  records = [module.scheduler.lb_dns_name]
-}
-
 resource "aws_route53_record" "temporalui" {
   count   = var.create_dns_records ? 1 : 0
   zone_id = data.aws_route53_zone.this[0].zone_id
@@ -679,7 +670,7 @@ module "bigeye_admin" {
   metricwork_domain_name   = module.metricwork.dns_name
   rootcause_domain_name    = module.rootcause.dns_name
   internalapi_domain_name  = module.internalapi.dns_name
-  scheduler_domain_name    = local.scheduler_dns_name
+  scheduler_domain_name    = module.scheduler.dns_name
 
   haproxy_resource_name      = "${local.name}-haproxy"
   web_resource_name          = "${local.name}-web"
@@ -965,7 +956,7 @@ module "haproxy" {
       INSTANCE         = var.instance
       DW_HOST          = module.datawatch.dns_name
       DW_PORT          = "443"
-      SCHEDULER_HOST   = local.scheduler_dns_name
+      SCHEDULER_HOST   = module.scheduler.dns_name
       SCHEDULER_PORT   = "443"
       TORETTO_HOST     = module.toretto.dns_name
       TORETTO_PORT     = "443"
@@ -1650,6 +1641,10 @@ module "scheduler" {
     local.sentry_dsn_secret_map,
     var.scheduler_additional_secret_arns,
   )
+
+  create_dns_records = var.create_dns_records
+  route53_zone_id    = data.aws_route53_zone.this[0].zone_id
+  dns_name           = "${local.base_dns_alias}-scheduler.${var.top_level_dns_name}"
 }
 
 #======================================================
@@ -2135,7 +2130,7 @@ locals {
 
     MONOCLE_ADDRESS   = "https://${module.monocle.dns_name}"
     REDIRECT_ADDRESS  = "https://${local.vanity_dns_name}"
-    SCHEDULER_ADDRESS = "https://${local.scheduler_dns_name}"
+    SCHEDULER_ADDRESS = "https://${module.scheduler.dns_name}"
     TORETTO_ADDRESS   = "https://${module.toretto.dns_name}"
 
     MQ_BROKER_HOST     = local.rabbitmq_endpoint
