@@ -466,15 +466,6 @@ resource "aws_route53_record" "datawatch_mysql_replica" {
   records = [module.datawatch_rds.replica_dns_name]
 }
 
-resource "aws_route53_record" "temporalui" {
-  count   = var.create_dns_records ? 1 : 0
-  zone_id = data.aws_route53_zone.this[0].zone_id
-  name    = local.temporalui_dns_name
-  type    = "CNAME"
-  ttl     = 300
-  records = [module.temporalui.lb_dns_name]
-}
-
 resource "aws_route53_record" "temporal" {
   count   = var.create_dns_records ? 1 : 0
   zone_id = data.aws_route53_zone.this[0].zone_id
@@ -661,7 +652,7 @@ module "bigeye_admin" {
   monocle_domain_name      = module.monocle.dns_name
   toretto_domain_name      = module.toretto.dns_name
   temporal_domain_name     = local.temporal_dns_name
-  temporalui_domain_name   = local.temporalui_dns_name
+  temporalui_domain_name   = module.temporalui.dns_name
   datawatch_domain_name    = module.datawatch.dns_name
   datawork_domain_name     = module.datawork.dns_name
   backfillwork_domain_name = module.backfillwork.dns_name

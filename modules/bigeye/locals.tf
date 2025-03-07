@@ -129,7 +129,6 @@ locals {
   datawatch_mysql_vanity_dns_name         = "${local.base_dns_alias}-mysql.${var.top_level_dns_name}"
   datawatch_mysql_replica_vanity_dns_name = "${local.base_dns_alias}-mysql-ro.${var.top_level_dns_name}"
   temporal_dns_name                       = "${local.base_dns_alias}-workflows.${var.top_level_dns_name}"
-  temporalui_dns_name                     = "${local.base_dns_alias}-workflows-admin.${var.top_level_dns_name}"
   temporal_mysql_vanity_dns_name          = "${local.base_dns_alias}-temporal-mysql.${var.top_level_dns_name}"
   web_static_asset_root = (
     var.cloudfront_enabled && var.cloudfront_route_static_asset_traffic ?

@@ -251,7 +251,7 @@ output "temporal_load_balancer_zone_id" {
 
 output "temporalui_dns_name" {
   description = "DNS name for the temporal user interface"
-  value       = local.temporalui_dns_name
+  value       = module.temporalui.dns_name
 }
 
 output "temporalui_load_balancer_dns_name" {
