@@ -466,15 +466,6 @@ resource "aws_route53_record" "datawatch_mysql_replica" {
   records = [module.datawatch_rds.replica_dns_name]
 }
 
-resource "aws_route53_record" "backfillwork" {
-  count   = var.create_dns_records ? 1 : 0
-  zone_id = data.aws_route53_zone.this[0].zone_id
-  name    = local.backfillwork_dns_name
-  type    = "CNAME"
-  ttl     = 3600
-  records = [module.backfillwork.lb_dns_name]
-}
-
 resource "aws_route53_record" "indexwork" {
   count   = var.create_dns_records ? 1 : 0
   zone_id = data.aws_route53_zone.this[0].zone_id
@@ -754,7 +745,7 @@ module "bigeye_admin" {
   temporalui_domain_name   = local.temporalui_dns_name
   datawatch_domain_name    = module.datawatch.dns_name
   datawork_domain_name     = module.datawork.dns_name
-  backfillwork_domain_name = local.backfillwork_dns_name
+  backfillwork_domain_name = module.backfillwork.dns_name
   indexwork_domain_name    = local.indexwork_dns_name
   lineagework_domain_name  = local.lineagework_dns_name
   metricwork_domain_name   = local.metricwork_dns_name
@@ -2514,6 +2505,10 @@ module "backfillwork" {
     var.backfillwork_additional_environment_vars,
   )
   secret_arns = local.datawatch_secret_arns
+
+  create_dns_records = var.create_dns_records
+  route53_zone_id    = data.aws_route53_zone.this[0].zone_id
+  dns_name           = "${local.base_dns_alias}-backfillwork.${var.top_level_dns_name}"
 }
 
 module "indexwork" {

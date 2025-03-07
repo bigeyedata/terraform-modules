@@ -101,7 +101,7 @@ output "datawatch_load_balancer_zone_id" {
 
 output "backfillwork_dns_name" {
   description = "DNS name for the backfillwork service"
-  value       = local.backfillwork_dns_name
+  value       = module.backfillwork.dns_name
 }
 
 output "backfillwork_load_balancer_dns_name" {

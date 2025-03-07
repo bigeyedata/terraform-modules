@@ -7,5 +7,10 @@ moved {
 
 moved {
   from = aws_route53_record.datawork[0]
-  to = module.datawork.aws_route53_record.this[0]
+  to   = module.datawork.aws_route53_record.this[0]
+}
+
+moved {
+  from = aws_route53_record.backfillwork[0]
+  to   = module.backfillwork.aws_route53_record.this[0]
 }
