@@ -131,7 +131,7 @@ output "datawork_load_balancer_zone_id" {
 
 output "indexwork_dns_name" {
   description = "DNS name for the indexwork service"
-  value       = local.indexwork_dns_name
+  value       = module.indexwork.dns_name
 }
 
 output "indexwork_load_balancer_dns_name" {

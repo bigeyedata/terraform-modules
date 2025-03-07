@@ -14,3 +14,8 @@ moved {
   from = aws_route53_record.backfillwork[0]
   to   = module.backfillwork.aws_route53_record.this[0]
 }
+
+moved {
+  from = aws_route53_record.indexwork[0]
+  to   = module.indexwork.aws_route53_record.this[0]
+}
