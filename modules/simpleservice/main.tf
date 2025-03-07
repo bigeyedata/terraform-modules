@@ -310,3 +310,12 @@ resource "aws_ecs_service" "controlled_count" {
   tags = var.tags
 }
 
+resource "aws_route53_record" "this" {
+  count   = var.create_dns_records ? 1 : 0
+  zone_id = var.route53_zone_id
+  name    = var.dns_name
+  type    = "CNAME"
+  ttl     = var.route53_record_ttl
+  records = [aws_lb.this.dns_name]
+}
+

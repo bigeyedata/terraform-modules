@@ -126,23 +126,10 @@ locals {
   base_dns_alias                          = coalesce(var.vanity_alias, local.name)
   vanity_dns_name                         = var.use_top_level_dns_apex_as_vanity ? var.top_level_dns_name : "${local.base_dns_alias}.${var.top_level_dns_name}"
   static_asset_dns_name                   = var.use_top_level_dns_apex_as_vanity ? "static.${var.top_level_dns_name}" : "${local.base_dns_alias}-static.${var.top_level_dns_name}"
-  datawatch_dns_name                      = "${local.base_dns_alias}-datawatch.${var.top_level_dns_name}"
   datawatch_mysql_vanity_dns_name         = "${local.base_dns_alias}-mysql.${var.top_level_dns_name}"
   datawatch_mysql_replica_vanity_dns_name = "${local.base_dns_alias}-mysql-ro.${var.top_level_dns_name}"
-  datawork_dns_name                       = "${local.base_dns_alias}-datawork.${var.top_level_dns_name}"
-  backfillwork_dns_name                   = "${local.base_dns_alias}-backfillwork.${var.top_level_dns_name}"
-  indexwork_dns_name                      = "${local.base_dns_alias}-indexwork.${var.top_level_dns_name}"
-  lineagework_dns_name                    = "${local.base_dns_alias}-lineagework.${var.top_level_dns_name}"
-  metricwork_dns_name                     = "${local.base_dns_alias}-metricwork.${var.top_level_dns_name}"
-  rootcause_dns_name                      = "${local.base_dns_alias}-rootcause.${var.top_level_dns_name}"
-  internalapi_dns_name                    = "${local.base_dns_alias}-internalapi.${var.top_level_dns_name}"
   temporal_dns_name                       = "${local.base_dns_alias}-workflows.${var.top_level_dns_name}"
-  temporalui_dns_name                     = "${local.base_dns_alias}-workflows-admin.${var.top_level_dns_name}"
   temporal_mysql_vanity_dns_name          = "${local.base_dns_alias}-temporal-mysql.${var.top_level_dns_name}"
-  monocle_dns_name                        = "${local.base_dns_alias}-monocle.${var.top_level_dns_name}"
-  toretto_dns_name                        = "${local.base_dns_alias}-toretto.${var.top_level_dns_name}"
-  scheduler_dns_name                      = "${local.base_dns_alias}-scheduler.${var.top_level_dns_name}"
-  web_dns_name                            = "${local.base_dns_alias}-web.${var.top_level_dns_name}"
   web_static_asset_root = (
     var.cloudfront_enabled && var.cloudfront_route_static_asset_traffic ?
     module.cloudfront[0].cloudfront_distribution_domain_name : local.vanity_dns_name

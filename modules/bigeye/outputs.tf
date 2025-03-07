@@ -13,7 +13,7 @@ output "vanity_dns_name" {
 
 output "haproxy_load_balancer_dns_name" {
   description = "The dns name of the HAProxy load balancer"
-  value       = module.haproxy.dns_name
+  value       = module.haproxy.lb_dns_name
 }
 
 output "haproxy_load_balancer_zone_id" {
@@ -86,12 +86,12 @@ output "temporal_database_dns_name" {
 #======================================================
 output "datawatch_dns_name" {
   description = "DNS name for the datawatch service"
-  value       = local.datawatch_dns_name
+  value       = module.datawatch.dns_name
 }
 
 output "datawatch_load_balancer_dns_name" {
   description = "The dns name of the datawatch load balancer"
-  value       = module.datawatch.dns_name
+  value       = module.datawatch.lb_dns_name
 }
 
 output "datawatch_load_balancer_zone_id" {
@@ -101,12 +101,12 @@ output "datawatch_load_balancer_zone_id" {
 
 output "backfillwork_dns_name" {
   description = "DNS name for the backfillwork service"
-  value       = local.backfillwork_dns_name
+  value       = module.backfillwork.dns_name
 }
 
 output "backfillwork_load_balancer_dns_name" {
   description = "The dns name of the backfillwork load balancer"
-  value       = module.backfillwork.dns_name
+  value       = module.backfillwork.lb_dns_name
 }
 
 output "backfillwork_load_balancer_zone_id" {
@@ -116,12 +116,12 @@ output "backfillwork_load_balancer_zone_id" {
 
 output "datawork_dns_name" {
   description = "DNS name for the datawork service"
-  value       = local.datawork_dns_name
+  value       = module.datawork.dns_name
 }
 
 output "datawork_load_balancer_dns_name" {
   description = "The dns name of the datawork load balancer"
-  value       = module.datawork.dns_name
+  value       = module.datawork.lb_dns_name
 }
 
 output "datawork_load_balancer_zone_id" {
@@ -131,12 +131,12 @@ output "datawork_load_balancer_zone_id" {
 
 output "indexwork_dns_name" {
   description = "DNS name for the indexwork service"
-  value       = local.indexwork_dns_name
+  value       = module.indexwork.dns_name
 }
 
 output "indexwork_load_balancer_dns_name" {
   description = "The dns name of the indexwork load balancer"
-  value       = module.indexwork.dns_name
+  value       = module.indexwork.lb_dns_name
 }
 
 output "indexwork_load_balancer_zone_id" {
@@ -146,12 +146,12 @@ output "indexwork_load_balancer_zone_id" {
 
 output "lineagework_dns_name" {
   description = "DNS name for the lineagework service"
-  value       = local.lineagework_dns_name
+  value       = module.lineagework.dns_name
 }
 
 output "lineagework_load_balancer_dns_name" {
   description = "The dns name of the lineagework load balancer"
-  value       = module.lineagework.dns_name
+  value       = module.lineagework.lb_dns_name
 }
 
 output "lineagework_load_balancer_zone_id" {
@@ -161,12 +161,12 @@ output "lineagework_load_balancer_zone_id" {
 
 output "metricwork_dns_name" {
   description = "DNS name for the metricwork service"
-  value       = local.metricwork_dns_name
+  value       = module.metricwork.dns_name
 }
 
 output "metricwork_load_balancer_dns_name" {
   description = "The dns name of the metricwork load balancer"
-  value       = module.metricwork.dns_name
+  value       = module.metricwork.lb_dns_name
 }
 
 output "metricwork_load_balancer_zone_id" {
@@ -176,12 +176,12 @@ output "metricwork_load_balancer_zone_id" {
 
 output "rootcause_dns_name" {
   description = "DNS name for the rootcause service"
-  value       = local.rootcause_dns_name
+  value       = module.rootcause.dns_name
 }
 
 output "rootcause_load_balancer_dns_name" {
   description = "The dns name of the rootcause load balancer"
-  value       = module.rootcause.dns_name
+  value       = module.rootcause.lb_dns_name
 }
 
 output "rootcause_load_balancer_zone_id" {
@@ -191,12 +191,12 @@ output "rootcause_load_balancer_zone_id" {
 
 output "monocle_dns_name" {
   description = "DNS name for the monocle service"
-  value       = local.monocle_dns_name
+  value       = module.monocle.dns_name
 }
 
 output "monocle_load_balancer_dns_name" {
   description = "The dns name of the monocle load balancer"
-  value       = module.monocle.dns_name
+  value       = module.monocle.lb_dns_name
 }
 
 output "monocle_load_balancer_zone_id" {
@@ -206,12 +206,12 @@ output "monocle_load_balancer_zone_id" {
 
 output "internalapi_dns_name" {
   description = "DNS name for the internalapi service"
-  value       = local.internalapi_dns_name
+  value       = module.internalapi.dns_name
 }
 
 output "internalapi_load_balancer_dns_name" {
   description = "The dns name of the internalapi load balancer"
-  value       = module.internalapi.dns_name
+  value       = module.internalapi.lb_dns_name
 }
 
 output "internalapi_load_balancer_zone_id" {
@@ -221,12 +221,12 @@ output "internalapi_load_balancer_zone_id" {
 
 output "scheduler_dns_name" {
   description = "DNS name for the scheduler service"
-  value       = local.scheduler_dns_name
+  value       = module.scheduler.dns_name
 }
 
 output "scheduler_load_balancer_dns_name" {
   description = "The dns name of the scheduler load balancer"
-  value       = module.scheduler.dns_name
+  value       = module.scheduler.lb_dns_name
 }
 
 output "scheduler_load_balancer_zone_id" {
@@ -251,12 +251,12 @@ output "temporal_load_balancer_zone_id" {
 
 output "temporalui_dns_name" {
   description = "DNS name for the temporal user interface"
-  value       = local.temporalui_dns_name
+  value       = module.temporalui.dns_name
 }
 
 output "temporalui_load_balancer_dns_name" {
   description = "The dns name of the temporal user interface service load balancer"
-  value       = module.temporalui.dns_name
+  value       = module.temporalui.lb_dns_name
 }
 
 output "temporalui_load_balancer_zone_id" {
@@ -266,12 +266,12 @@ output "temporalui_load_balancer_zone_id" {
 
 output "toretto_dns_name" {
   description = "DNS name for the toretto service"
-  value       = local.toretto_dns_name
+  value       = module.toretto.dns_name
 }
 
 output "toretto_load_balancer_dns_name" {
   description = "The dns name of the toretto load balancer"
-  value       = module.toretto.dns_name
+  value       = module.toretto.lb_dns_name
 }
 
 output "toretto_load_balancer_zone_id" {
@@ -281,12 +281,12 @@ output "toretto_load_balancer_zone_id" {
 
 output "web_dns_name" {
   description = "DNS name for the web service"
-  value       = local.web_dns_name
+  value       = module.web.dns_name
 }
 
 output "web_load_balancer_dns_name" {
   description = "The dns name of the web load balancer"
-  value       = module.web.dns_name
+  value       = module.web.lb_dns_name
 }
 
 output "web_load_balancer_zone_id" {

@@ -3,9 +3,14 @@ output "ecs_service_arn" {
   value       = var.control_desired_count ? aws_ecs_service.controlled_count[0].id : aws_ecs_service.uncontrolled_count[0].id
 }
 
-output "dns_name" {
+output "lb_dns_name" {
   description = "The DNS name of the load balancer"
   value       = aws_lb.this.dns_name
+}
+
+output "dns_name" {
+  description = "The DNS name of the service"
+  value       = var.create_dns_records ? aws_route53_record.this[0].name : var.dns_name
 }
 
 output "load_balancer_full_name" {

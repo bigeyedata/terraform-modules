@@ -750,6 +750,11 @@ module "temporalui" {
   awsfirelens_host    = var.awsfirelens_host
   awsfirelens_image   = var.awsfirelens_image
   awsfirelens_uri     = var.awsfirelens_uri
+
+  create_dns_records = var.create_dns_records
+  route53_zone_id    = data.aws_route53_zone.this[0].zone_id
+  dns_name           = "${local.base_dns_alias}-workflows-admin.${var.top_level_dns_name}"
+  route53_record_ttl = 300
 }
 
 #======================================================
