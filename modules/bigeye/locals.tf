@@ -128,7 +128,6 @@ locals {
   static_asset_dns_name                   = var.use_top_level_dns_apex_as_vanity ? "static.${var.top_level_dns_name}" : "${local.base_dns_alias}-static.${var.top_level_dns_name}"
   datawatch_mysql_vanity_dns_name         = "${local.base_dns_alias}-mysql.${var.top_level_dns_name}"
   datawatch_mysql_replica_vanity_dns_name = "${local.base_dns_alias}-mysql-ro.${var.top_level_dns_name}"
-  metricwork_dns_name                     = "${local.base_dns_alias}-metricwork.${var.top_level_dns_name}"
   rootcause_dns_name                      = "${local.base_dns_alias}-rootcause.${var.top_level_dns_name}"
   internalapi_dns_name                    = "${local.base_dns_alias}-internalapi.${var.top_level_dns_name}"
   temporal_dns_name                       = "${local.base_dns_alias}-workflows.${var.top_level_dns_name}"

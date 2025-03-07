@@ -161,7 +161,7 @@ output "lineagework_load_balancer_zone_id" {
 
 output "metricwork_dns_name" {
   description = "DNS name for the metricwork service"
-  value       = local.metricwork_dns_name
+  value       = module.metricwork.dns_name
 }
 
 output "metricwork_load_balancer_dns_name" {

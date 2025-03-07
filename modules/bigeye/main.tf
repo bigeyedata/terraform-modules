@@ -466,15 +466,6 @@ resource "aws_route53_record" "datawatch_mysql_replica" {
   records = [module.datawatch_rds.replica_dns_name]
 }
 
-resource "aws_route53_record" "metricwork" {
-  count   = var.create_dns_records ? 1 : 0
-  zone_id = data.aws_route53_zone.this[0].zone_id
-  name    = local.metricwork_dns_name
-  type    = "CNAME"
-  ttl     = 3600
-  records = [module.metricwork.lb_dns_name]
-}
-
 resource "aws_route53_record" "rootcause" {
   count   = var.create_dns_records ? 1 : 0
   zone_id = data.aws_route53_zone.this[0].zone_id
@@ -730,7 +721,7 @@ module "bigeye_admin" {
   backfillwork_domain_name = module.backfillwork.dns_name
   indexwork_domain_name    = module.indexwork.dns_name
   lineagework_domain_name  = module.lineagework.dns_name
-  metricwork_domain_name   = local.metricwork_dns_name
+  metricwork_domain_name   = module.metricwork.dns_name
   rootcause_domain_name    = local.rootcause_dns_name
   internalapi_domain_name  = local.internalapi_dns_name
   scheduler_domain_name    = local.scheduler_dns_name
@@ -2755,6 +2746,10 @@ module "metricwork" {
   )
 
   secret_arns = local.datawatch_secret_arns
+
+  create_dns_records = var.create_dns_records
+  route53_zone_id    = data.aws_route53_zone.this[0].zone_id
+  dns_name           = "${local.base_dns_alias}-metricwork.${var.top_level_dns_name}"
 }
 
 module "rootcause" {

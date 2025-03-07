@@ -24,3 +24,8 @@ moved {
   from = aws_route53_record.lineagework[0]
   to   = module.lineagework.aws_route53_record.this[0]
 }
+
+moved {
+  from = aws_route53_record.metricwork[0]
+  to   = module.metricwork.aws_route53_record.this[0]
+}
