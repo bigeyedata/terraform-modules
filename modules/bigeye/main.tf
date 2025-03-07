@@ -466,15 +466,6 @@ resource "aws_route53_record" "datawatch_mysql_replica" {
   records = [module.datawatch_rds.replica_dns_name]
 }
 
-resource "aws_route53_record" "toretto" {
-  count   = var.create_dns_records ? 1 : 0
-  zone_id = data.aws_route53_zone.this[0].zone_id
-  name    = local.toretto_dns_name
-  type    = "CNAME"
-  ttl     = 300
-  records = [module.toretto.lb_dns_name]
-}
-
 resource "aws_route53_record" "scheduler" {
   count   = var.create_dns_records ? 1 : 0
   zone_id = data.aws_route53_zone.this[0].zone_id
@@ -677,7 +668,7 @@ module "bigeye_admin" {
   haproxy_domain_name      = local.vanity_dns_name
   web_domain_name          = module.web.dns_name
   monocle_domain_name      = module.monocle.dns_name
-  toretto_domain_name      = local.toretto_dns_name
+  toretto_domain_name      = module.toretto.dns_name
   temporal_domain_name     = local.temporal_dns_name
   temporalui_domain_name   = local.temporalui_dns_name
   datawatch_domain_name    = module.datawatch.dns_name
@@ -976,7 +967,7 @@ module "haproxy" {
       DW_PORT          = "443"
       SCHEDULER_HOST   = local.scheduler_dns_name
       SCHEDULER_PORT   = "443"
-      TORETTO_HOST     = local.toretto_dns_name
+      TORETTO_HOST     = module.toretto.dns_name
       TORETTO_PORT     = "443"
       MONOCLE_HOST     = module.monocle.dns_name
       MONOCLE_PORT     = "443"
@@ -1488,6 +1479,11 @@ module "toretto" {
     var.datadog_agent_enabled ? { DATADOG_API_KEY = var.datadog_agent_api_key_secret_arn } : {},
     var.toretto_additional_secret_arns,
   )
+
+  create_dns_records = var.create_dns_records
+  route53_zone_id    = data.aws_route53_zone.this[0].zone_id
+  dns_name           = "${local.base_dns_alias}-toretto.${var.top_level_dns_name}"
+  route53_record_ttl = 300
 }
 
 resource "aws_appautoscaling_target" "toretto" {
@@ -2140,7 +2136,7 @@ locals {
     MONOCLE_ADDRESS   = "https://${module.monocle.dns_name}"
     REDIRECT_ADDRESS  = "https://${local.vanity_dns_name}"
     SCHEDULER_ADDRESS = "https://${local.scheduler_dns_name}"
-    TORETTO_ADDRESS   = "https://${local.toretto_dns_name}"
+    TORETTO_ADDRESS   = "https://${module.toretto.dns_name}"
 
     MQ_BROKER_HOST     = local.rabbitmq_endpoint
     MQ_BROKER_USERNAME = var.rabbitmq_user_name

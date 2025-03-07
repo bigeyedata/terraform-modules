@@ -266,7 +266,7 @@ output "temporalui_load_balancer_zone_id" {
 
 output "toretto_dns_name" {
   description = "DNS name for the toretto service"
-  value       = local.toretto_dns_name
+  value       = module.toretto.dns_name
 }
 
 output "toretto_load_balancer_dns_name" {
