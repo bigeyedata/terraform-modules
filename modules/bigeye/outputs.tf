@@ -176,7 +176,7 @@ output "metricwork_load_balancer_zone_id" {
 
 output "rootcause_dns_name" {
   description = "DNS name for the rootcause service"
-  value       = local.rootcause_dns_name
+  value       = module.rootcause.dns_name
 }
 
 output "rootcause_load_balancer_dns_name" {

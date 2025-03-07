@@ -29,3 +29,8 @@ moved {
   from = aws_route53_record.metricwork[0]
   to   = module.metricwork.aws_route53_record.this[0]
 }
+
+moved {
+  from = aws_route53_record.rootcause[0]
+  to   = module.rootcause.aws_route53_record.this[0]
+}
