@@ -191,7 +191,7 @@ output "rootcause_load_balancer_zone_id" {
 
 output "monocle_dns_name" {
   description = "DNS name for the monocle service"
-  value       = local.monocle_dns_name
+  value       = module.monocle.dns_name
 }
 
 output "monocle_load_balancer_dns_name" {

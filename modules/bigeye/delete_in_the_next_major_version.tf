@@ -39,3 +39,8 @@ moved {
   from = aws_route53_record.internalapi[0]
   to   = module.internalapi.aws_route53_record.this[0]
 }
+
+moved {
+  from = aws_route53_record.monocle[0]
+  to   = module.monocle.aws_route53_record.this[0]
+}

@@ -131,7 +131,6 @@ locals {
   temporal_dns_name                       = "${local.base_dns_alias}-workflows.${var.top_level_dns_name}"
   temporalui_dns_name                     = "${local.base_dns_alias}-workflows-admin.${var.top_level_dns_name}"
   temporal_mysql_vanity_dns_name          = "${local.base_dns_alias}-temporal-mysql.${var.top_level_dns_name}"
-  monocle_dns_name                        = "${local.base_dns_alias}-monocle.${var.top_level_dns_name}"
   toretto_dns_name                        = "${local.base_dns_alias}-toretto.${var.top_level_dns_name}"
   scheduler_dns_name                      = "${local.base_dns_alias}-scheduler.${var.top_level_dns_name}"
   web_dns_name                            = "${local.base_dns_alias}-web.${var.top_level_dns_name}"

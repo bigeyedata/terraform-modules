@@ -466,15 +466,6 @@ resource "aws_route53_record" "datawatch_mysql_replica" {
   records = [module.datawatch_rds.replica_dns_name]
 }
 
-resource "aws_route53_record" "monocle" {
-  count   = var.create_dns_records ? 1 : 0
-  zone_id = data.aws_route53_zone.this[0].zone_id
-  name    = local.monocle_dns_name
-  type    = "CNAME"
-  ttl     = 300
-  records = [module.monocle.lb_dns_name]
-}
-
 resource "aws_route53_record" "web" {
   count   = var.create_dns_records ? 1 : 0
   zone_id = data.aws_route53_zone.this[0].zone_id
@@ -694,7 +685,7 @@ module "bigeye_admin" {
 
   haproxy_domain_name      = local.vanity_dns_name
   web_domain_name          = local.web_dns_name
-  monocle_domain_name      = local.monocle_dns_name
+  monocle_domain_name      = module.monocle.dns_name
   toretto_domain_name      = local.toretto_dns_name
   temporal_domain_name     = local.temporal_dns_name
   temporalui_domain_name   = local.temporalui_dns_name
@@ -996,7 +987,7 @@ module "haproxy" {
       SCHEDULER_PORT   = "443"
       TORETTO_HOST     = local.toretto_dns_name
       TORETTO_PORT     = "443"
-      MONOCLE_HOST     = local.monocle_dns_name
+      MONOCLE_HOST     = module.monocle.dns_name
       MONOCLE_PORT     = "443"
       WEB_HOST         = local.web_dns_name
       WEB_PORT         = "443"
@@ -1350,6 +1341,10 @@ module "monocle" {
     } : {},
     var.monocle_additional_secret_arns,
   )
+
+  create_dns_records = var.create_dns_records
+  route53_zone_id    = data.aws_route53_zone.this[0].zone_id
+  dns_name           = "${local.base_dns_alias}-monocle.${var.top_level_dns_name}"
 }
 
 resource "aws_appautoscaling_target" "monocle" {
@@ -2145,7 +2140,7 @@ locals {
     MYSQL_MAXSIZE               = var.datawatch_mysql_maxsize
     MYSQL_TRANSACTION_ISOLATION = "read-committed"
 
-    MONOCLE_ADDRESS   = "https://${local.monocle_dns_name}"
+    MONOCLE_ADDRESS   = "https://${module.monocle.dns_name}"
     REDIRECT_ADDRESS  = "https://${local.vanity_dns_name}"
     SCHEDULER_ADDRESS = "https://${local.scheduler_dns_name}"
     TORETTO_ADDRESS   = "https://${local.toretto_dns_name}"
