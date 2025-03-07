@@ -19,3 +19,8 @@ moved {
   from = aws_route53_record.indexwork[0]
   to   = module.indexwork.aws_route53_record.this[0]
 }
+
+moved {
+  from = aws_route53_record.lineagework[0]
+  to   = module.lineagework.aws_route53_record.this[0]
+}

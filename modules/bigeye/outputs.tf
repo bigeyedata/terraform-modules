@@ -146,7 +146,7 @@ output "indexwork_load_balancer_zone_id" {
 
 output "lineagework_dns_name" {
   description = "DNS name for the lineagework service"
-  value       = local.lineagework_dns_name
+  value       = module.lineagework.dns_name
 }
 
 output "lineagework_load_balancer_dns_name" {
