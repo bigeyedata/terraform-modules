@@ -475,15 +475,6 @@ resource "aws_route53_record" "monocle" {
   records = [module.monocle.lb_dns_name]
 }
 
-resource "aws_route53_record" "internalapi" {
-  count   = var.create_dns_records ? 1 : 0
-  zone_id = data.aws_route53_zone.this[0].zone_id
-  name    = local.internalapi_dns_name
-  type    = "CNAME"
-  ttl     = 3600
-  records = [module.internalapi.lb_dns_name]
-}
-
 resource "aws_route53_record" "web" {
   count   = var.create_dns_records ? 1 : 0
   zone_id = data.aws_route53_zone.this[0].zone_id
@@ -714,7 +705,7 @@ module "bigeye_admin" {
   lineagework_domain_name  = module.lineagework.dns_name
   metricwork_domain_name   = module.metricwork.dns_name
   rootcause_domain_name    = module.rootcause.dns_name
-  internalapi_domain_name  = local.internalapi_dns_name
+  internalapi_domain_name  = module.internalapi.dns_name
   scheduler_domain_name    = local.scheduler_dns_name
 
   haproxy_resource_name      = "${local.name}-haproxy"
@@ -1333,7 +1324,7 @@ module "monocle" {
       BACKLOG                    = "512"
       WORKERS                    = "2"
       TIMEOUT                    = "900"
-      DATAWATCH_ADDRESS          = "https://${local.internalapi_dns_name}"
+      DATAWATCH_ADDRESS          = "https://${module.internalapi.dns_name}"
     },
     local.sentry_event_level_env_variable,
     var.datadog_agent_enabled ? {
@@ -1489,7 +1480,7 @@ module "toretto" {
       BACKLOG                    = "512"
       WORKERS                    = "1"
       TIMEOUT                    = "900"
-      DATAWATCH_ADDRESS          = "https://${local.internalapi_dns_name}"
+      DATAWATCH_ADDRESS          = "https://${module.internalapi.dns_name}"
     },
     local.sentry_event_level_env_variable,
     var.toretto_additional_environment_vars,
@@ -1653,7 +1644,7 @@ module "scheduler" {
       INSTANCE              = var.instance
       PORT                  = var.scheduler_port
       DEPLOY_TYPE           = "AWS"
-      DATAWATCH_ADDRESS     = "https://${local.internalapi_dns_name}"
+      DATAWATCH_ADDRESS     = "https://${module.internalapi.dns_name}"
       MAX_RAM_PERCENTAGE    = "85"
       SCHEDULER_ADDRESS     = "http://localhost:${var.scheduler_port}"
       SCHEDULER_THREADS     = var.scheduler_threads
@@ -2911,6 +2902,10 @@ module "internalapi" {
   )
 
   secret_arns = local.datawatch_secret_arns
+
+  create_dns_records = var.create_dns_records
+  route53_zone_id    = data.aws_route53_zone.this[0].zone_id
+  dns_name           = "${local.base_dns_alias}-internalapi.${var.top_level_dns_name}"
 }
 
 resource "aws_appautoscaling_target" "internalapi" {

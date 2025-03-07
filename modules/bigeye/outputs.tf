@@ -206,7 +206,7 @@ output "monocle_load_balancer_zone_id" {
 
 output "internalapi_dns_name" {
   description = "DNS name for the internalapi service"
-  value       = local.internalapi_dns_name
+  value       = module.internalapi.dns_name
 }
 
 output "internalapi_load_balancer_dns_name" {

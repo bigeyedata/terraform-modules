@@ -34,3 +34,8 @@ moved {
   from = aws_route53_record.rootcause[0]
   to   = module.rootcause.aws_route53_record.this[0]
 }
+
+moved {
+  from = aws_route53_record.internalapi[0]
+  to   = module.internalapi.aws_route53_record.this[0]
+}
