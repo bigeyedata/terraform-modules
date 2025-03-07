@@ -281,7 +281,7 @@ output "toretto_load_balancer_zone_id" {
 
 output "web_dns_name" {
   description = "DNS name for the web service"
-  value       = local.web_dns_name
+  value       = module.web.dns_name
 }
 
 output "web_load_balancer_dns_name" {

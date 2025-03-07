@@ -466,15 +466,6 @@ resource "aws_route53_record" "datawatch_mysql_replica" {
   records = [module.datawatch_rds.replica_dns_name]
 }
 
-resource "aws_route53_record" "web" {
-  count   = var.create_dns_records ? 1 : 0
-  zone_id = data.aws_route53_zone.this[0].zone_id
-  name    = local.web_dns_name
-  type    = "CNAME"
-  ttl     = 300
-  records = [module.web.lb_dns_name]
-}
-
 resource "aws_route53_record" "toretto" {
   count   = var.create_dns_records ? 1 : 0
   zone_id = data.aws_route53_zone.this[0].zone_id
@@ -684,7 +675,7 @@ module "bigeye_admin" {
   stack_name = local.name
 
   haproxy_domain_name      = local.vanity_dns_name
-  web_domain_name          = local.web_dns_name
+  web_domain_name          = module.web.dns_name
   monocle_domain_name      = module.monocle.dns_name
   toretto_domain_name      = local.toretto_dns_name
   temporal_domain_name     = local.temporal_dns_name
@@ -989,7 +980,7 @@ module "haproxy" {
       TORETTO_PORT     = "443"
       MONOCLE_HOST     = module.monocle.dns_name
       MONOCLE_PORT     = "443"
-      WEB_HOST         = local.web_dns_name
+      WEB_HOST         = module.web.dns_name
       WEB_PORT         = "443"
       REDIRECT_ADDRESS = "https://${local.vanity_dns_name}"
       PORT             = var.haproxy_port
@@ -1094,6 +1085,10 @@ module "web" {
     local.sentry_dsn_secret_map,
     var.web_additional_secret_arns
   )
+
+  create_dns_records = var.create_dns_records
+  route53_zone_id    = data.aws_route53_zone.this[0].zone_id
+  dns_name           = "${local.base_dns_alias}-web.${var.top_level_dns_name}"
 }
 
 #======================================================

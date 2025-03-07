@@ -133,7 +133,6 @@ locals {
   temporal_mysql_vanity_dns_name          = "${local.base_dns_alias}-temporal-mysql.${var.top_level_dns_name}"
   toretto_dns_name                        = "${local.base_dns_alias}-toretto.${var.top_level_dns_name}"
   scheduler_dns_name                      = "${local.base_dns_alias}-scheduler.${var.top_level_dns_name}"
-  web_dns_name                            = "${local.base_dns_alias}-web.${var.top_level_dns_name}"
   web_static_asset_root = (
     var.cloudfront_enabled && var.cloudfront_route_static_asset_traffic ?
     module.cloudfront[0].cloudfront_distribution_domain_name : local.vanity_dns_name
