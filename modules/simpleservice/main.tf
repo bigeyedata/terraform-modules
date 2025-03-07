@@ -315,7 +315,7 @@ resource "aws_route53_record" "this" {
   zone_id = var.route53_zone_id
   name    = var.dns_name
   type    = "CNAME"
-  ttl     = 3600
+  ttl     = var.route53_record_ttl
   records = [aws_lb.this.dns_name]
 }
 

@@ -1089,6 +1089,7 @@ module "web" {
   create_dns_records = var.create_dns_records
   route53_zone_id    = data.aws_route53_zone.this[0].zone_id
   dns_name           = "${local.base_dns_alias}-web.${var.top_level_dns_name}"
+  route53_record_ttl = 300
 }
 
 #======================================================
@@ -1340,6 +1341,7 @@ module "monocle" {
   create_dns_records = var.create_dns_records
   route53_zone_id    = data.aws_route53_zone.this[0].zone_id
   dns_name           = "${local.base_dns_alias}-monocle.${var.top_level_dns_name}"
+  route53_record_ttl = 300
 }
 
 resource "aws_appautoscaling_target" "monocle" {

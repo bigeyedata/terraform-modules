@@ -401,11 +401,17 @@ variable "dns_name" {
     Service DNS name. It will be used to create a CNAME pointing at the LB
     If var.create_dns_records = false this name will be directly plugged in the output.dns_name
   EOD
-  type = string
-  default = ""
+  type        = string
+  default     = ""
 }
 
 variable "route53_zone_id" {
   description = "ID of the route53 zone in which RRs should be created. "
-  default = ""
+  default     = ""
+}
+
+variable "route53_record_ttl" {
+  description = "TTL for dns_name record"
+  type        = number
+  default     = 3600
 }
