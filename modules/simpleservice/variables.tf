@@ -389,3 +389,23 @@ variable "lb_deregistration_delay" {
   type        = number
   default     = 60
 }
+
+variable "create_dns_records" {
+  description = "Whether to set up DNS records"
+  type        = bool
+  default     = false
+}
+
+variable "dns_name" {
+  description = <<EOD
+    Service DNS name. It will be used to create a CNAME pointing at the LB
+    If var.create_dns_records = false this name will be directly plugged in the output.dns_name
+  EOD
+  type = string
+  default = ""
+}
+
+variable "route53_zone_id" {
+  description = "ID of the route53 zone in which RRs should be created. "
+  default = ""
+}

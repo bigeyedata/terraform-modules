@@ -427,7 +427,7 @@ resource "aws_route53_record" "apex" {
   name    = local.vanity_dns_name
   type    = "A"
   alias {
-    name                   = module.haproxy.dns_name
+    name                   = module.haproxy.lb_dns_name
     zone_id                = module.haproxy.zone_id
     evaluate_target_health = false
   }
@@ -446,15 +446,6 @@ resource "aws_route53_record" "static" {
     )
     evaluate_target_health = false
   }
-}
-
-resource "aws_route53_record" "datawatch" {
-  count   = var.create_dns_records ? 1 : 0
-  zone_id = data.aws_route53_zone.this[0].zone_id
-  name    = local.datawatch_dns_name
-  type    = "CNAME"
-  ttl     = 3600
-  records = [module.datawatch.dns_name]
 }
 
 resource "aws_route53_record" "datawatch_mysql" {
@@ -481,7 +472,7 @@ resource "aws_route53_record" "backfillwork" {
   name    = local.backfillwork_dns_name
   type    = "CNAME"
   ttl     = 3600
-  records = [module.backfillwork.dns_name]
+  records = [module.backfillwork.lb_dns_name]
 }
 
 resource "aws_route53_record" "datawork" {
@@ -490,7 +481,7 @@ resource "aws_route53_record" "datawork" {
   name    = local.datawork_dns_name
   type    = "CNAME"
   ttl     = 3600
-  records = [module.datawork.dns_name]
+  records = [module.datawork.lb_dns_name]
 }
 
 resource "aws_route53_record" "indexwork" {
@@ -499,7 +490,7 @@ resource "aws_route53_record" "indexwork" {
   name    = local.indexwork_dns_name
   type    = "CNAME"
   ttl     = 3600
-  records = [module.indexwork.dns_name]
+  records = [module.indexwork.lb_dns_name]
 }
 
 resource "aws_route53_record" "lineagework" {
@@ -508,7 +499,7 @@ resource "aws_route53_record" "lineagework" {
   name    = local.lineagework_dns_name
   type    = "CNAME"
   ttl     = 3600
-  records = [module.lineagework.dns_name]
+  records = [module.lineagework.lb_dns_name]
 }
 
 resource "aws_route53_record" "metricwork" {
@@ -517,7 +508,7 @@ resource "aws_route53_record" "metricwork" {
   name    = local.metricwork_dns_name
   type    = "CNAME"
   ttl     = 3600
-  records = [module.metricwork.dns_name]
+  records = [module.metricwork.lb_dns_name]
 }
 
 resource "aws_route53_record" "rootcause" {
@@ -526,7 +517,7 @@ resource "aws_route53_record" "rootcause" {
   name    = local.rootcause_dns_name
   type    = "CNAME"
   ttl     = 3600
-  records = [module.rootcause.dns_name]
+  records = [module.rootcause.lb_dns_name]
 }
 
 resource "aws_route53_record" "monocle" {
@@ -535,7 +526,7 @@ resource "aws_route53_record" "monocle" {
   name    = local.monocle_dns_name
   type    = "CNAME"
   ttl     = 300
-  records = [module.monocle.dns_name]
+  records = [module.monocle.lb_dns_name]
 }
 
 resource "aws_route53_record" "internalapi" {
@@ -544,7 +535,7 @@ resource "aws_route53_record" "internalapi" {
   name    = local.internalapi_dns_name
   type    = "CNAME"
   ttl     = 3600
-  records = [module.internalapi.dns_name]
+  records = [module.internalapi.lb_dns_name]
 }
 
 resource "aws_route53_record" "web" {
@@ -553,7 +544,7 @@ resource "aws_route53_record" "web" {
   name    = local.web_dns_name
   type    = "CNAME"
   ttl     = 300
-  records = [module.web.dns_name]
+  records = [module.web.lb_dns_name]
 }
 
 resource "aws_route53_record" "toretto" {
@@ -562,7 +553,7 @@ resource "aws_route53_record" "toretto" {
   name    = local.toretto_dns_name
   type    = "CNAME"
   ttl     = 300
-  records = [module.toretto.dns_name]
+  records = [module.toretto.lb_dns_name]
 }
 
 resource "aws_route53_record" "scheduler" {
@@ -571,7 +562,7 @@ resource "aws_route53_record" "scheduler" {
   name    = local.scheduler_dns_name
   type    = "CNAME"
   ttl     = 3600
-  records = [module.scheduler.dns_name]
+  records = [module.scheduler.lb_dns_name]
 }
 
 resource "aws_route53_record" "temporalui" {
@@ -580,7 +571,7 @@ resource "aws_route53_record" "temporalui" {
   name    = local.temporalui_dns_name
   type    = "CNAME"
   ttl     = 300
-  records = [module.temporalui.dns_name]
+  records = [module.temporalui.lb_dns_name]
 }
 
 resource "aws_route53_record" "temporal" {
@@ -770,7 +761,7 @@ module "bigeye_admin" {
   toretto_domain_name      = local.toretto_dns_name
   temporal_domain_name     = local.temporal_dns_name
   temporalui_domain_name   = local.temporalui_dns_name
-  datawatch_domain_name    = local.datawatch_dns_name
+  datawatch_domain_name    = module.datawatch.dns_name
   datawork_domain_name     = local.datawork_dns_name
   backfillwork_domain_name = local.backfillwork_dns_name
   indexwork_domain_name    = local.indexwork_dns_name
@@ -1062,7 +1053,7 @@ module "haproxy" {
     {
       ENVIRONMENT      = var.environment
       INSTANCE         = var.instance
-      DW_HOST          = local.datawatch_dns_name
+      DW_HOST          = module.datawatch.dns_name
       DW_PORT          = "443"
       SCHEDULER_HOST   = local.scheduler_dns_name
       SCHEDULER_PORT   = "443"
@@ -1164,8 +1155,8 @@ module "web" {
       STATIC_ASSET_ROOT = "https://${var.create_dns_records ? aws_route53_record.static[0].fqdn : local.vanity_dns_name}"
       NODE_ENV          = "production"
       PORT              = var.web_port
-      DROPWIZARD_HOST   = "https://${local.datawatch_dns_name}"
-      DATAWATCH_ADDRESS = "https://${local.datawatch_dns_name}"
+      DROPWIZARD_HOST   = "https://${module.datawatch.dns_name}"
+      DATAWATCH_ADDRESS = "https://${module.datawatch.dns_name}"
       MAX_NODE_MEM_MB   = "4096"
     },
     var.web_additional_environment_vars,
@@ -2335,6 +2326,10 @@ module "datawatch" {
   )
 
   secret_arns = local.datawatch_secret_arns
+
+  create_dns_records = var.create_dns_records
+  route53_zone_id    = data.aws_route53_zone.this[0].zone_id
+  dns_name           = "${local.base_dns_alias}-datawatch.${var.top_level_dns_name}"
 }
 
 module "datawork" {
