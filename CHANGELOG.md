@@ -1,3 +1,12 @@
+# [17.11.0](https://github.com/bigeyedata/terraform-modules/compare/v17.10.0...v17.11.0) (2025-03-10)
+
+
+### Features
+
+* use for_each instead of count for security group rules ([4c73c35](https://github.com/bigeyedata/terraform-modules/commit/4c73c3552dc922bbd97f0bca7724651235289a38))
+
+
+
 # [17.10.0](https://github.com/bigeyedata/terraform-modules/compare/v17.9.3...v17.10.0) (2025-02-27)
 
 
