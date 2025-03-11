@@ -1,3 +1,12 @@
+## [17.11.1](https://github.com/bigeyedata/terraform-modules/compare/v17.11.0...v17.11.1) (2025-03-11)
+
+
+### Bug Fixes
+
+* preserve aws_security_group.db_replica_clients resource ([#446](https://github.com/bigeyedata/terraform-modules/issues/446)) ([a2b631a](https://github.com/bigeyedata/terraform-modules/commit/a2b631abfaae05cf194bcb8f203113fb032f5232))
+
+
+
 # [17.11.0](https://github.com/bigeyedata/terraform-modules/compare/v17.10.0...v17.11.0) (2025-03-10)
 
 
