@@ -74,6 +74,16 @@ resource "aws_vpc_security_group_ingress_rule" "replica_client_sg" {
   referenced_security_group_id = aws_security_group.db_replica_clients[0].id
 }
 
+resource "aws_security_group" "db_replica_clients" {
+  count  = var.create_security_groups && var.create_replica ? 1 : 0
+  vpc_id = var.vpc_id
+  name   = "${var.name}-db-replica-clients"
+  tags = merge(var.tags, {
+    Duty = "dbclients"
+    Name = "${var.name}-db-replica-clients"
+  })
+}
+
 resource "aws_vpc_security_group_ingress_rule" "replica_other_sgs" {
   count             = var.create_security_groups && var.create_replica ? length(var.allowed_client_security_group_ids) : 0
   security_group_id = aws_security_group.db_replica[0].id

@@ -120,7 +120,7 @@ resource "aws_vpc_security_group_ingress_rule" "replica_client_sg_v2" {
   to_port                      = 3306
   ip_protocol                  = "TCP"
   description                  = "Allows MySQL port from client sg"
-  referenced_security_group_id = aws_security_group.db_replica_clients[0].id
+  referenced_security_group_id = aws_security_group.db_replica_clients_v2[0].id
 }
 
 resource "aws_vpc_security_group_ingress_rule" "replica_other_sgs_v2" {
@@ -145,7 +145,7 @@ resource "aws_vpc_security_group_ingress_rule" "replica_additional_cidrs_v2" {
   cidr_ipv4   = each.key
 }
 
-resource "aws_security_group" "db_replica_clients" {
+resource "aws_security_group" "db_replica_clients_v2" {
   count  = var.create_security_groups && var.create_replica ? 1 : 0
   vpc_id = var.vpc_id
   name   = "${var.name}-db-replica-clients-v2"
