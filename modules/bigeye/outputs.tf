@@ -407,3 +407,10 @@ output "large_payload_bucket_arn" {
   description = "ARN for large payloads bucket"
   value       = aws_s3_bucket.large_payload.arn
 }
+
+#======================================================
+# Secrets
+#======================================================
+output "temporal_rds_password_secret_arn" {
+  value = local.temporal_rds_password_secret_arn
+}
