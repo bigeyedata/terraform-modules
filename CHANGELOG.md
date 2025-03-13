@@ -1,3 +1,12 @@
+# [17.12.0](https://github.com/bigeyedata/terraform-modules/compare/v17.11.1...v17.12.0) (2025-03-13)
+
+
+### Features
+
+* add output for temporal_rds_password_secret_arn ([#448](https://github.com/bigeyedata/terraform-modules/issues/448)) ([540bda9](https://github.com/bigeyedata/terraform-modules/commit/540bda9e9aa9f5d1c246a1e403c30e70ae3e9bfc))
+
+
+
 ## [17.11.1](https://github.com/bigeyedata/terraform-modules/compare/v17.11.0...v17.11.1) (2025-03-11)
 
 
