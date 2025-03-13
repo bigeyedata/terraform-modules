@@ -1085,6 +1085,7 @@ resource "aws_secretsmanager_secret_version" "temporal_rds_password" {
   secret_string  = random_password.temporal_rds_password[0].result
   version_stages = ["AWSCURRENT"]
 }
+
 data "aws_secretsmanager_secret_version" "byo_temporal_rds_password" {
   count         = local.create_temporal_rds_password_secret ? 0 : 1
   secret_id     = var.temporal_rds_root_user_password_secret_arn
