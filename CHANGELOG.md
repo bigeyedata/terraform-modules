@@ -1,3 +1,12 @@
+## [17.12.1](https://github.com/bigeyedata/terraform-modules/compare/v17.12.0...v17.12.1) (2025-03-19)
+
+
+### Bug Fixes
+
+* fix missing tags for ECS solr instance ([e72e223](https://github.com/bigeyedata/terraform-modules/commit/e72e2236d4e67d0565991e0a7defd0a2dbc9eb19))
+
+
+
 # [17.12.0](https://github.com/bigeyedata/terraform-modules/compare/v17.11.1...v17.12.0) (2025-03-13)
 
 
