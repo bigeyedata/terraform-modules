@@ -8,14 +8,29 @@ variable "lb_subnet_ids" {
   type        = list(string)
 }
 
+variable "app" {
+  description = "The app name for the service, like datawatch"
+  type        = string
+}
+
 variable "instance" {
-  description = "Name of the environment instance."
+  description = "The stack instance name"
+  type        = string
+}
+
+variable "stack" {
+  description = "The stack name"
   type        = string
 }
 
 variable "name" {
-  description = "Name of this service instance."
+  description = "The name to use for the service, like staging-staging-datawatch"
   type        = string
+}
+
+variable "tags" {
+  description = "A map of tags to put on the resources"
+  type        = map(string)
 }
 
 variable "vpc_id" {
