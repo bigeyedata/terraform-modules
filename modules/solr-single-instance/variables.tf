@@ -90,6 +90,12 @@ variable "solr_traffic_port" {
   default     = 80
 }
 
+variable "solr_jmx_port" {
+  description = "Solr JMX port.  Used for installs with datadog etc where solr stats can be polled from the jmx port"
+  type        = number
+  default     = 1099
+}
+
 variable "route53_zone_id" {
   description = "DNS record will be created in this zone."
   type        = string
@@ -137,6 +143,11 @@ variable "service_discovery_private_dns_namespace_id" {
   type        = string
 }
 
+variable "execution_role_arn" {
+  description = "The ARN of the execution role"
+  type        = string
+}
+
 variable "image_registry" {
   description = "The container image registry"
   type        = string
@@ -170,6 +181,113 @@ variable "desired_count" {
 
 variable "solr_heap_size" {
   description = "Amount of memory to allocate for solr heap. Will be set for -Xms and -Xmx java options. Default is 80% of instance memory."
+  type        = string
+  default     = ""
+}
+
+variable "secret_arns" {
+  description = "A map of secret names and their respective ASM Secret name"
+  type        = map(string)
+  default     = {}
+}
+
+variable "docker_labels" {
+  description = "Additional labels to apply to the container"
+  type        = map(string)
+  default     = {}
+}
+
+variable "cloudwatch_log_group_name" {
+  description = "Cloudwatch log group name to write container logs.  If var.awsfirelens_enabled = true, container logs are shipped via AWS firelens and not cloudwatch.  The AWS firelens side car container though is the exception and will continue to send logs to cloudwatch logs even if var.awsfirelens_enabled = true to facilitate debugging firelens issues."
+  type        = string
+}
+
+variable "environment_variables" {
+  description = "A map of environment variables to pass into the task"
+  type        = map(string)
+  default     = {}
+}
+
+#======================================================
+# Datadog agent settings
+#======================================================
+variable "datadog_agent_enabled" {
+  description = "Whether to include the datadog agent container in the task definition"
+  type        = bool
+  default     = false
+}
+
+variable "datadog_agent_image" {
+  description = "The full image for datadog, e.g. registry-host-name.com/repository/name:tag"
+  type        = string
+  default     = ""
+}
+
+variable "datadog_agent_cpu" {
+  description = "The amount of CPU to allocate to the datadog agent, in Mhz, e.g. 256"
+  type        = number
+  default     = 256
+}
+
+variable "datadog_agent_memory" {
+  description = "The amount of Memory to allocate to the datadog agent, in MiB, e.g. 512"
+  type        = number
+  default     = 512
+}
+
+variable "datadog_agent_api_key_secret_arn" {
+  description = "The secret ARN for the datadog agent API key"
+  type        = string
+  default     = ""
+}
+
+variable "datadog_additional_docker_labels" {
+  description = "Additional docker labels to use if datadog is enabled"
+  type        = map(string)
+  default     = {}
+}
+
+variable "datadog_agent_additional_secret_arns" {
+  description = "Additional secret arns for the datadog container"
+  type        = map(string)
+  default     = {}
+}
+
+#======================================================
+# AWS Firelens settings
+#======================================================
+variable "awsfirelens_enabled" {
+  description = "Whether to include the awsfirelens container in the task definition"
+  type        = bool
+  default     = false
+}
+
+variable "awsfirelens_image" {
+  description = "The full image for aws firelens, e.g. registry-host-name.com/repository/name:tag.  It is recommended to pin this to a specific tag for production systems vs relying on latest."
+  type        = string
+  default     = ""
+}
+
+variable "awsfirelens_cpu" {
+  description = "The amount of CPU to allocate to the AWS firelens container, in Mhz, e.g. 256"
+  type        = number
+  default     = null
+}
+
+variable "awsfirelens_memory" {
+  description = "The amount of Memory to allocate to the AWS firelens container, in MiB, e.g. 512"
+  type        = number
+  default     = null
+}
+
+variable "awsfirelens_host" {
+  description = "The hostname of the destination for awsfirelens to deliver logs to.  Example: logs-endpoint.example.com"
+  type        = string
+  default     = ""
+}
+
+variable "awsfirelens_uri" {
+  description = "The URI of the destination for awsfirelens to deliver logs to.  Example: /receiver/v1/http/<token>"
   type        = string
   default     = ""
 }
