@@ -8,16 +8,12 @@ terraform {
   }
 }
 
-locals {
-  name = "${var.instance}-${var.name}"
-}
-
 data "aws_caller_identity" "this" {}
 
 data "aws_region" "current" {}
 
 resource "aws_launch_template" "solr" {
-  name     = local.name
+  name     = var.name
   image_id = data.aws_ssm_parameter.ecs_optimized_ami.value
 
   iam_instance_profile {
@@ -63,7 +59,7 @@ resource "aws_launch_template" "solr" {
 }
 
 resource "aws_autoscaling_group" "solr" {
-  name                = local.name
+  name                = var.name
   desired_capacity    = 1
   min_size            = 1
   max_size            = 1
@@ -95,7 +91,7 @@ resource "aws_autoscaling_group" "solr" {
 
   tag {
     key                 = "Name"
-    value               = local.name
+    value               = var.name
     propagate_at_launch = true
   }
 
@@ -121,7 +117,7 @@ module "ecs-solr-service-sg" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "5.2.0"
 
-  name            = "${local.name}-ecs-svc"
+  name            = "${var.name}-ecs-svc"
   use_name_prefix = false
   vpc_id          = var.vpc_id
 
@@ -144,7 +140,7 @@ module "ecs-solr-ec2-instance-sg" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "5.2.0"
 
-  name            = "${local.name}-ec2-instance"
+  name            = "${var.name}-ec2-instance"
   use_name_prefix = false
   vpc_id          = var.vpc_id
 
@@ -154,7 +150,7 @@ module "ecs-solr-ec2-instance-sg" {
 }
 
 resource "aws_iam_role" "solr-ecs-instance-role" {
-  name = local.name
+  name = var.name
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -190,7 +186,7 @@ data "aws_iam_policy_document" "solr-instance-role-inline-policy" {
     condition {
       test     = "StringEquals"
       variable = "ec2:ResourceTag/Name"
-      values   = [local.name]
+      values   = [var.name]
     }
   }
 }
@@ -205,12 +201,12 @@ resource "aws_iam_role_policy_attachment" "ecs_instance_role_policy" {
 }
 
 resource "aws_iam_instance_profile" "ecs_instance_profile" {
-  name = local.name
+  name = var.name
   role = aws_iam_role.solr-ecs-instance-role.name
 }
 
 resource "aws_cloudwatch_log_group" "solr" {
-  name              = local.name
+  name              = var.name
   retention_in_days = 14
 }
 
@@ -226,10 +222,10 @@ locals {
 }
 
 resource "aws_ecs_task_definition" "solr" {
-  family = local.name
+  family = var.name
   container_definitions = jsonencode([
     {
-      name              = local.name
+      name              = var.name
       image             = "${var.image_registry}/${var.image_repository}:${var.image_tag}"
       memoryReservation = local.solr_default_heap_size
       essential         = true
@@ -252,12 +248,12 @@ resource "aws_ecs_task_definition" "solr" {
         options = {
           awslogs-group         = aws_cloudwatch_log_group.solr.name
           awslogs-region        = data.aws_region.current.name
-          awslogs-stream-prefix = local.name
+          awslogs-stream-prefix = var.name
         }
       }
       mountPoints = [
         {
-          sourceVolume  = "${local.name}-data"
+          sourceVolume  = "${var.name}-data"
           containerPath = "/var/solr/data"
           readOnly      = false
         }
@@ -283,7 +279,7 @@ resource "aws_ecs_task_definition" "solr" {
 
   volume {
     configure_at_launch = false
-    name                = "${local.name}-data"
+    name                = "${var.name}-data"
     host_path           = "/mnt/solr-data/data" # Path on the EC2 instance to bind mount.
   }
 }
@@ -294,7 +290,7 @@ data "aws_ecs_cluster" "this" {
 
 # ECS Capacity Provider (linked to ASG)
 resource "aws_ecs_capacity_provider" "this" {
-  name = local.name
+  name = var.name
 
   auto_scaling_group_provider {
     auto_scaling_group_arn = aws_autoscaling_group.solr.arn
@@ -307,7 +303,7 @@ resource "aws_ecs_capacity_provider" "this" {
 }
 
 resource "aws_ecs_service" "solr" {
-  name                              = local.name
+  name                              = var.name
   cluster                           = data.aws_ecs_cluster.this.id
   task_definition                   = "${aws_ecs_task_definition.solr.id}:${aws_ecs_task_definition.solr.revision}"
   desired_count                     = var.desired_count
@@ -338,7 +334,7 @@ resource "aws_ecs_service" "solr" {
   }
 
   load_balancer {
-    container_name   = local.name
+    container_name   = var.name
     container_port   = var.solr_traffic_port
     target_group_arn = module.alb.target_groups["solr"].arn
   }
@@ -361,13 +357,13 @@ resource "aws_ebs_volume" "ebs_volume" {
     prevent_destroy = true
   }
 
-  tags = {
-    Name = local.name
-  }
+  tags = merge(var.tags, {
+    Name = var.name
+  })
 }
 
 resource "aws_service_discovery_service" "this" {
-  name = var.name
+  name = var.app
 
   dns_config {
     namespace_id = var.service_discovery_private_dns_namespace_id
@@ -385,7 +381,7 @@ module "alb" {
   source  = "terraform-aws-modules/alb/aws"
   version = "9.10.0"
 
-  name    = local.name
+  name    = var.name
   vpc_id  = var.vpc_id
   subnets = var.lb_subnet_ids
 
@@ -414,6 +410,9 @@ module "alb" {
       cidr_ipv4   = data.aws_vpc.this.cidr_block
     }
   }
+  security_group_tags = merge(var.tags, {
+    Name = "${var.name}-lb"
+  })
 
   access_logs = var.lb_access_logs_enabled ? {
     enabled = var.lb_access_logs_enabled
@@ -445,7 +444,7 @@ module "alb" {
   target_groups = {
     solr = {
       # name_prefix can only be 6 chars long
-      name_prefix          = substr(local.name, 0, 6)
+      name_prefix          = substr(var.name, 0, 6)
       create_attachment    = false
       protocol             = "HTTP"
       port                 = var.solr_traffic_port
@@ -457,10 +456,12 @@ module "alb" {
         path    = "/solr/#/login"
       }
       tags = {
-        Name = local.name
+        Name = var.name
       }
     }
   }
+
+  tags = var.tags
 }
 
 resource "aws_route53_record" "solr" {
