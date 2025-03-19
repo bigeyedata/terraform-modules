@@ -20,12 +20,12 @@ output "master_user_name" {
 
 output "client_security_group_id" {
   description = "Security group id for clients"
-  value       = var.create_security_groups ? aws_security_group.db_clients_v2[0].id : ""
+  value       = var.create_security_groups ? aws_security_group.db_clients[0].id : ""
 }
 
 output "replica_client_security_group_id" {
   description = "Security group ID for the replica"
-  value       = var.create_replica && var.create_security_groups ? aws_security_group.db_replica_v2[0].id : ""
+  value       = var.create_replica && var.create_security_groups ? aws_security_group.db_replica[0].id : ""
 }
 
 output "primary_dns_name" {
