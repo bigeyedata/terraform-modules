@@ -2611,6 +2611,11 @@ variable "lineageplus_solr_cnames" {
   default     = []
 }
 
+variable "lineageplus_solr_jmx_port" {
+  description = "port to use as the jmx port for solr"
+  type        = number
+  default     = 1099
+}
 #======================================================
 # Cloudfront Variables
 #======================================================

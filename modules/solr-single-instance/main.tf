@@ -10,8 +10,6 @@ terraform {
 
 data "aws_caller_identity" "this" {}
 
-data "aws_region" "current" {}
-
 resource "aws_launch_template" "solr" {
   name     = var.name
   image_id = data.aws_ssm_parameter.ecs_optimized_ami.value
@@ -258,52 +256,9 @@ locals {
 }
 
 resource "aws_ecs_task_definition" "solr" {
-  family = var.name
-  container_definitions = jsonencode([
-    {
-      name              = var.name
-      image             = "${var.image_registry}/${var.image_repository}:${var.image_tag}"
-      memoryReservation = local.solr_default_heap_size
-      essential         = true
-      environment : [
-        { name : "SOLR_HOME", "value" : "/var/solr/configs" },
-        { name : "SOLR_DATA_HOME", "value" : "/var/solr/data" },
-        { name : "SOLR_HEAP", "value" : length(var.solr_heap_size) > 0 ? var.solr_heap_size : "${local.solr_default_heap_size}M" },
-        { name : "SOLR_PORT", "value" : tostring(var.solr_traffic_port) },
-        { name : "SOLR_OPTS", "value" : join(" ", concat(local.solr_default_opts, var.solr_opts)) },
-      ],
-      portMappings = [
-        {
-          protocol      = "tcp"
-          containerPort = var.solr_traffic_port
-          hostPort      = var.solr_traffic_port
-        }
-      ]
-      logConfiguration = {
-        logDriver = "awslogs"
-        options = {
-          awslogs-group         = aws_cloudwatch_log_group.solr.name
-          awslogs-region        = data.aws_region.current.name
-          awslogs-stream-prefix = var.name
-        }
-      }
-      mountPoints = [
-        {
-          sourceVolume  = "${var.name}-data"
-          containerPath = "/var/solr/data"
-          readOnly      = false
-        }
-      ]
-      ulimits = [ # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/fargate-tasks-services.html#fargate-resource-limits
-        {
-          name      = "nofile"
-          softLimit = 1048576
-          hardLimit = 1048576
-        }
-      ]
-    }
-  ])
-  network_mode = "awsvpc"
+  family                = var.name
+  container_definitions = jsonencode(local.container_definitions)
+  network_mode          = "awsvpc"
   requires_compatibilities = [
     "EC2",
   ]
@@ -311,7 +266,7 @@ resource "aws_ecs_task_definition" "solr" {
     cpu_architecture        = "X86_64"
     operating_system_family = "LINUX"
   }
-  execution_role_arn = "arn:aws:iam::${data.aws_caller_identity.this.account_id}:role/ecsTaskExecutionRole"
+  execution_role_arn = var.execution_role_arn
 
   volume {
     configure_at_launch = false
