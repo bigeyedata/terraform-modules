@@ -1,3 +1,12 @@
+# [17.13.0](https://github.com/bigeyedata/terraform-modules/compare/v17.12.3...v17.13.0) (2025-03-20)
+
+
+### Features
+
+* add optional CNAME records for solr service ([#458](https://github.com/bigeyedata/terraform-modules/issues/458)) ([4471b71](https://github.com/bigeyedata/terraform-modules/commit/4471b71c692570d410585195ee782bccd5d2cc8c))
+
+
+
 ## [17.12.3](https://github.com/bigeyedata/terraform-modules/compare/v17.12.2...v17.12.3) (2025-03-20)
 
 
