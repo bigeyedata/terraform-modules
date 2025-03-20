@@ -475,3 +475,12 @@ resource "aws_route53_record" "solr" {
     evaluate_target_health = true
   }
 }
+
+resource "aws_route53_record" "solr_cname" {
+  count   = var.dns_name != "" && var.route53_zone_id != "" && length(var.solr_cnames) > 0 ? length(var.solr_cnames) : 0
+  zone_id = var.route53_zone_id
+  name    = var.solr_cnames[count.index]
+  type    = "CNAME"
+  ttl     = 300
+  records = [var.dns_name]
+}
