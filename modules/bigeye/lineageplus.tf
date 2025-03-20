@@ -16,7 +16,7 @@ module "lineageplus_solr" {
   acm_certificate_arn = local.acm_certificate_arn
   dns_name            = var.create_dns_records ? local.lineageplus_solr_dns_name : ""
   route53_zone_id     = var.create_dns_records ? data.aws_route53_zone.this[0].id : ""
-  solr_cnames         = var.lineageplus_solr_cnames
+  solr_cnames         = var.create_dns_records ? var.lineageplus_solr_cnames : []
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
