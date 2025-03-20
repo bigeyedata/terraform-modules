@@ -2605,6 +2605,12 @@ variable "lineageplus_solr_ebs_volume_throughput" {
   default     = 125
 }
 
+variable "lineageplus_solr_cnames" {
+  description = "CNAME Route53 records that will point to the main service DNS name."
+  type        = list(string)
+  default     = []
+}
+
 #======================================================
 # Cloudfront Variables
 #======================================================

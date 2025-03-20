@@ -102,6 +102,12 @@ variable "dns_name" {
   default     = ""
 }
 
+variable "solr_cnames" {
+  description = "CNAME Route53 records that will point to the main service DNS name."
+  type        = list(string)
+  default     = []
+}
+
 variable "elb_access_logs_bucket_config" {
   description = "S3 bucket to send ALB logs to."
   type        = map(string)
