@@ -39,10 +39,10 @@ module "cloudfront" {
   price_class         = "PriceClass_All"
   http_version        = "http2and3"
   wait_for_deployment = true
-  logging_config = {
+  logging_config = var.cloudfront_logging_bucket != "" ? {
     bucket = var.cloudfront_logging_bucket
     prefix = "bigeye.com"
-  }
+  } : {}
 
   origin = {
     bigeye = {
