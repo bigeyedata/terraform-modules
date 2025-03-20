@@ -1,3 +1,12 @@
+## [17.12.3](https://github.com/bigeyedata/terraform-modules/compare/v17.12.2...v17.12.3) (2025-03-20)
+
+
+### Bug Fixes
+
+* cloudfront logging_config when logging bucket is not specified ([#456](https://github.com/bigeyedata/terraform-modules/issues/456)) ([ba31bed](https://github.com/bigeyedata/terraform-modules/commit/ba31bed33a1318c3740d513c941f6fd3b42d5f88))
+
+
+
 ## [17.12.2](https://github.com/bigeyedata/terraform-modules/compare/v17.12.1...v17.12.2) (2025-03-20)
 
 
