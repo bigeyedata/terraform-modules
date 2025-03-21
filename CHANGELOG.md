@@ -1,3 +1,12 @@
+## [17.13.1](https://github.com/bigeyedata/terraform-modules/compare/v17.13.0...v17.13.1) (2025-03-21)
+
+
+### Bug Fixes
+
+* normalize tags for solr service ([604b7cf](https://github.com/bigeyedata/terraform-modules/commit/604b7cf7e3455da22b7ac73bfbd14023118cff1f))
+
+
+
 # [17.13.0](https://github.com/bigeyedata/terraform-modules/compare/v17.12.3...v17.13.0) (2025-03-20)
 
 
