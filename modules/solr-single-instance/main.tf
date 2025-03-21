@@ -101,6 +101,30 @@ resource "aws_autoscaling_group" "solr" {
     value               = ""
     propagate_at_launch = true
   }
+
+  tag {
+    key                 = "app"
+    value               = var.app
+    propagate_at_launch = true
+  }
+
+  tag {
+    key                 = "component"
+    value               = "solr"
+    propagate_at_launch = true
+  }
+
+  tag {
+    key                 = "instance"
+    value               = var.instance
+    propagate_at_launch = true
+  }
+
+  tag {
+    key                 = "stack"
+    value               = var.stack
+    propagate_at_launch = true
+  }
 }
 
 
@@ -134,6 +158,8 @@ module "ecs-solr-service-sg" {
   egress_rules = [
     "all-tcp",
   ]
+
+  tags = local.solr_tags
 }
 
 module "ecs-solr-ec2-instance-sg" {
@@ -147,6 +173,8 @@ module "ecs-solr-ec2-instance-sg" {
   egress_rules = [
     "all-tcp",
   ]
+
+  tags = local.solr_tags
 }
 
 resource "aws_iam_role" "solr-ecs-instance-role" {
@@ -163,6 +191,8 @@ resource "aws_iam_role" "solr-ecs-instance-role" {
       },
     ]
   })
+
+  tags = local.solr_tags
 }
 
 resource "aws_iam_role_policy" "solr-instance-role-policy" {
@@ -208,6 +238,8 @@ resource "aws_iam_instance_profile" "ecs_instance_profile" {
 resource "aws_cloudwatch_log_group" "solr" {
   name              = var.name
   retention_in_days = 14
+
+  tags = local.solr_tags
 }
 
 data "aws_ec2_instance_type" "this" {
@@ -219,6 +251,10 @@ locals {
     "-Dfile.encoding=UTF-8",
   ]
   solr_default_heap_size = ceil(data.aws_ec2_instance_type.this.memory_size * 0.8)
+  solr_tags = merge(var.tags, {
+    app       = var.app
+    component = "solr"
+  })
 }
 
 resource "aws_ecs_task_definition" "solr" {
@@ -282,6 +318,9 @@ resource "aws_ecs_task_definition" "solr" {
     name                = "${var.name}-data"
     host_path           = "/mnt/solr-data/data" # Path on the EC2 instance to bind mount.
   }
+
+  tags = local.solr_tags
+
 }
 
 data "aws_ecs_cluster" "this" {
@@ -343,6 +382,10 @@ resource "aws_ecs_service" "solr" {
     enable   = false
     rollback = false
   }
+
+  propagate_tags = "SERVICE"
+  tags           = local.solr_tags
+
 }
 
 resource "aws_ebs_volume" "ebs_volume" {
@@ -357,13 +400,13 @@ resource "aws_ebs_volume" "ebs_volume" {
     prevent_destroy = true
   }
 
-  tags = merge(var.tags, {
+  tags = merge(local.solr_tags, {
     Name = var.name
   })
 }
 
 resource "aws_service_discovery_service" "this" {
-  name = var.app
+  name = "solr"
 
   dns_config {
     namespace_id = var.service_discovery_private_dns_namespace_id
@@ -410,7 +453,7 @@ module "alb" {
       cidr_ipv4   = data.aws_vpc.this.cidr_block
     }
   }
-  security_group_tags = merge(var.tags, {
+  security_group_tags = merge(local.solr_tags, {
     Name = "${var.name}-lb"
   })
 
@@ -455,13 +498,13 @@ module "alb" {
         enabled = true
         path    = "/solr/#/login"
       }
-      tags = {
+      tags = merge(local.solr_tags, {
         Name = var.name
-      }
+      })
     }
   }
 
-  tags = var.tags
+  tags = local.solr_tags
 }
 
 resource "aws_route53_record" "solr" {
