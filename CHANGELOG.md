@@ -1,3 +1,12 @@
+# [17.14.0](https://github.com/bigeyedata/terraform-modules/compare/v17.13.1...v17.14.0) (2025-03-21)
+
+
+### Features
+
+* send solr logs to sumo and jmx stats to datadog ([938fc4c](https://github.com/bigeyedata/terraform-modules/commit/938fc4cc0d60be9ab552001baa91aa68e4b45edd))
+
+
+
 ## [17.13.1](https://github.com/bigeyedata/terraform-modules/compare/v17.13.0...v17.13.1) (2025-03-21)
 
 
