@@ -3,13 +3,15 @@
 #==============================================
 locals {
   container_memory = ceil(data.aws_ec2_instance_type.this.memory_size * 0.9) - (var.datadog_agent_enabled ? var.datadog_agent_memory : 0) - (var.awsfirelens_enabled ? var.awsfirelens_memory : 0)
-  container_image  = "${var.image_registry}/${var.image_repository}:${var.image_tag}"
+  # default = 80% of container mem to leave headroom for OS etc.
+  solr_heap_size  = length(var.solr_heap_size) > 0 ? var.solr_heap_size : ceil(local.container_memory * 0.8)
+  container_image = "${var.image_registry}/${var.image_repository}:${var.image_tag}"
 
   container_environment_variables = [for k, v in merge(local.datadog_service_environment_variables,
     {
       SOLR_HOME      = "/var/solr/configs"
       SOLR_DATA_HOME = "/var/solr/data"
-      SOLR_HEAP      = length(var.solr_heap_size) > 0 ? var.solr_heap_size : "${local.solr_default_heap_size}M"
+      SOLR_HEAP      = "${local.solr_heap_size}M"
       SOLR_PORT      = tostring(var.solr_traffic_port)
       SOLR_OPTS      = join(" ", concat(local.solr_default_opts, var.solr_opts))
   }) : { Name = k, Value = v }]

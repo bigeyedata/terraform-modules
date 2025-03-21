@@ -248,7 +248,6 @@ locals {
   solr_default_opts = [
     "-Dfile.encoding=UTF-8",
   ]
-  solr_default_heap_size = ceil(data.aws_ec2_instance_type.this.memory_size * 0.8)
   solr_tags = merge(var.tags, {
     app       = var.app
     component = "solr"
