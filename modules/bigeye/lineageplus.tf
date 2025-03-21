@@ -27,7 +27,7 @@ module "lineageplus_solr" {
   lb_access_logs_bucket_prefix = local.elb_access_logs_prefix
 
   service_discovery_private_dns_namespace_id = aws_service_discovery_private_dns_namespace.this.id
-  refresh_instance_on_launch_template_change = true
+  refresh_instance_on_launch_template_change = var.lineageplus_solr_refresh_instance_on_launch_template_change
 
   image_registry            = local.image_registry
   image_repository          = "solr${var.lineageplus_solr_image_repository_suffix}"

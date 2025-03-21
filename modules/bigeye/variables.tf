@@ -2616,6 +2616,16 @@ variable "lineageplus_solr_jmx_port" {
   type        = number
   default     = 1099
 }
+
+variable "lineageplus_solr_refresh_instance_on_launch_template_change" {
+  description = <<EOD
+    Whether or not the instance should be recreated immediately on every template change.
+    If false, existing instance will continue running but new instances will use the new template.
+    Note: changes happen when AWS releases new AMI, so we don't have control over that.
+  EOD
+  type        = bool
+  default     = false
+}
 #======================================================
 # Cloudfront Variables
 #======================================================
