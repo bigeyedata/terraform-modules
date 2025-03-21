@@ -123,14 +123,15 @@ locals {
         "enable-ecs-log-metadata" : "true"
       }
     }
-    logConfiguration = {
-      "logDriver" : "awslogs",
-      "options" : {
-        "awslogs-group"         = var.cloudwatch_log_group_name
-        "awslogs-region"        = data.aws_region.current.name
-        "awslogs-stream-prefix" = var.name
-      }
-    }
+    # Can be uncommented to get debugging logs on console for this container
+    # logConfiguration = {
+    #   "logDriver" : "awslogs",
+    #   "options" : {
+    #     "awslogs-group"         = var.cloudwatch_log_group_name
+    #     "awslogs-region"        = data.aws_region.current.name
+    #     "awslogs-stream-prefix" = var.name
+    #   }
+    # }
     environment = []
     user        = "0"
   }
