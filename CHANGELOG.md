@@ -1,3 +1,12 @@
+# [17.15.0](https://github.com/bigeyedata/terraform-modules/compare/v17.14.0...v17.15.0) (2025-03-21)
+
+
+### Features
+
+* make refresh_instance_on_launch_template_change configurable ([#464](https://github.com/bigeyedata/terraform-modules/issues/464)) ([2ab1e26](https://github.com/bigeyedata/terraform-modules/commit/2ab1e262775341e92ecaa4648d9a741212040d56))
+
+
+
 # [17.14.0](https://github.com/bigeyedata/terraform-modules/compare/v17.13.1...v17.14.0) (2025-03-21)
 
 
