@@ -1,3 +1,12 @@
+## [17.15.1](https://github.com/bigeyedata/terraform-modules/compare/v17.15.0...v17.15.1) (2025-03-22)
+
+
+### Bug Fixes
+
+* calculate solr heap size based on container mem ([59b4a2c](https://github.com/bigeyedata/terraform-modules/commit/59b4a2ce132509c3131735b30ad3a17d3fb9ef97))
+
+
+
 # [17.15.0](https://github.com/bigeyedata/terraform-modules/compare/v17.14.0...v17.15.0) (2025-03-21)
 
 
