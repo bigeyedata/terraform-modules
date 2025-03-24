@@ -7,9 +7,12 @@ locals {
   ec2_mem_usable   = data.aws_ec2_instance_type.this.memory_size - local.os_mem_overhead
   container_memory = local.ec2_mem_usable - (var.datadog_agent_enabled ? var.datadog_agent_memory : 0) - (var.awsfirelens_enabled ? var.awsfirelens_memory : 0)
   # default = 80% of container mem to leave headroom for OS etc.
-  solr_heap_size  = length(var.solr_heap_size) > 0 ? var.solr_heap_size : ceil(local.container_memory * 0.8)
-  container_image = "${var.image_registry}/${var.image_repository}:${var.image_tag}"
+  solr_heap_size = length(var.solr_heap_size) > 0 ? var.solr_heap_size : ceil(local.container_memory * 0.8)
 
+  ec2_cpu_units = data.aws_ec2_instance_type.this.default_vcpus * 1024
+  container_cpu = local.ec2_cpu_units - (var.datadog_agent_enabled ? var.datadog_agent_cpu : 0) - (var.awsfirelens_enabled ? var.awsfirelens_cpu : 0)
+
+  container_image = "${var.image_registry}/${var.image_repository}:${var.image_tag}"
   container_environment_variables = [for k, v in merge(local.datadog_service_environment_variables,
     {
       SOLR_HOME      = "/var/solr/configs"
@@ -21,8 +24,8 @@ locals {
   container_environment_secrets = [for k, v in merge(local.datadog_service_secret_arns, var.secret_arns) : { Name = k, ValueFrom = v }]
 
   primary_container_definition = {
-    name = var.name,
-    # CPU is left to float
+    name   = var.name
+    cpu    = local.container_cpu
     memory = local.container_memory
     image  = local.container_image
     portMappings = [{

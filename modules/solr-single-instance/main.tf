@@ -262,6 +262,9 @@ locals {
 
 resource "aws_ecs_task_definition" "solr" {
   family = var.name
+  # While cpu is optional, pinning it allows our CPU graphs to read as 100% showing full utilization,
+  # vs without where util could be 300%, 700% etc
+  cpu = local.ec2_cpu_units
   # Setting mem here is technically optional, but I was able to eek out another 256 of container mem by setting this.
   memory                = local.ec2_mem_usable
   container_definitions = jsonencode(local.container_definitions)
