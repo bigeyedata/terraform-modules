@@ -42,6 +42,11 @@ resource "aws_launch_template" "solr" {
           permissions : "0660",
         },
         {
+          path : "/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json",
+          content : file("${path.module}/amazon-cloudwatch-agent.json"),
+          permissions : "0644",
+        },
+        {
           path : "/root/runonce.sh",
           content : file("${path.module}/runonce.sh"),
           permissions : "0750",
@@ -223,6 +228,7 @@ resource "aws_iam_role_policy_attachment" "ecs_instance_role_policy" {
   for_each = toset([
     "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role",
     "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
+    "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy",
   ])
   role       = aws_iam_role.solr-ecs-instance-role.name
   policy_arn = each.value

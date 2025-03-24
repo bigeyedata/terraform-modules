@@ -54,7 +54,9 @@ mkdir -p $MOUNT_POINT
 # Retry settings
 RETRY_INTERVAL=5  # Retry interval in seconds
 
-yum install -y aws-cli ec2-instance-connect
+yum install -y aws-cli ec2-instance-connect amazon-cloudwatch-agent
+systemctl enable amazon-cloudwatch-agent
+systemctl start amazon-cloudwatch-agent
 
 REGION=$(get_metadata_and_curl http://169.254.169.254/latest/meta-data/placement/availability-zone | sed 's/.$//')
 export AWS_REGION=$REGION
