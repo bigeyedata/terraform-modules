@@ -1,3 +1,12 @@
+## [17.17.2](https://github.com/bigeyedata/terraform-modules/compare/v17.17.1...v17.17.2) (2025-03-24)
+
+
+### Bug Fixes
+
+* pin solr CPU reservation for primary container ([9fbcde2](https://github.com/bigeyedata/terraform-modules/commit/9fbcde2926f116c60ae068f7759047990ed73f39))
+
+
+
 ## [17.17.1](https://github.com/bigeyedata/terraform-modules/compare/v17.17.0...v17.17.1) (2025-03-24)
 
 
