@@ -1,3 +1,12 @@
+# [17.17.0](https://github.com/bigeyedata/terraform-modules/compare/v17.16.0...v17.17.0) (2025-03-24)
+
+
+### Features
+
+* create a swap file on solr container instance ([#471](https://github.com/bigeyedata/terraform-modules/issues/471)) ([bb78e7f](https://github.com/bigeyedata/terraform-modules/commit/bb78e7f945d4f53775cf5c29bf86cc2724a3e1e6))
+
+
+
 # [17.16.0](https://github.com/bigeyedata/terraform-modules/compare/v17.15.2...v17.16.0) (2025-03-24)
 
 
