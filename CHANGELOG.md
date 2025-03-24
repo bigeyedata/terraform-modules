@@ -1,3 +1,12 @@
+## [17.15.2](https://github.com/bigeyedata/terraform-modules/compare/v17.15.1...v17.15.2) (2025-03-24)
+
+
+### Bug Fixes
+
+* disable firelens console logs ([f2d52ec](https://github.com/bigeyedata/terraform-modules/commit/f2d52ece23508b83f2330101cf1ace387d6036c9))
+
+
+
 ## [17.15.1](https://github.com/bigeyedata/terraform-modules/compare/v17.15.0...v17.15.1) (2025-03-22)
 
 
