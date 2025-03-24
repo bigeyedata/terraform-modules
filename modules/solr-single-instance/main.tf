@@ -261,7 +261,9 @@ locals {
 }
 
 resource "aws_ecs_task_definition" "solr" {
-  family                = var.name
+  family = var.name
+  # Setting mem here is technically optional, but I was able to eek out another 256 of container mem by setting this.
+  memory                = local.ec2_mem_usable
   container_definitions = jsonencode(local.container_definitions)
   network_mode          = "awsvpc"
   requires_compatibilities = [
