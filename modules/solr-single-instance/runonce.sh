@@ -130,3 +130,11 @@ if [ $NEW_PARTITION == "true" ]; then
 fi
 
 echo ECS_CLUSTER="$VAR_ECS_CLUSTER" > /etc/ecs/ecs.config
+
+# create swap file
+dd if=/dev/zero of=/swapfile bs=1M count=2048 status=progress
+chmod 600 /swapfile
+mkswap /swapfile
+swapon /swapfile
+
+sysctl vm.swappiness=0
