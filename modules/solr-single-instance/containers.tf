@@ -2,7 +2,10 @@
 # Containers, lots of boilerplate here
 #==============================================
 locals {
-  container_memory = ceil(data.aws_ec2_instance_type.this.memory_size * 0.9) - (var.datadog_agent_enabled ? var.datadog_agent_memory : 0) - (var.awsfirelens_enabled ? var.awsfirelens_memory : 0)
+  # 1024 was arrived at through experimentation on a m5.xlarge EC2 instance.  768 would not allow a task to start due to no ECS task being large enough
+  os_mem_overhead  = 1.0 * 1024
+  ec2_mem_usable   = data.aws_ec2_instance_type.this.memory_size - local.os_mem_overhead
+  container_memory = local.ec2_mem_usable - (var.datadog_agent_enabled ? var.datadog_agent_memory : 0) - (var.awsfirelens_enabled ? var.awsfirelens_memory : 0)
   # default = 80% of container mem to leave headroom for OS etc.
   solr_heap_size  = length(var.solr_heap_size) > 0 ? var.solr_heap_size : ceil(local.container_memory * 0.8)
   container_image = "${var.image_registry}/${var.image_repository}:${var.image_tag}"
