@@ -1,3 +1,12 @@
+## [17.17.1](https://github.com/bigeyedata/terraform-modules/compare/v17.17.0...v17.17.1) (2025-03-24)
+
+
+### Bug Fixes
+
+* use a flat value for OS overhead for solr mem calculation ([b84fd53](https://github.com/bigeyedata/terraform-modules/commit/b84fd530536c54d2b0a337ad1707fc7936ef638c))
+
+
+
 # [17.17.0](https://github.com/bigeyedata/terraform-modules/compare/v17.16.0...v17.17.0) (2025-03-24)
 
 
