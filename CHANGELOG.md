@@ -1,3 +1,12 @@
+# [17.16.0](https://github.com/bigeyedata/terraform-modules/compare/v17.15.2...v17.16.0) (2025-03-24)
+
+
+### Features
+
+* install CloudWatch agent on solr container instance ([#468](https://github.com/bigeyedata/terraform-modules/issues/468)) ([565b49e](https://github.com/bigeyedata/terraform-modules/commit/565b49e1ed967261c51de111fc76f19b21c70fab))
+
+
+
 ## [17.15.2](https://github.com/bigeyedata/terraform-modules/compare/v17.15.1...v17.15.2) (2025-03-24)
 
 
