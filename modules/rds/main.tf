@@ -206,7 +206,8 @@ module "this" {
   parameter_group_description = "Bigeye RDS parameter group with recommendations"
   parameters                  = local.parameters_list
 
-  tags = merge(var.tags, var.primary_additional_tags)
+  copy_tags_to_snapshot = true
+  tags                  = merge(var.tags, var.primary_additional_tags)
 }
 
 module "replica" {
@@ -259,6 +260,7 @@ module "replica" {
   parameter_group_description = var.replica_create_parameter_group ? "Parameter group for ${var.name}" : ""
   parameters                  = local.replica_parameters_list
 
-  tags = merge(var.tags, var.replica_additional_tags)
+  copy_tags_to_snapshot = true
+  tags                  = merge(var.tags, var.replica_additional_tags)
 }
 
