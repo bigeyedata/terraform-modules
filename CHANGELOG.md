@@ -1,3 +1,12 @@
+# [17.18.0](https://github.com/bigeyedata/terraform-modules/compare/v17.17.2...v17.18.0) (2025-04-04)
+
+
+### Features
+
+* copy RDS instance tags to snapshots ([b06d9e1](https://github.com/bigeyedata/terraform-modules/commit/b06d9e1bf466f17846f242d61e07312f7d03d88f))
+
+
+
 ## [17.17.2](https://github.com/bigeyedata/terraform-modules/compare/v17.17.1...v17.17.2) (2025-03-24)
 
 
