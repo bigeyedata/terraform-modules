@@ -1023,9 +1023,9 @@ variable "temporal_rds_enable_performance_insights" {
 }
 
 variable "temporal_rds_backup_retention_period" {
-  description = "Days to keep backups"
+  description = "Days to keep backups.  Workflow data is basically what was in the queue and is not mission critical to restore in the event of an extended downtime or DR event."
   type        = number
-  default     = 30
+  default     = 10
 }
 
 variable "temporal_rds_enabled_logs" {
