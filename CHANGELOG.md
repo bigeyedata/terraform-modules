@@ -1,3 +1,12 @@
+# [17.19.0](https://github.com/bigeyedata/terraform-modules/compare/v17.18.0...v17.19.0) (2025-04-08)
+
+
+### Features
+
+* reduce temporal database default backup retention period ([eb98f09](https://github.com/bigeyedata/terraform-modules/commit/eb98f093eb82dc0605246f79c8b79407242f7657))
+
+
+
 # [17.18.0](https://github.com/bigeyedata/terraform-modules/compare/v17.17.2...v17.18.0) (2025-04-04)
 
 
