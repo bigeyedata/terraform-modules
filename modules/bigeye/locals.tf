@@ -30,6 +30,8 @@ locals {
   elasticache_subnet_group_name   = local.create_vpc ? module.vpc[0].elasticache_subnet_group_name : var.byovpc_redis_subnet_group_name
   rabbitmq_subnet_group_ids       = local.create_vpc ? module.vpc[0].elasticache_subnets : var.byovpc_rabbitmq_subnet_ids
 
+  internal_alb_ingress_cidrs = concat([var.vpc_cidr_block], var.internal_additional_ingress_cidrs)
+
   # Temporal Task Queues
   catalog_indexing_temporal_queues = ["indexing.v1"]
   root_cause_temporal_queues       = ["issue-root-cause"]

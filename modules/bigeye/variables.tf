@@ -88,6 +88,12 @@ variable "internal_additional_ingress_cidrs" {
   default     = []
 }
 
+variable "internal_extra_security_group_ids" {
+  description = "Additional security group ids to attach to internal load balancers"
+  type        = list(string)
+  default     = []
+}
+
 #======================================================
 # VPC
 #======================================================
