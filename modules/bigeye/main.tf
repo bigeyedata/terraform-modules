@@ -846,6 +846,63 @@ resource "aws_s3_bucket_policy" "large_payload" {
 }
 
 #======================================================
+# ALBs
+#======================================================
+resource "aws_security_group" "internal_alb" {
+  count       = var.create_security_groups ? 1 : 0
+  name        = "${local.name}-internal-lb"
+  description = "Allows 80/443 to internal loadbalancer"
+  vpc_id      = local.vpc_id
+  tags        = local.tags
+}
+
+resource "aws_vpc_security_group_egress_rule" "internal_alb_egress" {
+  count             = var.create_security_groups ? 1 : 0
+  security_group_id = aws_security_group.internal_alb[0].id
+  from_port         = 0
+  to_port           = local.max_port
+  ip_protocol       = "TCP"
+  cidr_ipv4         = "0.0.0.0/0"
+}
+
+resource "aws_vpc_security_group_ingress_rule" "internal_alb_ingress_cidrs_http" {
+  for_each          = var.create_security_groups ? toset(local.internal_alb_ingress_cidrs) : []
+  security_group_id = aws_security_group.internal_alb[0].id
+  from_port         = 80
+  to_port           = 80
+  ip_protocol       = "TCP"
+  cidr_ipv4         = each.value
+}
+
+resource "aws_vpc_security_group_ingress_rule" "internal_alb_ingress_cidrs_https" {
+  for_each          = var.create_security_groups ? toset(local.internal_alb_ingress_cidrs) : []
+  security_group_id = aws_security_group.internal_alb[0].id
+  from_port         = 443
+  to_port           = 443
+  ip_protocol       = "TCP"
+  cidr_ipv4         = each.value
+}
+
+resource "aws_lb" "internal_alb" {
+  name               = "${local.name}-internal"
+  internal           = true
+  load_balancer_type = "application"
+  subnets            = local.internal_service_alb_subnet_ids
+  security_groups = concat(
+    var.create_security_groups ? [aws_security_group.internal_alb[0].id] : [],
+    var.internal_extra_security_group_ids,
+  )
+  idle_timeout = 60
+  tags         = local.tags
+
+  access_logs {
+    enabled = var.elb_access_logs_enabled
+    bucket  = var.elb_access_logs_bucket
+    prefix  = format("%s-%s", local.elb_access_logs_prefix, "internal")
+  }
+}
+
+#======================================================
 # HA Proxy
 #======================================================
 resource "random_password" "adminpages_password" {
