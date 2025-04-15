@@ -1,3 +1,12 @@
+## [17.20.1](https://github.com/bigeyedata/terraform-modules/compare/v17.20.0...v17.20.1) (2025-04-15)
+
+
+### Bug Fixes
+
+* remove publish bundle step from CI deploy ([9711ee6](https://github.com/bigeyedata/terraform-modules/commit/9711ee6693abcaf6f3a2bc0be2b34108e644b587))
+
+
+
 # [17.20.0](https://github.com/bigeyedata/terraform-modules/compare/v17.19.0...v17.20.0) (2025-04-15)
 
 
