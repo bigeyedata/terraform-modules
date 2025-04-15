@@ -178,14 +178,3 @@ jobs:
         run: |
           git push -d origin release-from-${{ github.sha }} || echo "failed to delete branch"
           git push -d origin ${{ steps.changelog.outputs.tag }} || echo "failed to delete tag"
-
-
-  publish_bundle:
-    name: Publish bundle
-    needs: [publish]
-    if: ${{ needs.publish.outputs.skipped == 'false' }}
-    uses: ./.github/workflows/publish_bundle_s3.yaml
-    secrets: inherit
-    with:
-      ref: main
-      bundlename: ${{ needs.publish.outputs.tag }}
