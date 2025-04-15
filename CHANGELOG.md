@@ -1,3 +1,12 @@
+# [17.20.0](https://github.com/bigeyedata/terraform-modules/compare/v17.19.0...v17.20.0) (2025-04-15)
+
+
+### Features
+
+* add a dedicated general purpose internal load balancer ([3acd5c7](https://github.com/bigeyedata/terraform-modules/commit/3acd5c72343250d7949202a2a681850f74fc8fc9))
+
+
+
 # [17.19.0](https://github.com/bigeyedata/terraform-modules/compare/v17.18.0...v17.19.0) (2025-04-08)
 
 
