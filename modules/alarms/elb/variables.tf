@@ -109,3 +109,13 @@ variable "response_time_threshold" {
   type        = number
   default     = 120
 }
+
+variable "lb_name" {
+  type    = string
+  default = ""
+}
+
+variable "target_group_name" {
+  type    = string
+  default = ""
+}

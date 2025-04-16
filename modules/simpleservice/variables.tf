@@ -292,6 +292,36 @@ variable "awsfirelens_uri" {
 #======================================================
 # Load balancer settings
 #======================================================
+variable "use_centralized_lb" {
+  description = "Whether to use the LB created by this module or the external one.  This allows us to create the new resources and destroy the old ones in separate PRs to avoid interrupting service"
+  type        = bool
+  default     = false
+}
+
+variable "create_lb" {
+  description = "Whether to create the load balancer or not"
+  type        = bool
+  default     = true
+}
+
+variable "centralized_lb_security_group_ids" {
+  description = "This is the SG attached to the LB being passed in.  It needs to be attached to the ECS service to allow access from the LB"
+  type        = list(string)
+  default     = []
+}
+
+variable "centralized_lb_arn" {
+  description = "external LB to import and create target groups and listeners for"
+  type        = string
+  default     = ""
+}
+
+variable "centralized_lb_https_listener_rule_arn" {
+  description = "external LB listener to attach a routing rule for.  The routing rule will be based on hostname of this service"
+  type        = string
+  default     = ""
+}
+
 variable "internet_facing" {
   description = "Whether the load balancer will be internet facing"
   type        = bool
@@ -408,10 +438,4 @@ variable "dns_name" {
 variable "route53_zone_id" {
   description = "ID of the route53 zone in which RRs should be created. "
   default     = ""
-}
-
-variable "route53_record_ttl" {
-  description = "TTL for dns_name record"
-  type        = number
-  default     = 3600
 }

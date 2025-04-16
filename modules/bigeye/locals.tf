@@ -31,6 +31,10 @@ locals {
   rabbitmq_subnet_group_ids       = local.create_vpc ? module.vpc[0].elasticache_subnets : var.byovpc_rabbitmq_subnet_ids
 
   internal_alb_ingress_cidrs = concat([var.vpc_cidr_block], var.internal_additional_ingress_cidrs)
+  internal_alb_security_group_ids = concat(
+    var.create_security_groups ? [aws_security_group.internal_alb[0].id] : [],
+    var.internal_extra_security_group_ids,
+  )
 
   # Temporal Task Queues
   catalog_indexing_temporal_queues = ["indexing.v1"]

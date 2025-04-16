@@ -888,18 +888,50 @@ resource "aws_lb" "internal_alb" {
   internal           = true
   load_balancer_type = "application"
   subnets            = local.internal_service_alb_subnet_ids
-  security_groups = concat(
-    var.create_security_groups ? [aws_security_group.internal_alb[0].id] : [],
-    var.internal_extra_security_group_ids,
-  )
-  idle_timeout = 60
-  tags         = local.tags
+  security_groups    = local.internal_alb_security_group_ids
+  idle_timeout       = 60
+  tags               = local.tags
 
   access_logs {
     enabled = var.elb_access_logs_enabled
     bucket  = var.elb_access_logs_bucket
     prefix  = format("%s-%s", local.elb_access_logs_prefix, "internal")
   }
+}
+
+resource "aws_lb_listener" "http_internal" {
+  load_balancer_arn = aws_lb.internal_alb.arn
+  port              = 80
+  protocol          = "HTTP"
+
+  default_action {
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+  tags = merge({ "Name" = "http-internal" }, local.tags)
+}
+
+resource "aws_lb_listener" "https_internal" {
+  load_balancer_arn = aws_lb.internal_alb.arn
+  port              = 443
+  protocol          = "HTTPS"
+  certificate_arn   = local.acm_certificate_arn
+  ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+  default_action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "requested servicename not found"
+      status_code  = "404"
+    }
+  }
+  tags = merge({ "Name" = "https-internal" }, local.tags)
 }
 
 #======================================================
@@ -1119,7 +1151,6 @@ module "web" {
   create_dns_records = var.create_dns_records
   route53_zone_id    = data.aws_route53_zone.this[0].zone_id
   dns_name           = "${local.base_dns_alias}-web.${var.top_level_dns_name}"
-  route53_record_ttl = 300
 }
 
 #======================================================
@@ -1284,16 +1315,21 @@ module "monocle" {
   enable_execute_command = var.monocle_enable_ecs_exec
 
   # Load balancer
-  healthcheck_path                 = "/health"
-  healthcheck_interval             = 60
-  healthcheck_timeout              = 20
-  ssl_policy                       = var.alb_ssl_policy
-  acm_certificate_arn              = local.acm_certificate_arn
-  lb_idle_timeout                  = 900
-  lb_subnet_ids                    = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids = concat(var.monocle_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
-  lb_additional_ingress_cidrs      = var.internal_additional_ingress_cidrs
-  lb_deregistration_delay          = 300
+  create_lb                              = var.install_individual_internal_lbs
+  use_centralized_lb                     = var.use_centralized_internal_lb
+  centralized_lb_arn                     = aws_lb.internal_alb.arn
+  centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
+  centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
+  healthcheck_path                       = "/health"
+  healthcheck_interval                   = 60
+  healthcheck_timeout                    = 20
+  ssl_policy                             = var.alb_ssl_policy
+  acm_certificate_arn                    = local.acm_certificate_arn
+  lb_idle_timeout                        = 900
+  lb_subnet_ids                          = local.internal_service_alb_subnet_ids
+  lb_additional_security_group_ids       = concat(var.monocle_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
+  lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
+  lb_deregistration_delay                = 300
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -1372,7 +1408,6 @@ module "monocle" {
   create_dns_records = var.create_dns_records
   route53_zone_id    = data.aws_route53_zone.this[0].zone_id
   dns_name           = "${local.base_dns_alias}-monocle.${var.top_level_dns_name}"
-  route53_record_ttl = 300
 }
 
 resource "aws_appautoscaling_target" "monocle" {
@@ -1445,13 +1480,18 @@ module "toretto" {
   enable_execute_command = var.toretto_enable_ecs_exec
 
   # Load balancer
-  healthcheck_path                 = "/health"
-  ssl_policy                       = var.alb_ssl_policy
-  acm_certificate_arn              = local.acm_certificate_arn
-  lb_idle_timeout                  = 900
-  lb_subnet_ids                    = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids = concat(var.toretto_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
-  lb_additional_ingress_cidrs      = var.internal_additional_ingress_cidrs
+  create_lb                              = var.install_individual_internal_lbs
+  use_centralized_lb                     = var.use_centralized_internal_lb
+  centralized_lb_arn                     = aws_lb.internal_alb.arn
+  centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
+  centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
+  healthcheck_path                       = "/health"
+  ssl_policy                             = var.alb_ssl_policy
+  acm_certificate_arn                    = local.acm_certificate_arn
+  lb_idle_timeout                        = 900
+  lb_subnet_ids                          = local.internal_service_alb_subnet_ids
+  lb_additional_security_group_ids       = concat(var.toretto_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
+  lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -1523,7 +1563,6 @@ module "toretto" {
   create_dns_records = var.create_dns_records
   route53_zone_id    = data.aws_route53_zone.this[0].zone_id
   dns_name           = "${local.base_dns_alias}-toretto.${var.top_level_dns_name}"
-  route53_record_ttl = 300
 }
 
 resource "aws_appautoscaling_target" "toretto" {
@@ -1625,13 +1664,18 @@ module "scheduler" {
   fargate_version = var.fargate_version
 
   # Load balancer
-  healthcheck_path                 = "/health"
-  ssl_policy                       = var.alb_ssl_policy
-  acm_certificate_arn              = local.acm_certificate_arn
-  lb_idle_timeout                  = 900
-  lb_subnet_ids                    = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids = concat(var.scheduler_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
-  lb_additional_ingress_cidrs      = var.internal_additional_ingress_cidrs
+  create_lb                              = var.install_individual_internal_lbs
+  use_centralized_lb                     = var.use_centralized_internal_lb
+  centralized_lb_arn                     = aws_lb.internal_alb.arn
+  centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
+  centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
+  healthcheck_path                       = "/health"
+  ssl_policy                             = var.alb_ssl_policy
+  acm_certificate_arn                    = local.acm_certificate_arn
+  lb_idle_timeout                        = 900
+  lb_subnet_ids                          = local.internal_service_alb_subnet_ids
+  lb_additional_security_group_ids       = concat(var.scheduler_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
+  lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -2322,14 +2366,19 @@ module "datawork" {
   enable_execute_command        = var.datawork_enable_ecs_exec
 
   # Load balancer
-  healthcheck_path                 = "/health"
-  healthcheck_interval             = 90
-  ssl_policy                       = var.alb_ssl_policy
-  acm_certificate_arn              = local.acm_certificate_arn
-  lb_idle_timeout                  = 900
-  lb_subnet_ids                    = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids = concat(var.datawork_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
-  lb_additional_ingress_cidrs      = var.internal_additional_ingress_cidrs
+  create_lb                              = var.install_individual_internal_lbs
+  use_centralized_lb                     = var.use_centralized_internal_lb
+  centralized_lb_arn                     = aws_lb.internal_alb.arn
+  centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
+  centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
+  healthcheck_path                       = "/health"
+  healthcheck_interval                   = 90
+  ssl_policy                             = var.alb_ssl_policy
+  acm_certificate_arn                    = local.acm_certificate_arn
+  lb_idle_timeout                        = 900
+  lb_subnet_ids                          = local.internal_service_alb_subnet_ids
+  lb_additional_security_group_ids       = concat(var.datawork_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
+  lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -2433,14 +2482,19 @@ module "backfillwork" {
   enable_execute_command        = var.backfillwork_enable_ecs_exec
 
   # Load balancer
-  healthcheck_path                 = "/health"
-  healthcheck_interval             = 90
-  ssl_policy                       = var.alb_ssl_policy
-  acm_certificate_arn              = local.acm_certificate_arn
-  lb_idle_timeout                  = 900
-  lb_subnet_ids                    = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids = concat(var.backfillwork_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
-  lb_additional_ingress_cidrs      = var.internal_additional_ingress_cidrs
+  create_lb                              = var.install_individual_internal_lbs
+  use_centralized_lb                     = var.use_centralized_internal_lb
+  centralized_lb_arn                     = aws_lb.internal_alb.arn
+  centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
+  centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
+  healthcheck_path                       = "/health"
+  healthcheck_interval                   = 90
+  ssl_policy                             = var.alb_ssl_policy
+  acm_certificate_arn                    = local.acm_certificate_arn
+  lb_idle_timeout                        = 900
+  lb_subnet_ids                          = local.internal_service_alb_subnet_ids
+  lb_additional_security_group_ids       = concat(var.backfillwork_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
+  lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -2519,14 +2573,19 @@ module "indexwork" {
   enable_execute_command        = var.indexwork_enable_ecs_exec
 
   # Load balancer
-  healthcheck_path                 = "/health"
-  healthcheck_interval             = 90
-  ssl_policy                       = var.alb_ssl_policy
-  acm_certificate_arn              = local.acm_certificate_arn
-  lb_idle_timeout                  = 900
-  lb_subnet_ids                    = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids = concat(var.indexwork_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
-  lb_additional_ingress_cidrs      = var.internal_additional_ingress_cidrs
+  create_lb                              = var.install_individual_internal_lbs
+  use_centralized_lb                     = var.use_centralized_internal_lb
+  centralized_lb_arn                     = aws_lb.internal_alb.arn
+  centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
+  centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
+  healthcheck_path                       = "/health"
+  healthcheck_interval                   = 90
+  ssl_policy                             = var.alb_ssl_policy
+  acm_certificate_arn                    = local.acm_certificate_arn
+  lb_idle_timeout                        = 900
+  lb_subnet_ids                          = local.internal_service_alb_subnet_ids
+  lb_additional_security_group_ids       = concat(var.indexwork_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
+  lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -2607,14 +2666,19 @@ module "lineagework" {
   enable_execute_command        = var.lineagework_enable_ecs_exec
 
   # Load balancer
-  healthcheck_path                 = "/health"
-  healthcheck_interval             = 90
-  ssl_policy                       = var.alb_ssl_policy
-  acm_certificate_arn              = local.acm_certificate_arn
-  lb_idle_timeout                  = 900
-  lb_subnet_ids                    = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids = concat(var.lineagework_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
-  lb_additional_ingress_cidrs      = var.internal_additional_ingress_cidrs
+  create_lb                              = var.install_individual_internal_lbs
+  use_centralized_lb                     = var.use_centralized_internal_lb
+  centralized_lb_arn                     = aws_lb.internal_alb.arn
+  centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
+  centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
+  healthcheck_path                       = "/health"
+  healthcheck_interval                   = 90
+  ssl_policy                             = var.alb_ssl_policy
+  acm_certificate_arn                    = local.acm_certificate_arn
+  lb_idle_timeout                        = 900
+  lb_subnet_ids                          = local.internal_service_alb_subnet_ids
+  lb_additional_security_group_ids       = concat(var.lineagework_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
+  lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -2698,14 +2762,19 @@ module "metricwork" {
   enable_execute_command        = var.metricwork_enable_ecs_exec
 
   # Load balancer
-  healthcheck_path                 = "/health"
-  healthcheck_interval             = 90
-  ssl_policy                       = var.alb_ssl_policy
-  acm_certificate_arn              = local.acm_certificate_arn
-  lb_idle_timeout                  = 900
-  lb_subnet_ids                    = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids = concat(var.metricwork_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
-  lb_additional_ingress_cidrs      = var.internal_additional_ingress_cidrs
+  create_lb                              = var.install_individual_internal_lbs
+  use_centralized_lb                     = var.use_centralized_internal_lb
+  centralized_lb_arn                     = aws_lb.internal_alb.arn
+  centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
+  centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
+  healthcheck_path                       = "/health"
+  healthcheck_interval                   = 90
+  ssl_policy                             = var.alb_ssl_policy
+  acm_certificate_arn                    = local.acm_certificate_arn
+  lb_idle_timeout                        = 900
+  lb_subnet_ids                          = local.internal_service_alb_subnet_ids
+  lb_additional_security_group_ids       = concat(var.metricwork_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
+  lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -2786,10 +2855,15 @@ module "rootcause" {
   enable_execute_command        = var.rootcause_enable_ecs_exec
 
   # Load balancer
-  healthcheck_path     = "/health"
-  healthcheck_interval = 90
-  ssl_policy           = var.alb_ssl_policy
-  acm_certificate_arn  = local.acm_certificate_arn
+  create_lb                              = var.install_individual_internal_lbs
+  use_centralized_lb                     = var.use_centralized_internal_lb
+  centralized_lb_arn                     = aws_lb.internal_alb.arn
+  centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
+  centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
+  healthcheck_path                       = "/health"
+  healthcheck_interval                   = 90
+  ssl_policy                             = var.alb_ssl_policy
+  acm_certificate_arn                    = local.acm_certificate_arn
   # revisit this after we observe the runtime, it likely can be much shorter (~5minute) since temporal respects sigterm and max runtime on API calls
   lb_idle_timeout                  = 900
   lb_subnet_ids                    = local.internal_service_alb_subnet_ids
@@ -2876,15 +2950,20 @@ module "internalapi" {
   enable_execute_command        = var.internalapi_enable_ecs_exec
 
   # Load balancer
-  healthcheck_path                 = "/health"
-  healthcheck_grace_period         = 300
-  ssl_policy                       = var.alb_ssl_policy
-  acm_certificate_arn              = local.acm_certificate_arn
-  lb_idle_timeout                  = 900
-  lb_subnet_ids                    = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids = concat(var.internalapi_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
-  lb_additional_ingress_cidrs      = var.internal_additional_ingress_cidrs
-  lb_deregistration_delay          = 180
+  create_lb                              = var.install_individual_internal_lbs
+  use_centralized_lb                     = var.use_centralized_internal_lb
+  centralized_lb_arn                     = aws_lb.internal_alb.arn
+  centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
+  centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
+  healthcheck_path                       = "/health"
+  healthcheck_grace_period               = 300
+  ssl_policy                             = var.alb_ssl_policy
+  acm_certificate_arn                    = local.acm_certificate_arn
+  lb_idle_timeout                        = 900
+  lb_subnet_ids                          = local.internal_service_alb_subnet_ids
+  lb_additional_security_group_ids       = concat(var.internalapi_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
+  lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
+  lb_deregistration_delay                = 180
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
