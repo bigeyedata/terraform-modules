@@ -1,3 +1,12 @@
+# [17.21.0](https://github.com/bigeyedata/terraform-modules/compare/v17.20.1...v17.21.0) (2025-04-16)
+
+
+### Features
+
+* allow using a centralized internal LB ([d5e2777](https://github.com/bigeyedata/terraform-modules/commit/d5e277714e6c96f86e0d6f23f2d5946275a66d42))
+
+
+
 ## [17.20.1](https://github.com/bigeyedata/terraform-modules/compare/v17.20.0...v17.20.1) (2025-04-15)
 
 
