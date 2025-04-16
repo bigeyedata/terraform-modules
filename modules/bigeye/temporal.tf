@@ -691,15 +691,20 @@ module "temporalui" {
   fargate_version               = var.fargate_version
 
   # Load balancer
-  healthcheck_path                 = "/"
-  healthcheck_interval             = 15
-  healthcheck_unhealthy_threshold  = 3
-  ssl_policy                       = var.alb_ssl_policy
-  acm_certificate_arn              = local.acm_certificate_arn
-  lb_subnet_ids                    = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids = concat(var.temporalui_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
-  lb_additional_ingress_cidrs      = var.internal_additional_ingress_cidrs
-  lb_deregistration_delay          = 120
+  create_lb                              = var.install_individual_internal_lbs
+  use_centralized_lb                     = var.use_centralized_internal_lb
+  centralized_lb_arn                     = aws_lb.internal_alb.arn
+  centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
+  centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
+  healthcheck_path                       = "/"
+  healthcheck_interval                   = 15
+  healthcheck_unhealthy_threshold        = 3
+  ssl_policy                             = var.alb_ssl_policy
+  acm_certificate_arn                    = local.acm_certificate_arn
+  lb_subnet_ids                          = local.internal_service_alb_subnet_ids
+  lb_additional_security_group_ids       = concat(var.temporalui_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
+  lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
+  lb_deregistration_delay                = 120
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -754,7 +759,6 @@ module "temporalui" {
   create_dns_records = var.create_dns_records
   route53_zone_id    = data.aws_route53_zone.this[0].zone_id
   dns_name           = "${local.base_dns_alias}-workflows-admin.${var.top_level_dns_name}"
-  route53_record_ttl = 300
 }
 
 #======================================================

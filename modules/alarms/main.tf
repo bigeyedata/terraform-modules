@@ -344,10 +344,11 @@ module "datawatch_rds_replica" {
 # ELB
 #======================================================
 module "elb_temporalui" {
-  source = "./elb"
-  stack  = var.stack
-  app    = "temporalui"
-
+  source                         = "./elb"
+  stack                          = var.stack
+  app                            = "temporalui"
+  lb_name                        = var.monitor_individual_internal_lbs ? "${var.stack}-temporalui" : "${var.stack}-internal"
+  target_group_name              = var.monitor_individual_internal_lbs ? "${var.stack}-temporalui" : "${var.stack}-temporalui2"
   host_count_disabled            = var.elb_temporalui_host_count_disabled
   host_count_datapoints_to_alarm = var.elb_temporalui_host_count_datapoints_to_alarm
   host_count_evaluation_periods  = var.elb_temporalui_host_count_evaluation_periods
@@ -374,6 +375,8 @@ module "elb_temporal" {
   source                         = "./elb"
   stack                          = var.stack
   app                            = "temporal"
+  lb_name                        = "${var.stack}-temporal"
+  target_group_name              = "${var.stack}-temporal"
   host_count_disabled            = var.elb_temporal_host_count_disabled
   host_count_datapoints_to_alarm = var.elb_temporal_host_count_datapoints_to_alarm
   host_count_evaluation_periods  = var.elb_temporal_host_count_evaluation_periods
@@ -389,6 +392,8 @@ module "elb_monocle" {
   source                         = "./elb"
   stack                          = var.stack
   app                            = "monocle"
+  lb_name                        = var.monitor_individual_internal_lbs ? "${var.stack}-monocle" : "${var.stack}-internal"
+  target_group_name              = var.monitor_individual_internal_lbs ? "${var.stack}-monocle" : "${var.stack}-monocle2"
   host_count_disabled            = var.elb_monocle_host_count_disabled
   host_count_datapoints_to_alarm = var.elb_monocle_host_count_datapoints_to_alarm
   host_count_evaluation_periods  = var.elb_monocle_host_count_evaluation_periods
@@ -415,6 +420,8 @@ module "elb_toretto" {
   source                         = "./elb"
   stack                          = var.stack
   app                            = "toretto"
+  lb_name                        = var.monitor_individual_internal_lbs ? "${var.stack}-toretto" : "${var.stack}-internal"
+  target_group_name              = var.monitor_individual_internal_lbs ? "${var.stack}-toretto" : "${var.stack}-toretto2"
   host_count_disabled            = var.elb_toretto_host_count_disabled
   host_count_datapoints_to_alarm = var.elb_toretto_host_count_datapoints_to_alarm
   host_count_evaluation_periods  = var.elb_toretto_host_count_evaluation_periods
@@ -441,6 +448,8 @@ module "elb_datawatch" {
   source                         = "./elb"
   stack                          = var.stack
   app                            = "datawatch"
+  lb_name                        = "${var.stack}-datawatch"
+  target_group_name              = "${var.stack}-datawatch"
   host_count_disabled            = var.elb_datawatch_host_count_disabled
   host_count_datapoints_to_alarm = var.elb_datawatch_host_count_datapoints_to_alarm
   host_count_evaluation_periods  = var.elb_datawatch_host_count_evaluation_periods
@@ -467,6 +476,8 @@ module "elb_backfillwork" {
   source                         = "./elb"
   stack                          = var.stack
   app                            = "backfillwork"
+  lb_name                        = var.monitor_individual_internal_lbs ? "${var.stack}-backfillwork" : "${var.stack}-internal"
+  target_group_name              = var.monitor_individual_internal_lbs ? "${var.stack}-backfillwork" : "${var.stack}-backfillwork2"
   host_count_disabled            = var.elb_backfillwork_host_count_disabled
   host_count_datapoints_to_alarm = var.elb_backfillwork_host_count_datapoints_to_alarm
   host_count_evaluation_periods  = var.elb_backfillwork_host_count_evaluation_periods
@@ -482,6 +493,8 @@ module "elb_datawork" {
   source                         = "./elb"
   stack                          = var.stack
   app                            = "datawork"
+  lb_name                        = var.monitor_individual_internal_lbs ? "${var.stack}-datawork" : "${var.stack}-internal"
+  target_group_name              = var.monitor_individual_internal_lbs ? "${var.stack}-datawork" : "${var.stack}-datawork2"
   host_count_disabled            = var.elb_datawork_host_count_disabled
   host_count_datapoints_to_alarm = var.elb_datawork_host_count_datapoints_to_alarm
   host_count_evaluation_periods  = var.elb_datawork_host_count_evaluation_periods
@@ -497,6 +510,8 @@ module "elb_indexwork" {
   source                         = "./elb"
   stack                          = var.stack
   app                            = "indexwork"
+  lb_name                        = var.monitor_individual_internal_lbs ? "${var.stack}-indexwork" : "${var.stack}-internal"
+  target_group_name              = var.monitor_individual_internal_lbs ? "${var.stack}-indexwork" : "${var.stack}-indexwork2"
   host_count_disabled            = var.elb_indexwork_host_count_disabled
   host_count_datapoints_to_alarm = var.elb_indexwork_host_count_datapoints_to_alarm
   host_count_evaluation_periods  = var.elb_indexwork_host_count_evaluation_periods
@@ -512,6 +527,8 @@ module "elb_lineagework" {
   source                         = "./elb"
   stack                          = var.stack
   app                            = "lineagework"
+  lb_name                        = var.monitor_individual_internal_lbs ? "${var.stack}-lineagework" : "${var.stack}-internal"
+  target_group_name              = var.monitor_individual_internal_lbs ? "${var.stack}-lineagework" : "${var.stack}-lineagework2"
   host_count_disabled            = var.elb_lineagework_host_count_disabled
   host_count_datapoints_to_alarm = var.elb_lineagework_host_count_datapoints_to_alarm
   host_count_evaluation_periods  = var.elb_lineagework_host_count_evaluation_periods
@@ -527,6 +544,8 @@ module "elb_metricwork" {
   source                         = "./elb"
   stack                          = var.stack
   app                            = "metricwork"
+  lb_name                        = var.monitor_individual_internal_lbs ? "${var.stack}-metricwork" : "${var.stack}-internal"
+  target_group_name              = var.monitor_individual_internal_lbs ? "${var.stack}-metricwork" : "${var.stack}-metricwork2"
   host_count_disabled            = var.elb_metricwork_host_count_disabled
   host_count_datapoints_to_alarm = var.elb_metricwork_host_count_datapoints_to_alarm
   host_count_evaluation_periods  = var.elb_metricwork_host_count_evaluation_periods
@@ -542,6 +561,8 @@ module "elb_rootcause" {
   source                         = "./elb"
   stack                          = var.stack
   app                            = "rootcause"
+  lb_name                        = var.monitor_individual_internal_lbs ? "${var.stack}-rootcause" : "${var.stack}-internal"
+  target_group_name              = var.monitor_individual_internal_lbs ? "${var.stack}-rootcause" : "${var.stack}-rootcause2"
   host_count_disabled            = var.elb_rootcause_host_count_disabled
   host_count_datapoints_to_alarm = var.elb_rootcause_host_count_datapoints_to_alarm
   host_count_evaluation_periods  = var.elb_rootcause_host_count_evaluation_periods
@@ -557,6 +578,8 @@ module "elb_internalapi" {
   source                         = "./elb"
   stack                          = var.stack
   app                            = "internalapi"
+  lb_name                        = var.monitor_individual_internal_lbs ? "${var.stack}-internalapi" : "${var.stack}-internal"
+  target_group_name              = var.monitor_individual_internal_lbs ? "${var.stack}-internalapi" : "${var.stack}-internalapi2"
   host_count_disabled            = var.elb_internalapi_host_count_disabled
   host_count_datapoints_to_alarm = var.elb_internalapi_host_count_datapoints_to_alarm
   host_count_evaluation_periods  = var.elb_internalapi_host_count_evaluation_periods
@@ -583,6 +606,8 @@ module "elb_scheduler" {
   source                         = "./elb"
   stack                          = var.stack
   app                            = "scheduler"
+  lb_name                        = var.monitor_individual_internal_lbs ? "${var.stack}-scheduler" : "${var.stack}-internal"
+  target_group_name              = var.monitor_individual_internal_lbs ? "${var.stack}-scheduler" : "${var.stack}-scheduler2"
   host_count_disabled            = var.elb_scheduler_host_count_disabled
   host_count_datapoints_to_alarm = var.elb_scheduler_host_count_datapoints_to_alarm
   host_count_evaluation_periods  = var.elb_scheduler_host_count_evaluation_periods
@@ -609,6 +634,8 @@ module "elb_web" {
   source                         = "./elb"
   stack                          = var.stack
   app                            = "web"
+  lb_name                        = "${var.stack}-web"
+  target_group_name              = "${var.stack}-web"
   host_count_disabled            = var.elb_web_host_count_disabled
   host_count_datapoints_to_alarm = var.elb_web_host_count_datapoints_to_alarm
   host_count_evaluation_periods  = var.elb_web_host_count_evaluation_periods
@@ -635,6 +662,8 @@ module "elb_haproxy" {
   source                         = "./elb"
   stack                          = var.stack
   app                            = "haproxy"
+  lb_name                        = "${var.stack}-haproxy"
+  target_group_name              = "${var.stack}-haproxy"
   host_count_disabled            = var.elb_haproxy_host_count_disabled
   host_count_datapoints_to_alarm = var.elb_haproxy_host_count_datapoints_to_alarm
   host_count_evaluation_periods  = var.elb_haproxy_host_count_evaluation_periods

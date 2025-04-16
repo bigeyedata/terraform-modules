@@ -5,27 +5,27 @@ output "ecs_service_arn" {
 
 output "lb_dns_name" {
   description = "The DNS name of the load balancer"
-  value       = aws_lb.this.dns_name
+  value       = var.create_lb ? aws_lb.this[0].dns_name : data.aws_lb.external[0].dns_name
 }
 
 output "dns_name" {
   description = "The DNS name of the service"
-  value       = var.create_dns_records ? aws_route53_record.this[0].name : var.dns_name
+  value       = local.service_dns_name
 }
 
 output "load_balancer_full_name" {
   description = "The load balancer full name, for use with CW metrics"
-  value       = aws_lb.this.arn_suffix
+  value       = var.use_centralized_lb ? data.aws_lb.external[0].arn_suffix : aws_lb.this[0].arn_suffix
 }
 
 output "target_group_full_name" {
   description = "Target group full name, for use with CW metrics"
-  value       = aws_lb_target_group.this.arn_suffix
+  value       = var.use_centralized_lb ? aws_lb_target_group.centralized_lb[0].arn_suffix : aws_lb_target_group.this[0].arn_suffix
 }
 
 output "zone_id" {
   description = "The zone that the load balancer DNS is controlled"
-  value       = aws_lb.this.zone_id
+  value       = var.create_lb ? aws_lb.this[0].zone_id : data.aws_lb.external[0].zone_id
 }
 
 output "security_group_id" {

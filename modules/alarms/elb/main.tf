@@ -10,18 +10,16 @@ terraform {
 }
 
 locals {
-  elb_name                       = format("%s-%s", var.stack, var.app)
-  target_group_name              = local.elb_name
   cloudwatch_load_balancer_value = data.aws_lb.this.arn_suffix
   cloudwatch_target_group_value  = data.aws_lb_target_group.this.arn_suffix
 }
 
 data "aws_lb" "this" {
-  name = local.elb_name
+  name = var.lb_name
 }
 
 data "aws_lb_target_group" "this" {
-  name = local.target_group_name
+  name = var.target_group_name
 }
 
 resource "aws_cloudwatch_metric_alarm" "error_rate" {
