@@ -2006,6 +2006,12 @@ variable "datawatch_max_request_size" {
   type        = string
 }
 
+variable "datawatch_temporal_large_payload_enabled" {
+  description = "Controls if datawatch common services have the temporal large payload converter enabled.  It is not common to deviate from the default setting."
+  type        = bool
+  default     = false
+}
+
 #======================================================
 # Application Variables - Backfillwork
 #======================================================
