@@ -3,7 +3,15 @@
 #==============================================
 locals {
   # 1024 was arrived at through experimentation on a m5.xlarge EC2 instance.  768 would not allow a task to start due to no ECS task being large enough
-  os_mem_overhead  = 1.0 * 1024
+  # note on mem increments
+  #   - 16cpu ECS mem must increment in 8GB increments.
+  #   - 8cpu ECS mem must increment in 4GB increments
+  #   - 4cpu and below, mem must increment in 1GB increments
+  # We use this when subtracting an overhead amount from the host OS to arrive at the ECS task mem.
+  os_mem_overhead = (
+    data.aws_ec2_instance_type.this.default_vcpus >= 16 ? 8 * 1024 : (
+    data.aws_ec2_instance_type.this.default_vcpus >= 8 ? 4 * 1024 : 4 * 1024)
+  )
   ec2_mem_usable   = data.aws_ec2_instance_type.this.memory_size - local.os_mem_overhead
   container_memory = local.ec2_mem_usable - (var.datadog_agent_enabled ? var.datadog_agent_memory : 0) - (var.awsfirelens_enabled ? var.awsfirelens_memory : 0)
   # default = 80% of container mem to leave headroom for OS etc.
