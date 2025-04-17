@@ -1,3 +1,12 @@
+## [17.21.1](https://github.com/bigeyedata/terraform-modules/compare/v17.21.0...v17.21.1) (2025-04-17)
+
+
+### Bug Fixes
+
+* ec2 ecs mem (solr) increments based on cpu size ([0fe24a8](https://github.com/bigeyedata/terraform-modules/commit/0fe24a8cf1cc1845e1e03b451f2147e852e9e20c))
+
+
+
 # [17.21.0](https://github.com/bigeyedata/terraform-modules/compare/v17.20.1...v17.21.0) (2025-04-16)
 
 
