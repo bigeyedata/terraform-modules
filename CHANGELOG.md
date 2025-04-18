@@ -1,3 +1,12 @@
+# [17.22.0](https://github.com/bigeyedata/terraform-modules/compare/v17.21.1...v17.22.0) (2025-04-18)
+
+
+### Features
+
+* add flag to control TEMPORAL_LARGE_PAYLOAD_ENABLED env var ([6a7b39a](https://github.com/bigeyedata/terraform-modules/commit/6a7b39a6e62623b603476240afe406a2eb85ec9b))
+
+
+
 ## [17.21.1](https://github.com/bigeyedata/terraform-modules/compare/v17.21.0...v17.21.1) (2025-04-17)
 
 
