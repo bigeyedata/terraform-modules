@@ -159,22 +159,13 @@ jobs:
         if: ${{ needs.publish.outputs.skipped == 'false' }}
         # v2.0.0
         uses: slackapi/slack-github-action@485a9d42d3a73031f12ec201c457e2162c45d02d
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
         with:
-          channel-id: ${{ secrets.SRE_SLACK_CHANNEL_ID }}
+          method: chat.postMessage
+          token:  ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          payload-templated: true
           payload: |
-            {
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": ":shipitparrot: terraform-modules successfully published version ${{ needs.publish.outputs.tag }}. [<${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ needs.publish.outputs.tag }}|Release>]"
-                  }
-                }
-              ]
-            }
+            channel: ${{ secrets.SRE_SLACK_CHANNEL_ID }}
+            text: ":shipitparrot: terraform-modules successfully published version ${{ needs.publish.outputs.tag }}. [<${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ needs.publish.outputs.tag }}|Release>]" 
 
   notify-on-fail:
     runs-on: ubuntu-latest
@@ -187,19 +178,10 @@ jobs:
       - name: Notify on fail
         # v2.0.0
         uses: slackapi/slack-github-action@485a9d42d3a73031f12ec201c457e2162c45d02d
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
         with:
-          channel-id: ${{ secrets.SRE_SLACK_CHANNEL_ID }}
+          method: chat.postMessage
+          token:  ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          payload-templated: true
           payload: |
-            {
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": ":sadparrot: terraform-modules publish version ${{ needs.publish.outputs.tag }} failed. [<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}| GH Action>]"
-                  }
-                }
-              ]
-            }
+            channel: ${{ secrets.SRE_SLACK_CHANNEL_ID }}            
+            text: ":sadparrot: terraform-modules publish version ${{ needs.publish.outputs.tag }} failed. [<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}| GH Action>]"
