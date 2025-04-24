@@ -1805,6 +1805,114 @@ variable "elb_internalapi_response_time_threshold" {
   default     = 120
 }
 
+variable "elb_lineageapi_error_rate_datapoints_to_alarm" {
+  description = "The number of datapoints breaching threshold to alarm"
+  type        = number
+  default     = 3
+}
+
+variable "elb_lineageapi_error_rate_disabled" {
+  description = "Whether to disable the specific alarm"
+  type        = bool
+  default     = false
+}
+
+variable "elb_lineageapi_error_rate_evaluation_periods" {
+  description = "The number of periods over which the metric is evaluated"
+  type        = number
+  default     = 5
+}
+
+variable "elb_lineageapi_error_rate_period" {
+  description = "The number of seconds over which the metric is evaluated"
+  type        = number
+  default     = 300
+}
+
+variable "elb_lineageapi_error_rate_sns_arns" {
+  description = "The SNS topic arns to notify when the alarm fires"
+  type        = list(string)
+  default     = null
+}
+
+variable "elb_lineageapi_error_rate_threshold" {
+  description = "Alarms when the metric is above this value"
+  type        = number
+  default     = 5
+}
+
+variable "elb_lineageapi_host_count_datapoints_to_alarm" {
+  description = "The number of datapoints breaching threshold to alarm"
+  type        = number
+  default     = 3
+}
+
+variable "elb_lineageapi_host_count_disabled" {
+  description = "Whether to disable the specific alarm"
+  type        = bool
+  default     = false
+}
+
+variable "elb_lineageapi_host_count_evaluation_periods" {
+  description = "The number of periods over which the metric is evaluated"
+  type        = number
+  default     = 4
+}
+
+variable "elb_lineageapi_host_count_period" {
+  description = "The number of seconds over which the metric is evaluated"
+  type        = number
+  default     = 900
+}
+
+variable "elb_lineageapi_host_count_sns_arns" {
+  description = "The SNS topic arns to notify when the alarm fires"
+  type        = list(string)
+  default     = null
+}
+
+variable "elb_lineageapi_host_count_threshold" {
+  description = "Alarms when the metric is below this value"
+  type        = number
+  default     = 0.5
+}
+
+variable "elb_lineageapi_response_time_datapoints_to_alarm" {
+  description = "The number of datapoints breaching threshold to alarm"
+  type        = number
+  default     = 3
+}
+
+variable "elb_lineageapi_response_time_disabled" {
+  description = "Whether to disable the specific alarm"
+  type        = bool
+  default     = false
+}
+
+variable "elb_lineageapi_response_time_evaluation_periods" {
+  description = "The number of periods over which the metric is evaluated"
+  type        = number
+  default     = 4
+}
+
+variable "elb_lineageapi_response_time_period" {
+  description = "The number of seconds over which the metric is evaluated"
+  type        = number
+  default     = 900
+}
+
+variable "elb_lineageapi_response_time_sns_arns" {
+  description = "The SNS topic arns to notify when the alarm fires"
+  type        = list(string)
+  default     = null
+}
+
+variable "elb_lineageapi_response_time_threshold" {
+  description = "Alarms when the metric is above this value"
+  type        = number
+  default     = 120
+}
+
 variable "elb_scheduler_error_rate_datapoints_to_alarm" {
   description = "The number of datapoints breaching threshold to alarm"
   type        = number
@@ -2279,7 +2387,7 @@ variable "ecs_datawatch_mem_disabled" {
   default     = true
 }
 
-variable "ecs_datawatch_mem_dataponts_to_alarm" {
+variable "ecs_datawatch_mem_datapoints_to_alarm" {
   description = "The number of datapoints breaching threshold to alarm"
   type        = number
   default     = 4
@@ -2315,7 +2423,7 @@ variable "ecs_backfillwork_mem_disabled" {
   default     = true
 }
 
-variable "ecs_backfillwork_mem_dataponts_to_alarm" {
+variable "ecs_backfillwork_mem_datapoints_to_alarm" {
   description = "The number of datapoints breaching threshold to alarm"
   type        = number
   default     = 4
@@ -2351,7 +2459,7 @@ variable "ecs_datawork_mem_disabled" {
   default     = true
 }
 
-variable "ecs_datawork_mem_dataponts_to_alarm" {
+variable "ecs_datawork_mem_datapoints_to_alarm" {
   description = "The number of datapoints breaching threshold to alarm"
   type        = number
   default     = 4
@@ -2387,7 +2495,7 @@ variable "ecs_indexwork_mem_disabled" {
   default     = true
 }
 
-variable "ecs_indexwork_mem_dataponts_to_alarm" {
+variable "ecs_indexwork_mem_datapoints_to_alarm" {
   description = "The number of datapoints breaching threshold to alarm"
   type        = number
   default     = 4
@@ -2423,7 +2531,7 @@ variable "ecs_lineagework_mem_disabled" {
   default     = true
 }
 
-variable "ecs_lineagework_mem_dataponts_to_alarm" {
+variable "ecs_lineagework_mem_datapoints_to_alarm" {
   description = "The number of datapoints breaching threshold to alarm"
   type        = number
   default     = 4
@@ -2459,7 +2567,7 @@ variable "ecs_metricwork_mem_disabled" {
   default     = true
 }
 
-variable "ecs_metricwork_mem_dataponts_to_alarm" {
+variable "ecs_metricwork_mem_datapoints_to_alarm" {
   description = "The number of datapoints breaching threshold to alarm"
   type        = number
   default     = 4
@@ -2495,7 +2603,7 @@ variable "ecs_rootcause_mem_disabled" {
   default     = true
 }
 
-variable "ecs_rootcause_mem_dataponts_to_alarm" {
+variable "ecs_rootcause_mem_datapoints_to_alarm" {
   description = "The number of datapoints breaching threshold to alarm"
   type        = number
   default     = 4
@@ -2531,7 +2639,7 @@ variable "ecs_monocle_mem_disabled" {
   default     = false
 }
 
-variable "ecs_monocle_mem_dataponts_to_alarm" {
+variable "ecs_monocle_mem_datapoints_to_alarm" {
   description = "The number of datapoints breaching threshold to alarm"
   type        = number
   default     = 4
@@ -2567,7 +2675,7 @@ variable "ecs_internalapi_mem_disabled" {
   default     = true
 }
 
-variable "ecs_internalapi_mem_dataponts_to_alarm" {
+variable "ecs_internalapi_mem_datapoints_to_alarm" {
   description = "The number of datapoints breaching threshold to alarm"
   type        = number
   default     = 4
@@ -2597,13 +2705,49 @@ variable "ecs_internalapi_mem_threshold" {
   default     = 70
 }
 
+variable "ecs_lineageapi_mem_disabled" {
+  description = "Whether to disable the specific alarm"
+  type        = bool
+  default     = true
+}
+
+variable "ecs_lineageapi_mem_datapoints_to_alarm" {
+  description = "The number of datapoints breaching threshold to alarm"
+  type        = number
+  default     = 4
+}
+
+variable "ecs_lineageapi_mem_evaluation_periods" {
+  description = "The number of periods over which the metric is evaluated"
+  type        = number
+  default     = 5
+}
+
+variable "ecs_lineageapi_mem_period" {
+  description = "The number of seconds over which the metric is evaluated"
+  type        = number
+  default     = 300
+}
+
+variable "ecs_lineageapi_mem_sns_arns" {
+  description = "The SNS topic arns to notify when the alarm fires"
+  type        = list(string)
+  default     = null
+}
+
+variable "ecs_lineageapi_mem_threshold" {
+  description = "Alarms when the metric is above this value"
+  type        = number
+  default     = 70
+}
+
 variable "ecs_scheduler_mem_disabled" {
   description = "Whether to disable the specific alarm"
   type        = bool
   default     = false
 }
 
-variable "ecs_scheduler_mem_dataponts_to_alarm" {
+variable "ecs_scheduler_mem_datapoints_to_alarm" {
   description = "The number of datapoints breaching threshold to alarm"
   type        = number
   default     = 4
@@ -2639,7 +2783,7 @@ variable "ecs_toretto_mem_disabled" {
   default     = false
 }
 
-variable "ecs_toretto_mem_dataponts_to_alarm" {
+variable "ecs_toretto_mem_datapoints_to_alarm" {
   description = "The number of datapoints breaching threshold to alarm"
   type        = number
   default     = 4
@@ -2675,7 +2819,7 @@ variable "ecs_web_mem_disabled" {
   default     = false
 }
 
-variable "ecs_web_mem_dataponts_to_alarm" {
+variable "ecs_web_mem_datapoints_to_alarm" {
   description = "The number of datapoints breaching threshold to alarm"
   type        = number
   default     = 4

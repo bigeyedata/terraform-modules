@@ -233,6 +233,11 @@ data "aws_vpc" "this" {
     }
 
     postcondition {
+      condition     = var.create_security_groups || length(var.lineageapi_lb_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide a security group for the lineageapi lb using lineageapi_lb_extra_security_group_ids (ports 80/443)"
+    }
+
+    postcondition {
       condition     = var.create_security_groups || length(var.haproxy_extra_security_group_ids) > 0
       error_message = "If create_security_groups is false, you must provide a security group for the HAProxy ECS tasks using haproxy_extra_security_group_ids (ports ${var.haproxy_port})"
     }
@@ -302,10 +307,14 @@ data "aws_vpc" "this" {
       error_message = "If create_security_groups is false, you must provide a security group for the rootcause ECS tasks using rootcause_extra_security_group_ids (port ${var.rootcause_port})"
     }
 
-
     postcondition {
       condition     = var.create_security_groups || length(var.internalapi_extra_security_group_ids) > 0
       error_message = "If create_security_groups is false, you must provide a security group for the internalapi ECS tasks using internalapi_extra_security_group_ids (port ${var.internalapi_port})"
+    }
+
+    postcondition {
+      condition     = var.create_security_groups || length(var.lineageapi_extra_security_group_ids) > 0
+      error_message = "If create_security_groups is false, you must provide a security group for the lineageapi ECS tasks using lineageapi_extra_security_group_ids (port ${var.lineageapi_port})"
     }
 
     postcondition {
@@ -661,6 +670,7 @@ module "bigeye_admin" {
   metricwork_domain_name   = module.metricwork.dns_name
   rootcause_domain_name    = module.rootcause.dns_name
   internalapi_domain_name  = module.internalapi.dns_name
+  lineageapi_domain_name   = module.lineageapi.dns_name
   scheduler_domain_name    = module.scheduler.dns_name
 
   haproxy_resource_name      = "${local.name}-haproxy"
@@ -677,6 +687,7 @@ module "bigeye_admin" {
   metricwork_resource_name   = "${local.name}-metricwork"
   rootcause_resource_name    = "${local.name}-rootcause"
   internalapi_resource_name  = "${local.name}-internalapi"
+  lineageapi_resource_name   = "${local.name}-lineageapi"
   scheduler_resource_name    = "${local.name}-scheduler"
 
   datawatch_rds_identifier          = module.datawatch_rds.identifier
@@ -1512,7 +1523,7 @@ module "toretto" {
   efs_access_point_id       = contains(var.efs_volume_enabled_services, "toretto") ? aws_efs_access_point.this["toretto"].id : ""
   efs_mount_point           = var.efs_mount_point
 
-  # This can be removed when toretto handles sigterm better 
+  # This can be removed when toretto handles sigterm better
   stop_timeout = 10
 
   # Datadog
@@ -1880,7 +1891,7 @@ resource "aws_iam_role_policy" "datawatch_secrets" {
 }
 
 resource "aws_iam_role_policy" "datawatch_ecs_exec" {
-  count = local.create_datawatch_role && (var.datawatch_enable_ecs_exec || var.backfillwork_enable_ecs_exec || var.datawork_enable_ecs_exec || var.indexwork_enable_ecs_exec || var.lineagework_enable_ecs_exec || var.metricwork_enable_ecs_exec || var.rootcause_enable_ecs_exec || var.internalapi_enable_ecs_exec) ? 1 : 0
+  count = local.create_datawatch_role && (var.datawatch_enable_ecs_exec || var.backfillwork_enable_ecs_exec || var.datawork_enable_ecs_exec || var.indexwork_enable_ecs_exec || var.lineagework_enable_ecs_exec || var.metricwork_enable_ecs_exec || var.rootcause_enable_ecs_exec || var.internalapi_enable_ecs_exec || var.lineageapi_enable_ecs_exec) ? 1 : 0
   role  = aws_iam_role.datawatch[0].id
   name  = "AllowECSExec"
   policy = jsonencode({
@@ -1997,6 +2008,7 @@ module "redis" {
     module.indexwork.security_group_id,
     module.backfillwork.security_group_id,
     module.rootcause.security_group_id,
+    module.lineageapi.security_group_id,
   ] : []
   auth_token               = local.create_redis_auth_token_secret ? aws_secretsmanager_secret_version.redis_auth_token[0].secret_string : data.aws_secretsmanager_secret_version.byo_redis_auth_token[0].secret_string
   instance_type            = var.redis_instance_type
@@ -2063,6 +2075,7 @@ module "datawatch_rds" {
     module.indexwork.security_group_id,
     module.backfillwork.security_group_id,
     module.rootcause.security_group_id,
+    module.lineageapi.security_group_id,
   ] : []
 
   # Settings
@@ -3060,6 +3073,139 @@ resource "aws_appautoscaling_policy" "internalapi_request_count_per_target" {
       resource_label         = format("%s/%s", module.internalapi.load_balancer_full_name, module.internalapi.target_group_full_name)
     }
     target_value = var.internalapi_autoscaling_config.target_utilization
+  }
+}
+
+module "lineageapi" {
+  depends_on = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
+  source     = "../simpleservice"
+  app        = "lineageapi"
+  instance   = var.instance
+  stack      = local.name
+  name       = "${local.name}-lineageapi"
+  tags       = merge(local.tags, { app = "lineageapi" })
+
+  vpc_id                        = local.vpc_id
+  vpc_cidr_block                = var.vpc_cidr_block
+  subnet_ids                    = local.application_subnet_ids
+  create_security_groups        = var.create_security_groups
+  task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
+  additional_security_group_ids = concat(local.datawatch_additional_security_groups, var.lineageapi_extra_security_group_ids)
+  traffic_port                  = var.lineageapi_port
+  ecs_cluster_id                = aws_ecs_cluster.this.id
+  fargate_version               = var.fargate_version
+  enable_execute_command        = var.lineageapi_enable_ecs_exec
+
+  # Load balancer
+  create_lb                              = var.install_individual_internal_lbs
+  use_centralized_lb                     = var.use_centralized_internal_lb
+  centralized_lb_arn                     = aws_lb.internal_alb.arn
+  centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
+  centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
+  healthcheck_path                       = "/health"
+  healthcheck_grace_period               = 300
+  ssl_policy                             = var.alb_ssl_policy
+  acm_certificate_arn                    = local.acm_certificate_arn
+  lb_idle_timeout                        = 900
+  lb_subnet_ids                          = local.internal_service_alb_subnet_ids
+  lb_additional_security_group_ids       = concat(var.lineageapi_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
+  lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
+  lb_deregistration_delay                = 90
+
+  lb_access_logs_enabled       = var.elb_access_logs_enabled
+  lb_access_logs_bucket_name   = var.elb_access_logs_bucket
+  lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "lineageapi")
+
+  # Task settings
+  control_desired_count     = var.lineageapi_autoscaling_config.type == "none"
+  desired_count             = var.lineageapi_desired_count
+  cpu                       = var.lineageapi_cpu
+  memory                    = var.lineageapi_memory
+  execution_role_arn        = local.ecs_role_arn
+  task_role_arn             = local.datawatch_role_arn
+  image_registry            = local.image_registry
+  image_repository          = format("%s%s", "datawatch", var.image_repository_suffix)
+  image_tag                 = local.lineageapi_image_tag
+  cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
+  efs_volume_id             = contains(var.efs_volume_enabled_services, "lineageapi") ? aws_efs_file_system.this[0].id : ""
+  efs_access_point_id       = contains(var.efs_volume_enabled_services, "lineageapi") ? aws_efs_access_point.this["lineageapi"].id : ""
+  efs_mount_point           = var.efs_mount_point
+
+  # Datadog
+  datadog_agent_enabled            = var.datadog_agent_enabled
+  datadog_agent_image              = var.datadog_agent_image
+  datadog_agent_cpu                = var.datadog_agent_cpu
+  datadog_agent_memory             = var.datadog_agent_memory
+  datadog_agent_api_key_secret_arn = var.datadog_agent_api_key_secret_arn
+
+  # aws firelens
+  awsfirelens_cpu     = var.awsfirelens_cpu
+  awsfirelens_memory  = var.awsfirelens_memory
+  awsfirelens_enabled = var.awsfirelens_enabled
+  awsfirelens_host    = var.awsfirelens_host
+  awsfirelens_image   = var.awsfirelens_image
+  awsfirelens_uri     = var.awsfirelens_uri
+
+  environment_variables = merge(
+    local.datawatch_dd_env_vars,
+    local.datawatch_common_env_vars,
+    {
+      APP                = "lineageapi"
+      WORKERS_ENABLED    = "false"
+      MAX_RAM_PERCENTAGE = var.lineageapi_jvm_max_ram_pct
+
+      HEAP_DUMP_PATH = contains(var.efs_volume_enabled_services, "lineageapi") ? var.efs_mount_point : ""
+    },
+    var.lineageapi_additional_environment_vars,
+  )
+
+  secret_arns = local.datawatch_secret_arns
+
+  create_dns_records = var.create_dns_records
+  route53_zone_id    = data.aws_route53_zone.this[0].zone_id
+  dns_name           = "${local.base_dns_alias}-lineageapi.${var.top_level_dns_name}"
+}
+
+resource "aws_appautoscaling_target" "lineageapi" {
+  count              = var.lineageapi_autoscaling_config.type == "none" ? 0 : 1
+  depends_on         = [module.lineageapi]
+  min_capacity       = var.lineageapi_autoscaling_config.min_capacity
+  max_capacity       = var.lineageapi_autoscaling_config.max_capacity
+  resource_id        = format("service/%s/%s-lineageapi", local.name, local.name)
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+}
+
+resource "aws_appautoscaling_policy" "lineageapi_cpu_utilization" {
+  count              = var.lineageapi_autoscaling_config.type == "cpu_utilization" ? 1 : 0
+  depends_on         = [aws_appautoscaling_target.lineageapi]
+  name               = format("%s-lineageapi-cpu-utilization", local.name)
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.lineageapi[0].resource_id
+  scalable_dimension = aws_appautoscaling_target.lineageapi[0].scalable_dimension
+  service_namespace  = aws_appautoscaling_target.lineageapi[0].service_namespace
+  target_tracking_scaling_policy_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ECSServiceAverageCPUUtilization"
+    }
+    target_value = var.lineageapi_autoscaling_config.target_utilization
+  }
+}
+
+resource "aws_appautoscaling_policy" "lineageapi_request_count_per_target" {
+  count              = var.lineageapi_autoscaling_config.type == "request_count_per_target" ? 1 : 0
+  depends_on         = [aws_appautoscaling_target.lineageapi]
+  name               = format("%s-lineageapi-request-count-per-target", local.name)
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.lineageapi[0].resource_id
+  scalable_dimension = aws_appautoscaling_target.lineageapi[0].scalable_dimension
+  service_namespace  = aws_appautoscaling_target.lineageapi[0].service_namespace
+  target_tracking_scaling_policy_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ALBRequestCountPerTarget"
+      resource_label         = format("%s/%s", module.lineageapi.load_balancer_full_name, module.lineageapi.target_group_full_name)
+    }
+    target_value = var.lineageapi_autoscaling_config.target_utilization
   }
 }
 

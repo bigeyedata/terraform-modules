@@ -194,6 +194,7 @@ locals {
   metricwork_image_tag   = coalesce(var.metricwork_image_tag, var.image_tag)
   rootcause_image_tag    = coalesce(var.rootcause_image_tag, var.image_tag)
   internalapi_image_tag  = coalesce(var.internalapi_image_tag, var.image_tag)
+  lineageapi_image_tag   = coalesce(var.lineageapi_image_tag, var.image_tag)
   scheduler_image_tag    = coalesce(var.scheduler_image_tag, var.image_tag)
   bigeye_admin_image_tag = coalesce(var.bigeye_admin_image_tag, var.image_tag)
 

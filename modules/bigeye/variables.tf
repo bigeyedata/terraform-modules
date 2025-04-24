@@ -2474,6 +2474,90 @@ variable "internalapi_autoscaling_config" {
     error_message = "Must be one of: none, cpu_utilization, request_count_per_target"
   }
 }
+
+#======================================================
+# Application Variables - lineageapi
+#======================================================
+variable "lineageapi_image_tag" {
+  description = "The image tag to use for lineageapi, defaults to the global `image_tag` if not specified"
+  type        = string
+  default     = ""
+}
+
+variable "lineageapi_desired_count" {
+  description = "Initial capacity before autoscaling adjustments"
+  type        = number
+  default     = 2
+}
+
+variable "lineageapi_cpu" {
+  description = "Amount of CPU to allocate"
+  type        = number
+  default     = 1024
+}
+
+variable "lineageapi_memory" {
+  description = "Amount of Memory in MB to allocate"
+  type        = number
+  default     = 8192
+}
+
+variable "lineageapi_port" {
+  description = "The port to listen on"
+  type        = number
+  default     = 80
+}
+
+variable "lineageapi_additional_environment_vars" {
+  description = "Additional enviromnent variables to give the application"
+  type        = map(string)
+  default     = {}
+}
+
+variable "lineageapi_extra_security_group_ids" {
+  description = "Additional security group ids to lineageapi"
+  type        = list(string)
+  default     = []
+}
+
+variable "lineageapi_lb_extra_security_group_ids" {
+  description = "Additional security group ids to lineageapi ALB"
+  type        = list(string)
+  default     = []
+}
+
+variable "lineageapi_jvm_max_ram_pct" {
+  description = ""
+  type        = number
+  default     = 80
+}
+
+variable "lineageapi_enable_ecs_exec" {
+  description = "Whether to enable ECS exec"
+  type        = bool
+  default     = false
+}
+
+variable "lineageapi_autoscaling_config" {
+  type = object({
+    min_capacity       = number
+    max_capacity       = number
+    type               = string
+    target_utilization = number
+  })
+  default = {
+    min_capacity = 2
+    max_capacity = 15
+    # If CPU scaling is leading to OOM or other overloading due to bursts, switch to request_count_per_target or increase the min capacity.
+    type               = "cpu_utilization"
+    target_utilization = 65
+  }
+  validation {
+    condition     = contains(["none", "cpu_utilization", "request_count_per_target"], var.lineageapi_autoscaling_config.type)
+    error_message = "Must be one of: none, cpu_utilization, request_count_per_target"
+  }
+}
+
 #======================================================
 # Application Variables - Scheduler
 #======================================================
