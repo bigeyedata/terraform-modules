@@ -1081,17 +1081,22 @@ module "web" {
   fargate_version               = var.fargate_version
 
   # Load balancer
-  healthcheck_path                 = "/next-status"
-  healthcheck_interval             = 15
-  healthcheck_unhealthy_threshold  = 3
-  ssl_policy                       = var.alb_ssl_policy
-  acm_certificate_arn              = local.acm_certificate_arn
-  lb_idle_timeout                  = 180
-  lb_subnet_ids                    = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids = concat(var.web_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
-  lb_additional_ingress_cidrs      = var.internal_additional_ingress_cidrs
-  lb_stickiness_enabled            = true
-  lb_deregistration_delay          = 120
+  create_lb                              = var.install_individual_internal_lbs
+  use_centralized_lb                     = var.use_centralized_internal_lb
+  centralized_lb_arn                     = aws_lb.internal_alb.arn
+  centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
+  centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
+  healthcheck_path                       = "/next-status"
+  healthcheck_interval                   = 15
+  healthcheck_unhealthy_threshold        = 3
+  ssl_policy                             = var.alb_ssl_policy
+  acm_certificate_arn                    = local.acm_certificate_arn
+  lb_idle_timeout                        = 180
+  lb_subnet_ids                          = local.internal_service_alb_subnet_ids
+  lb_additional_security_group_ids       = concat(var.web_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
+  lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
+  lb_stickiness_enabled                  = true
+  lb_deregistration_delay                = 120
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -1512,7 +1517,7 @@ module "toretto" {
   efs_access_point_id       = contains(var.efs_volume_enabled_services, "toretto") ? aws_efs_access_point.this["toretto"].id : ""
   efs_mount_point           = var.efs_mount_point
 
-  # This can be removed when toretto handles sigterm better 
+  # This can be removed when toretto handles sigterm better
   stop_timeout = 10
 
   # Datadog
@@ -2284,15 +2289,20 @@ module "datawatch" {
   enable_execute_command        = var.datawatch_enable_ecs_exec
 
   # Load balancer
-  healthcheck_path                 = "/health"
-  healthcheck_grace_period         = 300
-  ssl_policy                       = var.alb_ssl_policy
-  acm_certificate_arn              = local.acm_certificate_arn
-  lb_idle_timeout                  = 900
-  lb_subnet_ids                    = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids = concat(var.datawatch_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
-  lb_additional_ingress_cidrs      = var.internal_additional_ingress_cidrs
-  lb_deregistration_delay          = 900
+  create_lb                              = var.install_individual_internal_lbs
+  use_centralized_lb                     = var.use_centralized_internal_lb
+  centralized_lb_arn                     = aws_lb.internal_alb.arn
+  centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
+  centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
+  healthcheck_path                       = "/health"
+  healthcheck_grace_period               = 300
+  ssl_policy                             = var.alb_ssl_policy
+  acm_certificate_arn                    = local.acm_certificate_arn
+  lb_idle_timeout                        = 900
+  lb_subnet_ids                          = local.internal_service_alb_subnet_ids
+  lb_additional_security_group_ids       = concat(var.datawatch_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
+  lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
+  lb_deregistration_delay                = 900
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
