@@ -42,12 +42,14 @@ jobs:
           echo "ref=${ref}" >> $GITHUB_OUTPUT
           echo "tarname=${tarname}"
           echo "tarname=${tarname}" >> $GITHUB_OUTPUT
-      - uses: actions/checkout@v4
+      # v4.2.2
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           ref: ${{ steps.determine-ref.outputs.ref }}
           path: terraform-modules
       - name: Setup terraform
-        uses: hashicorp/setup-terraform@v3.0.0
+        # v3.1.2
+        uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd
         with:
           terraform_version: 1.7.5
           # https://github.com/hashicorp/setup-terraform/issues/373
@@ -62,7 +64,8 @@ jobs:
           ls -ahl
       - name: Configure AWS credentials
         if: "${{ github.event_name != 'pull_request' }}"
-        uses: aws-actions/configure-aws-credentials@v4.0.1
+        # v4.1.0
+        uses: aws-actions/configure-aws-credentials@ececac1a45f3b08a01d2dd070d28d111c5fe6722
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

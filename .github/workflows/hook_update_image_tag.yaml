@@ -22,7 +22,8 @@ jobs:
   update_tag:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      # v4.2.2
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           fetch-depth: 0
       - name: set up branch
@@ -36,7 +37,8 @@ jobs:
           git status
           git diff | cat
           git diff HEAD~1 | cat
-      - uses: stefanzweifel/git-auto-commit-action@v5
+      # v5.2.0
+      - uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403
         with:
           create_branch: false
           branch: "update-image-tag-${{ inputs.tag }}"

@@ -21,7 +21,8 @@ jobs:
     outputs:
       dir: ${{ steps.setdirs.outputs.dir }}
     steps:
-      - uses: actions/checkout@v4
+      # v4.2.2
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - id: setdirs
         run: |
           # shellcheck disable=SC2012
@@ -37,12 +38,14 @@ jobs:
         directory: ${{ fromJson(needs.directories.outputs.dir) }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      # v4.2.2
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
     - name: Get git status
       run: git status
-    
+
     - name: Setup terraform
-      uses: hashicorp/setup-terraform@v3
+      # v3.1.2
+      uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd
       with:
         terraform_version: "1.5.7"
 
@@ -66,7 +69,7 @@ jobs:
     steps:
       - name: build changelog
         id: changelog
-        uses: TriPSs/conventional-changelog-action@v5
+        uses: TriPSs/conventional-changelog-action@c6e8c216679c1c923820011e544cbe0e813b8057
         with:
           git-branch: "release-from-${{ github.sha }}"
           create-summary: true
@@ -85,7 +88,8 @@ jobs:
       skipped: ${{ needs.changelog.outputs.skipped }}
       tag: ${{ needs.changelog.outputs.tag }}
     steps:
-      - uses: actions/checkout@v4
+      # v4.2.2
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           fetch-depth: 0
       - name: fetch current version
@@ -106,7 +110,8 @@ jobs:
           git status
           git diff | cat
           git diff HEAD~1 | cat
-      - uses: stefanzweifel/git-auto-commit-action@v5
+      # v5.2.0
+      - uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403
         if: ${{ needs.changelog.outputs.skipped == 'false' }}
         with:
           create_branch: false
@@ -135,7 +140,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: create release with last commit
         if: ${{ needs.changelog.outputs.skipped == 'false' }}
-        uses: ncipollo/release-action@v1
+        # v1.16.0
+        uses: ncipollo/release-action@440c8c1cb0ed28b9f43e4d1d670870f059653174
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ needs.changelog.outputs.tag }}
@@ -162,7 +168,8 @@ jobs:
     steps:
       - name: notify slack
         if: ${{ needs.changelog.outputs.skipped == 'false' }}
-        uses: slackapi/slack-github-action@v1.25.0
+        # v2.0.0
+        uses: slackapi/slack-github-action@485a9d42d3a73031f12ec201c457e2162c45d02d
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
         with:
@@ -190,7 +197,8 @@ jobs:
       always() && (needs.publish.result != 'success')
     steps:
       - name: Notify on fail
-        uses: slackapi/slack-github-action@v1.25.0
+        # v2.0.0
+        uses: slackapi/slack-github-action@485a9d42d3a73031f12ec201c457e2162c45d02d
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
         with:
