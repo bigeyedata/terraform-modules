@@ -1,3 +1,12 @@
+## [19.0.2](https://github.com/bigeyedata/terraform-modules/compare/v19.0.1...v19.0.2) (2025-04-24)
+
+
+### Bug Fixes
+
+* update slack action formatting ([7ff7d9c](https://github.com/bigeyedata/terraform-modules/commit/7ff7d9c0abca5e9ee0695f02dbde72e7a5682362))
+
+
+
 ## [19.0.1](https://github.com/bigeyedata/terraform-modules/compare/v19.0.0...v19.0.1) (2025-04-24)
 
 
