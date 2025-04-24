@@ -9,6 +9,7 @@ on:
   pull_request:
     paths:
       - modules/**/*
+      - .github/workflows/test_and_publish.yaml
 
 concurrency:
   group: ${{ github.workflow }}
@@ -58,35 +59,16 @@ jobs:
     - name: Terraform lint check
       run: terraform -chdir=${{ matrix.directory }} fmt -check
 
-  changelog:
-    needs:
-      - validate
-    runs-on: ubuntu-latest
-    outputs:
-      clean_changelog: ${{ steps.changelog.outputs.clean_changelog }}
-      skipped: ${{ steps.changelog.outputs.skipped }}
-      tag: ${{ steps.changelog.outputs.tag }}
-    steps:
-      - name: build changelog
-        id: changelog
-        uses: TriPSs/conventional-changelog-action@c6e8c216679c1c923820011e544cbe0e813b8057
-        with:
-          git-branch: "release-from-${{ github.sha }}"
-          create-summary: true
-          skip-git-pull: true
-          release-count: 0
-          input-file: CHANGELOG.md
-
   publish:
     name: Publish
     runs-on: ubuntu-latest
     needs:
-      - changelog
+      - validate
     timeout-minutes: 5
     if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
     outputs:
-      skipped: ${{ needs.changelog.outputs.skipped }}
-      tag: ${{ needs.changelog.outputs.tag }}
+      skipped: ${{ steps.changelog.outputs.skipped }}
+      tag: ${{ steps.changelog.outputs.tag }}
     steps:
       # v4.2.2
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -101,10 +83,18 @@ jobs:
         run: |
           git branch "release-from-${{ github.sha }}" "${{ github.sha }}"
           git checkout "release-from-${{ github.sha }}"
-
+      - name: build changelog
+        id: changelog
+        uses: TriPSs/conventional-changelog-action@c6e8c216679c1c923820011e544cbe0e813b8057
+        with:
+          git-branch: "release-from-${{ github.sha }}"
+          create-summary: true
+          skip-git-pull: true
+          release-count: 0
+          input-file: CHANGELOG.md
       - name: replace tf release version in scripts
-        if: ${{ needs.changelog.outputs.skipped == 'false' }}
-        run: ./scripts/replace-terraform-version.sh "${{ needs.changelog.outputs.tag }}"
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        run: ./scripts/replace-terraform-version.sh "${{ steps.changelog.outputs.tag }}"
       - name: inspect git status
         run: |
           git status
@@ -112,62 +102,61 @@ jobs:
           git diff HEAD~1 | cat
       # v5.2.0
       - uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403
-        if: ${{ needs.changelog.outputs.skipped == 'false' }}
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
         with:
           create_branch: false
           branch: "release-from-${{ github.sha }}"
-          commit_message: "chore(release): update example docs to use new version ${{ needs.changelog.outputs.tag }}"
+          commit_message: "chore(release): update example docs to use new version ${{ steps.changelog.outputs.tag }}"
           file_pattern: examples/**/*
           skip_fetch: true
       - name: create PR with release
-        if: ${{ needs.changelog.outputs.skipped == 'false' }}
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
         id: create-pr
-        run: gh pr create --base main --head release-from-${{ github.sha }} --title "Add release notes for ${{ needs.changelog.outputs.tag }}" --body "Created by action ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        run: gh pr create --base main --head release-from-${{ github.sha }} --title "Add release notes for ${{ steps.changelog.outputs.tag }}" --body "Created by action ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: approve pr
-        if: ${{ needs.changelog.outputs.skipped == 'false' }}
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
         run: |
           gh pr review "release-from-${{ github.sha }}" --approve
         env:
           GH_TOKEN: ${{ secrets.BIGEYE_SRE_BOT_GH_PAT }}
       - name: merge PR with release info
-        if: ${{ needs.changelog.outputs.skipped == 'false' }}
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
         id: merge-pr
         run: |
-          gh pr merge "release-from-${{ github.sha }}" --admin --merge --delete-branch --subject "chore: merge release docs for ${{ needs.changelog.outputs.tag }}"
+          gh pr merge "release-from-${{ github.sha }}" --admin --merge --delete-branch --subject "chore: merge release docs for ${{ steps.changelog.outputs.tag }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: create release with last commit
-        if: ${{ needs.changelog.outputs.skipped == 'false' }}
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
         # v1.16.0
         uses: ncipollo/release-action@440c8c1cb0ed28b9f43e4d1d670870f059653174
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ needs.changelog.outputs.tag }}
-          name: ${{ needs.changelog.outputs.tag }}
-          body: ${{ needs.changelog.outputs.clean_changelog }}
+          tag: ${{ steps.changelog.outputs.tag }}
+          name: ${{ steps.changelog.outputs.tag }}
+          body: ${{ steps.changelog.outputs.clean_changelog }}
       - name: notify SDP
-        if: ${{ needs.changelog.outputs.skipped == 'false' }}
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
         run: |
-          gh workflow run "TF Bump Module Version" -R "bigeyedata/semantic-data-platform" --field "previousVersion=${{ steps.prevversion.outputs.PREVIOUS_VERSION }}" --field "version=${{ needs.changelog.outputs.tag }}"
+          gh workflow run "TF Bump Module Version" -R "bigeyedata/semantic-data-platform" --field "previousVersion=${{ steps.prevversion.outputs.PREVIOUS_VERSION }}" --field "version=${{ steps.changelog.outputs.tag }}"
         env:
           GITHUB_TOKEN: ${{ secrets.BIGEYE_SRE_BOT_GH_PAT }}
       - name: failure - delete branch and tag
-        if: ${{ failure() && needs.changelog.outputs.skipped == 'false' }}
+        if: ${{ failure() && steps.changelog.outputs.skipped == 'false' }}
         run: |
           git push -d origin release-from-${{ github.sha }} || echo "failed to delete branch"
-          git push -d origin ${{ needs.changelog.outputs.tag }} || echo "failed to delete tag"
+          git push -d origin ${{ steps.changelog.outputs.tag }} || echo "failed to delete tag"
 
   notify-on-success:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     needs:
-      - changelog
       - publish
     steps:
       - name: notify slack
-        if: ${{ needs.changelog.outputs.skipped == 'false' }}
+        if: ${{ needs.publish.outputs.skipped == 'false' }}
         # v2.0.0
         uses: slackapi/slack-github-action@485a9d42d3a73031f12ec201c457e2162c45d02d
         env:
@@ -181,7 +170,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": ":shipitparrot: terraform-modules successfully published version ${{ needs.changelog.outputs.tag }}. [<${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ needs.changelog.outputs.tag }}|Release>]"
+                    "text": ":shipitparrot: terraform-modules successfully published version ${{ needs.publish.outputs.tag }}. [<${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ needs.publish.outputs.tag }}|Release>]"
                   }
                 }
               ]
@@ -191,10 +180,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     needs:
-      - changelog
       - publish
     if: |
-      always() && (needs.publish.result != 'success')
+      always() && needs.publish.result != 'success' && needs.publish.result != 'skipped'
     steps:
       - name: Notify on fail
         # v2.0.0
@@ -210,7 +198,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": ":sadparrot: terraform-modules publish version ${{ needs.changelog.outputs.tag }} failed. [<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}| GH Action>]"
+                    "text": ":sadparrot: terraform-modules publish version ${{ needs.publish.outputs.tag }} failed. [<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}| GH Action>]"
                   }
                 }
               ]
