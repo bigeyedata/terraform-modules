@@ -1,3 +1,16 @@
+# [18.0.0](https://github.com/bigeyedata/terraform-modules/compare/v17.22.0...v18.0.0) (2025-04-24)
+
+
+* feat!: migrate off of inline security group rules part 1/2 ([b78a6ba](https://github.com/bigeyedata/terraform-modules/commit/b78a6ba6dcf0aa46d73c7f5906c5627150c80571))
+
+
+### BREAKING CHANGES
+
+* Part one should only be applied 1x.  Then upgrade
+to part 2 and the plan will be idempotent again.
+
+
+
 # [17.22.0](https://github.com/bigeyedata/terraform-modules/compare/v17.21.1...v17.22.0) (2025-04-18)
 
 
