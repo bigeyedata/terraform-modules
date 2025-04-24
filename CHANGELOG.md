@@ -1,3 +1,14 @@
+## [19.0.1](https://github.com/bigeyedata/terraform-modules/compare/v19.0.0...v19.0.1) (2025-04-24)
+
+
+### Bug Fixes
+
+* fix busted publish GH action ([f6d1206](https://github.com/bigeyedata/terraform-modules/commit/f6d1206155d61fcaae2f96abebca984ab949284a))
+* move CD notification to its own job ([81ca585](https://github.com/bigeyedata/terraform-modules/commit/81ca5858315b182cf7096ab475c307ff5c689d52))
+* pin sha for all github actions ([72f334a](https://github.com/bigeyedata/terraform-modules/commit/72f334ab9b02fbd3f4c8f1669979cc1ef47e3a9b))
+
+
+
 # [19.0.0](https://github.com/bigeyedata/terraform-modules/compare/v18.0.0...v19.0.0) (2025-04-24)
 
 
