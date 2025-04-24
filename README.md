@@ -49,6 +49,12 @@ terraform version and application version.
 
 ## Upgrading
 
+### Upgrading to 19.0.0
+
+Be sure to apply 18.0.0 first, or the previously inline security group
+rules that were removed will be left dangling and will cause conflicts
+down the road.
+
 ### Upgrading to 18.0.0
 
 18.0.0 is the first step in a 2 part series to migrate from inline security
