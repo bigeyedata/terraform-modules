@@ -29,31 +29,46 @@ resource "aws_security_group" "lb" {
   tags = merge(var.tags, {
     Name = "${var.name}-lb"
   })
+  ingress = []
+  egress  = []
+}
 
-  ingress {
-    description = "HTTPS from ${local.load_balancer_ingress_text}"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "TCP"
-    cidr_blocks = local.load_balancer_ingress_cidrs
-  }
+resource "aws_vpc_security_group_ingress_rule" "lb_http" {
+  for_each          = var.create_lb && var.create_security_groups ? toset(local.load_balancer_ingress_cidrs) : []
+  description       = "HTTP from ${each.value}"
+  from_port         = 80
+  to_port           = 80
+  ip_protocol       = "tcp"
+  cidr_ipv4         = each.value
+  security_group_id = aws_security_group.lb[0].id
+}
 
-  ingress {
-    description = "HTTP from internal"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "TCP"
-    cidr_blocks = local.load_balancer_ingress_cidrs
-  }
+resource "aws_vpc_security_group_ingress_rule" "lb_https" {
+  for_each          = var.create_lb && var.create_security_groups ? toset(local.load_balancer_ingress_cidrs) : []
+  description       = "HTTPS from ${each.value}"
+  from_port         = 443
+  to_port           = 443
+  ip_protocol       = "tcp"
+  cidr_ipv4         = each.value
+  security_group_id = aws_security_group.lb[0].id
+}
 
-  egress {
-    description      = "Allow outbound"
-    from_port        = 0
-    to_port          = local.max_port
-    protocol         = "TCP"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
+resource "aws_vpc_security_group_egress_rule" "lb_ipv4" {
+  count             = var.create_lb && var.create_security_groups ? 1 : 0
+  from_port         = 0
+  to_port           = local.max_port
+  ip_protocol       = "tcp"
+  cidr_ipv4         = "0.0.0.0/0"
+  security_group_id = aws_security_group.lb[0].id
+}
+
+resource "aws_vpc_security_group_egress_rule" "lb_ipv6" {
+  count             = var.create_lb && var.create_security_groups ? 1 : 0
+  from_port         = 0
+  to_port           = local.max_port
+  ip_protocol       = "tcp"
+  cidr_ipv6         = "::/0"
+  security_group_id = aws_security_group.lb[0].id
 }
 
 resource "aws_lb" "this" {
@@ -195,38 +210,56 @@ resource "aws_security_group" "this" {
     Name = var.name
   })
 
-  ingress {
-    description = "allows port ${var.traffic_port} from the load balancer"
-    from_port   = var.traffic_port
-    to_port     = var.traffic_port
-    protocol    = "TCP"
-    security_groups = concat(
-      var.create_lb ? [aws_security_group.lb[0].id] : [],
-      var.centralized_lb_security_group_ids,
-    )
-  }
+  ingress = []
+  egress  = []
+}
 
-  # TODO split these out into their own resources
-  dynamic "ingress" {
-    for_each = toset(var.task_additional_ingress_cidrs)
+resource "aws_vpc_security_group_ingress_rule" "this_lb_to_service" {
+  count                        = var.create_lb ? 1 : 0
+  description                  = "Allows port ${var.traffic_port} from service load balancer"
+  from_port                    = var.traffic_port
+  to_port                      = var.traffic_port
+  ip_protocol                  = "tcp"
+  referenced_security_group_id = aws_security_group.lb[0].id
+  security_group_id            = aws_security_group.this[0].id
+}
 
-    content {
-      from_port   = var.traffic_port
-      to_port     = var.traffic_port
-      protocol    = "TCP"
-      description = "Allows port ${var.traffic_port} from ${ingress.key}"
-      cidr_blocks = [ingress.key]
-    }
-  }
+resource "aws_vpc_security_group_ingress_rule" "internal_lb_to_service" {
+  for_each                     = var.create_security_groups ? toset(var.centralized_lb_security_group_ids) : []
+  description                  = "Allows port ${var.traffic_port} from the internal load balancer"
+  from_port                    = var.traffic_port
+  to_port                      = var.traffic_port
+  ip_protocol                  = "tcp"
+  referenced_security_group_id = each.value
+  security_group_id            = aws_security_group.this[0].id
+}
 
-  egress {
-    description      = "Allow outbound"
-    from_port        = 0
-    to_port          = local.max_port
-    protocol         = "TCP"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
+resource "aws_vpc_security_group_ingress_rule" "additional_to_service" {
+  for_each          = var.create_security_groups ? toset(var.task_additional_ingress_cidrs) : []
+  description       = "Allows port ${var.traffic_port} from ${each.value}"
+  from_port         = var.traffic_port
+  to_port           = var.traffic_port
+  ip_protocol       = "tcp"
+  cidr_ipv4         = each.value
+  security_group_id = aws_security_group.this[0].id
+}
+
+resource "aws_vpc_security_group_egress_rule" "this_ipv4" {
+  count             = var.create_security_groups ? 1 : 0
+  from_port         = 0
+  to_port           = local.max_port
+  ip_protocol       = "tcp"
+  cidr_ipv4         = "0.0.0.0/0"
+  security_group_id = aws_security_group.this[0].id
+}
+
+resource "aws_vpc_security_group_egress_rule" "this_ipv6" {
+  count             = var.create_security_groups ? 1 : 0
+  from_port         = 0
+  to_port           = local.max_port
+  ip_protocol       = "tcp"
+  cidr_ipv6         = "::/0"
+  security_group_id = aws_security_group.this[0].id
 }
 
 resource "aws_ecs_task_definition" "this" {
