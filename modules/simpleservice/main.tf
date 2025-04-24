@@ -29,8 +29,6 @@ resource "aws_security_group" "lb" {
   tags = merge(var.tags, {
     Name = "${var.name}-lb"
   })
-  ingress = []
-  egress  = []
 }
 
 resource "aws_vpc_security_group_ingress_rule" "lb_http" {
@@ -209,9 +207,6 @@ resource "aws_security_group" "this" {
   tags = merge(var.tags, {
     Name = var.name
   })
-
-  ingress = []
-  egress  = []
 }
 
 resource "aws_vpc_security_group_ingress_rule" "this_lb_to_service" {
