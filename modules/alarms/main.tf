@@ -448,8 +448,8 @@ module "elb_datawatch" {
   source                         = "./elb"
   stack                          = var.stack
   app                            = "datawatch"
-  lb_name                        = "${var.stack}-datawatch"
-  target_group_name              = "${var.stack}-datawatch"
+  lb_name                        = var.monitor_individual_internal_lbs ? "${var.stack}-datawatch" : "${var.stack}-internal"
+  target_group_name              = var.monitor_individual_internal_lbs ? "${var.stack}-datawatch" : "${var.stack}-datawatch2"
   host_count_disabled            = var.elb_datawatch_host_count_disabled
   host_count_datapoints_to_alarm = var.elb_datawatch_host_count_datapoints_to_alarm
   host_count_evaluation_periods  = var.elb_datawatch_host_count_evaluation_periods
@@ -662,8 +662,8 @@ module "elb_web" {
   source                         = "./elb"
   stack                          = var.stack
   app                            = "web"
-  lb_name                        = "${var.stack}-web"
-  target_group_name              = "${var.stack}-web"
+  lb_name                        = var.monitor_individual_internal_lbs ? "${var.stack}-web" : "${var.stack}-internal"
+  target_group_name              = var.monitor_individual_internal_lbs ? "${var.stack}-web" : "${var.stack}-web2"
   host_count_disabled            = var.elb_web_host_count_disabled
   host_count_datapoints_to_alarm = var.elb_web_host_count_datapoints_to_alarm
   host_count_evaluation_periods  = var.elb_web_host_count_evaluation_periods
