@@ -49,6 +49,39 @@ terraform version and application version.
 
 ## Upgrading
 
+### Upgrading to 20.0.0
+
+The following vars have been renamed from "ponts" to points" to fix typos.
+If you've set any of the following, rename them from these:
+
+- var.ecs_backfillwork_mem_dataponts_to_alarm
+- var.ecs_datawatch_mem_dataponts_to_alarm
+- var.ecs_datawork_mem_dataponts_to_alarm
+- var.ecs_indexwork_mem_dataponts_to_alarm
+- var.ecs_lineagework_mem_dataponts_to_alarm
+- var.ecs_metricwork_mem_dataponts_to_alarm
+- var.ecs_rootcause_mem_dataponts_to_alarm
+- var.ecs_monocle_mem_dataponts_to_alarm
+- var.ecs_internalapi_mem_dataponts_to_alarm
+- var.ecs_scheduler_mem_dataponts_to_alarm
+- var.ecs_toretto_mem_dataponts_to_alarm
+- var.ecs_web_mem_dataponts_to_alarm
+
+To these:
+
+- var.ecs_backfillwork_mem_datapoints_to_alarm
+- var.ecs_datawatch_mem_datapoints_to_alarm
+- var.ecs_datawork_mem_datapoints_to_alarm
+- var.ecs_indexwork_mem_datapoints_to_alarm
+- var.ecs_lineagework_mem_datapoints_to_alarm
+- var.ecs_metricwork_mem_datapoints_to_alarm
+- var.ecs_rootcause_mem_datapoints_to_alarm
+- var.ecs_monocle_mem_datapoints_to_alarm
+- var.ecs_internalapi_mem_datapoints_to_alarm
+- var.ecs_scheduler_mem_datapoints_to_alarm
+- var.ecs_toretto_mem_datapoints_to_alarm
+- var.ecs_web_mem_datapoints_to_alarm
+
 ### Upgrading to 19.0.0
 
 Be sure to apply 18.0.0 first, or the previously inline security group
