@@ -49,6 +49,20 @@ terraform version and application version.
 
 ## Upgrading
 
+### Upgrading to 18.0.0
+
+18.0.0 is the first step in a 2 part series to migrate from inline security
+group rules to dedicated rules.  The inline rules do not track AWS rule Ids
+properly which blocks seamless changes.  More can be read on this in the
+[Terraform docs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_security_group_ingress_rule)
+
+> IMPORTANT - Apply this plan 1x only.  Then apply 19.0.0
+
+The migration path from inline rules involves setting the inline rules to
+empty lists. But this will fight with the dedicated ingress/egress rules so
+only apply 18.0.0 once, then upgrade to 19.0.0 and the plan will be
+idempotent again.
+
 ### Upgrading to 17.0.0
 
 The minimum version of the `hashicorp/aws` module has been increased to
