@@ -1,3 +1,22 @@
+# [20.0.0](https://github.com/bigeyedata/terraform-modules/compare/v19.0.2...v20.0.0) (2025-04-26)
+
+
+* feat!: add dedicated lineage api service ([f5dcf46](https://github.com/bigeyedata/terraform-modules/commit/f5dcf4683388579780567c71c3bfa7ce8d1391ea))
+
+
+### BREAKING CHANGES
+
+* as part of adding a new service, a previous change
+to security group rules had to be cleaned up.  No action by installers
+is required other than to install and upgrade to the previous major
+version first before installing this one.
+
+Note that this PR does not handle routing of API calls, that will
+be an app version change (TBD).  This PR only handles installation
+of the service.
+
+
+
 ## [19.0.2](https://github.com/bigeyedata/terraform-modules/compare/v19.0.1...v19.0.2) (2025-04-24)
 
 
