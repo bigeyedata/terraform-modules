@@ -1058,6 +1058,8 @@ module "haproxy" {
       REDIRECT_ADDRESS = "https://${local.vanity_dns_name}"
       PORT             = var.haproxy_port
       HAPROXY_PORT     = var.haproxy_port
+      LINEAGEAPI_HOST  = var.haproxy_lineageapi_enabled ? module.lineageapi.dns_name : module.datawatch.dns_name
+      LINEAGEAPI_PORT  = "443"
     },
     var.haproxy_additional_environment_vars,
   )
