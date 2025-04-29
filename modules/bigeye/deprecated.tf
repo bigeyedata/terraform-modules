@@ -9,3 +9,9 @@ variable "install_individual_internal_lbs" {
   type        = bool
   default     = true
 }
+
+variable "haproxy_lineageapi_enabled" {
+  description = "This is a feature flag to allow a controlled rollforward/rollback for routing lineage API calls to a dedicated lineageapi service.  By default this routes all backend requests through haproxy to the datawatch service (ie no change in behavior)"
+  type        = bool
+  default     = false
+}
