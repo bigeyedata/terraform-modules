@@ -1047,12 +1047,6 @@ module "haproxy" {
       INSTANCE         = var.instance
       DW_HOST          = module.datawatch.dns_name
       DW_PORT          = "443"
-      SCHEDULER_HOST   = module.scheduler.dns_name
-      SCHEDULER_PORT   = "443"
-      TORETTO_HOST     = module.toretto.dns_name
-      TORETTO_PORT     = "443"
-      MONOCLE_HOST     = module.monocle.dns_name
-      MONOCLE_PORT     = "443"
       WEB_HOST         = module.web.dns_name
       WEB_PORT         = "443"
       REDIRECT_ADDRESS = "https://${local.vanity_dns_name}"
