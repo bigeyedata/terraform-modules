@@ -15,3 +15,9 @@ variable "haproxy_lineageapi_enabled" {
   type        = bool
   default     = false
 }
+
+variable "disable_unused_monocle_dd_flags" {
+  description = "temporary flag to see if disabling unneeded datadog telemetry will have an affect on cpu util"
+  type        = bool
+  default     = true
+}
