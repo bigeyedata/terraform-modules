@@ -1,3 +1,12 @@
+# [20.1.0](https://github.com/bigeyedata/terraform-modules/compare/v20.0.0...v20.1.0) (2025-04-30)
+
+
+### Features
+
+* add env var to control routing of Lineage API requests ([7dab936](https://github.com/bigeyedata/terraform-modules/commit/7dab936614acc91c734c878a6b128492f9518cc8))
+
+
+
 # [20.0.0](https://github.com/bigeyedata/terraform-modules/compare/v19.0.2...v20.0.0) (2025-04-26)
 
 
