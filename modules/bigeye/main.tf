@@ -1389,12 +1389,14 @@ module "monocle" {
     },
     local.sentry_event_level_env_variable,
     var.datadog_agent_enabled ? {
-      DD_PROFILING_ENABLED     = "true"
-      DD_PROFILING_CAPTURE_PCT = "2"
-      DD_CALL_BASIC_CONFIG     = "false"
-      DD_TRACE_STARTUP_LOGS    = "true"
-      DD_TRACE_DEBUG           = "false"
-      DD_LOGS_INJECTION        = "true"
+      DD_PROFILING_ENABLED                 = var.disable_unused_monocle_dd_flags ? "false" : "true"
+      DD_PROFILING_CAPTURE_PCT             = "2"
+      DD_CALL_BASIC_CONFIG                 = "false"
+      DD_TRACE_STARTUP_LOGS                = "true"
+      DD_TRACE_DEBUG                       = "false"
+      DD_LOGS_INJECTION                    = var.disable_unused_monocle_dd_flags ? "false" : "true"
+      DD_RUNTIME_METRICS_ENABLED           = "true"
+      DD_INSTRUMENTATION_TELEMETRY_ENABLED = var.disable_unused_monocle_dd_flags ? "false" : "true"
     } : {},
     var.monocle_additional_environment_vars,
   )
