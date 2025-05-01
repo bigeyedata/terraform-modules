@@ -1,3 +1,12 @@
+# [20.2.0](https://github.com/bigeyedata/terraform-modules/compare/v20.1.0...v20.2.0) (2025-05-01)
+
+
+### Features
+
+* add flag to disabled unused datadog flags for monocle ([cc27453](https://github.com/bigeyedata/terraform-modules/commit/cc274538046e2944976b0008e6fa689a10af765a))
+
+
+
 # [20.1.0](https://github.com/bigeyedata/terraform-modules/compare/v20.0.0...v20.1.0) (2025-04-30)
 
 
