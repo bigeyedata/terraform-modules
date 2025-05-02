@@ -57,10 +57,16 @@ variable "availability_zone" {
   type        = string
 }
 
+variable "ebs_volume_size_os" {
+  type    = string
+  default = 40
+}
+
 variable "ebs_volume_size" {
   type    = string
   default = 100
 }
+
 variable "ebs_volume_iops" {
   description = "Set iops to the value supported by your instance type. https://docs.aws.amazon.com/ec2/latest/instancetypes/gp.html"
   type        = number
