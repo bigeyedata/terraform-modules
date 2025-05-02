@@ -59,6 +59,22 @@ resource "aws_launch_template" "solr" {
   metadata_options {
     http_tokens = "required"
   }
+
+  ebs_optimized = true
+  block_device_mappings {
+    ebs {
+      encrypted   = "true"
+      volume_size = var.ebs_volume_size_os
+    }
+  }
+
+  tag_specifications {
+    resource_type = "volume"
+
+    tags = merge(local.solr_tags, {
+      Name = "${var.name}-os"
+    })
+  }
 }
 
 resource "aws_autoscaling_group" "solr" {
