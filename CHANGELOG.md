@@ -1,3 +1,12 @@
+# [20.3.0](https://github.com/bigeyedata/terraform-modules/compare/v20.2.0...v20.3.0) (2025-05-02)
+
+
+### Features
+
+* migrate datawatch and web to internal load balancer ([48e3648](https://github.com/bigeyedata/terraform-modules/commit/48e3648d5dc3c040bc287c624994a6a4caaa586c))
+
+
+
 # [20.2.0](https://github.com/bigeyedata/terraform-modules/compare/v20.1.0...v20.2.0) (2025-05-01)
 
 
