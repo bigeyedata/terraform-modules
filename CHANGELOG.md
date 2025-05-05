@@ -1,3 +1,12 @@
+# [20.4.0](https://github.com/bigeyedata/terraform-modules/compare/v20.3.0...v20.4.0) (2025-05-05)
+
+
+### Features
+
+* increase solr os ebs volume size and fix ebs tags ([9cd05e1](https://github.com/bigeyedata/terraform-modules/commit/9cd05e1a04a42c20e1d482016c80ff605288349c))
+
+
+
 # [20.3.0](https://github.com/bigeyedata/terraform-modules/compare/v20.2.0...v20.3.0) (2025-05-02)
 
 
