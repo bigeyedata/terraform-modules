@@ -30,6 +30,10 @@ locals {
   elasticache_subnet_group_name   = local.create_vpc ? module.vpc[0].elasticache_subnet_group_name : var.byovpc_redis_subnet_group_name
   rabbitmq_subnet_group_ids       = local.create_vpc ? module.vpc[0].elasticache_subnets : var.byovpc_rabbitmq_subnet_ids
 
+  external_alb_security_group_ids = concat(
+    var.create_security_groups ? [aws_security_group.external_alb[0].id] : [],
+    var.haproxy_extra_security_group_ids,
+  )
   internal_alb_ingress_cidrs = concat([var.vpc_cidr_block], var.internal_additional_ingress_cidrs)
   internal_alb_security_group_ids = concat(
     var.create_security_groups ? [aws_security_group.internal_alb[0].id] : [],
