@@ -861,6 +861,92 @@ resource "aws_s3_bucket_policy" "large_payload" {
 #======================================================
 # ALBs
 #======================================================
+resource "aws_security_group" "external_alb" {
+  count       = var.create_security_groups ? 1 : 0
+  name        = "${local.name}-external-lb"
+  description = "Allows 80/443 to internal loadbalancer"
+  vpc_id      = local.vpc_id
+  tags        = local.tags
+}
+
+resource "aws_vpc_security_group_egress_rule" "external_alb_egress" {
+  count             = var.create_security_groups ? 1 : 0
+  security_group_id = aws_security_group.external_alb[0].id
+  from_port         = 0
+  to_port           = local.max_port
+  ip_protocol       = "TCP"
+  cidr_ipv4         = "0.0.0.0/0"
+}
+
+resource "aws_vpc_security_group_ingress_rule" "external_alb_ingress_cidrs_http" {
+  for_each          = var.create_security_groups ? var.internet_facing ? ["0.0.0.0/0"] : toset(concat([var.vpc_cidr_block], var.additional_ingress_cidrs)) : []
+  security_group_id = aws_security_group.external_alb[0].id
+  from_port         = 80
+  to_port           = 80
+  ip_protocol       = "TCP"
+  cidr_ipv4         = each.value
+}
+
+resource "aws_vpc_security_group_ingress_rule" "external_alb_ingress_cidrs_https" {
+  for_each          = var.create_security_groups ? var.internet_facing ? ["0.0.0.0/0"] : toset(concat([var.vpc_cidr_block], var.additional_ingress_cidrs)) : []
+  security_group_id = aws_security_group.external_alb[0].id
+  from_port         = 443
+  to_port           = 443
+  ip_protocol       = "TCP"
+  cidr_ipv4         = each.value
+}
+
+resource "aws_lb" "external_alb" {
+  name               = "${local.name}-external"
+  internal           = var.internet_facing
+  load_balancer_type = "application"
+  subnets            = var.internet_facing ? local.public_alb_subnet_ids : local.internal_service_alb_subnet_ids
+  security_groups    = local.external_alb_security_group_ids
+  idle_timeout       = 900
+  tags               = local.tags
+
+  access_logs {
+    enabled = var.elb_access_logs_enabled
+    bucket  = var.elb_access_logs_bucket
+    prefix  = format("%s-%s", local.elb_access_logs_prefix, "external")
+  }
+}
+
+resource "aws_lb_listener" "http_external" {
+  load_balancer_arn = aws_lb.external_alb.arn
+  port              = 80
+  protocol          = "HTTP"
+
+  default_action {
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+  tags = merge({ "Name" = "http-external" }, local.tags)
+}
+
+resource "aws_lb_listener" "https_external" {
+  load_balancer_arn = aws_lb.external_alb.arn
+  port              = 443
+  protocol          = "HTTPS"
+  certificate_arn   = local.acm_certificate_arn
+  ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+  default_action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "requested servicename not found"
+      status_code  = "404"
+    }
+  }
+  tags = merge({ "Name" = "https-external" }, local.tags)
+}
+
 resource "aws_security_group" "internal_alb" {
   count       = var.create_security_groups ? 1 : 0
   name        = "${local.name}-internal-lb"
