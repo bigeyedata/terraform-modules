@@ -2697,6 +2697,12 @@ variable "lineageplus_solr_ebs_volume_throughput" {
   default     = 125
 }
 
+variable "lineageplus_solr_ebs_volume_size_os" {
+  description = "Size of root volume EBS volume attached to EC2 container instance running solr, in GB"
+  type        = number
+  default     = 40
+}
+
 variable "lineageplus_solr_cnames" {
   description = "CNAME Route53 records that will point to the main service DNS name."
   type        = list(string)

@@ -47,6 +47,7 @@ module "lineageplus_solr" {
   ebs_volume_size       = var.lineageplus_solr_ebs_volume_size
   ebs_volume_iops       = var.lineageplus_solr_ebs_volume_iops
   ebs_volume_throughput = var.lineageplus_solr_ebs_volume_throughput
+  ebs_volume_size_os    = var.lineageplus_solr_ebs_volume_size_os
   execution_role_arn    = local.ecs_role_arn
 
   # Datadog
