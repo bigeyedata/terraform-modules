@@ -1,3 +1,12 @@
+# [20.5.0](https://github.com/bigeyedata/terraform-modules/compare/v20.4.0...v20.5.0) (2025-05-06)
+
+
+### Features
+
+* allow setting solr OS root volume EBS volume size ([bb884ee](https://github.com/bigeyedata/terraform-modules/commit/bb884ee593beb4862f26e6d8a0d73adbb860f637))
+
+
+
 # [20.4.0](https://github.com/bigeyedata/terraform-modules/compare/v20.3.0...v20.4.0) (2025-05-05)
 
 
