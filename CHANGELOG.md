@@ -1,3 +1,12 @@
+## [20.5.1](https://github.com/bigeyedata/terraform-modules/compare/v20.5.0...v20.5.1) (2025-05-14)
+
+
+### Bug Fixes
+
+* increase internal LB timeout to 900s ([2b29957](https://github.com/bigeyedata/terraform-modules/commit/2b2995703a721b7f484c0cf24f75aecc2e813cab))
+
+
+
 # [20.5.0](https://github.com/bigeyedata/terraform-modules/compare/v20.4.0...v20.5.0) (2025-05-06)
 
 
