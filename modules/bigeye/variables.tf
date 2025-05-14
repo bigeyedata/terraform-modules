@@ -564,6 +564,11 @@ variable "byomailserver_smtp_password_secret_arn" {
   default     = ""
 }
 
+variable "lb_timeout" {
+  description = "How long to wait for requests before cutting them off with a timeout.  It is recommended to leave this at the default setting."
+  type        = number
+  default     = 900
+}
 #======================================================
 # Application Variables - Monocle
 #======================================================
