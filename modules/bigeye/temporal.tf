@@ -610,7 +610,7 @@ locals {
       local.temporal_datadog_container_def_generic,
       {
         dockerLabels = merge(local.temporal_datadog_docker_labels_generic, {
-          "com.datadoghq.ad.instances" : "[\n    {\n      \"openmetrics_endpoint\": \"http://localhost:9091/metrics\",\n      \"collect_histogram_buckets\": true,\n      \"histogram_buckets_as_distributions\": true,\n      \"collect_counters_with_distributions\": true,\n      \"tags\": [\n        \"app:temporal\"\n,        \"component:${svc}\",\n        \"instance:${var.instance}\",\n        \"stack:${local.name}\"\n      ]\n    }\n  ]\n",
+          "com.datadoghq.ad.instances" : "[\n    {\n      \"openmetrics_endpoint\": \"http://localhost:9091/metrics\",\n      \"extra_metrics\": [\n        \"approximate_backlog_count\"\n,        \"approximate_backlog_age_seconds\"\n      ],\n      \"collect_histogram_buckets\": true,\n      \"histogram_buckets_as_distributions\": true,\n      \"collect_counters_with_distributions\": true,\n      \"tags\": [\n        \"app:temporal\"\n,        \"component:${svc}\",\n        \"instance:${var.instance}\",\n        \"stack:${local.name}\"\n      ]\n    }\n  ]\n",
           "com.datadog.tags.app" : "temporal"
           "com.datadog.tags.component" : local.temporal_svc_override_names[svc]
           "com.datadog.tags.service" : "temporal-${local.temporal_svc_override_names[svc]}"
