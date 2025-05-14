@@ -1,3 +1,12 @@
+# [20.6.0](https://github.com/bigeyedata/terraform-modules/compare/v20.5.1...v20.6.0) (2025-05-14)
+
+
+### Features
+
+* add temporal queue depth and age to datadog stats ([2174320](https://github.com/bigeyedata/terraform-modules/commit/2174320635e3bf10d9af8175825292f6b758ce66))
+
+
+
 ## [20.5.1](https://github.com/bigeyedata/terraform-modules/compare/v20.5.0...v20.5.1) (2025-05-14)
 
 
