@@ -900,7 +900,7 @@ resource "aws_lb" "internal_alb" {
   load_balancer_type = "application"
   subnets            = local.internal_service_alb_subnet_ids
   security_groups    = local.internal_alb_security_group_ids
-  idle_timeout       = 60
+  idle_timeout       = var.lb_timeout
   tags               = local.tags
 
   access_logs {
@@ -993,7 +993,7 @@ module "haproxy" {
   healthcheck_unhealthy_threshold  = 3
   ssl_policy                       = var.alb_ssl_policy
   acm_certificate_arn              = local.acm_certificate_arn
-  lb_idle_timeout                  = 900
+  lb_idle_timeout                  = var.lb_timeout
   lb_subnet_ids                    = var.internet_facing ? local.public_alb_subnet_ids : local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids = concat(var.haproxy_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs      = var.additional_ingress_cidrs
@@ -1337,7 +1337,7 @@ module "monocle" {
   healthcheck_timeout                    = 20
   ssl_policy                             = var.alb_ssl_policy
   acm_certificate_arn                    = local.acm_certificate_arn
-  lb_idle_timeout                        = 900
+  lb_idle_timeout                        = var.lb_timeout
   lb_subnet_ids                          = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids       = concat(var.monocle_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
@@ -1502,7 +1502,7 @@ module "toretto" {
   healthcheck_path                       = "/health"
   ssl_policy                             = var.alb_ssl_policy
   acm_certificate_arn                    = local.acm_certificate_arn
-  lb_idle_timeout                        = 900
+  lb_idle_timeout                        = var.lb_timeout
   lb_subnet_ids                          = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids       = concat(var.toretto_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
@@ -1686,7 +1686,7 @@ module "scheduler" {
   healthcheck_path                       = "/health"
   ssl_policy                             = var.alb_ssl_policy
   acm_certificate_arn                    = local.acm_certificate_arn
-  lb_idle_timeout                        = 900
+  lb_idle_timeout                        = var.lb_timeout
   lb_subnet_ids                          = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids       = concat(var.scheduler_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
@@ -2309,7 +2309,7 @@ module "datawatch" {
   healthcheck_grace_period               = 300
   ssl_policy                             = var.alb_ssl_policy
   acm_certificate_arn                    = local.acm_certificate_arn
-  lb_idle_timeout                        = 900
+  lb_idle_timeout                        = var.lb_timeout
   lb_subnet_ids                          = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids       = concat(var.datawatch_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
@@ -2397,7 +2397,7 @@ module "datawork" {
   healthcheck_interval                   = 90
   ssl_policy                             = var.alb_ssl_policy
   acm_certificate_arn                    = local.acm_certificate_arn
-  lb_idle_timeout                        = 900
+  lb_idle_timeout                        = var.lb_timeout
   lb_subnet_ids                          = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids       = concat(var.datawork_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
@@ -2513,7 +2513,7 @@ module "backfillwork" {
   healthcheck_interval                   = 90
   ssl_policy                             = var.alb_ssl_policy
   acm_certificate_arn                    = local.acm_certificate_arn
-  lb_idle_timeout                        = 900
+  lb_idle_timeout                        = var.lb_timeout
   lb_subnet_ids                          = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids       = concat(var.backfillwork_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
@@ -2604,7 +2604,7 @@ module "indexwork" {
   healthcheck_interval                   = 90
   ssl_policy                             = var.alb_ssl_policy
   acm_certificate_arn                    = local.acm_certificate_arn
-  lb_idle_timeout                        = 900
+  lb_idle_timeout                        = var.lb_timeout
   lb_subnet_ids                          = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids       = concat(var.indexwork_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
@@ -2697,7 +2697,7 @@ module "lineagework" {
   healthcheck_interval                   = 90
   ssl_policy                             = var.alb_ssl_policy
   acm_certificate_arn                    = local.acm_certificate_arn
-  lb_idle_timeout                        = 900
+  lb_idle_timeout                        = var.lb_timeout
   lb_subnet_ids                          = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids       = concat(var.lineagework_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
@@ -2793,7 +2793,7 @@ module "metricwork" {
   healthcheck_interval                   = 90
   ssl_policy                             = var.alb_ssl_policy
   acm_certificate_arn                    = local.acm_certificate_arn
-  lb_idle_timeout                        = 900
+  lb_idle_timeout                        = var.lb_timeout
   lb_subnet_ids                          = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids       = concat(var.metricwork_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
@@ -2887,7 +2887,7 @@ module "rootcause" {
   ssl_policy                             = var.alb_ssl_policy
   acm_certificate_arn                    = local.acm_certificate_arn
   # revisit this after we observe the runtime, it likely can be much shorter (~5minute) since temporal respects sigterm and max runtime on API calls
-  lb_idle_timeout                  = 900
+  lb_idle_timeout                  = var.lb_timeout
   lb_subnet_ids                    = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids = concat(var.rootcause_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs      = var.internal_additional_ingress_cidrs
@@ -2981,7 +2981,7 @@ module "internalapi" {
   healthcheck_grace_period               = 300
   ssl_policy                             = var.alb_ssl_policy
   acm_certificate_arn                    = local.acm_certificate_arn
-  lb_idle_timeout                        = 900
+  lb_idle_timeout                        = var.lb_timeout
   lb_subnet_ids                          = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids       = concat(var.internalapi_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
@@ -3114,7 +3114,7 @@ module "lineageapi" {
   healthcheck_grace_period               = 300
   ssl_policy                             = var.alb_ssl_policy
   acm_certificate_arn                    = local.acm_certificate_arn
-  lb_idle_timeout                        = 900
+  lb_idle_timeout                        = var.lb_timeout
   lb_subnet_ids                          = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids       = concat(var.lineageapi_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
