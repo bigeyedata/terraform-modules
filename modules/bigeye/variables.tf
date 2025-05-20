@@ -575,6 +575,18 @@ variable "load_balancing_anomaly_mitigation" {
   type        = bool
   default     = false
 }
+
+variable "spot_instance_config" {
+  description = "Increase the spot_weight to control the ratio of spot instances to use on ECS.  spot_base_count should not exceed *_desired_count.  Typically anything above 2 will be a configuration mistake"
+  type = object({
+    on_demand_weight = number
+    spot_weight      = number
+  })
+  default = {
+    on_demand_weight = 1
+    spot_weight      = 0
+  }
+}
 #======================================================
 # Application Variables - Monocle
 #======================================================
