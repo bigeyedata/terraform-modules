@@ -569,6 +569,19 @@ variable "lb_timeout" {
   type        = number
   default     = 900
 }
+
+variable "spot_instance_config" {
+  type = object({
+    enabled          = bool
+    on_demand_weight = number
+    spot_weight      = number
+  })
+  default = {
+    enabled          = false
+    on_demand_weight = 1
+    spot_weight      = 9
+  }
+}
 #======================================================
 # Application Variables - Monocle
 #======================================================

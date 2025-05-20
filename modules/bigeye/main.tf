@@ -1350,6 +1350,10 @@ module "monocle" {
   # Task settings
   control_desired_count     = var.monocle_autoscaling_config.type == "none"
   desired_count             = var.monocle_desired_count
+  on_demand_base_count      = var.monocle_desired_count
+  on_demand_weight          = var.spot_instance_config.enabled ? var.spot_instance_config.on_demand_weight : 1
+  spot_base_count           = 0
+  spot_weight               = var.spot_instance_config.enabled ? var.spot_instance_config.spot_weight : 0
   cpu                       = var.monocle_cpu
   memory                    = var.monocle_memory
   execution_role_arn        = local.ecs_role_arn
@@ -1514,6 +1518,10 @@ module "toretto" {
   # Task settings
   control_desired_count     = var.toretto_autoscaling_enabled ? false : true
   desired_count             = var.toretto_desired_count
+  on_demand_base_count      = var.toretto_desired_count
+  on_demand_weight          = var.spot_instance_config.enabled ? var.spot_instance_config.on_demand_weight : 1
+  spot_base_count           = 0
+  spot_weight               = var.spot_instance_config.enabled ? var.spot_instance_config.spot_weight : 0
   cpu                       = var.toretto_cpu
   memory                    = var.toretto_memory
   execution_role_arn        = local.ecs_role_arn
@@ -2994,6 +3002,10 @@ module "internalapi" {
   # Task settings
   control_desired_count     = var.internalapi_autoscaling_config.type == "none"
   desired_count             = var.internalapi_desired_count
+  on_demand_base_count      = var.internalapi_desired_count
+  on_demand_weight          = var.spot_instance_config.enabled ? var.spot_instance_config.on_demand_weight : 1
+  spot_base_count           = 0
+  spot_weight               = var.spot_instance_config.enabled ? var.spot_instance_config.spot_weight : 0
   cpu                       = var.internalapi_cpu
   memory                    = var.internalapi_memory
   execution_role_arn        = local.ecs_role_arn

@@ -343,6 +343,9 @@ resource "aws_ecs_service" "uncontrolled_count" {
   propagate_tags = "SERVICE"
 
   tags = var.tags
+
+  # force_new_deployment is required to avoid ECS service replacement when changing spot base/weight
+  force_new_deployment = true
 }
 
 resource "aws_ecs_service" "controlled_count" {
