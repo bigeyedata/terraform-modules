@@ -569,6 +569,18 @@ variable "lb_timeout" {
   type        = number
   default     = 900
 }
+
+variable "spot_instance_config" {
+  description = "Increase the spot_weight to control the ratio of spot instances to use on ECS."
+  type = object({
+    on_demand_weight = number
+    spot_weight      = number
+  })
+  default = {
+    on_demand_weight = 1
+    spot_weight      = 0
+  }
+}
 #======================================================
 # Application Variables - Monocle
 #======================================================
