@@ -163,28 +163,16 @@ variable "fargate_version" {
   default     = "1.4.0"
 }
 
-variable "on_demand_base_count" {
-  description = "For scaling, this is the base amount of on-demand instances to use before using spot"
-  type        = number
-  default     = 1
-}
-
-variable "on_demand_weight" {
-  description = "How much to weigh on-demand instances"
-  type        = number
-  default     = 1
-}
-
-variable "spot_base_count" {
-  description = "For scaling, this is the base amount of spot instances"
-  type        = number
-  default     = 0
-}
-
-variable "spot_weight" {
-  description = "How much to weigh spot instances"
-  type        = number
-  default     = 0
+variable "spot_instance_config" {
+  description = "Increase the spot_weight to control the ratio of spot instances to use on ECS.  spot_base_count should not exceed *_desired_count.  Typically anything above 2 will be a configuration mistake"
+  type = object({
+    on_demand_weight = number
+    spot_weight      = number
+  })
+  default = {
+    on_demand_weight = 1
+    spot_weight      = 0
+  }
 }
 
 variable "efs_volume_id" {
