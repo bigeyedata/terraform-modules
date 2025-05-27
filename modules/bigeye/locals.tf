@@ -226,12 +226,17 @@ locals {
     local.create_rabbitmq ? [module.rabbitmq[0].client_security_group_id] : [],
   ) : []
 
+  datawatch_lineageplus_secrets_map = var.datawatch_lineageplus_password_secret_arn != "" ? {
+    MC_PASSWORD = var.datawatch_lineageplus_password_secret_arn
+  } : {}
+
   datawatch_secret_arns = merge(
     local.auth0_secrets_map,
     local.slack_secrets_map,
     local.stitch_secrets_map,
     local.sentry_dsn_secret_map,
     local.byomailserver_smtp_password_secrets_map,
+    local.datawatch_lineageplus_secrets_map,
     {
       REDIS_PRIMARY_PASSWORD = local.redis_auth_token_secret_arn
       MQ_BROKER_PASSWORD     = local.rabbitmq_user_password_secret_arn
