@@ -2276,6 +2276,10 @@ locals {
 
     USE_KMS    = local.using_kms
     KMS_KEY_ID = local.using_kms ? local.kms_key_id : ""
+
+    MC_BASE_URL    = "https://${local.base_dns_alias}-metacenter-portal-internal.${var.top_level_dns_name}"
+    MC_USERNAME    = var.datawatch_lineageplus_user_name
+    MC_INSTANCE_ID = var.datawatch_lineageplus_instance_id
   }
 }
 

@@ -2017,6 +2017,24 @@ variable "datawatch_temporal_large_payload_enabled" {
   default     = false
 }
 
+variable "datawatch_lineageplus_user_name" {
+  description = "User name that is used by datawatch to make API calls to LineagePlus"
+  type        = string
+  default     = "administrator"
+}
+
+variable "datawatch_lineageplus_password_secret_arn" {
+  description = "AWS Secrets manager secret ARN with the password used by datawatch to make API calls to LineagePlus"
+  type        = string
+  default     = ""
+}
+
+variable "datawatch_lineageplus_instance_id" {
+  description = "LineagePlus instance ID that is used by datawatch when making API calls to LineagePlus"
+  type        = string
+  default     = "1000012"
+}
+
 #======================================================
 # Application Variables - Backfillwork
 #======================================================
