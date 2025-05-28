@@ -1,3 +1,12 @@
+# [20.7.0](https://github.com/bigeyedata/terraform-modules/compare/v20.6.0...v20.7.0) (2025-05-28)
+
+
+### Features
+
+* add datawatch lineageplus config ([697da3c](https://github.com/bigeyedata/terraform-modules/commit/697da3c8d3877928177c95be237bf099afe7729f))
+
+
+
 # [20.6.0](https://github.com/bigeyedata/terraform-modules/compare/v20.5.1...v20.6.0) (2025-05-14)
 
 
