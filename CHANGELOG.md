@@ -1,3 +1,13 @@
+## [20.7.1](https://github.com/bigeyedata/terraform-modules/compare/v20.7.0...v20.7.1) (2025-05-29)
+
+
+### Bug Fixes
+
+* update MC username ([079fc06](https://github.com/bigeyedata/terraform-modules/commit/079fc0692577377c05000e4008bc7ebb9337d0cc))
+* update MC username ([045f681](https://github.com/bigeyedata/terraform-modules/commit/045f68181ff6b17707b45db85f198b67a0740709))
+
+
+
 # [20.7.0](https://github.com/bigeyedata/terraform-modules/compare/v20.6.0...v20.7.0) (2025-05-28)
 
 
