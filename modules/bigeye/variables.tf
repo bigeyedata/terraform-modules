@@ -2020,7 +2020,7 @@ variable "datawatch_temporal_large_payload_enabled" {
 variable "datawatch_lineageplus_user_name" {
   description = "User name that is used by datawatch to make API calls to LineagePlus"
   type        = string
-  default     = ""1ap7Hf6VbvnrNYBIhH9K6A==""
+  default     = "1ap7Hf6VbvnrNYBIhH9K6A=="
 }
 
 variable "datawatch_lineageplus_password_secret_arn" {
