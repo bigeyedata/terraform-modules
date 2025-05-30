@@ -62,6 +62,7 @@ resource "aws_launch_template" "solr" {
 
   ebs_optimized = true
   block_device_mappings {
+    device_name = "/dev/xvda"
     ebs {
       encrypted   = "true"
       volume_size = var.ebs_volume_size_os
