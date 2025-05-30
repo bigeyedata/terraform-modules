@@ -588,6 +588,11 @@ variable "monocle_cpu" {
   description = "Amount of CPU to allocate"
   type        = number
   default     = 1024
+
+  validation {
+    condition     = var.monocle_cpu > 1024
+    error_message = "cpu should be a multiple of 1024 (ie 2 * 1024 for 2 cpus)"
+  }
 }
 
 variable "monocle_memory" {
@@ -655,6 +660,12 @@ variable "monocle_autoscaling_config" {
     condition     = contains(["none", "cpu_utilization", "request_count_per_target"], var.monocle_autoscaling_config.type)
     error_message = "Must be one of: none, cpu_utilization, request_count_per_target"
   }
+}
+
+variable "monocle_worker_count" {
+  description = "set the number of workers per monocle instance.  This is basically a max parallelism number and will affect /health as well.  Default (or setting to 0) is 2 * cpu count."
+  type        = number
+  default     = 0
 }
 
 #======================================================
