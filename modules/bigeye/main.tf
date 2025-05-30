@@ -1388,7 +1388,7 @@ module "monocle" {
       DEPLOY_TYPE                = "AWS"
       QUEUE_CONNECTION_HEARTBEAT = "1000"
       BACKLOG                    = "512"
-      WORKERS                    = "2"
+      WORKERS                    = var.monocle_worker_count == 0 ? var.monocle_cpu * 2 / 1024 : 2
       TIMEOUT                    = "900"
       DATAWATCH_ADDRESS          = "https://${module.internalapi.dns_name}"
     },
