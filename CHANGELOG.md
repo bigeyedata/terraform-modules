@@ -1,3 +1,12 @@
+# [20.8.0](https://github.com/bigeyedata/terraform-modules/compare/v20.7.1...v20.8.0) (2025-05-30)
+
+
+### Features
+
+* change default for lineageplus solr log level to warn ([f3d0082](https://github.com/bigeyedata/terraform-modules/commit/f3d00829f809e6ad43e272b04513f522faa6251c))
+
+
+
 ## [20.7.1](https://github.com/bigeyedata/terraform-modules/compare/v20.7.0...v20.7.1) (2025-05-29)
 
 
