@@ -214,6 +214,16 @@ variable "environment_variables" {
   default     = {}
 }
 
+variable "solr_log_level" {
+  description = "Log level for solr.  Controls the SOLR_LOG_LEVEL env var"
+  type        = string
+  default     = "WARN"
+  validation {
+    condition     = contains(["INFO", "WARN", "ERROR"], var.solr_log_level)
+    error_message = "solr_log_level must be one of: INFO, WARN, ERROR"
+  }
+}
+
 #======================================================
 # Datadog agent settings
 #======================================================

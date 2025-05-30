@@ -2747,6 +2747,17 @@ variable "lineageplus_solr_refresh_instance_on_launch_template_change" {
   type        = bool
   default     = false
 }
+
+variable "lineageplus_solr_log_level" {
+  description = "Log level for solr.  Controls the SOLR_LOG_LEVEL env var"
+  type        = string
+  default     = "WARN"
+  validation {
+    condition     = contains(["INFO", "WARN", "ERROR"], var.lineageplus_solr_log_level)
+    error_message = "solr_log_level must be one of: INFO, WARN, ERROR"
+  }
+}
+
 #======================================================
 # Cloudfront Variables
 #======================================================
