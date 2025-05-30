@@ -44,6 +44,7 @@ module "lineageplus_solr" {
   solr_jmx_port         = var.lineageplus_solr_jmx_port
   desired_count         = var.lineageplus_solr_desired_count
   solr_heap_size        = var.lineageplus_solr_heap_size
+  solr_log_level        = var.lineageplus_solr_log_level
   ebs_volume_size       = var.lineageplus_solr_ebs_volume_size
   ebs_volume_iops       = var.lineageplus_solr_ebs_volume_iops
   ebs_volume_throughput = var.lineageplus_solr_ebs_volume_throughput

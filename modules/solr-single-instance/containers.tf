@@ -28,6 +28,7 @@ locals {
       SOLR_HEAP      = "${local.solr_heap_size}M"
       SOLR_PORT      = tostring(var.solr_traffic_port)
       SOLR_OPTS      = join(" ", concat(local.solr_default_opts, var.solr_opts))
+      SOLR_LOG_LEVEL = var.solr_log_level
   }) : { Name = k, Value = v }]
   container_environment_secrets = [for k, v in merge(local.datadog_service_secret_arns, var.secret_arns) : { Name = k, ValueFrom = v }]
 
