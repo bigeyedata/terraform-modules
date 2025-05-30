@@ -1,3 +1,12 @@
+## [20.8.1](https://github.com/bigeyedata/terraform-modules/compare/v20.8.0...v20.8.1) (2025-05-30)
+
+
+### Bug Fixes
+
+* fix missing launch template ebs device name ([e86308b](https://github.com/bigeyedata/terraform-modules/commit/e86308bd4a56f0b763b67a0611093945bdf0cc0c))
+
+
+
 # [20.8.0](https://github.com/bigeyedata/terraform-modules/compare/v20.7.1...v20.8.0) (2025-05-30)
 
 
