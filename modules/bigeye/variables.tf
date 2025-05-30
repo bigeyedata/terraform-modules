@@ -647,9 +647,9 @@ variable "monocle_autoscaling_config" {
   })
   default = {
     min_capacity       = 2
-    max_capacity       = 10
-    type               = "request_count_per_target"
-    target_utilization = 15
+    max_capacity       = 15
+    type               = "cpu_utilization"
+    target_utilization = 30
   }
   validation {
     condition     = contains(["none", "cpu_utilization", "request_count_per_target"], var.monocle_autoscaling_config.type)
