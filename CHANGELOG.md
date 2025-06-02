@@ -1,3 +1,12 @@
+# [20.9.0](https://github.com/bigeyedata/terraform-modules/compare/v20.8.1...v20.9.0) (2025-06-02)
+
+
+### Features
+
+* allow setting monocle worker count ([1c4d1e1](https://github.com/bigeyedata/terraform-modules/commit/1c4d1e1b2b261345359eb3235ec62f21a8579ba9))
+
+
+
 ## [20.8.1](https://github.com/bigeyedata/terraform-modules/compare/v20.8.0...v20.8.1) (2025-05-30)
 
 
