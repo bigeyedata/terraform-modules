@@ -1,3 +1,12 @@
+## [20.9.1](https://github.com/bigeyedata/terraform-modules/compare/v20.9.0...v20.9.1) (2025-06-02)
+
+
+### Bug Fixes
+
+* change monocle default autoscaling algo to cpu scaling ([4779a8f](https://github.com/bigeyedata/terraform-modules/commit/4779a8fe0e493c3f562dfbec819bbf1981fe801b))
+
+
+
 # [20.9.0](https://github.com/bigeyedata/terraform-modules/compare/v20.8.1...v20.9.0) (2025-06-02)
 
 
