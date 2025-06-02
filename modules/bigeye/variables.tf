@@ -590,7 +590,7 @@ variable "monocle_cpu" {
   default     = 1024
 
   validation {
-    condition     = var.monocle_cpu > 1024
+    condition     = var.monocle_cpu >= 1024
     error_message = "cpu should be a multiple of 1024 (ie 2 * 1024 for 2 cpus)"
   }
 }
