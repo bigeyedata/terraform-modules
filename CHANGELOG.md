@@ -1,3 +1,12 @@
+## [20.9.2](https://github.com/bigeyedata/terraform-modules/compare/v20.9.1...v20.9.2) (2025-06-02)
+
+
+### Bug Fixes
+
+* fix monocle cpu validation bug ([10b4615](https://github.com/bigeyedata/terraform-modules/commit/10b461586aaefedd56ac6552d07f3dc0fae54680))
+
+
+
 ## [20.9.1](https://github.com/bigeyedata/terraform-modules/compare/v20.9.0...v20.9.1) (2025-06-02)
 
 
