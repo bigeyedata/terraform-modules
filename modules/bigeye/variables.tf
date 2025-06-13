@@ -2046,6 +2046,26 @@ variable "datawatch_lineageplus_instance_id" {
   default     = "1000012"
 }
 
+variable "datawatch_autoscaling_config" {
+  type = object({
+    min_capacity       = number
+    max_capacity       = number
+    type               = string
+    target_utilization = number
+  })
+  default = {
+    min_capacity = 2
+    max_capacity = 15
+    # If CPU scaling is leading to OOM or other overloading due to bursts, switch to request_count_per_target or increase the min capacity.
+    type               = "cpu_utilization"
+    target_utilization = 30
+  }
+  validation {
+    condition     = contains(["none", "cpu_utilization", "request_count_per_target"], var.datawatch_autoscaling_config.type)
+    error_message = "Must be one of: none, cpu_utilization, request_count_per_target"
+  }
+}
+
 #======================================================
 # Application Variables - Backfillwork
 #======================================================
