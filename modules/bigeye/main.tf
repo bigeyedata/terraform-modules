@@ -2332,6 +2332,7 @@ module "datawatch" {
   lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "datawatch")
 
   # Task settings
+  control_desired_count     = var.datawatch_autoscaling_config.type == "none"
   desired_count             = var.datawatch_desired_count
   cpu                       = var.datawatch_cpu
   memory                    = var.datawatch_memory
@@ -2377,6 +2378,49 @@ module "datawatch" {
   create_dns_records = var.create_dns_records
   route53_zone_id    = data.aws_route53_zone.this[0].zone_id
   dns_name           = "${local.base_dns_alias}-datawatch.${var.top_level_dns_name}"
+}
+
+resource "aws_appautoscaling_target" "datawatch" {
+  count              = var.datawatch_autoscaling_config.type == "none" ? 0 : 1
+  depends_on         = [module.datawatch]
+  min_capacity       = var.datawatch_autoscaling_config.min_capacity
+  max_capacity       = var.datawatch_autoscaling_config.max_capacity
+  resource_id        = format("service/%s/%s-datawatch", local.name, local.name)
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+}
+
+resource "aws_appautoscaling_policy" "datawatch_cpu_utilization" {
+  count              = var.datawatch_autoscaling_config.type == "cpu_utilization" ? 1 : 0
+  depends_on         = [aws_appautoscaling_target.datawatch]
+  name               = format("%s-datawatch-cpu-utilization", local.name)
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.datawatch[0].resource_id
+  scalable_dimension = aws_appautoscaling_target.datawatch[0].scalable_dimension
+  service_namespace  = aws_appautoscaling_target.datawatch[0].service_namespace
+  target_tracking_scaling_policy_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ECSServiceAverageCPUUtilization"
+    }
+    target_value = var.datawatch_autoscaling_config.target_utilization
+  }
+}
+
+resource "aws_appautoscaling_policy" "datawatch_request_count_per_target" {
+  count              = var.datawatch_autoscaling_config.type == "request_count_per_target" ? 1 : 0
+  depends_on         = [aws_appautoscaling_target.datawatch]
+  name               = format("%s-datawatch-request-count-per-target", local.name)
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.datawatch[0].resource_id
+  scalable_dimension = aws_appautoscaling_target.datawatch[0].scalable_dimension
+  service_namespace  = aws_appautoscaling_target.datawatch[0].service_namespace
+  target_tracking_scaling_policy_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ALBRequestCountPerTarget"
+      resource_label         = format("%s/%s", module.datawatch.load_balancer_full_name, module.datawatch.target_group_full_name)
+    }
+    target_value = var.datawatch_autoscaling_config.target_utilization
+  }
 }
 
 module "datawork" {
