@@ -569,6 +569,12 @@ variable "lb_timeout" {
   type        = number
   default     = 900
 }
+
+variable "load_balancing_anomaly_mitigation" {
+  description = "Enable Anomaly mitigation LB algorithm on target groups.  LeastOutstandingRequests routing algorithm is used if set to false.  Cannot be used with session stickiness"
+  type        = bool
+  default     = false
+}
 #======================================================
 # Application Variables - Monocle
 #======================================================
