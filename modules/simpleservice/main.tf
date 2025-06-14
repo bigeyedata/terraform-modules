@@ -3,7 +3,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 5.22.0, < 6.0.0"
+      version = ">= 5.100.0, < 6.0.0"
     }
   }
 }
@@ -15,6 +15,7 @@ locals {
   efs_volume_enabled          = var.efs_mount_point != "" && var.efs_access_point_id != ""
   centralized_lb_installed    = var.centralized_lb_arn != ""
   service_dns_name            = var.create_dns_records ? aws_route53_record.this[0].name : var.dns_name
+  use_load_balancing_anomaly_mitigation = var.load_balancing_anomaly_mitigation == true && var.lb_stickiness_enabled == false
 }
 
 
@@ -94,7 +95,8 @@ resource "aws_lb_target_group" "this" {
   vpc_id                        = var.vpc_id
   target_type                   = "ip"
   deregistration_delay          = var.lb_deregistration_delay
-  load_balancing_algorithm_type = "least_outstanding_requests"
+  load_balancing_algorithm_type = local.use_load_balancing_anomaly_mitigation ? "weighted_random" : "least_outstanding_requests"
+  load_balancing_anomaly_mitigation = local.use_load_balancing_anomaly_mitigation ? "on" : "off"
   stickiness {
     enabled = var.lb_stickiness_enabled
     type    = "lb_cookie"
@@ -121,7 +123,8 @@ resource "aws_lb_target_group" "centralized_lb" {
   vpc_id                        = var.vpc_id
   target_type                   = "ip"
   deregistration_delay          = var.lb_deregistration_delay
-  load_balancing_algorithm_type = "least_outstanding_requests"
+  load_balancing_algorithm_type = var.load_balancing_anomaly_mitigation ? "weighted_random" : "least_outstanding_requests"
+  load_balancing_anomaly_mitigation = var.load_balancing_anomaly_mitigation ? "on" : "off"
   stickiness {
     enabled = var.lb_stickiness_enabled
     type    = "lb_cookie"
