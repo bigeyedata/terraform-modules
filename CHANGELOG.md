@@ -1,3 +1,16 @@
+# [21.0.0](https://github.com/bigeyedata/terraform-modules/compare/v20.9.2...v21.0.0) (2025-06-16)
+
+
+* feat!: allow enabling alb anomaly mitigation ([fc0f90f](https://github.com/bigeyedata/terraform-modules/commit/fc0f90f4665c14cfa249f6a4ab5fdef61c0ab699))
+
+
+### BREAKING CHANGES
+
+* The aws provider version upgrade is required in
+order to control the enable flag for this feature.
+
+
+
 ## [20.9.2](https://github.com/bigeyedata/terraform-modules/compare/v20.9.1...v20.9.2) (2025-06-02)
 
 
