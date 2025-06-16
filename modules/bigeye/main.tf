@@ -1337,8 +1337,7 @@ module "monocle" {
   centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
   centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
   healthcheck_path                       = "/health"
-  healthcheck_interval                   = 60
-  healthcheck_timeout                    = 20
+  healthcheck_unhealthy_threshold        = 5
   ssl_policy                             = var.alb_ssl_policy
   acm_certificate_arn                    = local.acm_certificate_arn
   lb_idle_timeout                        = var.lb_timeout
@@ -2318,6 +2317,7 @@ module "datawatch" {
   centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
   healthcheck_path                       = "/health"
   healthcheck_grace_period               = 300
+  healthcheck_unhealthy_threshold        = 5
   ssl_policy                             = var.alb_ssl_policy
   acm_certificate_arn                    = local.acm_certificate_arn
   lb_idle_timeout                        = var.lb_timeout
@@ -2997,6 +2997,7 @@ module "internalapi" {
   centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
   healthcheck_path                       = "/health"
   healthcheck_grace_period               = 300
+  healthcheck_unhealthy_threshold        = 5
   ssl_policy                             = var.alb_ssl_policy
   acm_certificate_arn                    = local.acm_certificate_arn
   lb_idle_timeout                        = var.lb_timeout
@@ -3131,6 +3132,7 @@ module "lineageapi" {
   centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
   healthcheck_path                       = "/health"
   healthcheck_grace_period               = 300
+  healthcheck_unhealthy_threshold        = 5
   ssl_policy                             = var.alb_ssl_policy
   acm_certificate_arn                    = local.acm_certificate_arn
   lb_idle_timeout                        = var.lb_timeout
