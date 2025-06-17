@@ -49,6 +49,29 @@ terraform version and application version.
 
 ## Upgrading
 
+### Upgrading to 21.0.0
+
+The AWS provider needs to be upgrade to support ALB anomaly mitigation.
+Upgrade your hashicorp/aws provider to 5.100.0 or newer.
+
+(Optional) The following are useful commands to avoid a service interruption
+from ECS replacing services when autoscaling is enabled.  It will also make
+the terraform apply run much faster.
+
+Run these before running terraform apply with `21.0.0`
+
+```bash
+terraform state mv \
+  'module.bigeye.module.datawatch.aws_ecs_service.controlled_count[0]' \
+  'module.bigeye.module.datawatch.aws_ecs_service.uncontrolled_count[0]'
+terraform state mv \
+  'module.bigeye.module.haproxy.aws_ecs_service.controlled_count[0]' \
+  'module.bigeye.module.haproxy.aws_ecs_service.uncontrolled_count[0]'
+terraform state mv \
+  'module.bigeye.module.web.aws_ecs_service.controlled_count[0]' \
+  'module.bigeye.module.web.aws_ecs_service.uncontrolled_count[0]'   
+```
+
 ### Upgrading to 20.0.0
 
 The following vars have been renamed from "ponts" to points" to fix typos.
