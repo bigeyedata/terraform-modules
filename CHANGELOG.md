@@ -1,3 +1,12 @@
+## [21.0.1](https://github.com/bigeyedata/terraform-modules/compare/v21.0.0...v21.0.1) (2025-06-17)
+
+
+### Bug Fixes
+
+* update ALB unhealthy check count for API servers ([5f81f98](https://github.com/bigeyedata/terraform-modules/commit/5f81f982c574698936dd95a8b7d3420c9eef6b5b))
+
+
+
 # [21.0.0](https://github.com/bigeyedata/terraform-modules/compare/v20.9.2...v21.0.0) (2025-06-16)
 
 
