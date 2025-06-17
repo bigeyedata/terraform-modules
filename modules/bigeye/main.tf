@@ -1010,6 +1010,7 @@ module "haproxy" {
   # Task settings
   control_desired_count     = var.haproxy_autoscaling_config.type == "none"
   desired_count             = var.haproxy_desired_count
+  spot_instance_config      = var.spot_instance_config
   cpu                       = var.haproxy_cpu
   memory                    = var.haproxy_memory
   execution_role_arn        = local.ecs_role_arn
@@ -1160,6 +1161,7 @@ module "web" {
   # Task settings
   control_desired_count     = var.web_autoscaling_config.type == "none"
   desired_count             = var.web_desired_count
+  spot_instance_config      = var.spot_instance_config
   cpu                       = var.web_cpu
   memory                    = var.web_memory
   execution_role_arn        = local.ecs_role_arn
@@ -1442,6 +1444,7 @@ module "monocle" {
   # Task settings
   control_desired_count     = var.monocle_autoscaling_config.type == "none"
   desired_count             = var.monocle_desired_count
+  spot_instance_config      = var.spot_instance_config
   cpu                       = var.monocle_cpu
   memory                    = var.monocle_memory
   execution_role_arn        = local.ecs_role_arn
@@ -1607,6 +1610,7 @@ module "toretto" {
   # Task settings
   control_desired_count     = var.toretto_autoscaling_enabled ? false : true
   desired_count             = var.toretto_desired_count
+  spot_instance_config      = var.spot_instance_config
   cpu                       = var.toretto_cpu
   memory                    = var.toretto_memory
   execution_role_arn        = local.ecs_role_arn
@@ -1791,6 +1795,7 @@ module "scheduler" {
 
   # Task settings
   desired_count             = var.scheduler_desired_count
+  spot_instance_config      = var.spot_instance_config
   cpu                       = var.scheduler_cpu
   memory                    = var.scheduler_memory
   execution_role_arn        = local.ecs_role_arn
@@ -2422,6 +2427,7 @@ module "datawatch" {
   # Task settings
   control_desired_count     = var.datawatch_autoscaling_config.type == "none"
   desired_count             = var.datawatch_desired_count
+  spot_instance_config      = var.spot_instance_config
   cpu                       = var.datawatch_cpu
   memory                    = var.datawatch_memory
   execution_role_arn        = local.ecs_role_arn
@@ -2553,6 +2559,7 @@ module "datawork" {
 
   # Task settings
   desired_count             = var.datawork_desired_count
+  spot_instance_config      = var.spot_instance_config
   cpu                       = var.datawork_cpu
   memory                    = var.datawork_memory
   execution_role_arn        = local.ecs_role_arn
@@ -2670,6 +2677,7 @@ module "backfillwork" {
 
   # Task settings
   desired_count             = var.backfillwork_desired_count
+  spot_instance_config      = var.spot_instance_config
   cpu                       = var.backfillwork_cpu
   memory                    = var.backfillwork_memory
   execution_role_arn        = local.ecs_role_arn
@@ -2762,6 +2770,7 @@ module "indexwork" {
 
   # Task settings
   desired_count             = var.indexwork_desired_count
+  spot_instance_config      = var.spot_instance_config
   cpu                       = var.indexwork_cpu
   memory                    = var.indexwork_memory
   execution_role_arn        = local.ecs_role_arn
@@ -2856,6 +2865,7 @@ module "lineagework" {
 
   # Task settings
   desired_count             = var.lineagework_desired_count
+  spot_instance_config      = var.spot_instance_config
   cpu                       = var.lineagework_cpu
   memory                    = var.lineagework_memory
   execution_role_arn        = local.ecs_role_arn
@@ -2953,6 +2963,7 @@ module "metricwork" {
 
   # Task settings
   desired_count             = var.metricwork_desired_count
+  spot_instance_config      = var.spot_instance_config
   cpu                       = var.metricwork_cpu
   memory                    = var.metricwork_memory
   execution_role_arn        = local.ecs_role_arn
@@ -3048,6 +3059,7 @@ module "rootcause" {
 
   # Task settings
   desired_count             = var.rootcause_desired_count
+  spot_instance_config      = var.spot_instance_config
   cpu                       = var.rootcause_cpu
   memory                    = var.rootcause_memory
   execution_role_arn        = local.ecs_role_arn
@@ -3146,6 +3158,7 @@ module "internalapi" {
   # Task settings
   control_desired_count     = var.internalapi_autoscaling_config.type == "none"
   desired_count             = var.internalapi_desired_count
+  spot_instance_config      = var.spot_instance_config
   cpu                       = var.internalapi_cpu
   memory                    = var.internalapi_memory
   execution_role_arn        = local.ecs_role_arn
@@ -3281,6 +3294,7 @@ module "lineageapi" {
   # Task settings
   control_desired_count     = var.lineageapi_autoscaling_config.type == "none"
   desired_count             = var.lineageapi_desired_count
+  spot_instance_config      = var.spot_instance_config
   cpu                       = var.lineageapi_cpu
   memory                    = var.lineageapi_memory
   execution_role_arn        = local.ecs_role_arn

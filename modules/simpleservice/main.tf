@@ -301,13 +301,12 @@ resource "aws_ecs_service" "uncontrolled_count" {
 
   capacity_provider_strategy {
     capacity_provider = "FARGATE"
-    base              = var.on_demand_base_count
-    weight            = var.on_demand_weight
+    base              = 1
+    weight            = var.spot_instance_config.on_demand_weight
   }
   capacity_provider_strategy {
     capacity_provider = "FARGATE_SPOT"
-    base              = var.spot_base_count
-    weight            = var.spot_weight
+    weight            = var.spot_instance_config.spot_weight
   }
   deployment_maximum_percent         = 200
   deployment_minimum_healthy_percent = 100
@@ -346,6 +345,9 @@ resource "aws_ecs_service" "uncontrolled_count" {
   propagate_tags = "SERVICE"
 
   tags = var.tags
+
+  # force_new_deployment is required to avoid ECS service replacement when changing spot base/weight
+  force_new_deployment = true
 }
 
 resource "aws_ecs_service" "controlled_count" {
@@ -358,13 +360,12 @@ resource "aws_ecs_service" "controlled_count" {
 
   capacity_provider_strategy {
     capacity_provider = "FARGATE"
-    base              = var.on_demand_base_count
-    weight            = var.on_demand_weight
+    base              = 1
+    weight            = var.spot_instance_config.on_demand_weight
   }
   capacity_provider_strategy {
     capacity_provider = "FARGATE_SPOT"
-    base              = var.spot_base_count
-    weight            = var.spot_weight
+    weight            = var.spot_instance_config.spot_weight
   }
   deployment_maximum_percent         = 200
   deployment_minimum_healthy_percent = 100
