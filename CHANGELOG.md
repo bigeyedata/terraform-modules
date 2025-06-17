@@ -1,3 +1,12 @@
+# [21.2.0](https://github.com/bigeyedata/terraform-modules/compare/v21.1.0...v21.2.0) (2025-06-17)
+
+
+### Features
+
+* normalize autoscaling config for api/ui facing services ([bba5e36](https://github.com/bigeyedata/terraform-modules/commit/bba5e364bca21aa51af61cd3e3ce563a79efea4d))
+
+
+
 # [21.1.0](https://github.com/bigeyedata/terraform-modules/compare/v21.0.1...v21.1.0) (2025-06-17)
 
 
