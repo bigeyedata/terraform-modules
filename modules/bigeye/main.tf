@@ -1008,6 +1008,7 @@ module "haproxy" {
   lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "haproxy")
 
   # Task settings
+  control_desired_count     = var.haproxy_autoscaling_config.type == "none"
   desired_count             = var.haproxy_desired_count
   cpu                       = var.haproxy_cpu
   memory                    = var.haproxy_memory
@@ -1069,6 +1070,49 @@ module "haproxy" {
   )
 }
 
+resource "aws_appautoscaling_target" "haproxy" {
+  count              = var.haproxy_autoscaling_config.type == "none" ? 0 : 1
+  depends_on         = [module.haproxy]
+  min_capacity       = var.haproxy_autoscaling_config.min_capacity
+  max_capacity       = var.haproxy_autoscaling_config.max_capacity
+  resource_id        = format("service/%s/%s-haproxy", local.name, local.name)
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+}
+
+resource "aws_appautoscaling_policy" "haproxy_cpu_utilization" {
+  count              = var.haproxy_autoscaling_config.type == "cpu_utilization" ? 1 : 0
+  name               = format("%s-haproxy-cpu-utilization", local.name)
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.haproxy[0].resource_id
+  scalable_dimension = aws_appautoscaling_target.haproxy[0].scalable_dimension
+  service_namespace  = aws_appautoscaling_target.haproxy[0].service_namespace
+  target_tracking_scaling_policy_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ECSServiceAverageCPUUtilization"
+    }
+    target_value = var.haproxy_autoscaling_config.target_utilization
+  }
+}
+
+resource "aws_appautoscaling_policy" "haproxy_request_count_per_target" {
+  count              = var.haproxy_autoscaling_config.type == "request_count_per_target" ? 1 : 0
+  name               = format("%s-haproxy-request-count-per-target", local.name)
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.haproxy[0].resource_id
+  scalable_dimension = aws_appautoscaling_target.haproxy[0].scalable_dimension
+  service_namespace  = aws_appautoscaling_target.haproxy[0].service_namespace
+  target_tracking_scaling_policy_configuration {
+    target_value       = var.haproxy_autoscaling_config.target_utilization
+    scale_in_cooldown  = 300
+    scale_out_cooldown = 300
+    predefined_metric_specification {
+      predefined_metric_type = "ALBRequestCountPerTarget"
+      resource_label         = format("%s/%s", module.haproxy.load_balancer_full_name, module.haproxy.target_group_full_name)
+    }
+  }
+}
+
 #======================================================
 # Web
 #======================================================
@@ -1114,6 +1158,7 @@ module "web" {
   lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "web")
 
   # Task settings
+  control_desired_count     = var.web_autoscaling_config.type == "none"
   desired_count             = var.web_desired_count
   cpu                       = var.web_cpu
   memory                    = var.web_memory
@@ -1167,6 +1212,49 @@ module "web" {
   create_dns_records = var.create_dns_records
   route53_zone_id    = data.aws_route53_zone.this[0].zone_id
   dns_name           = "${local.base_dns_alias}-web.${var.top_level_dns_name}"
+}
+
+resource "aws_appautoscaling_target" "web" {
+  count              = var.web_autoscaling_config.type == "none" ? 0 : 1
+  depends_on         = [module.web]
+  min_capacity       = var.web_autoscaling_config.min_capacity
+  max_capacity       = var.web_autoscaling_config.max_capacity
+  resource_id        = format("service/%s/%s-web", local.name, local.name)
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+}
+
+resource "aws_appautoscaling_policy" "web_cpu_utilization" {
+  count              = var.web_autoscaling_config.type == "cpu_utilization" ? 1 : 0
+  name               = format("%s-web-cpu-utilization", local.name)
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.web[0].resource_id
+  scalable_dimension = aws_appautoscaling_target.web[0].scalable_dimension
+  service_namespace  = aws_appautoscaling_target.web[0].service_namespace
+  target_tracking_scaling_policy_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ECSServiceAverageCPUUtilization"
+    }
+    target_value = var.web_autoscaling_config.target_utilization
+  }
+}
+
+resource "aws_appautoscaling_policy" "web_request_count_per_target" {
+  count              = var.web_autoscaling_config.type == "request_count_per_target" ? 1 : 0
+  name               = format("%s-web-request-count-per-target", local.name)
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.web[0].resource_id
+  scalable_dimension = aws_appautoscaling_target.web[0].scalable_dimension
+  service_namespace  = aws_appautoscaling_target.web[0].service_namespace
+  target_tracking_scaling_policy_configuration {
+    target_value       = var.web_autoscaling_config.target_utilization
+    scale_in_cooldown  = 300
+    scale_out_cooldown = 300
+    predefined_metric_specification {
+      predefined_metric_type = "ALBRequestCountPerTarget"
+      resource_label         = format("%s/%s", module.web.load_balancer_full_name, module.web.target_group_full_name)
+    }
+  }
 }
 
 #======================================================
