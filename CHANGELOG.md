@@ -1,3 +1,12 @@
+# [21.1.0](https://github.com/bigeyedata/terraform-modules/compare/v21.0.1...v21.1.0) (2025-06-17)
+
+
+### Features
+
+* add CPU autoscaling for datawatch ([7bd45fd](https://github.com/bigeyedata/terraform-modules/commit/7bd45fd6f88fcc4cd63bea3a3fdbdc566cd16cd9))
+
+
+
 ## [21.0.1](https://github.com/bigeyedata/terraform-modules/compare/v21.0.0...v21.0.1) (2025-06-17)
 
 
