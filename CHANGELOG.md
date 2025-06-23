@@ -1,3 +1,12 @@
+# [21.3.0](https://github.com/bigeyedata/terraform-modules/compare/v21.2.0...v21.3.0) (2025-06-23)
+
+
+### Features
+
+* allow using fargate spot instances ([73ee389](https://github.com/bigeyedata/terraform-modules/commit/73ee3893df9deda07733ee0758a14a2e1f3e8f03))
+
+
+
 # [21.2.0](https://github.com/bigeyedata/terraform-modules/compare/v21.1.0...v21.2.0) (2025-06-17)
 
 
