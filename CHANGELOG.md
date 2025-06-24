@@ -1,3 +1,12 @@
+## [21.3.1](https://github.com/bigeyedata/terraform-modules/compare/v21.3.0...v21.3.1) (2025-06-24)
+
+
+### Bug Fixes
+
+* adjust spot instance configs ([285afbf](https://github.com/bigeyedata/terraform-modules/commit/285afbf576d4a0d415ad279a7c9ba1d9d3202f09))
+
+
+
 # [21.3.0](https://github.com/bigeyedata/terraform-modules/compare/v21.2.0...v21.3.0) (2025-06-23)
 
 
