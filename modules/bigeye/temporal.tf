@@ -27,7 +27,7 @@ resource "aws_lb_target_group" "temporal" {
   protocol             = "TCP"
   vpc_id               = local.vpc_id
   target_type          = "ip"
-  deregistration_delay = 300
+  deregistration_delay = 120
   tags                 = merge(local.tags, { app = "temporal", component = "frontend" })
 
   health_check {
@@ -61,12 +61,11 @@ resource "aws_ecs_service" "temporal" {
   capacity_provider_strategy {
     capacity_provider = "FARGATE"
     base              = 1
-    weight            = 1
+    weight            = var.spot_instance_config.on_demand_weight
   }
   capacity_provider_strategy {
     capacity_provider = "FARGATE_SPOT"
-    base              = 0
-    weight            = 0
+    weight            = var.spot_instance_config.spot_weight
   }
 
   deployment_maximum_percent         = 200
@@ -104,6 +103,9 @@ resource "aws_ecs_service" "temporal" {
   propagate_tags = "SERVICE"
 
   tags = merge(local.tags, { app = "temporal", component = "frontend" })
+
+  # force_new_deployment is required to avoid ECS service replacement when changing spot base/weight
+  force_new_deployment = true
 }
 #======================================================
 # Temporal Components
@@ -158,12 +160,12 @@ resource "aws_ecs_service" "temporal_components" {
   capacity_provider_strategy {
     capacity_provider = "FARGATE"
     base              = 1
-    weight            = 1
+    weight            = var.spot_instance_config.on_demand_weight
   }
   capacity_provider_strategy {
     capacity_provider = "FARGATE_SPOT"
     base              = 0
-    weight            = 0
+    weight            = var.spot_instance_config.spot_weight
   }
 
   deployment_maximum_percent         = 200
@@ -195,6 +197,9 @@ resource "aws_ecs_service" "temporal_components" {
   propagate_tags = "SERVICE"
 
   tags = merge(local.tags, { app = "temporal", component = each.key })
+
+  # force_new_deployment is required to avoid ECS service replacement when changing spot base/weight
+  force_new_deployment = true
 }
 
 
@@ -704,7 +709,7 @@ module "temporalui" {
   lb_subnet_ids                          = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids       = concat(var.temporalui_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
-  lb_deregistration_delay                = 120
+  lb_deregistration_delay                = 30
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -712,6 +717,7 @@ module "temporalui" {
 
   # Task settings
   desired_count             = var.temporalui_desired_count
+  spot_instance_config      = var.spot_instance_config
   cpu                       = var.temporalui_cpu
   memory                    = var.temporalui_memory
   execution_role_arn        = local.ecs_role_arn
