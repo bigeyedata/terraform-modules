@@ -1008,9 +1008,14 @@ module "haproxy" {
   lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "haproxy")
 
   # Task settings
-  control_desired_count     = var.haproxy_autoscaling_config.type == "none"
-  desired_count             = var.haproxy_desired_count
-  spot_instance_config      = var.spot_instance_config
+  control_desired_count = var.haproxy_autoscaling_config.type == "none"
+  desired_count         = var.haproxy_desired_count
+  # this service frequently processes jobs that are > 2 min spot stop time so we cannot use spot instances here
+  # without work being lost
+  spot_instance_config = {
+    on_demand_weight = 1
+    spot_weight      = 0
+  }
   cpu                       = var.haproxy_cpu
   memory                    = var.haproxy_memory
   execution_role_arn        = local.ecs_role_arn
@@ -1151,7 +1156,7 @@ module "web" {
   lb_additional_security_group_ids       = concat(var.web_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
   lb_stickiness_enabled                  = true
-  lb_deregistration_delay                = 120
+  lb_deregistration_delay                = 30
   load_balancing_anomaly_mitigation      = false
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
@@ -1434,7 +1439,7 @@ module "monocle" {
   lb_subnet_ids                          = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids       = concat(var.monocle_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
-  lb_deregistration_delay                = 300
+  lb_deregistration_delay                = 30
   load_balancing_anomaly_mitigation      = var.load_balancing_anomaly_mitigation
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
@@ -1787,6 +1792,7 @@ module "scheduler" {
   lb_subnet_ids                          = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids       = concat(var.scheduler_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
+  lb_deregistration_delay                = 120
   load_balancing_anomaly_mitigation      = var.load_balancing_anomaly_mitigation
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
@@ -1794,8 +1800,13 @@ module "scheduler" {
   lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "scheduler")
 
   # Task settings
-  desired_count             = var.scheduler_desired_count
-  spot_instance_config      = var.spot_instance_config
+  desired_count = var.scheduler_desired_count
+  # this service frequently processes jobs that are > than the 2 min spot warning time so we cannot use spot instances here
+  # without work being lost
+  spot_instance_config = {
+    on_demand_weight = 1
+    spot_weight      = 0
+  }
   cpu                       = var.scheduler_cpu
   memory                    = var.scheduler_memory
   execution_role_arn        = local.ecs_role_arn
@@ -2425,9 +2436,14 @@ module "datawatch" {
   lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "datawatch")
 
   # Task settings
-  control_desired_count     = var.datawatch_autoscaling_config.type == "none"
-  desired_count             = var.datawatch_desired_count
-  spot_instance_config      = var.spot_instance_config
+  control_desired_count = var.datawatch_autoscaling_config.type == "none"
+  desired_count         = var.datawatch_desired_count
+  # this service frequently processes jobs that are > 2 min spot stop time so we cannot use spot instances here
+  # without work being lost
+  spot_instance_config = {
+    on_demand_weight = 1
+    spot_weight      = 0
+  }
   cpu                       = var.datawatch_cpu
   memory                    = var.datawatch_memory
   execution_role_arn        = local.ecs_role_arn
@@ -2551,6 +2567,7 @@ module "datawork" {
   lb_subnet_ids                          = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids       = concat(var.datawork_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
+  lb_deregistration_delay                = 120
   load_balancing_anomaly_mitigation      = var.load_balancing_anomaly_mitigation
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
@@ -2558,8 +2575,13 @@ module "datawork" {
   lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "datawork")
 
   # Task settings
-  desired_count             = var.datawork_desired_count
-  spot_instance_config      = var.spot_instance_config
+  desired_count = var.datawork_desired_count
+  # this service frequently processes jobs that are > 2 min spot stop time so we cannot use spot instances here
+  # without work being lost
+  spot_instance_config = {
+    on_demand_weight = 1
+    spot_weight      = 0
+  }
   cpu                       = var.datawork_cpu
   memory                    = var.datawork_memory
   execution_role_arn        = local.ecs_role_arn
@@ -2857,6 +2879,7 @@ module "lineagework" {
   lb_subnet_ids                          = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids       = concat(var.lineagework_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
+  lb_deregistration_delay                = 120
   load_balancing_anomaly_mitigation      = var.load_balancing_anomaly_mitigation
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
@@ -2864,8 +2887,13 @@ module "lineagework" {
   lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "lineagework")
 
   # Task settings
-  desired_count             = var.lineagework_desired_count
-  spot_instance_config      = var.spot_instance_config
+  desired_count = var.lineagework_desired_count
+  # this service frequently processes jobs that are > than the 2 min spot warning time so we cannot use spot instances here
+  # without work being lost
+  spot_instance_config = {
+    on_demand_weight = 1
+    spot_weight      = 0
+  }
   cpu                       = var.lineagework_cpu
   memory                    = var.lineagework_memory
   execution_role_arn        = local.ecs_role_arn
@@ -2955,6 +2983,7 @@ module "metricwork" {
   lb_subnet_ids                          = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids       = concat(var.metricwork_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
+  lb_deregistration_delay                = 120
   load_balancing_anomaly_mitigation      = var.load_balancing_anomaly_mitigation
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
@@ -3051,6 +3080,7 @@ module "rootcause" {
   lb_subnet_ids                     = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids  = concat(var.rootcause_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs       = var.internal_additional_ingress_cidrs
+  lb_deregistration_delay           = 30
   load_balancing_anomaly_mitigation = var.load_balancing_anomaly_mitigation
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
@@ -3148,7 +3178,7 @@ module "internalapi" {
   lb_subnet_ids                          = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids       = concat(var.internalapi_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
-  lb_deregistration_delay                = 180
+  lb_deregistration_delay                = 120
   load_balancing_anomaly_mitigation      = var.load_balancing_anomaly_mitigation
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
