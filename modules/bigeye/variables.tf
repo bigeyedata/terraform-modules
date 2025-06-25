@@ -587,6 +587,18 @@ variable "spot_instance_config" {
     spot_weight      = 0
   }
 }
+
+variable "availability_zone_rebalancing" {
+  description = "Set to DISABLED or ENABLED to let ECS redistribute tasks across AZs if there ends up being an imbalance due to spot removals/failures etc"
+  type        = string
+  default     = "DISABLED"
+
+  validation {
+    condition     = contains(["ENABLED", "DISABLED"], var.availability_zone_rebalancing)
+    error_message = "availability_zone_rebalancing must be either ENABLED or DISABLED"
+  }
+}
+
 #======================================================
 # Application Variables - Monocle
 #======================================================

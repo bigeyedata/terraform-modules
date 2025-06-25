@@ -1769,6 +1769,7 @@ module "scheduler" {
   vpc_id                        = local.vpc_id
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
+  availability_zone_rebalancing = var.availability_zone_rebalancing
   create_security_groups        = var.create_security_groups
   task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
   additional_security_group_ids = concat(
@@ -2405,6 +2406,7 @@ module "datawatch" {
   vpc_id                        = local.vpc_id
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
+  availability_zone_rebalancing = var.availability_zone_rebalancing
   create_security_groups        = var.create_security_groups
   task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
   additional_security_group_ids = concat(local.datawatch_additional_security_groups, var.datawatch_extra_security_group_ids)
@@ -2545,6 +2547,7 @@ module "datawork" {
   vpc_id                        = local.vpc_id
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
+  availability_zone_rebalancing = var.availability_zone_rebalancing
   create_security_groups        = var.create_security_groups
   task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
   additional_security_group_ids = concat(local.datawatch_additional_security_groups, var.datawork_extra_security_group_ids)
@@ -2669,6 +2672,7 @@ module "backfillwork" {
   vpc_id                        = local.vpc_id
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
+  availability_zone_rebalancing = var.availability_zone_rebalancing
   create_security_groups        = var.create_security_groups
   task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
   additional_security_group_ids = concat(local.datawatch_additional_security_groups, var.backfillwork_extra_security_group_ids)
@@ -2762,6 +2766,7 @@ module "indexwork" {
   vpc_id                        = local.vpc_id
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
+  availability_zone_rebalancing = var.availability_zone_rebalancing
   create_security_groups        = var.create_security_groups
   task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
   additional_security_group_ids = concat(local.datawatch_additional_security_groups, var.indexwork_extra_security_group_ids)
@@ -2858,6 +2863,7 @@ module "lineagework" {
   vpc_id                        = local.vpc_id
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
+  availability_zone_rebalancing = var.availability_zone_rebalancing
   create_security_groups        = var.create_security_groups
   task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
   additional_security_group_ids = concat(local.datawatch_additional_security_groups, var.lineagework_extra_security_group_ids)
@@ -2962,6 +2968,7 @@ module "metricwork" {
   vpc_id                        = local.vpc_id
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
+  availability_zone_rebalancing = var.availability_zone_rebalancing
   create_security_groups        = var.create_security_groups
   task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
   additional_security_group_ids = concat(local.datawatch_additional_security_groups, var.metricwork_extra_security_group_ids)
@@ -3058,6 +3065,7 @@ module "rootcause" {
   vpc_id                        = local.vpc_id
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
+  availability_zone_rebalancing = var.availability_zone_rebalancing
   create_security_groups        = var.create_security_groups
   task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
   additional_security_group_ids = concat(local.datawatch_additional_security_groups, var.rootcause_extra_security_group_ids)
@@ -3155,6 +3163,7 @@ module "internalapi" {
   vpc_id                        = local.vpc_id
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
+  availability_zone_rebalancing = var.availability_zone_rebalancing
   create_security_groups        = var.create_security_groups
   task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
   additional_security_group_ids = concat(local.datawatch_additional_security_groups, var.internalapi_extra_security_group_ids)
@@ -3291,6 +3300,7 @@ module "lineageapi" {
   vpc_id                        = local.vpc_id
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
+  availability_zone_rebalancing = var.availability_zone_rebalancing
   create_security_groups        = var.create_security_groups
   task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
   additional_security_group_ids = concat(local.datawatch_additional_security_groups, var.lineageapi_extra_security_group_ids)

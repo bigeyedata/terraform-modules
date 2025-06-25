@@ -369,6 +369,7 @@ resource "aws_ecs_service" "controlled_count" {
   }
   deployment_maximum_percent         = 200
   deployment_minimum_healthy_percent = 100
+  availability_zone_rebalancing      = var.availability_zone_rebalancing
   enable_ecs_managed_tags            = true
   health_check_grace_period_seconds  = var.healthcheck_grace_period
   network_configuration {

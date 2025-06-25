@@ -193,6 +193,17 @@ variable "efs_mount_point" {
   default     = ""
 }
 
+variable "availability_zone_rebalancing" {
+  description = "Set to DISABLED or ENABLED to let ECS redistribute tasks across AZs if there ends up being an imbalance due to spot removals/failures etc"
+  type        = string
+  default     = "ENABLED"
+
+  validation {
+    condition     = contains(["ENABLED", "DISABLED"], var.availability_zone_rebalancing)
+    error_message = "availability_zone_rebalancing must be either ENABLED or DISABLED"
+  }
+}
+
 #======================================================
 # Datadog agent settings
 #======================================================

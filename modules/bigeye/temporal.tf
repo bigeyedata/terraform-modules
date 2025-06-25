@@ -52,11 +52,12 @@ resource "aws_lb_listener" "temporal" {
 }
 
 resource "aws_ecs_service" "temporal" {
-  depends_on      = [aws_lb.temporal]
-  name            = "${local.name}-temporal"
-  cluster         = aws_ecs_cluster.this.id
-  task_definition = aws_ecs_task_definition.temporal_components["frontend"].arn
-  desired_count   = local.temporal_component_desired_count["frontend"]
+  depends_on                    = [aws_lb.temporal]
+  name                          = "${local.name}-temporal"
+  cluster                       = aws_ecs_cluster.this.id
+  task_definition               = aws_ecs_task_definition.temporal_components["frontend"].arn
+  desired_count                 = local.temporal_component_desired_count["frontend"]
+  availability_zone_rebalancing = var.availability_zone_rebalancing
 
   capacity_provider_strategy {
     capacity_provider = "FARGATE"
@@ -152,10 +153,11 @@ resource "aws_ecs_task_definition" "temporal_components" {
 resource "aws_ecs_service" "temporal_components" {
   for_each = toset(local.non_lb_temporal_services)
 
-  name            = "${local.name}-temporal-${local.temporal_svc_override_names[each.key]}"
-  cluster         = aws_ecs_cluster.this.id
-  task_definition = aws_ecs_task_definition.temporal_components[each.key].arn
-  desired_count   = local.temporal_component_desired_count[each.key]
+  name                          = "${local.name}-temporal-${local.temporal_svc_override_names[each.key]}"
+  cluster                       = aws_ecs_cluster.this.id
+  task_definition               = aws_ecs_task_definition.temporal_components[each.key].arn
+  desired_count                 = local.temporal_component_desired_count[each.key]
+  availability_zone_rebalancing = var.availability_zone_rebalancing
 
   capacity_provider_strategy {
     capacity_provider = "FARGATE"
