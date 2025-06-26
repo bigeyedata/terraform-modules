@@ -1,3 +1,12 @@
+# [21.4.0](https://github.com/bigeyedata/terraform-modules/compare/v21.3.1...v21.4.0) (2025-06-26)
+
+
+### Features
+
+* allow enabling ECS availability zone rebalancing ([0d23f4b](https://github.com/bigeyedata/terraform-modules/commit/0d23f4b6c13b336d9874c04864e012ac8a5818d1))
+
+
+
 ## [21.3.1](https://github.com/bigeyedata/terraform-modules/compare/v21.3.0...v21.3.1) (2025-06-24)
 
 
