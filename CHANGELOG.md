@@ -1,3 +1,12 @@
+## [21.4.1](https://github.com/bigeyedata/terraform-modules/compare/v21.4.0...v21.4.1) (2025-06-26)
+
+
+### Bug Fixes
+
+* add temporalui service to available zone rebalancing flag ([0c71fcc](https://github.com/bigeyedata/terraform-modules/commit/0c71fccd526674b213bd3b531a345438a017dae4)), closes [#545](https://github.com/bigeyedata/terraform-modules/issues/545)
+
+
+
 # [21.4.0](https://github.com/bigeyedata/terraform-modules/compare/v21.3.1...v21.4.0) (2025-06-26)
 
 
