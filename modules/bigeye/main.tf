@@ -1201,7 +1201,7 @@ module "web" {
       INSTANCE          = var.instance
       DOCKER_ENV        = var.environment
       APP_ENVIRONMENT   = var.environment
-      STATIC_ASSET_ROOT = "https://${var.create_dns_records ? aws_route53_record.static[0].fqdn : local.vanity_dns_name}"
+      STATIC_ASSET_ROOT = "https://${var.create_dns_records && var.cloudfront_enabled && var.cloudfront_route_static_asset_traffic ? aws_route53_record.static[0].fqdn : local.vanity_dns_name}"
       NODE_ENV          = "production"
       PORT              = var.web_port
       DROPWIZARD_HOST   = "https://${module.datawatch.dns_name}"
