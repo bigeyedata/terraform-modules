@@ -690,6 +690,7 @@ module "temporalui" {
   vpc_id                        = local.vpc_id
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
+  availability_zone_rebalancing = var.availability_zone_rebalancing
   create_security_groups        = var.create_security_groups
   task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
   additional_security_group_ids = concat(var.temporalui_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
