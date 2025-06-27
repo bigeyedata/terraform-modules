@@ -1,3 +1,12 @@
+## [21.4.2](https://github.com/bigeyedata/terraform-modules/compare/v21.4.1...v21.4.2) (2025-06-27)
+
+
+### Bug Fixes
+
+* use vanity url for static assets when CDN is disabled ([30e2355](https://github.com/bigeyedata/terraform-modules/commit/30e23552b139c7dc1861cf225212728b9156d103))
+
+
+
 ## [21.4.1](https://github.com/bigeyedata/terraform-modules/compare/v21.4.0...v21.4.1) (2025-06-26)
 
 
