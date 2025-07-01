@@ -1,3 +1,15 @@
+variable "use_centralized_external_lb" {
+  description = "This will migrate to using a single external LB instead of one per service.  This will be the default in a future release"
+  type        = bool
+  default     = false
+}
+
+variable "install_individual_external_lbs" {
+  description = "false will remove the external internal LBs.  This will be the default in a future release"
+  type        = bool
+  default     = true
+}
+
 variable "use_centralized_internal_lb" {
   description = "This will migrate to using a single internal LB instead of one per service.  This will be the default in a future release"
   type        = bool

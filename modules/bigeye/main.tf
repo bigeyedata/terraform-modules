@@ -436,8 +436,8 @@ resource "aws_route53_record" "apex" {
   name    = local.vanity_dns_name
   type    = "A"
   alias {
-    name                   = module.haproxy.lb_dns_name
-    zone_id                = module.haproxy.zone_id
+    name                   = var.use_centralized_external_lb ? aws_lb.external_alb.dns_name : module.haproxy.lb_dns_name
+    zone_id                = var.use_centralized_external_lb ? aws_lb.external_alb.zone_id : module.haproxy.zone_id
     evaluate_target_health = false
   }
 }
@@ -898,7 +898,7 @@ resource "aws_vpc_security_group_ingress_rule" "external_alb_ingress_cidrs_https
 
 resource "aws_lb" "external_alb" {
   name               = "${local.name}-external"
-  internal           = var.internet_facing
+  internal           = var.internet_facing ? false : true
   load_balancer_type = "application"
   subnets            = var.internet_facing ? local.public_alb_subnet_ids : local.internal_service_alb_subnet_ids
   security_groups    = local.external_alb_security_group_ids
@@ -1075,19 +1075,24 @@ module "haproxy" {
   fargate_version               = var.fargate_version
 
   # Load balancer
-  healthcheck_path                  = "/haproxy-health"
-  healthcheck_interval              = 15
-  healthcheck_timeout               = 5
-  healthcheck_unhealthy_threshold   = 3
-  ssl_policy                        = var.alb_ssl_policy
-  acm_certificate_arn               = local.acm_certificate_arn
-  lb_idle_timeout                   = var.lb_timeout
-  lb_subnet_ids                     = var.internet_facing ? local.public_alb_subnet_ids : local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids  = concat(var.haproxy_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
-  lb_additional_ingress_cidrs       = var.additional_ingress_cidrs
-  lb_stickiness_enabled             = true
-  lb_deregistration_delay           = 900
-  load_balancing_anomaly_mitigation = false
+  create_lb                              = var.install_individual_external_lbs
+  use_centralized_lb                     = var.use_centralized_external_lb
+  centralized_lb_arn                     = aws_lb.external_alb.arn
+  centralized_lb_security_group_ids      = local.external_alb_security_group_ids
+  centralized_lb_https_listener_rule_arn = aws_lb_listener.https_external.arn
+  healthcheck_path                       = "/haproxy-health"
+  healthcheck_interval                   = 15
+  healthcheck_timeout                    = 5
+  healthcheck_unhealthy_threshold        = 3
+  ssl_policy                             = var.alb_ssl_policy
+  acm_certificate_arn                    = local.acm_certificate_arn
+  lb_idle_timeout                        = var.lb_timeout
+  lb_subnet_ids                          = var.internet_facing ? local.public_alb_subnet_ids : local.internal_service_alb_subnet_ids
+  lb_additional_security_group_ids       = concat(var.haproxy_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
+  lb_additional_ingress_cidrs            = var.additional_ingress_cidrs
+  lb_stickiness_enabled                  = true
+  lb_deregistration_delay                = 900
+  load_balancing_anomaly_mitigation      = false
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -1160,6 +1165,9 @@ module "haproxy" {
     },
     var.haproxy_additional_secret_arns,
   )
+
+  create_dns_records = false
+  dns_name           = local.vanity_dns_name
 }
 
 resource "aws_appautoscaling_target" "haproxy" {
@@ -1200,7 +1208,11 @@ resource "aws_appautoscaling_policy" "haproxy_request_count_per_target" {
     scale_out_cooldown = 300
     predefined_metric_specification {
       predefined_metric_type = "ALBRequestCountPerTarget"
-      resource_label         = format("%s/%s", module.haproxy.load_balancer_full_name, module.haproxy.target_group_full_name)
+      resource_label = format(
+        "%s/%s",
+        module.haproxy.load_balancer_full_name,
+        module.haproxy.target_group_full_name
+      )
     }
   }
 }
