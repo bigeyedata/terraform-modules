@@ -312,7 +312,6 @@ variable "centralized_lb_security_group_ids" {
 variable "centralized_lb_arn" {
   description = "external LB to import and create target groups and listeners for"
   type        = string
-  default     = ""
 }
 
 variable "centralized_lb_https_listener_rule_arn" {

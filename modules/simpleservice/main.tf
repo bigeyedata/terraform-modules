@@ -13,7 +13,6 @@ locals {
   load_balancer_ingress_text            = var.internet_facing ? "anywhere" : "internal"
   load_balancer_ingress_cidrs           = var.internet_facing ? ["0.0.0.0/0"] : concat([var.vpc_cidr_block], var.lb_additional_ingress_cidrs)
   efs_volume_enabled                    = var.efs_mount_point != "" && var.efs_access_point_id != ""
-  centralized_lb_installed              = var.centralized_lb_arn != ""
   service_dns_name                      = var.create_dns_records ? aws_route53_record.this[0].name : var.dns_name
   use_load_balancing_anomaly_mitigation = var.load_balancing_anomaly_mitigation == true && var.lb_stickiness_enabled == false
 }
@@ -115,7 +114,6 @@ resource "aws_lb_target_group" "this" {
 }
 
 resource "aws_lb_target_group" "centralized_lb" {
-  count = local.centralized_lb_installed ? 1 : 0
   # This hack is due to a 32 char limit for TGs and the overly long name of one of our internal test environments
   name                              = startswith(var.name, "release-candidate-") ? "rc-${var.instance}-${var.app}" : "${var.name}2"
   port                              = var.traffic_port
@@ -183,11 +181,10 @@ resource "aws_lb_listener" "https" {
 }
 
 resource "aws_lb_listener_rule" "centralized_lb" {
-  count        = local.centralized_lb_installed ? 1 : 0
   listener_arn = var.centralized_lb_https_listener_rule_arn
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.centralized_lb[0].arn
+    target_group_arn = aws_lb_target_group.centralized_lb.arn
   }
   condition {
     host_header {
@@ -195,7 +192,7 @@ resource "aws_lb_listener_rule" "centralized_lb" {
     }
   }
   tags = merge(var.tags, {
-    Name = var.name
+    Name = local.service_dns_name
   })
 }
 
@@ -223,22 +220,22 @@ resource "aws_vpc_security_group_ingress_rule" "this_lb_to_service" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "internal_lb_to_service" {
-  for_each                     = var.create_security_groups ? toset(var.centralized_lb_security_group_ids) : []
-  description                  = "Allows port ${var.traffic_port} from the internal load balancer"
+  count                        = var.create_security_groups ? length(var.centralized_lb_security_group_ids) : 0
+  description                  = "Allows port ${var.traffic_port} from the centralized load balancer"
   from_port                    = var.traffic_port
   to_port                      = var.traffic_port
   ip_protocol                  = "tcp"
-  referenced_security_group_id = each.value
+  referenced_security_group_id = var.centralized_lb_security_group_ids[count.index]
   security_group_id            = aws_security_group.this[0].id
 }
 
 resource "aws_vpc_security_group_ingress_rule" "additional_to_service" {
-  for_each          = var.create_security_groups ? toset(var.task_additional_ingress_cidrs) : []
-  description       = "Allows port ${var.traffic_port} from ${each.value}"
+  count             = var.create_security_groups ? length(var.task_additional_ingress_cidrs) : 0
+  description       = "Allows port ${var.traffic_port} from ${var.task_additional_ingress_cidrs[count.index]}"
   from_port         = var.traffic_port
   to_port           = var.traffic_port
   ip_protocol       = "tcp"
-  cidr_ipv4         = each.value
+  cidr_ipv4         = var.task_additional_ingress_cidrs[count.index]
   security_group_id = aws_security_group.this[0].id
 }
 
@@ -322,8 +319,8 @@ resource "aws_ecs_service" "uncontrolled_count" {
   }
   dynamic "load_balancer" {
     for_each = compact([
-      var.create_lb ? aws_lb_target_group.this[0].arn : "",
-      local.centralized_lb_installed ? aws_lb_target_group.centralized_lb[0].arn : "",
+      var.create_lb && var.use_centralized_lb == false ? aws_lb_target_group.this[0].arn : "",
+      aws_lb_target_group.centralized_lb.arn,
     ])
     content {
       container_name   = var.name
@@ -382,8 +379,8 @@ resource "aws_ecs_service" "controlled_count" {
   }
   dynamic "load_balancer" {
     for_each = compact([
-      var.create_lb ? aws_lb_target_group.this[0].arn : "",
-      local.centralized_lb_installed ? aws_lb_target_group.centralized_lb[0].arn : "",
+      var.create_lb && var.use_centralized_lb == false ? aws_lb_target_group.this[0].arn : "",
+      aws_lb_target_group.centralized_lb.arn,
     ])
     content {
       container_name   = var.name
@@ -413,8 +410,8 @@ resource "aws_route53_record" "this" {
   name    = var.dns_name
   type    = "A"
   alias {
-    name                   = var.use_centralized_lb ? data.aws_lb.external[0].dns_name : aws_lb.this[0].dns_name
-    zone_id                = var.use_centralized_lb ? data.aws_lb.external[0].zone_id : aws_lb.this[0].zone_id
+    name                   = var.use_centralized_lb ? data.aws_lb.external.dns_name : aws_lb.this[0].dns_name
+    zone_id                = var.use_centralized_lb ? data.aws_lb.external.zone_id : aws_lb.this[0].zone_id
     evaluate_target_health = true
   }
 }
