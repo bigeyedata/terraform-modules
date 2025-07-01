@@ -690,8 +690,8 @@ module "elb_haproxy" {
   source                         = "./elb"
   stack                          = var.stack
   app                            = "haproxy"
-  lb_name                        = "${var.stack}-haproxy"
-  target_group_name              = "${var.stack}-haproxy"
+  lb_name                        = var.monitor_individual_external_lbs ? "${var.stack}-haproxy" : "${var.stack}-external"
+  target_group_name              = var.monitor_individual_external_lbs ? "${var.stack}-haproxy" : "${var.stack}-haproxy2"
   host_count_disabled            = var.elb_haproxy_host_count_disabled
   host_count_datapoints_to_alarm = var.elb_haproxy_host_count_datapoints_to_alarm
   host_count_evaluation_periods  = var.elb_haproxy_host_count_evaluation_periods
