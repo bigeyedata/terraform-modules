@@ -570,12 +570,6 @@ variable "lb_timeout" {
   default     = 900
 }
 
-variable "load_balancing_anomaly_mitigation" {
-  description = "Enable Anomaly mitigation LB algorithm on target groups.  LeastOutstandingRequests routing algorithm is used if set to false.  Cannot be used with session stickiness"
-  type        = bool
-  default     = false
-}
-
 variable "spot_instance_config" {
   description = "Increase the spot_weight to control the ratio of spot instances to use on ECS.  spot_base_count should not exceed *_desired_count.  Typically anything above 2 will be a configuration mistake"
   type = object({
@@ -585,17 +579,6 @@ variable "spot_instance_config" {
   default = {
     on_demand_weight = 1
     spot_weight      = 0
-  }
-}
-
-variable "availability_zone_rebalancing" {
-  description = "Set to DISABLED or ENABLED to let ECS redistribute tasks across AZs if there ends up being an imbalance due to spot removals/failures etc"
-  type        = string
-  default     = "DISABLED"
-
-  validation {
-    condition     = contains(["ENABLED", "DISABLED"], var.availability_zone_rebalancing)
-    error_message = "availability_zone_rebalancing must be either ENABLED or DISABLED"
   }
 }
 
