@@ -2368,6 +2368,7 @@ locals {
     REQUEST_BODY_LOGGING_ENABLED    = true
     CLASS_LOADING_LOGGING_ENABLED   = var.datawatch_class_loading_logging_enabled
     MAX_REQUEST_SIZE                = var.datawatch_max_request_size
+    ENABLE_EXTRA_METRICS            = var.datadog_java_service_extra_metrics_enabled
 
     AUTH0_DOMAIN            = var.auth0_domain
     EXTERNAL_LOGGING_LEVEL  = var.datawatch_external_logging_level
