@@ -1,3 +1,12 @@
+# [21.6.0](https://github.com/bigeyedata/terraform-modules/compare/v21.5.0...v21.6.0) (2025-07-08)
+
+
+### Features
+
+* add flag to enable additional debugging stats for java services ([e55ab6b](https://github.com/bigeyedata/terraform-modules/commit/e55ab6b62362a8399f9022b6ad775aba18cc4af8))
+
+
+
 # [21.5.0](https://github.com/bigeyedata/terraform-modules/compare/v21.4.2...v21.5.0) (2025-07-03)
 
 
