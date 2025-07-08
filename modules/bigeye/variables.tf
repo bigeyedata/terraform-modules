@@ -313,6 +313,12 @@ variable "datadog_agent_api_key_secret_arn" {
   default     = ""
 }
 
+variable "datadog_java_service_extra_metrics_enabled" {
+  description = "Additional stats can be sent to Datadog for system internals such as JDBC pool utilization etc.  Warning - this may run up your Datadog custom metrics bill if enabled."
+  type        = bool
+  default     = false
+}
+
 #======================================================
 # AWS Firelens settings
 #======================================================
