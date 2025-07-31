@@ -2999,8 +2999,13 @@ module "metricwork" {
   lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "metricwork")
 
   # Task settings
-  desired_count             = var.metricwork_desired_count
-  spot_instance_config      = var.spot_instance_config
+  desired_count = var.metricwork_desired_count
+  # this service frequently processes jobs that are > 2 min spot stop time so we cannot use spot instances here
+  # without work being lost
+  spot_instance_config = {
+    on_demand_weight = 1
+    spot_weight      = 0
+  }
   cpu                       = var.metricwork_cpu
   memory                    = var.metricwork_memory
   execution_role_arn        = local.ecs_role_arn
