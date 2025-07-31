@@ -1,3 +1,12 @@
+## [21.6.1](https://github.com/bigeyedata/terraform-modules/compare/v21.6.0...v21.6.1) (2025-07-31)
+
+
+### Bug Fixes
+
+* disable spot instances for metricwork ([bcc0d1e](https://github.com/bigeyedata/terraform-modules/commit/bcc0d1e7bd04e57773fbf4cda0f2b5bf1cfdc06f))
+
+
+
 # [21.6.0](https://github.com/bigeyedata/terraform-modules/compare/v21.5.0...v21.6.0) (2025-07-08)
 
 
