@@ -1,3 +1,13 @@
+# [21.7.0](https://github.com/bigeyedata/terraform-modules/compare/v21.6.1...v21.7.0) (2025-08-07)
+
+
+### Features
+
+* add dedicated LB for external calls into Bigeye - part 1 ([03f1e74](https://github.com/bigeyedata/terraform-modules/commit/03f1e74b385b99aaf8c385b6af88be63997589a5))
+* add flags to migrate to centralized external LB ([f7292f6](https://github.com/bigeyedata/terraform-modules/commit/f7292f669df7131ee5302692e5454f9df97de456))
+
+
+
 ## [21.6.1](https://github.com/bigeyedata/terraform-modules/compare/v21.6.0...v21.6.1) (2025-07-31)
 
 
