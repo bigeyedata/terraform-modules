@@ -30,7 +30,7 @@ module "bigeye" {
   image_registry = "021451147547.dkr.ecr.us-west-2.amazonaws.com"
 
   # Bigeye app version.  You can list the tags available in the image_registry (using the latest is always recommended).
-  image_tag = "1.34.0"
+  image_tag = "2.29.0"
 
   # RabbitMQ configuration
   byo_rabbitmq_endpoint             = local.rabbitmq_amqps_endpoint
