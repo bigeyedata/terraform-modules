@@ -102,6 +102,41 @@ variable "solr_jmx_port" {
   default     = 1099
 }
 
+variable "use_centralized_lb" {
+  description = "Whether to use the LB created by this module or the external one.  This allows us to create the new resources and destroy the old ones in separate PRs to avoid interrupting service"
+  type        = bool
+  default     = false
+}
+
+variable "centralized_lb_security_group_ids" {
+  description = "This is the SG attached to the LB being passed in.  It needs to be attached to the ECS service to allow access from the LB"
+  type        = list(string)
+  default     = []
+}
+
+variable "centralized_lb_arn" {
+  description = "external LB to import and create target groups and listeners for"
+  type        = string
+}
+
+variable "centralized_lb_https_listener_rule_arn" {
+  description = "external LB listener to attach a routing rule for.  The routing rule will be based on hostname of this service"
+  type        = string
+  default     = ""
+}
+
+variable "lb_deregistration_delay" {
+  description = "The number of seconds the load balancer will drain the target"
+  type        = number
+  default     = 0
+}
+
+variable "load_balancing_anomaly_mitigation" {
+  description = "Enable Anomaly mitigation LB algorithm on target groups.  LeastOutstandingRequests routing algorithm is used if set to false.  Cannot be used with session stickiness"
+  type        = bool
+  default     = false
+}
+
 variable "route53_zone_id" {
   description = "DNS record will be created in this zone."
   type        = string
