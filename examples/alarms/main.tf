@@ -7,7 +7,7 @@ module "bigeye" {
   top_level_dns_name = ""
 
   # Get this from Bigeye Sales
-  image_tag = "1.34.0"
+  image_tag = "2.29.0"
 }
 
 # Alarms module
