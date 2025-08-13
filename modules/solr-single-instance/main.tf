@@ -182,6 +182,16 @@ module "ecs-solr-service-sg" {
   tags = local.solr_tags
 }
 
+resource "aws_vpc_security_group_ingress_rule" "lb_to_service" {
+  count                        = length(var.centralized_lb_security_group_ids)
+  description                  = "Allows port ${var.solr_traffic_port} from the centralized load balancer"
+  from_port                    = var.solr_traffic_port
+  to_port                      = var.solr_traffic_port
+  ip_protocol                  = "tcp"
+  referenced_security_group_id = var.centralized_lb_security_group_ids[count.index]
+  security_group_id            = module.ecs-solr-service-sg.security_group_id
+}
+
 module "ecs-solr-ec2-instance-sg" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "5.2.0"
@@ -354,10 +364,15 @@ resource "aws_ecs_service" "solr" {
     registry_arn = aws_service_discovery_service.this.arn
   }
 
-  load_balancer {
-    container_name   = var.name
-    container_port   = var.solr_traffic_port
-    target_group_arn = module.alb.target_groups["solr"].arn
+  dynamic "load_balancer" {
+    for_each = compact([
+      var.use_centralized_lb == false ? module.alb[0].target_groups["solr"].arn : aws_lb_target_group.centralized_lb.arn,
+    ])
+    content {
+      container_name   = var.name
+      container_port   = var.solr_traffic_port
+      target_group_arn = load_balancer.value
+    }
   }
 
   deployment_circuit_breaker {
@@ -403,6 +418,7 @@ resource "aws_service_discovery_service" "this" {
 }
 
 module "alb" {
+  count   = var.use_centralized_lb == false ? 1 : 0
   source  = "terraform-aws-modules/alb/aws"
   version = "9.10.0"
 
@@ -489,14 +505,51 @@ module "alb" {
   tags = local.solr_tags
 }
 
+resource "aws_lb_target_group" "centralized_lb" {
+  # This hack is due to a 32 char limit for TGs and the overly long name of one of our internal test environments
+  name                              = startswith(var.stack, "release-candidate-") ? "rc-${var.instance}-lplus-solr" : "${var.stack}-lplus-solr2"
+  port                              = var.solr_traffic_port
+  protocol                          = "HTTP"
+  vpc_id                            = var.vpc_id
+  target_type                       = "ip"
+  deregistration_delay              = var.lb_deregistration_delay
+  load_balancing_algorithm_type     = var.load_balancing_anomaly_mitigation ? "weighted_random" : "least_outstanding_requests"
+  load_balancing_anomaly_mitigation = var.load_balancing_anomaly_mitigation ? "on" : "off"
+  tags = merge(local.solr_tags, {
+    Name = var.name
+  })
+
+  health_check {
+    enabled = true
+    path    = "/solr/#/login"
+  }
+
+}
+
+resource "aws_lb_listener_rule" "centralized_lb" {
+  listener_arn = var.centralized_lb_https_listener_rule_arn
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.centralized_lb.arn
+  }
+  condition {
+    host_header {
+      values = [var.dns_name]
+    }
+  }
+  tags = merge(var.tags, {
+    Name = var.dns_name
+  })
+}
+
 resource "aws_route53_record" "solr" {
   count   = var.dns_name != "" && var.route53_zone_id != "" ? 1 : 0
   zone_id = var.route53_zone_id
   name    = var.dns_name
   type    = "A"
   alias {
-    name                   = module.alb.dns_name
-    zone_id                = module.alb.zone_id
+    name                   = var.use_centralized_lb ? data.aws_lb.external.dns_name : module.alb[0].dns_name
+    zone_id                = var.use_centralized_lb ? data.aws_lb.external.zone_id : module.alb[0].zone_id
     evaluate_target_health = true
   }
 }
