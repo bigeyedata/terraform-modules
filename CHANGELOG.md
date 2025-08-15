@@ -1,3 +1,12 @@
+# [21.8.0](https://github.com/bigeyedata/terraform-modules/compare/v21.7.1...v21.8.0) (2025-08-15)
+
+
+### Features
+
+* migrate solr to centralized external LB ([e7fbcd0](https://github.com/bigeyedata/terraform-modules/commit/e7fbcd0378eaeedb93aa509970effc296ac3821a))
+
+
+
 ## [21.7.1](https://github.com/bigeyedata/terraform-modules/compare/v21.7.0...v21.7.1) (2025-08-15)
 
 
