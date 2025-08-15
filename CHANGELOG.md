@@ -1,3 +1,12 @@
+## [21.7.1](https://github.com/bigeyedata/terraform-modules/compare/v21.7.0...v21.7.1) (2025-08-15)
+
+
+### Bug Fixes
+
+* skip sending previous version to triggered deploy job ([9b4b235](https://github.com/bigeyedata/terraform-modules/commit/9b4b23512591c6a3c2aea331c1b34916d8f5a0ac))
+
+
+
 # [21.7.0](https://github.com/bigeyedata/terraform-modules/compare/v21.6.1...v21.7.0) (2025-08-07)
 
 
