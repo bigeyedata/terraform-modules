@@ -58,3 +58,10 @@ variable "load_balancing_anomaly_mitigation" {
   type        = bool
   default     = true
 }
+
+# ready for removal
+variable "lineageplus_solr_cnames" {
+  description = "Deprecated.  Use var.lineageplus_solr_aliases"
+  type        = list(string)
+  default     = []
+}

@@ -285,6 +285,7 @@ locals {
     app       = var.app
     component = "solr"
   })
+  all_solr_dns_names = compact(concat([var.dns_name], var.solr_aliases))
 }
 
 resource "aws_ecs_task_definition" "solr" {
@@ -527,6 +528,7 @@ resource "aws_lb_target_group" "centralized_lb" {
 }
 
 resource "aws_lb_listener_rule" "centralized_lb" {
+  for_each     = toset(local.all_solr_dns_names)
   listener_arn = var.centralized_lb_https_listener_rule_arn
   action {
     type             = "forward"
@@ -534,31 +536,22 @@ resource "aws_lb_listener_rule" "centralized_lb" {
   }
   condition {
     host_header {
-      values = [var.dns_name]
+      values = [each.value]
     }
   }
   tags = merge(var.tags, {
-    Name = var.dns_name
+    Name = each.value
   })
 }
 
 resource "aws_route53_record" "solr" {
-  count   = var.dns_name != "" && var.route53_zone_id != "" ? 1 : 0
-  zone_id = var.route53_zone_id
-  name    = var.dns_name
-  type    = "A"
+  for_each = toset(local.all_solr_dns_names)
+  zone_id  = var.route53_zone_id
+  name     = each.value
+  type     = "A"
   alias {
     name                   = var.use_centralized_lb ? data.aws_lb.external.dns_name : module.alb[0].dns_name
     zone_id                = var.use_centralized_lb ? data.aws_lb.external.zone_id : module.alb[0].zone_id
     evaluate_target_health = true
   }
-}
-
-resource "aws_route53_record" "solr_cname" {
-  count   = var.dns_name != "" && var.route53_zone_id != "" && length(var.solr_cnames) > 0 ? length(var.solr_cnames) : 0
-  zone_id = var.route53_zone_id
-  name    = var.solr_cnames[count.index]
-  type    = "CNAME"
-  ttl     = 300
-  records = [var.dns_name]
 }
