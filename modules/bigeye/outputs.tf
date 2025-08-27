@@ -84,6 +84,11 @@ output "temporal_database_dns_name" {
 #======================================================
 # DNS - Services
 #======================================================
+output "application_dns_name" {
+  description = "DNS name for the main application (UI/API)."
+  value       = local.vanity_dns_name
+}
+
 output "datawatch_dns_name" {
   description = "DNS name for the datawatch service"
   value       = module.datawatch.dns_name
@@ -309,6 +314,11 @@ output "web_load_balancer_zone_id" {
   value       = module.web.zone_id
 }
 
+output "solr_dns_names" {
+  description = "The dns names for the solr service"
+  value       = concat([local.lineageplus_solr_dns_name], var.lineageplus_solr_aliases, var.lineageplus_solr_cnames)
+}
+
 output "ecs_task_role_id" {
   description = "Id of the ECS Task execution role.  This is useful for granting ECS access to secrets manager secrets."
   value       = local.create_ecs_role ? aws_iam_role.ecs[0].id : ""
@@ -375,6 +385,16 @@ output "elasticache_subnet_group_name" {
 output "database_subnet_group_name" {
   description = "Database subnet group name"
   value       = local.database_subnet_group_name
+}
+
+output "external_load_balancer_arn" {
+  description = "External application LB ARN"
+  value       = aws_lb.external_alb.arn
+}
+
+output "temporal_load_balancer_arn" {
+  description = "Temporal LB ARN"
+  value       = aws_lb.temporal.arn
 }
 
 #======================================================
