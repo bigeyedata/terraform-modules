@@ -2817,8 +2817,8 @@ variable "lineageplus_solr_ebs_volume_size_os" {
   default     = 40
 }
 
-variable "lineageplus_solr_cnames" {
-  description = "CNAME Route53 records that will point to the main service DNS name."
+variable "lineageplus_solr_aliases" {
+  description = "Legacy DNS names for solr."
   type        = list(string)
   default     = []
 }
