@@ -1,3 +1,12 @@
+# [21.9.0](https://github.com/bigeyedata/terraform-modules/compare/v21.8.1...v21.9.0) (2025-08-28)
+
+
+### Features
+
+* add outputs for external LB dns names and ARNs ([f746eb8](https://github.com/bigeyedata/terraform-modules/commit/f746eb8f75195a0fd30de21559da41d6f64047fe))
+
+
+
 ## [21.8.1](https://github.com/bigeyedata/terraform-modules/compare/v21.8.0...v21.8.1) (2025-08-28)
 
 
