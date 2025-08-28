@@ -1,3 +1,12 @@
+## [21.8.1](https://github.com/bigeyedata/terraform-modules/compare/v21.8.0...v21.8.1) (2025-08-28)
+
+
+### Bug Fixes
+
+* fix metacenter-solr access ([8bd1d4e](https://github.com/bigeyedata/terraform-modules/commit/8bd1d4e05af83e5b06ad4ebab2e11b684af52ca6))
+
+
+
 # [21.8.0](https://github.com/bigeyedata/terraform-modules/compare/v21.7.1...v21.8.0) (2025-08-15)
 
 
