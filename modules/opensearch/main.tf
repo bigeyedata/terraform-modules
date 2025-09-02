@@ -4,6 +4,7 @@ locals {
   # Burstable class hardware is not supported for auto tune.
   auto_tune_enabled      = !can(regex("^t", var.master_node_instance_type))
   zone_awareness_enabled = var.instance_count > 1
+  app                    = "temporal"
 }
 
 resource "aws_security_group" "this" {
@@ -13,7 +14,7 @@ resource "aws_security_group" "this" {
   vpc_id      = var.vpc_id
   tags = merge(var.tags, {
     Name = "${var.name}-opensearch"
-    app  = "temporal"
+    app  = local.app
   })
 }
 
@@ -125,6 +126,9 @@ resource "aws_opensearch_domain" "this" {
     desired_state       = local.auto_tune_enabled ? "ENABLED" : "DISABLED"
     rollback_on_disable = "NO_ROLLBACK"
   }
+  tags = merge(var.tags, {
+    app = local.app
+  })
 }
 
 resource "aws_opensearch_domain_policy" "this" {
