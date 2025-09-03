@@ -1538,7 +1538,6 @@ module "monocle" {
   lb_additional_security_group_ids       = concat(var.monocle_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
   lb_deregistration_delay                = 30
-  load_balancing_anomaly_mitigation      = var.load_balancing_anomaly_mitigation
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -1704,7 +1703,6 @@ module "toretto" {
   lb_subnet_ids                          = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids       = concat(var.toretto_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
-  load_balancing_anomaly_mitigation      = var.load_balancing_anomaly_mitigation
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -1892,7 +1890,6 @@ module "scheduler" {
   lb_additional_security_group_ids       = concat(var.scheduler_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
   lb_deregistration_delay                = 120
-  load_balancing_anomaly_mitigation      = var.load_balancing_anomaly_mitigation
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -2530,7 +2527,6 @@ module "datawatch" {
   lb_additional_security_group_ids       = concat(var.datawatch_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
   lb_deregistration_delay                = 900
-  load_balancing_anomaly_mitigation      = var.load_balancing_anomaly_mitigation
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -2670,7 +2666,6 @@ module "datawork" {
   lb_additional_security_group_ids       = concat(var.datawork_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
   lb_deregistration_delay                = 120
-  load_balancing_anomaly_mitigation      = var.load_balancing_anomaly_mitigation
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -2794,7 +2789,6 @@ module "backfillwork" {
   lb_subnet_ids                          = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids       = concat(var.backfillwork_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
-  load_balancing_anomaly_mitigation      = var.load_balancing_anomaly_mitigation
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -2888,7 +2882,6 @@ module "indexwork" {
   lb_subnet_ids                          = local.internal_service_alb_subnet_ids
   lb_additional_security_group_ids       = concat(var.indexwork_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
-  load_balancing_anomaly_mitigation      = var.load_balancing_anomaly_mitigation
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -2985,7 +2978,6 @@ module "lineagework" {
   lb_additional_security_group_ids       = concat(var.lineagework_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
   lb_deregistration_delay                = 120
-  load_balancing_anomaly_mitigation      = var.load_balancing_anomaly_mitigation
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -3090,7 +3082,6 @@ module "metricwork" {
   lb_additional_security_group_ids       = concat(var.metricwork_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
   lb_deregistration_delay                = 120
-  load_balancing_anomaly_mitigation      = var.load_balancing_anomaly_mitigation
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -3193,7 +3184,6 @@ module "rootcause" {
   lb_additional_security_group_ids  = concat(var.rootcause_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs       = var.internal_additional_ingress_cidrs
   lb_deregistration_delay           = 30
-  load_balancing_anomaly_mitigation = var.load_balancing_anomaly_mitigation
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -3292,7 +3282,6 @@ module "internalapi" {
   lb_additional_security_group_ids       = concat(var.internalapi_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
   lb_deregistration_delay                = 120
-  load_balancing_anomaly_mitigation      = var.load_balancing_anomaly_mitigation
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket
@@ -3429,7 +3418,6 @@ module "lineageapi" {
   lb_additional_security_group_ids       = concat(var.lineageapi_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
   lb_deregistration_delay                = 90
-  load_balancing_anomaly_mitigation      = var.load_balancing_anomaly_mitigation
 
   lb_access_logs_enabled       = var.elb_access_logs_enabled
   lb_access_logs_bucket_name   = var.elb_access_logs_bucket

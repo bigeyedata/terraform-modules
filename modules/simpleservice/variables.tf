@@ -421,7 +421,7 @@ variable "lb_deregistration_delay" {
 variable "load_balancing_anomaly_mitigation" {
   description = "Enable Anomaly mitigation LB algorithm on target groups.  LeastOutstandingRequests routing algorithm is used if set to false.  Cannot be used with session stickiness"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "create_dns_records" {
