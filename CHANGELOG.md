@@ -1,3 +1,20 @@
+# [22.0.0](https://github.com/bigeyedata/terraform-modules/compare/v21.9.0...v22.0.0) (2025-09-04)
+
+
+### Features
+
+* enable tg anomaly mitigation and az rebalancing by default ([#574](https://github.com/bigeyedata/terraform-modules/issues/574)) ([b22f9b3](https://github.com/bigeyedata/terraform-modules/commit/b22f9b37e08286b299b40fa9642aa355d7211c07))
+
+
+### BREAKING CHANGES
+
+* Removed var.availability_zone_rebalancing flag.
+If you use this variable, it should be removed.
+
+Closes SRE-4938
+
+
+
 # [21.9.0](https://github.com/bigeyedata/terraform-modules/compare/v21.8.1...v21.9.0) (2025-08-28)
 
 
