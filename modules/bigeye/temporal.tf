@@ -57,7 +57,7 @@ resource "aws_ecs_service" "temporal" {
   cluster                       = aws_ecs_cluster.this.id
   task_definition               = aws_ecs_task_definition.temporal_components["frontend"].arn
   desired_count                 = local.temporal_component_desired_count["frontend"]
-  availability_zone_rebalancing = var.availability_zone_rebalancing
+  availability_zone_rebalancing = "ENABLED"
 
   capacity_provider_strategy {
     capacity_provider = "FARGATE"
@@ -157,7 +157,7 @@ resource "aws_ecs_service" "temporal_components" {
   cluster                       = aws_ecs_cluster.this.id
   task_definition               = aws_ecs_task_definition.temporal_components[each.key].arn
   desired_count                 = local.temporal_component_desired_count[each.key]
-  availability_zone_rebalancing = var.availability_zone_rebalancing
+  availability_zone_rebalancing = "ENABLED"
 
   capacity_provider_strategy {
     capacity_provider = "FARGATE"
@@ -690,7 +690,6 @@ module "temporalui" {
   vpc_id                        = local.vpc_id
   vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
-  availability_zone_rebalancing = var.availability_zone_rebalancing
   create_security_groups        = var.create_security_groups
   task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
   additional_security_group_ids = concat(var.temporalui_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])

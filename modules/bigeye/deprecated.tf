@@ -41,18 +41,6 @@ variable "disable_unused_monocle_dd_flags" {
 }
 
 # ready for removal 2025-08-01
-variable "availability_zone_rebalancing" {
-  description = "Set to DISABLED or ENABLED to let ECS redistribute tasks across AZs if there ends up being an imbalance due to spot removals/failures etc"
-  type        = string
-  default     = "ENABLED"
-
-  validation {
-    condition     = contains(["ENABLED", "DISABLED"], var.availability_zone_rebalancing)
-    error_message = "availability_zone_rebalancing must be either ENABLED or DISABLED"
-  }
-}
-
-# ready for removal 2025-08-01
 variable "load_balancing_anomaly_mitigation" {
   description = "Enable Anomaly mitigation LB algorithm on target groups.  LeastOutstandingRequests routing algorithm is used if set to false.  Cannot be used with session stickiness"
   type        = bool
