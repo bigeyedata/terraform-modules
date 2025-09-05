@@ -1,3 +1,12 @@
+## [22.0.1](https://github.com/bigeyedata/terraform-modules/compare/v22.0.0...v22.0.1) (2025-09-05)
+
+
+### Bug Fixes
+
+* add missing tags for opensearch service ([fe676d5](https://github.com/bigeyedata/terraform-modules/commit/fe676d505f08d85d60da5523ce6253368339519f))
+
+
+
 # [22.0.0](https://github.com/bigeyedata/terraform-modules/compare/v21.9.0...v22.0.0) (2025-09-04)
 
 
