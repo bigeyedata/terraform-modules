@@ -439,8 +439,8 @@ resource "aws_route53_record" "apex" {
   name    = local.vanity_dns_name
   type    = "A"
   alias {
-    name                   = var.use_centralized_external_lb ? aws_lb.external_alb.dns_name : module.haproxy.lb_dns_name
-    zone_id                = var.use_centralized_external_lb ? aws_lb.external_alb.zone_id : module.haproxy.zone_id
+    name                   = aws_lb.external_alb.dns_name
+    zone_id                = aws_lb.external_alb.zone_id
     evaluate_target_health = false
   }
 }
@@ -1078,8 +1078,6 @@ module "haproxy" {
   fargate_version               = var.fargate_version
 
   # Load balancer
-  create_lb                              = var.install_individual_external_lbs
-  use_centralized_lb                     = var.use_centralized_external_lb
   centralized_lb_arn                     = aws_lb.external_alb.arn
   centralized_lb_security_group_ids      = local.external_alb_security_group_ids
   centralized_lb_https_listener_rule_arn = aws_lb_listener.https_external.arn
@@ -1156,7 +1154,7 @@ module "haproxy" {
       REDIRECT_ADDRESS = "https://${local.vanity_dns_name}"
       PORT             = var.haproxy_port
       HAPROXY_PORT     = var.haproxy_port
-      LINEAGEAPI_HOST  = var.haproxy_lineageapi_enabled ? module.lineageapi.dns_name : module.datawatch.dns_name
+      LINEAGEAPI_HOST  = module.lineageapi.dns_name
       LINEAGEAPI_PORT  = "443"
     },
     var.haproxy_additional_environment_vars,
@@ -1242,8 +1240,6 @@ module "web" {
   fargate_version               = var.fargate_version
 
   # Load balancer
-  create_lb                              = var.install_individual_internal_lbs
-  use_centralized_lb                     = var.use_centralized_internal_lb
   centralized_lb_arn                     = aws_lb.internal_alb.arn
   centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
   centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
@@ -1527,8 +1523,6 @@ module "monocle" {
   enable_execute_command = var.monocle_enable_ecs_exec
 
   # Load balancer
-  create_lb                              = var.install_individual_internal_lbs
-  use_centralized_lb                     = var.use_centralized_internal_lb
   centralized_lb_arn                     = aws_lb.internal_alb.arn
   centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
   centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
@@ -1594,14 +1588,14 @@ module "monocle" {
     },
     local.sentry_event_level_env_variable,
     var.datadog_agent_enabled ? {
-      DD_PROFILING_ENABLED                 = var.disable_unused_monocle_dd_flags ? "false" : "true"
+      DD_PROFILING_ENABLED                 = "true"
       DD_PROFILING_CAPTURE_PCT             = "2"
       DD_CALL_BASIC_CONFIG                 = "false"
       DD_TRACE_STARTUP_LOGS                = "true"
       DD_TRACE_DEBUG                       = "false"
-      DD_LOGS_INJECTION                    = var.disable_unused_monocle_dd_flags ? "false" : "true"
+      DD_LOGS_INJECTION                    = "true"
       DD_RUNTIME_METRICS_ENABLED           = "true"
-      DD_INSTRUMENTATION_TELEMETRY_ENABLED = var.disable_unused_monocle_dd_flags ? "false" : "true"
+      DD_INSTRUMENTATION_TELEMETRY_ENABLED = "true"
     } : {},
     var.monocle_additional_environment_vars,
   )
@@ -1694,8 +1688,6 @@ module "toretto" {
   enable_execute_command = var.toretto_enable_ecs_exec
 
   # Load balancer
-  create_lb                              = var.install_individual_internal_lbs
-  use_centralized_lb                     = var.use_centralized_internal_lb
   centralized_lb_arn                     = aws_lb.internal_alb.arn
   centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
   centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
@@ -1879,8 +1871,6 @@ module "scheduler" {
   fargate_version = var.fargate_version
 
   # Load balancer
-  create_lb                              = var.install_individual_internal_lbs
-  use_centralized_lb                     = var.use_centralized_internal_lb
   centralized_lb_arn                     = aws_lb.internal_alb.arn
   centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
   centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
@@ -2513,8 +2503,6 @@ module "datawatch" {
   enable_execute_command        = var.datawatch_enable_ecs_exec
 
   # Load balancer
-  create_lb                              = var.install_individual_internal_lbs
-  use_centralized_lb                     = var.use_centralized_internal_lb
   centralized_lb_arn                     = aws_lb.internal_alb.arn
   centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
   centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
@@ -2652,8 +2640,6 @@ module "datawork" {
   enable_execute_command        = var.datawork_enable_ecs_exec
 
   # Load balancer
-  create_lb                              = var.install_individual_internal_lbs
-  use_centralized_lb                     = var.use_centralized_internal_lb
   centralized_lb_arn                     = aws_lb.internal_alb.arn
   centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
   centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
@@ -2775,8 +2761,6 @@ module "backfillwork" {
   enable_execute_command        = var.backfillwork_enable_ecs_exec
 
   # Load balancer
-  create_lb                              = var.install_individual_internal_lbs
-  use_centralized_lb                     = var.use_centralized_internal_lb
   centralized_lb_arn                     = aws_lb.internal_alb.arn
   centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
   centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
@@ -2867,8 +2851,6 @@ module "indexwork" {
   enable_execute_command        = var.indexwork_enable_ecs_exec
 
   # Load balancer
-  create_lb                              = var.install_individual_internal_lbs
-  use_centralized_lb                     = var.use_centralized_internal_lb
   centralized_lb_arn                     = aws_lb.internal_alb.arn
   centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
   centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
@@ -2961,8 +2943,6 @@ module "lineagework" {
   enable_execute_command        = var.lineagework_enable_ecs_exec
 
   # Load balancer
-  create_lb                              = var.install_individual_internal_lbs
-  use_centralized_lb                     = var.use_centralized_internal_lb
   centralized_lb_arn                     = aws_lb.internal_alb.arn
   centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
   centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
@@ -3064,8 +3044,6 @@ module "metricwork" {
   enable_execute_command        = var.metricwork_enable_ecs_exec
 
   # Load balancer
-  create_lb                              = var.install_individual_internal_lbs
-  use_centralized_lb                     = var.use_centralized_internal_lb
   centralized_lb_arn                     = aws_lb.internal_alb.arn
   centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
   centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
@@ -3164,8 +3142,6 @@ module "rootcause" {
   enable_execute_command        = var.rootcause_enable_ecs_exec
 
   # Load balancer
-  create_lb                              = var.install_individual_internal_lbs
-  use_centralized_lb                     = var.use_centralized_internal_lb
   centralized_lb_arn                     = aws_lb.internal_alb.arn
   centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
   centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
@@ -3261,8 +3237,6 @@ module "internalapi" {
   enable_execute_command        = var.internalapi_enable_ecs_exec
 
   # Load balancer
-  create_lb                              = var.install_individual_internal_lbs
-  use_centralized_lb                     = var.use_centralized_internal_lb
   centralized_lb_arn                     = aws_lb.internal_alb.arn
   centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
   centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
@@ -3396,8 +3370,6 @@ module "lineageapi" {
   enable_execute_command        = var.lineageapi_enable_ecs_exec
 
   # Load balancer
-  create_lb                              = var.install_individual_internal_lbs
-  use_centralized_lb                     = var.use_centralized_internal_lb
   centralized_lb_arn                     = aws_lb.internal_alb.arn
   centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
   centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn

@@ -10,7 +10,7 @@ the Bigeye stack into an AWS Environment.
 [Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli#install-terraform)
 
 - at least version 1.0. We find that
-  `tfenv` ([link](https://github.com/tfutils/tfenv)) is a useful way to install
+([tfenv](https://github.com/tfutils/tfenv)) is a useful way to install
   & manage Terraform versions
 
 ### AWS
@@ -48,6 +48,29 @@ terraform version and application version.
 | >= 3.12.0                 | 1.48.0              | Application 1.48.0 requires at least terraform-modules version 3.12.0                    |
 
 ## Upgrading
+
+### Upgrading to 23.0.0
+
+The following vars have been removed from the bigeye module:
+
+- var.install_individual_external_lbs
+- var.use_centralized_external_lb_solr
+- var.use_centralized_internal_lb
+- var.install_individual_internal_lbs
+- var.haproxy_lineageapi_enabled
+- var.disable_unused_monocle_dd_flags
+- var.load_balancing_anomaly_mitigation
+
+The following vars have been removed from the alarms module:
+
+- var.monitor_individual_external_lbs
+- var.monitor_individual_internal_lbs
+
+### Upgrading to 22.0.0
+
+The following var has been removed:
+
+- var.availability_zone_rebalancing flag.
 
 ### Upgrading to 21.0.0
 

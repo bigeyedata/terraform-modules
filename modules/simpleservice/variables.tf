@@ -291,18 +291,6 @@ variable "awsfirelens_uri" {
 #======================================================
 # Load balancer settings
 #======================================================
-variable "use_centralized_lb" {
-  description = "Whether to use the LB created by this module or the external one.  This allows us to create the new resources and destroy the old ones in separate PRs to avoid interrupting service"
-  type        = bool
-  default     = false
-}
-
-variable "create_lb" {
-  description = "Whether to create the load balancer or not"
-  type        = bool
-  default     = true
-}
-
 variable "centralized_lb_security_group_ids" {
   description = "This is the SG attached to the LB being passed in.  It needs to be attached to the ECS service to allow access from the LB"
   type        = list(string)

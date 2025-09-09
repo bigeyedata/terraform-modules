@@ -20,14 +20,13 @@ module "lineageplus_solr" {
   acm_certificate_arn = local.acm_certificate_arn
   dns_name            = var.create_dns_records ? local.lineageplus_solr_dns_name : ""
   route53_zone_id     = var.create_dns_records ? data.aws_route53_zone.this[0].id : ""
-  solr_aliases        = var.create_dns_records ? concat(var.lineageplus_solr_aliases, var.lineageplus_solr_cnames) : []
+  solr_aliases        = var.create_dns_records ? var.lineageplus_solr_aliases : []
 
   lb_access_logs_enabled                 = var.elb_access_logs_enabled
   lb_access_logs_bucket_name             = var.elb_access_logs_bucket
   lb_access_logs_bucket_prefix           = local.elb_access_logs_prefix
   centralized_lb_arn                     = aws_lb.external_alb.arn
   centralized_lb_https_listener_rule_arn = aws_lb_listener.https_external.arn
-  use_centralized_lb                     = var.use_centralized_external_lb_solr
   centralized_lb_security_group_ids      = local.external_alb_security_group_ids
 
   service_discovery_private_dns_namespace_id = aws_service_discovery_private_dns_namespace.this.id

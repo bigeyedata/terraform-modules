@@ -316,7 +316,7 @@ output "web_load_balancer_zone_id" {
 
 output "solr_dns_names" {
   description = "The dns names for the solr service"
-  value       = concat([local.lineageplus_solr_dns_name], var.lineageplus_solr_aliases, var.lineageplus_solr_cnames)
+  value       = concat([local.lineageplus_solr_dns_name], var.lineageplus_solr_aliases)
 }
 
 output "ecs_task_role_id" {

@@ -698,8 +698,6 @@ module "temporalui" {
   fargate_version               = var.fargate_version
 
   # Load balancer
-  create_lb                              = var.install_individual_internal_lbs
-  use_centralized_lb                     = var.use_centralized_internal_lb
   centralized_lb_arn                     = aws_lb.internal_alb.arn
   centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
   centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn

@@ -21,98 +21,6 @@ locals {
 #==============================================
 # Load balancer resources
 #==============================================
-resource "aws_security_group" "lb" {
-  count       = var.create_lb && var.create_security_groups ? 1 : 0
-  name        = "${var.name}-lb"
-  description = "Allows 80/443 from ${local.load_balancer_ingress_text}"
-  vpc_id      = var.vpc_id
-  tags = merge(var.tags, {
-    Name = "${var.name}-lb"
-  })
-}
-
-resource "aws_vpc_security_group_ingress_rule" "lb_http" {
-  for_each          = var.create_lb && var.create_security_groups ? toset(local.load_balancer_ingress_cidrs) : []
-  description       = "HTTP from ${each.value}"
-  from_port         = 80
-  to_port           = 80
-  ip_protocol       = "tcp"
-  cidr_ipv4         = each.value
-  security_group_id = aws_security_group.lb[0].id
-}
-
-resource "aws_vpc_security_group_ingress_rule" "lb_https" {
-  for_each          = var.create_lb && var.create_security_groups ? toset(local.load_balancer_ingress_cidrs) : []
-  description       = "HTTPS from ${each.value}"
-  from_port         = 443
-  to_port           = 443
-  ip_protocol       = "tcp"
-  cidr_ipv4         = each.value
-  security_group_id = aws_security_group.lb[0].id
-}
-
-resource "aws_vpc_security_group_egress_rule" "lb_ipv4" {
-  count             = var.create_lb && var.create_security_groups ? 1 : 0
-  from_port         = 0
-  to_port           = local.max_port
-  ip_protocol       = "tcp"
-  cidr_ipv4         = "0.0.0.0/0"
-  security_group_id = aws_security_group.lb[0].id
-}
-
-resource "aws_vpc_security_group_egress_rule" "lb_ipv6" {
-  count             = var.create_lb && var.create_security_groups ? 1 : 0
-  from_port         = 0
-  to_port           = local.max_port
-  ip_protocol       = "tcp"
-  cidr_ipv6         = "::/0"
-  security_group_id = aws_security_group.lb[0].id
-}
-
-resource "aws_lb" "this" {
-  count              = var.create_lb ? 1 : 0
-  name               = var.name
-  internal           = var.internet_facing ? false : true
-  load_balancer_type = "application"
-  subnets            = var.lb_subnet_ids
-  security_groups    = concat(aws_security_group.lb[*].id, var.lb_additional_security_group_ids)
-  idle_timeout       = var.lb_idle_timeout
-  tags               = var.tags
-
-  access_logs {
-    enabled = var.lb_access_logs_enabled
-    bucket  = var.lb_access_logs_bucket_name
-    prefix  = var.lb_access_logs_bucket_prefix
-  }
-}
-
-resource "aws_lb_target_group" "this" {
-  count                             = var.create_lb ? 1 : 0
-  name                              = var.name
-  port                              = var.traffic_port
-  protocol                          = "HTTP"
-  vpc_id                            = var.vpc_id
-  target_type                       = "ip"
-  deregistration_delay              = var.lb_deregistration_delay
-  load_balancing_algorithm_type     = local.use_load_balancing_anomaly_mitigation ? "weighted_random" : "least_outstanding_requests"
-  load_balancing_anomaly_mitigation = local.use_load_balancing_anomaly_mitigation ? "on" : "off"
-  stickiness {
-    enabled = var.lb_stickiness_enabled
-    type    = "lb_cookie"
-  }
-  tags = var.tags
-
-  health_check {
-    enabled             = true
-    protocol            = "HTTP"
-    healthy_threshold   = var.healthcheck_healthy_threshold
-    unhealthy_threshold = var.healthcheck_unhealthy_threshold
-    interval            = var.healthcheck_interval
-    timeout             = var.healthcheck_timeout
-    path                = var.healthcheck_path
-  }
-}
-
 resource "aws_lb_target_group" "centralized_lb" {
   # This hack is due to a 32 char limit for TGs and the overly long name of one of our internal test environments
   name                              = startswith(var.name, "release-candidate-") ? "rc-${var.instance}-${var.app}" : "${var.name}2"
@@ -138,46 +46,6 @@ resource "aws_lb_target_group" "centralized_lb" {
     timeout             = var.healthcheck_timeout
     path                = var.healthcheck_path
   }
-}
-
-resource "aws_lb_listener" "http" {
-  count      = var.create_lb ? 1 : 0
-  depends_on = [aws_lb_target_group.this[0]]
-
-  load_balancer_arn = aws_lb.this[0].arn
-  port              = 80
-  protocol          = "HTTP"
-
-  default_action {
-    type = "redirect"
-
-    redirect {
-      port        = "443"
-      protocol    = "HTTPS"
-      status_code = "HTTP_301"
-    }
-  }
-  tags = merge(var.tags, {
-    Name = var.name
-  })
-}
-
-resource "aws_lb_listener" "https" {
-  count      = var.create_lb ? 1 : 0
-  depends_on = [aws_lb_target_group.this[0]]
-
-  load_balancer_arn = aws_lb.this[0].arn
-  port              = "443"
-  protocol          = "HTTPS"
-  ssl_policy        = var.ssl_policy
-  certificate_arn   = var.acm_certificate_arn
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.this[0].arn
-  }
-  tags = merge(var.tags, {
-    Name = var.name
-  })
 }
 
 resource "aws_lb_listener_rule" "centralized_lb" {
@@ -207,16 +75,6 @@ resource "aws_security_group" "this" {
   tags = merge(var.tags, {
     Name = var.name
   })
-}
-
-resource "aws_vpc_security_group_ingress_rule" "this_lb_to_service" {
-  count                        = var.create_lb ? 1 : 0
-  description                  = "Allows port ${var.traffic_port} from service load balancer"
-  from_port                    = var.traffic_port
-  to_port                      = var.traffic_port
-  ip_protocol                  = "tcp"
-  referenced_security_group_id = aws_security_group.lb[0].id
-  security_group_id            = aws_security_group.this[0].id
 }
 
 resource "aws_vpc_security_group_ingress_rule" "internal_lb_to_service" {
@@ -317,16 +175,10 @@ resource "aws_ecs_service" "uncontrolled_count" {
       var.additional_security_group_ids
     )
   }
-  dynamic "load_balancer" {
-    for_each = compact([
-      var.create_lb && var.use_centralized_lb == false ? aws_lb_target_group.this[0].arn : "",
-      aws_lb_target_group.centralized_lb.arn,
-    ])
-    content {
-      container_name   = var.name
-      container_port   = var.traffic_port
-      target_group_arn = load_balancer.value
-    }
+  load_balancer {
+    container_name   = var.name
+    container_port   = var.traffic_port
+    target_group_arn = aws_lb_target_group.centralized_lb.arn
   }
   platform_version = var.fargate_version
 
@@ -377,16 +229,10 @@ resource "aws_ecs_service" "controlled_count" {
       var.additional_security_group_ids
     )
   }
-  dynamic "load_balancer" {
-    for_each = compact([
-      var.create_lb && var.use_centralized_lb == false ? aws_lb_target_group.this[0].arn : "",
-      aws_lb_target_group.centralized_lb.arn,
-    ])
-    content {
-      container_name   = var.name
-      container_port   = var.traffic_port
-      target_group_arn = load_balancer.value
-    }
+  load_balancer {
+    container_name   = var.name
+    container_port   = var.traffic_port
+    target_group_arn = aws_lb_target_group.centralized_lb.arn
   }
   platform_version = var.fargate_version
 
@@ -410,8 +256,8 @@ resource "aws_route53_record" "this" {
   name    = var.dns_name
   type    = "A"
   alias {
-    name                   = var.use_centralized_lb ? data.aws_lb.external.dns_name : aws_lb.this[0].dns_name
-    zone_id                = var.use_centralized_lb ? data.aws_lb.external.zone_id : aws_lb.this[0].zone_id
+    name                   = data.aws_lb.external.dns_name
+    zone_id                = data.aws_lb.external.zone_id
     evaluate_target_health = true
   }
 }
