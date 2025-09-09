@@ -1630,7 +1630,7 @@ variable "temporal_client_refresh_scorecard_wf_exec_size" {
 variable "temporal_client_refresh_scorecard_act_exec_size" {
   description = "Controls refresh-scorecards activity execution thread count.  This is used for refreshing data used in scorecards."
   type        = number
-  default     = 10
+  default     = 3
 }
 
 variable "temporal_client_monocle_invalidation_wf_exec_size" {
