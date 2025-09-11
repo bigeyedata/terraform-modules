@@ -27,3 +27,29 @@ module "bigeye" {
 output "bigeye" {
   value = module.bigeye
 }
+
+provider "aws" {
+  # Set your region here.  If you end up picking an AWS region where the ECR images are not available, contact Bigeye support
+  region = "us-west-2"
+
+  # There are several ways to handle AWS credentials for terraform, these are just here for example purposes.
+  # A typical local setup would be to use environment variables external to terraform, ie
+  # $ export AWS_ACCESS_KEY_ID="anaccesskey"
+  # $ export AWS_SECRET_ACCESS_KEY="asecretkey"
+  # $ terraform plan
+
+  # Official docs: https://registry.terraform.io/providers/hashicorp/aws/latest/docs
+
+  # assume_role {
+  #   role_arn = "arn:aws:iam::1234:role/my-privileged-role"
+  # }
+}
+
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.100.0"
+    }
+  }
+}

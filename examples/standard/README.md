@@ -5,28 +5,40 @@ a Bigeye stack into your AWS account.
 
 The module includes:
 
-* VPC
-* Security Groups
-* IAM Roles
-* ELBs
 * ECS cluster, services, and tasks
-* Secrets
-* S3 buckets
-* RabbitMQ Broker
+* Cloudwatch
 * Elasticache
+* ELBs
+* IAM Roles (create and manage ECS roles)
+* Opensearch
+* RDS databases
+* RabbitMQ Broker (Amazon MQ)
+* Secrets Manager
+* Security Groups
+* S3 buckets
+* VPC
 
 ## Prerequisites
 
-For the standard install, you will need the following:
+Bigeye support will need the following information
+
+* github handle to pull the terraform modules repo
+* AWS account ID that you will be running the install from.  This is to
+authorize access to Bigeye ECR images
+* AWS Region you will be installing Bigeye.  This is to ensure images are
+available in the region that you will be pulling from.
+
+For the standard installation, you will also need the following:
 
 * [Terraform prerequisites](https://github.com/bigeyedata/terraform-modules/blob/main/README.md#prerequisites)
 * Access to an ECR registry with container images (get from Bigeye)
 * An image tag (get from Bigeye)
-* An AWS account with a Route53 Hosted Zone where Terraform will write DNS records
+* An AWS account with a Route53 Hosted Zone where Terraform will write DNS
+records
+* An AWS IAM user or role that has enough permissions to provision DNS
+records, IAM roles, create databases, etc.
 
 ## Steps
-
-To install the stack, run the following:
 
 ### Get Bigeye Container Images
 
@@ -64,24 +76,36 @@ Replace the following variables in `main.tf`.
 create DNS records in.
 * `image_tag` - get the container image tag to use from Bigeye
 
-### Configure AWS (optional)
-
-The AWS provider will use your default AWS CLI profile if it's present.
-If not, you may need to configure the AWS provider with something like:
-
-```hcl
-provider "aws" {
-    profile = "testaccount - REPLACE WITH YOUR INFO"
-    region = "us-east-2 - REPLACE WITH YOUR INFO"
-}
-```
-
-You can see the various configuration values for the AWS provider [here](https://registry.terraform.io/providers/hashicorp/aws/latest/docs).
+It is also valuable to set  `vanity_alias` as well.  The combination of
+`vanity_alias` and `top_level_dns_name` comprise the URL that Bigeye will be
+access from after the install is complete:
+"https://vanity_alias.top_level_dns_name"
 
 ### Run Terraform
+
+This process will take around 30 minutes as some of the resources such as RDS
+and Opensearch take a while to create resources.
 
 ```sh
 terraform init
 terraform plan
 terraform apply
 ```
+
+Once the installation is complete, the bigeye UI can be accessed at
+`https://<vanity_alias>.<top_level_dns_name>/first-time`
+
+### Troubleshooting
+
+#### Terraform failure messages
+
+```log
+Error: creating ECS Service (x-temporalui): operation error ECS: 
+CreateService, https response error StatusCode: 400, RequestID: xxxxx, 
+InvalidParameterException: The target group with targetGroupArn <arn> does not 
+have an associated load balancer.
+```
+
+This is transient and happens on some installs due to the timing with when the
+ECS service is being created and when the load balancer is created.  Re-run
+terraform apply again.
