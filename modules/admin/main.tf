@@ -101,6 +101,8 @@ locals {
   efs_volume_enabled = var.efs_mount_point != "" && var.efs_access_point_id != ""
 }
 
+
+data "aws_partition" "current" {}
 data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
 
@@ -152,7 +154,7 @@ resource "aws_iam_role_policy" "this" {
           "logs:DescribeLogStreams",
           "logs:PutLogEvents"
         ],
-        "Resource" : "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:${var.cloudwatch_log_group_name}:*"
+        "Resource" : "arn:${data.aws_partition.current.partition}:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:${var.cloudwatch_log_group_name}:*"
       },
       {
         "Sid" : "GrantGlobalAccess",
@@ -176,10 +178,10 @@ resource "aws_iam_role_policy" "this" {
           "elasticache:DescribeCacheClusters",
         ],
         "Resource" : [
-          "arn:aws:rds:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:db:${var.stack_name}*",
-          "arn:aws:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:service/${var.stack_name}/*",
-          "arn:aws:elasticache:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:replicationgroup:${var.stack_name}",
-          "arn:aws:elasticache:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:cluster:${var.stack_name}*",
+          "arn:${data.aws_partition.current.partition}:rds:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:db:${var.stack_name}*",
+          "arn:${data.aws_partition.current.partition}:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:service/${var.stack_name}/*",
+          "arn:${data.aws_partition.current.partition}:elasticache:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:replicationgroup:${var.stack_name}",
+          "arn:${data.aws_partition.current.partition}:elasticache:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:cluster:${var.stack_name}*",
         ]
       }
     ]

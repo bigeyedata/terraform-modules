@@ -12,6 +12,9 @@ terraform {
   }
 }
 
+
+data "aws_partition" "current" {}
+
 data "aws_region" "current" {}
 
 data "aws_caller_identity" "current" {}
@@ -2023,7 +2026,7 @@ resource "aws_iam_role_policy" "datawatch_temporalsecrets" {
           "secretsmanager:TagResource"
         ]
         Resource = [
-          "arn:aws:secretsmanager:${local.aws_region}:${local.aws_account_id}:secret:bigeye/${local.name}/temporal/client/public/*"
+          "arn:${data.aws_partition.current.partition}:secretsmanager:${local.aws_region}:${local.aws_account_id}:secret:bigeye/${local.name}/temporal/client/public/*"
         ]
       },
       {
@@ -2034,9 +2037,9 @@ resource "aws_iam_role_policy" "datawatch_temporalsecrets" {
           "secretsmanager:GetSecretValue"
         ]
         Resource = [
-          "arn:aws:secretsmanager:${local.aws_region}:${local.aws_account_id}:secret:bigeye/${local.name}/temporal/client/public/*",
-          "arn:aws:secretsmanager:${local.aws_region}:${local.aws_account_id}:secret:bigeye/${local.name}/temporal/*/*",
-          "arn:aws:secretsmanager:${local.aws_region}:${local.aws_account_id}:secret:bigeye/datawatch-temporal/*"
+          "arn:${data.aws_partition.current.partition}:secretsmanager:${local.aws_region}:${local.aws_account_id}:secret:bigeye/${local.name}/temporal/client/public/*",
+          "arn:${data.aws_partition.current.partition}:secretsmanager:${local.aws_region}:${local.aws_account_id}:secret:bigeye/${local.name}/temporal/*/*",
+          "arn:${data.aws_partition.current.partition}:secretsmanager:${local.aws_region}:${local.aws_account_id}:secret:bigeye/datawatch-temporal/*"
         ]
 
       }
@@ -2077,8 +2080,8 @@ resource "aws_iam_role_policy" "datawatch_secrets" {
           "secretsmanager:TagResource"
         ]
         Resource = [
-          "arn:aws:secretsmanager:${local.aws_region}:${local.aws_account_id}:secret:bigeye/${local.name}/agent/*",
-          "arn:aws:secretsmanager:${local.aws_region}:${local.aws_account_id}:secret:bigeye/${local.name}/datawatch/*"
+          "arn:${data.aws_partition.current.partition}:secretsmanager:${local.aws_region}:${local.aws_account_id}:secret:bigeye/${local.name}/agent/*",
+          "arn:${data.aws_partition.current.partition}:secretsmanager:${local.aws_region}:${local.aws_account_id}:secret:bigeye/${local.name}/datawatch/*"
         ]
       },
       {
@@ -2089,8 +2092,8 @@ resource "aws_iam_role_policy" "datawatch_secrets" {
           "secretsmanager:GetSecretValue"
         ]
         Resource = [
-          "arn:aws:secretsmanager:${local.aws_region}:${local.aws_account_id}:secret:bigeye/${local.name}/agent/*",
-          "arn:aws:secretsmanager:${local.aws_region}:${local.aws_account_id}:secret:bigeye/${local.name}/datawatch/*"
+          "arn:${data.aws_partition.current.partition}:secretsmanager:${local.aws_region}:${local.aws_account_id}:secret:bigeye/${local.name}/agent/*",
+          "arn:${data.aws_partition.current.partition}:secretsmanager:${local.aws_region}:${local.aws_account_id}:secret:bigeye/${local.name}/datawatch/*"
         ]
 
       }
@@ -2132,7 +2135,7 @@ resource "aws_iam_role_policy" "datawatch_efs" {
           "elasticfilesystem:ClientMount",
           "elasticfilesystem:ClientWrite"
         ],
-        "Resource" : "arn:aws:elasticfilesystem:${local.aws_region}:${local.aws_account_id}:file-system/*"
+        "Resource" : "arn:${data.aws_partition.current.partition}:elasticfilesystem:${local.aws_region}:${local.aws_account_id}:file-system/*"
         Condition = {
           StringEquals = {
             "aws:ResourceTag/stack" = local.name
