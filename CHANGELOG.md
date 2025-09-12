@@ -1,3 +1,12 @@
+# [22.1.0](https://github.com/bigeyedata/terraform-modules/compare/v22.0.2...v22.1.0) (2025-09-12)
+
+
+### Features
+
+* use aws_partition in constructed arns ([fc666b5](https://github.com/bigeyedata/terraform-modules/commit/fc666b5a2b6635ce4356f440e42f026f4078edf4))
+
+
+
 ## [22.0.2](https://github.com/bigeyedata/terraform-modules/compare/v22.0.1...v22.0.2) (2025-09-12)
 
 
