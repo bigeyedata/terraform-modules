@@ -240,7 +240,7 @@ data "aws_iam_policy_document" "solr-instance-role-inline-policy" {
     ]
     sid = "AllowAttachingEBSVolume"
     resources = [
-      "arn:aws:ec2:${data.aws_region.current.name}:${data.aws_caller_identity.this.account_id}:instance/*",
+      "arn:${data.aws_partition.current.partition}:ec2:${data.aws_region.current.name}:${data.aws_caller_identity.this.account_id}:instance/*",
       aws_ebs_volume.ebs_volume.arn,
     ]
     condition {
@@ -253,9 +253,9 @@ data "aws_iam_policy_document" "solr-instance-role-inline-policy" {
 
 resource "aws_iam_role_policy_attachment" "ecs_instance_role_policy" {
   for_each = toset([
-    "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role",
-    "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
-    "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy",
+    "arn:${data.aws_partition.current.partition}:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role",
+    "arn:${data.aws_partition.current.partition}:iam::aws:policy/AmazonSSMManagedInstanceCore",
+    "arn:${data.aws_partition.current.partition}:iam::aws:policy/CloudWatchAgentServerPolicy",
   ])
   role       = aws_iam_role.solr-ecs-instance-role.name
   policy_arn = each.value
