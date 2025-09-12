@@ -1486,7 +1486,7 @@ variable "temporal_client_delete_source_wf_exec_size" {
 variable "temporal_client_delete_source_act_exec_size" {
   description = "Controls delete-source.v1 activity execution thread count"
   type        = number
-  default     = 5
+  default     = 2
 }
 
 variable "temporal_client_external_ticket_wf_exec_size" {
