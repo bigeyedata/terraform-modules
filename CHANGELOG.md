@@ -1,3 +1,12 @@
+## [22.0.2](https://github.com/bigeyedata/terraform-modules/compare/v22.0.1...v22.0.2) (2025-09-12)
+
+
+### Bug Fixes
+
+* reduce default parallelism on refresh_scorecard taskqueue ([444acff](https://github.com/bigeyedata/terraform-modules/commit/444acff8b2365498594c11ba4696ff8ab818400e))
+
+
+
 ## [22.0.1](https://github.com/bigeyedata/terraform-modules/compare/v22.0.0...v22.0.1) (2025-09-05)
 
 
