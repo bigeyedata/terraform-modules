@@ -1,3 +1,12 @@
+## [22.1.1](https://github.com/bigeyedata/terraform-modules/compare/v22.1.0...v22.1.1) (2025-09-15)
+
+
+### Bug Fixes
+
+* reduce default delete source parallelism ([e6e2981](https://github.com/bigeyedata/terraform-modules/commit/e6e2981549945676e510b77c091d6eae88d1e871))
+
+
+
 # [22.1.0](https://github.com/bigeyedata/terraform-modules/compare/v22.0.2...v22.1.0) (2025-09-12)
 
 
