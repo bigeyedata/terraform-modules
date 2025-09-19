@@ -365,15 +365,10 @@ resource "aws_ecs_service" "solr" {
     registry_arn = aws_service_discovery_service.this.arn
   }
 
-  dynamic "load_balancer" {
-    for_each = compact([
-      var.use_centralized_lb == false ? module.alb[0].target_groups["solr"].arn : aws_lb_target_group.centralized_lb.arn,
-    ])
-    content {
-      container_name   = var.name
-      container_port   = var.solr_traffic_port
-      target_group_arn = load_balancer.value
-    }
+  load_balancer {
+    container_name   = var.name
+    container_port   = var.solr_traffic_port
+    target_group_arn = aws_lb_target_group.centralized_lb.arn
   }
 
   deployment_circuit_breaker {
@@ -416,94 +411,6 @@ resource "aws_service_discovery_service" "this" {
 
     routing_policy = "MULTIVALUE"
   }
-}
-
-module "alb" {
-  count   = var.use_centralized_lb == false ? 1 : 0
-  source  = "terraform-aws-modules/alb/aws"
-  version = "9.10.0"
-
-  name    = var.name
-  vpc_id  = var.vpc_id
-  subnets = var.lb_subnet_ids
-
-  enable_deletion_protection = false
-
-  # Security Group
-  security_group_ingress_rules = {
-    all_http = {
-      from_port   = 80
-      to_port     = 80
-      ip_protocol = "tcp"
-      description = "HTTP web traffic"
-      cidr_ipv4   = "0.0.0.0/0"
-    }
-    all_https = {
-      from_port   = 443
-      to_port     = 443
-      ip_protocol = "tcp"
-      description = "HTTPS web traffic"
-      cidr_ipv4   = "0.0.0.0/0"
-    }
-  }
-  security_group_egress_rules = {
-    all = {
-      ip_protocol = "-1"
-      cidr_ipv4   = data.aws_vpc.this.cidr_block
-    }
-  }
-  security_group_tags = merge(local.solr_tags, {
-    Name = "${var.name}-lb"
-  })
-
-  access_logs = var.lb_access_logs_enabled ? {
-    enabled = var.lb_access_logs_enabled
-    bucket  = var.lb_access_logs_bucket_name
-    prefix  = var.lb_access_logs_bucket_prefix
-  } : {}
-
-  listeners = {
-    http-https-redirect = {
-      port     = 80
-      protocol = "HTTP"
-      redirect = {
-        port        = "443"
-        protocol    = "HTTPS"
-        status_code = "HTTP_301"
-      }
-    }
-    https = {
-      port            = 443
-      protocol        = "HTTPS"
-      certificate_arn = var.acm_certificate_arn
-
-      forward = {
-        target_group_key = "solr"
-      }
-    }
-  }
-
-  target_groups = {
-    solr = {
-      # name_prefix can only be 6 chars long
-      name_prefix          = substr(var.name, 0, 6)
-      create_attachment    = false
-      protocol             = "HTTP"
-      port                 = var.solr_traffic_port
-      target_type          = "ip"
-      deregistration_delay = 0
-      vpc_id               = var.vpc_id
-      health_check = {
-        enabled = true
-        path    = "/solr/#/login"
-      }
-      tags = merge(local.solr_tags, {
-        Name = var.name
-      })
-    }
-  }
-
-  tags = local.solr_tags
 }
 
 resource "aws_lb_target_group" "centralized_lb" {
@@ -550,8 +457,8 @@ resource "aws_route53_record" "solr" {
   name     = each.value
   type     = "A"
   alias {
-    name                   = var.use_centralized_lb ? data.aws_lb.external.dns_name : module.alb[0].dns_name
-    zone_id                = var.use_centralized_lb ? data.aws_lb.external.zone_id : module.alb[0].zone_id
+    name                   = data.aws_lb.external.dns_name
+    zone_id                = data.aws_lb.external.zone_id
     evaluate_target_health = true
   }
 }
