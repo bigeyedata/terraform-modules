@@ -1,3 +1,30 @@
+# [23.0.0](https://github.com/bigeyedata/terraform-modules/compare/v22.1.1...v23.0.0) (2025-09-19)
+
+
+* feat!: remove deprecated variables (#577) ([a946a39](https://github.com/bigeyedata/terraform-modules/commit/a946a398a6dfdd52e27eb0889a9edcec9400d17f)), closes [#577](https://github.com/bigeyedata/terraform-modules/issues/577)
+
+
+### BREAKING CHANGES
+
+* If you are using any of the following varaibles in the bigeye module,
+they will need to be removed in order to upgrade to v23.0.0
+
+var.nstall_individual_external_lbs
+var.use_centralized_external_lb_solr
+var.use_centralized_internal_lb
+var.install_individual_internal_lbs
+var.haproxy_lineageapi_enabled
+var.disable_unused_monocle_dd_flags
+var.load_balancing_anomaly_mitigation
+
+Also remove the following from the alarms module if you have
+set them:
+
+var.monitor_individual_external_lb
+var.monitor_individual_internal_lbs
+
+
+
 ## [22.1.1](https://github.com/bigeyedata/terraform-modules/compare/v22.1.0...v22.1.1) (2025-09-15)
 
 
