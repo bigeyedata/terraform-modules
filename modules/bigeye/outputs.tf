@@ -423,24 +423,11 @@ output "cloudwatch_temporal_log_group_arn" {
 #======================================================
 # S3
 #======================================================
-output "models_bucket_name" {
-  description = "S3 bucket name for models"
-  value       = aws_s3_bucket.models.id
-}
-
-output "models_bucket_arn" {
-  description = "ARN for models bucket"
-  value       = aws_s3_bucket.models.arn
-}
-
-output "large_payload_bucket_name" {
-  description = "S3 bucket name for large payloads"
-  value       = aws_s3_bucket.large_payload.id
-}
-
-output "large_payload_bucket_arn" {
-  description = "ARN for large payloads bucket"
-  value       = aws_s3_bucket.large_payload.arn
+output "s3_buckets" {
+  description = "id (bucket name) and arns for Bigeye module managed S3 buckets"
+  value = {
+    for bucket in local.s3_buckets : bucket.type => module.s3_buckets[bucket.type]
+  }
 }
 
 #======================================================

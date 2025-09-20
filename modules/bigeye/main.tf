@@ -775,90 +775,13 @@ module "rabbitmq" {
 #======================================================
 # S3
 #======================================================
-resource "random_string" "models_bucket_suffix" {
-  length  = 8
-  special = false
-  numeric = false
-  upper   = false
-}
-
-resource "aws_s3_bucket" "models" {
-  bucket = local.models_bucket_has_name_override ? var.ml_models_s3_bucket_name_override : "${local.name}-models-${random_string.models_bucket_suffix.result}"
-  tags   = local.tags
-}
-
-resource "aws_s3_bucket_public_access_block" "models" {
-  bucket = aws_s3_bucket.models.id
-
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
-}
-
-resource "aws_s3_bucket_lifecycle_configuration" "models" {
-  bucket = aws_s3_bucket.models.id
-  rule {
-    id     = "ExpireOldModels"
-    status = "Enabled"
-    expiration {
-      days = 45
-    }
-    filter {}
-  }
-}
-
-resource "random_string" "large_payload" {
-  length  = 8
-  special = false
-  numeric = false
-  upper   = false
-}
-
-resource "aws_s3_bucket" "large_payload" {
-  bucket = "${local.name}-large-payload-${random_string.large_payload.result}"
-  tags   = local.tags
-}
-
-resource "aws_s3_bucket_public_access_block" "large_payload" {
-  bucket = aws_s3_bucket.large_payload.id
-
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
-}
-
-resource "aws_s3_bucket_lifecycle_configuration" "large_payload" {
-  bucket = aws_s3_bucket.large_payload.id
-  rule {
-    id     = "ExpireOldPayloads"
-    status = "Enabled"
-    expiration {
-      days = 7
-    }
-    filter {}
-  }
-}
-
-resource "aws_s3_bucket_policy" "large_payload" {
-  bucket = aws_s3_bucket.large_payload.id
-  policy = jsonencode({
-    Version = "2008-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = "s3:*"
-        Resource = [
-          aws_s3_bucket.large_payload.arn,
-          format("%s/*", aws_s3_bucket.large_payload.arn)
-        ]
-        Principal = {
-          AWS = local.datawatch_role_arn
-        }
-      }
-    ]
-  })
+module "s3_buckets" {
+  for_each                          = { for b in local.s3_buckets : b.type => b }
+  source                            = "../s3"
+  name                              = each.value["type"] == "models" ? local.models_bucket_name : "${local.name}-${each.value["type"]}"
+  retention_days                    = each.value["retention_days"]
+  random_bucket_name_suffix_enabled = !(local.models_bucket_has_name_override && each.value["type"] == "models")
+  tags                              = local.tags
 }
 
 #======================================================
@@ -1462,7 +1385,7 @@ resource "aws_iam_role_policy" "monocle" {
         Action = [
           "s3:ListBucket",
         ]
-        Resource = aws_s3_bucket.models.arn
+        Resource = module.s3_buckets["models"].arn
       },
       {
         Sid    = "AllowGetPutObjects"
@@ -1471,7 +1394,7 @@ resource "aws_iam_role_policy" "monocle" {
           "s3:GetObject",
           "s3:PutObject"
         ]
-        Resource = format("%s/*", aws_s3_bucket.models.arn)
+        Resource = format("%s/*", module.s3_buckets["models"].arn)
       }
     ]
   })
@@ -1578,7 +1501,7 @@ module "monocle" {
       PORT                       = var.monocle_port
       MQ_BROKER_HOST             = local.rabbitmq_endpoint
       MQ_BROKER_USERNAME         = var.rabbitmq_user_name
-      ML_MODELS_S3_BUCKET        = aws_s3_bucket.models.id
+      ML_MODELS_S3_BUCKET        = module.s3_buckets["models"].id
       DEPLOY_TYPE                = "AWS"
       QUEUE_CONNECTION_HEARTBEAT = "1000"
       BACKLOG                    = "512"
@@ -1743,7 +1666,7 @@ module "toretto" {
       INSTANCE                   = var.instance
       MQ_BROKER_HOST             = local.rabbitmq_endpoint
       MQ_BROKER_USERNAME         = var.rabbitmq_user_name
-      ML_MODELS_S3_BUCKET        = aws_s3_bucket.models.id
+      ML_MODELS_S3_BUCKET        = module.s3_buckets["models"].id
       DEPLOY_TYPE                = "AWS"
       QUEUE_CONNECTION_HEARTBEAT = "1000"
       PORT                       = var.toretto_port
@@ -1977,7 +1900,7 @@ resource "aws_iam_role" "datawatch" {
 resource "aws_iam_role_policy" "datawatch_s3" {
   count = local.create_datawatch_role ? 1 : 0
   role  = aws_iam_role.datawatch[0].id
-  name  = "AllowAccessLargePayloadBucket"
+  name  = "AllowListBucket"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -1985,7 +1908,7 @@ resource "aws_iam_role_policy" "datawatch_s3" {
         Sid      = "AllowListBucket"
         Effect   = "Allow"
         Action   = "s3:ListBucket"
-        Resource = aws_s3_bucket.large_payload.arn
+        Resource = [for bucket_name in local.datawatch_buckets : module.s3_buckets[bucket_name].arn]
       },
       {
         Sid    = "AllowGetPutObjects"
@@ -1994,7 +1917,7 @@ resource "aws_iam_role_policy" "datawatch_s3" {
           "s3:GetObject",
           "s3:PutObject"
         ]
-        Resource = format("%s/*", aws_s3_bucket.large_payload.arn)
+        Resource = [for bucket_name in local.datawatch_buckets : format("%s/*", module.s3_buckets[bucket_name].arn)]
       }
     ]
   })
@@ -2426,7 +2349,7 @@ locals {
     INSTANCE    = var.instance
     PORT        = var.datawatch_port
 
-    AGENT_LARGE_PAYLOAD_BUCKET_NAME = aws_s3_bucket.large_payload.id
+    AGENT_LARGE_PAYLOAD_BUCKET_NAME = module.s3_buckets["large-payload"].id
     AWS_REGION                      = local.aws_region
     DEPLOY_TYPE                     = "AWS"
 
@@ -2561,10 +2484,11 @@ module "datawatch" {
     local.datawatch_dd_env_vars,
     local.datawatch_common_env_vars,
     {
-      APP                = "datawatch"
-      WORKERS_ENABLED    = "false"
-      MAX_RAM_PERCENTAGE = var.datawatch_jvm_max_ram_pct
-      HEAP_DUMP_PATH     = contains(var.efs_volume_enabled_services, "datawatch") ? var.efs_mount_point : ""
+      APP                          = "datawatch"
+      WORKERS_ENABLED              = "false"
+      MAX_RAM_PERCENTAGE           = var.datawatch_jvm_max_ram_pct
+      HEAP_DUMP_PATH               = contains(var.efs_volume_enabled_services, "datawatch") ? var.efs_mount_point : ""
+      MCP_GATEWAY_LOGS_BUCKET_NAME = module.s3_buckets["mcp-gateway"].id
     },
     var.datawatch_additional_environment_vars,
   )
