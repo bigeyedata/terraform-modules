@@ -182,6 +182,20 @@ locals {
 
   # Models bucket random name
   models_bucket_has_name_override = var.ml_models_s3_bucket_name_override == "" ? false : true
+  models_bucket_name              = local.models_bucket_has_name_override ? var.ml_models_s3_bucket_name_override : "${local.name}-models"
+  s3_buckets = [
+    {
+      "type" : "models"
+      "retention_days" : 45
+      }, {
+      "type" : "large-payload"
+      "retention_days" : 7
+      }, {
+      "type" : "mcp-gateway"
+      "retention_days" : 30
+    }
+  ]
+  datawatch_buckets = ["large-payload", "mcp-gateway"]
 
   # Docker image tags
   haproxy_image_tag      = coalesce(var.haproxy_image_tag, var.image_tag)
