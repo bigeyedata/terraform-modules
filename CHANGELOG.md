@@ -1,3 +1,12 @@
+# [23.1.0](https://github.com/bigeyedata/terraform-modules/compare/v23.0.0...v23.1.0) (2025-09-22)
+
+
+### Features
+
+* add s3 bucket for mcp gateway ([1e76f41](https://github.com/bigeyedata/terraform-modules/commit/1e76f41154a50d907d53debc9274d63f41ed1664))
+
+
+
 # [23.0.0](https://github.com/bigeyedata/terraform-modules/compare/v22.1.1...v23.0.0) (2025-09-19)
 
 
