@@ -1911,13 +1911,21 @@ resource "aws_iam_role_policy" "datawatch_s3" {
         Resource = [for bucket_name in local.datawatch_buckets : module.s3_buckets[bucket_name].arn]
       },
       {
-        Sid    = "AllowGetPutObjects"
+        Sid    = "AllowRWObjects"
         Effect = "Allow"
         Action = [
           "s3:GetObject",
           "s3:PutObject"
         ]
         Resource = [for bucket_name in local.datawatch_buckets : format("%s/*", module.s3_buckets[bucket_name].arn)]
+      },
+      {
+        Sid    = "AllowDeleteObjects"
+        Effect = "Allow"
+        Action = [
+          "s3:DeleteObject"
+        ]
+        Resource = [for bucket_name in local.datawatch_buckets : format("%s/*", module.s3_buckets[bucket_name].arn) if bucket_name != "mcp-gateway"]
       }
     ]
   })
