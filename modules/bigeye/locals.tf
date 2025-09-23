@@ -185,12 +185,16 @@ locals {
   models_bucket_name              = local.models_bucket_has_name_override ? var.ml_models_s3_bucket_name_override : "${local.name}-models"
   s3_buckets = [
     {
+      # Used to store trained models for Authresholds
       "type" : "models"
       "retention_days" : 45
       }, {
+      # Agent large payloads are published here via datawatch.  This is also being used as general
+      # purpose storage going forward so other features do write to this bucket as well.
       "type" : "large-payload"
       "retention_days" : 7
       }, {
+      # MCP gateway service publishes telemetry here via datawatch.
       "type" : "mcp-gateway"
       "retention_days" : 30
     }
