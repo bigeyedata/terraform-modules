@@ -1,3 +1,12 @@
+## [23.1.1](https://github.com/bigeyedata/terraform-modules/compare/v23.1.0...v23.1.1) (2025-09-24)
+
+
+### Bug Fixes
+
+* update S3 perms and add object versioning ([e460401](https://github.com/bigeyedata/terraform-modules/commit/e460401528d4fa806b840847469bf35c4274fb51))
+
+
+
 # [23.1.0](https://github.com/bigeyedata/terraform-modules/compare/v23.0.0...v23.1.0) (2025-09-22)
 
 
