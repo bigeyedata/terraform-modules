@@ -600,7 +600,7 @@ variable "monocle_image_tag" {
 variable "monocle_desired_count" {
   description = "Initial capacity before autoscaling adjustments"
   type        = number
-  default     = 2
+  default     = 3
 }
 
 variable "monocle_cpu" {
@@ -670,7 +670,7 @@ variable "monocle_autoscaling_config" {
     target_utilization = number
   })
   default = {
-    min_capacity       = 2
+    min_capacity       = 3
     max_capacity       = 15
     type               = "cpu_utilization"
     target_utilization = 30
@@ -837,7 +837,7 @@ variable "haproxy_image_tag" {
 variable "haproxy_desired_count" {
   description = "The desired number of replicas"
   type        = number
-  default     = 1
+  default     = 3
 }
 
 variable "haproxy_cpu" {
@@ -890,7 +890,7 @@ variable "haproxy_autoscaling_config" {
     target_utilization = number
   })
   default = {
-    min_capacity = 2
+    min_capacity = 3
     max_capacity = 15
     # If CPU scaling is leading to OOM or other overloading due to bursts, switch to request_count_per_target or increase the min capacity.
     type               = "cpu_utilization"
@@ -914,7 +914,7 @@ variable "web_image_tag" {
 variable "web_desired_count" {
   description = "The desired number of replicas"
   type        = number
-  default     = 1
+  default     = 3
 }
 
 variable "web_cpu" {
@@ -967,7 +967,7 @@ variable "web_autoscaling_config" {
     target_utilization = number
   })
   default = {
-    min_capacity = 2
+    min_capacity = 3
     max_capacity = 15
     # If CPU scaling is leading to OOM or other overloading due to bursts, switch to request_count_per_target or increase the min capacity.
     type               = "cpu_utilization"
@@ -1219,13 +1219,13 @@ variable "temporal_desired_count" {
 variable "temporal_frontend_desired_count" {
   description = "The desired number of temporal frontend services, defaults to temporal_desired_count if not set"
   type        = number
-  default     = null
+  default     = 3
 }
 
 variable "temporal_internal_frontend_desired_count" {
   description = "The desired number of temporal internal-frontend services, defaults to temporal_desired_count if not set"
   type        = number
-  default     = null
+  default     = 3
 }
 
 variable "temporal_history_desired_count" {
@@ -1959,7 +1959,7 @@ variable "datawatch_rds_replica_additional_tags" {
 variable "datawatch_desired_count" {
   description = "The desired number of replicas"
   type        = number
-  default     = 1
+  default     = 3
 }
 
 variable "datawatch_cpu" {
@@ -2114,7 +2114,7 @@ variable "datawatch_autoscaling_config" {
     target_utilization = number
   })
   default = {
-    min_capacity = 2
+    min_capacity = 3
     max_capacity = 15
     # If CPU scaling is leading to OOM or other overloading due to bursts, switch to request_count_per_target or increase the min capacity.
     type               = "cpu_utilization"
@@ -2518,7 +2518,7 @@ variable "internalapi_image_tag" {
 variable "internalapi_desired_count" {
   description = "Initial capacity before autoscaling adjustments"
   type        = number
-  default     = 2
+  default     = 3
 }
 
 variable "internalapi_cpu" {
@@ -2577,7 +2577,7 @@ variable "internalapi_autoscaling_config" {
     target_utilization = number
   })
   default = {
-    min_capacity = 2
+    min_capacity = 3
     max_capacity = 15
     # If CPU scaling is leading to OOM or other overloading due to bursts, switch to request_count_per_target or increase the min capacity.
     type               = "cpu_utilization"
@@ -2601,7 +2601,7 @@ variable "lineageapi_image_tag" {
 variable "lineageapi_desired_count" {
   description = "Initial capacity before autoscaling adjustments"
   type        = number
-  default     = 2
+  default     = 3
 }
 
 variable "lineageapi_cpu" {
@@ -2660,7 +2660,7 @@ variable "lineageapi_autoscaling_config" {
     target_utilization = number
   })
   default = {
-    min_capacity = 2
+    min_capacity = 3
     max_capacity = 15
     # If CPU scaling is leading to OOM or other overloading due to bursts, switch to request_count_per_target or increase the min capacity.
     type               = "cpu_utilization"
