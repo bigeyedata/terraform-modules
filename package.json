@@ -1,6 +1,6 @@
 {
   "name": "terraform-modules",
-  "version": "23.1.1",
+  "version": "23.1.2",
   "description": "",
   "scripts": {
     "prepare": "husky install",
