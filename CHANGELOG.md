@@ -1,3 +1,12 @@
+## [23.1.2](https://github.com/bigeyedata/terraform-modules/compare/v23.1.1...v23.1.2) (2025-09-25)
+
+
+### Bug Fixes
+
+* adjust minimum ECS task count for api/ui services ([50af5a3](https://github.com/bigeyedata/terraform-modules/commit/50af5a3cfeaa72f65cb5aeb4c61ac62abf3c853a))
+
+
+
 ## [23.1.1](https://github.com/bigeyedata/terraform-modules/compare/v23.1.0...v23.1.1) (2025-09-24)
 
 
