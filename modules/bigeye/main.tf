@@ -2333,19 +2333,19 @@ resource "aws_secretsmanager_secret_version" "base_salt" {
   version_stages = ["AWSCURRENT"]
 }
 
-data "aws_secretsmanager_secret" "key_encryption_key" {
-  count = local.create_key_encryption_key_secret ? 0 : 1
-  arn   = local.key_encryption_key_secret_arn
+data "aws_secretsmanager_secret" "datawatch_encryption_key" {
+  count = local.create_datawatch_encryption_key_secret ? 0 : 1
+  arn   = local.datawatch_encryption_key_secret_arn
 }
-resource "aws_secretsmanager_secret" "key_encryption_key" {
-  count                   = local.create_key_encryption_key_secret ? 1 : 0
-  name                    = format("bigeye/%s/datawatch/key-encryption-key", local.name)
+resource "aws_secretsmanager_secret" "datawatch_encryption_key" {
+  count                   = local.create_datawatch_encryption_key_secret ? 1 : 0
+  name                    = format("bigeye/%s/datawatch/encryption-key", local.name)
   recovery_window_in_days = local.secret_retention_days
   tags                    = local.tags
 }
-resource "aws_secretsmanager_secret_version" "key_encryption_key" {
-  count          = local.create_key_encryption_key_secret ? 1 : 0
-  secret_id      = aws_secretsmanager_secret.key_encryption_key[0].id
+resource "aws_secretsmanager_secret_version" "datawatch_encryption_key" {
+  count          = local.create_datawatch_encryption_key_secret ? 1 : 0
+  secret_id      = aws_secretsmanager_secret.datawatch_encryption_key[0].id
   secret_string  = "not_set"
   version_stages = ["AWSCURRENT"]
 
@@ -2520,7 +2520,7 @@ module "datawatch" {
       MAX_RAM_PERCENTAGE           = var.datawatch_jvm_max_ram_pct
       HEAP_DUMP_PATH               = contains(var.efs_volume_enabled_services, "datawatch") ? var.efs_mount_point : ""
       MCP_GATEWAY_LOGS_BUCKET_NAME = module.s3_buckets["mcp-gateway"].id
-      KEY_ENCRYPTION_KEY_SECRET_ID = local.key_encryption_key_secret_name
+      KEY_ENCRYPTION_KEY_SECRET_ID = local.datawatch_encryption_key_secret_name
     },
     var.datawatch_additional_environment_vars,
   )

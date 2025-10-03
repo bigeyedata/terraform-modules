@@ -100,26 +100,26 @@ locals {
   image_registry = var.image_registry == "" ? "${local.aws_account_id}.dkr.ecr.${local.aws_region}.amazonaws.com" : var.image_registry
 
   # Secrets
-  secret_retention_days                = 0
-  create_rabbitmq_user_password_secret = var.rabbitmq_user_password_secret_arn == ""
-  rabbitmq_user_password_secret_arn    = local.create_rabbitmq_user_password_secret ? aws_secretsmanager_secret.rabbitmq_user_password[0].arn : var.rabbitmq_user_password_secret_arn
-  create_redis_auth_token_secret       = var.redis_auth_token_secret_arn == ""
-  redis_auth_token_secret_arn          = local.create_redis_auth_token_secret ? aws_secretsmanager_secret.redis_auth_token[0].arn : var.redis_auth_token_secret_arn
-  create_robot_password_secret         = var.datawatch_robot_password_secret_arn == ""
-  robot_password_secret_arn            = local.create_robot_password_secret ? aws_secretsmanager_secret.robot_password[0].arn : var.datawatch_robot_password_secret_arn
-  create_robot_agent_apikey_secret     = var.datawatch_robot_agent_api_key_secret_arn == ""
-  robot_agent_apikey_secret_arn        = local.create_robot_agent_apikey_secret ? aws_secretsmanager_secret.robot_agent_api_key[0].arn : var.datawatch_robot_agent_api_key_secret_arn
-  create_base_dw_encryption_secret     = var.datawatch_base_encryption_secret_arn == ""
-  base_datawatch_encryption_secret_arn = local.create_base_dw_encryption_secret ? aws_secretsmanager_secret.base_encryption[0].arn : var.datawatch_base_encryption_secret_arn
-  create_key_encryption_key_secret     = var.datawatch_key_encryption_key_arn == ""
-  key_encryption_key_secret_arn        = local.create_key_encryption_key_secret ? aws_secretsmanager_secret.key_encryption_key[0].arn : var.datawatch_key_encryption_key_arn
-  key_encryption_key_secret_name       = local.create_key_encryption_key_secret ? aws_secretsmanager_secret.key_encryption_key[0].name : data.aws_secretsmanager_secret.key_encryption_key[0].name
-  create_base_dw_salt_secret           = var.datawatch_base_salt_secret_arn == ""
-  base_datawatch_salt_secret_arn       = local.create_base_dw_salt_secret ? aws_secretsmanager_secret.base_salt[0].arn : var.datawatch_base_salt_secret_arn
-  create_datawatch_rds_password_secret = var.datawatch_rds_root_user_password_secret_arn == ""
-  datawatch_rds_password_secret_arn    = local.create_datawatch_rds_password_secret ? aws_secretsmanager_secret.datawatch_rds_password[0].arn : var.datawatch_rds_root_user_password_secret_arn
-  create_temporal_rds_password_secret  = var.temporal_rds_root_user_password_secret_arn == ""
-  temporal_rds_password_secret_arn     = local.create_temporal_rds_password_secret ? aws_secretsmanager_secret.temporal_rds_password[0].arn : var.temporal_rds_root_user_password_secret_arn
+  secret_retention_days                  = 0
+  create_rabbitmq_user_password_secret   = var.rabbitmq_user_password_secret_arn == ""
+  rabbitmq_user_password_secret_arn      = local.create_rabbitmq_user_password_secret ? aws_secretsmanager_secret.rabbitmq_user_password[0].arn : var.rabbitmq_user_password_secret_arn
+  create_redis_auth_token_secret         = var.redis_auth_token_secret_arn == ""
+  redis_auth_token_secret_arn            = local.create_redis_auth_token_secret ? aws_secretsmanager_secret.redis_auth_token[0].arn : var.redis_auth_token_secret_arn
+  create_robot_password_secret           = var.datawatch_robot_password_secret_arn == ""
+  robot_password_secret_arn              = local.create_robot_password_secret ? aws_secretsmanager_secret.robot_password[0].arn : var.datawatch_robot_password_secret_arn
+  create_robot_agent_apikey_secret       = var.datawatch_robot_agent_api_key_secret_arn == ""
+  robot_agent_apikey_secret_arn          = local.create_robot_agent_apikey_secret ? aws_secretsmanager_secret.robot_agent_api_key[0].arn : var.datawatch_robot_agent_api_key_secret_arn
+  create_base_dw_encryption_secret       = var.datawatch_base_encryption_secret_arn == ""
+  base_datawatch_encryption_secret_arn   = local.create_base_dw_encryption_secret ? aws_secretsmanager_secret.base_encryption[0].arn : var.datawatch_base_encryption_secret_arn
+  create_datawatch_encryption_key_secret = var.datawatch_encryption_key_arn == ""
+  datawatch_encryption_key_secret_arn    = local.create_datawatch_encryption_key_secret ? aws_secretsmanager_secret.datawatch_encryption_key[0].arn : var.datawatch_encryption_key_arn
+  datawatch_encryption_key_secret_name   = local.create_datawatch_encryption_key_secret ? aws_secretsmanager_secret.datawatch_encryption_key[0].name : data.aws_secretsmanager_secret.datawatch_encryption_key[0].name
+  create_base_dw_salt_secret             = var.datawatch_base_salt_secret_arn == ""
+  base_datawatch_salt_secret_arn         = local.create_base_dw_salt_secret ? aws_secretsmanager_secret.base_salt[0].arn : var.datawatch_base_salt_secret_arn
+  create_datawatch_rds_password_secret   = var.datawatch_rds_root_user_password_secret_arn == ""
+  datawatch_rds_password_secret_arn      = local.create_datawatch_rds_password_secret ? aws_secretsmanager_secret.datawatch_rds_password[0].arn : var.datawatch_rds_root_user_password_secret_arn
+  create_temporal_rds_password_secret    = var.temporal_rds_root_user_password_secret_arn == ""
+  temporal_rds_password_secret_arn       = local.create_temporal_rds_password_secret ? aws_secretsmanager_secret.temporal_rds_password[0].arn : var.temporal_rds_root_user_password_secret_arn
 
   temporal_opensearch_password_byo_secret    = var.temporal_opensearch_master_user_password_secret_arn != ""
   create_temporal_opensearch_password_secret = var.temporal_opensearch_enabled && var.temporal_opensearch_master_user_password_secret_arn == ""
