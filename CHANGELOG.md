@@ -1,3 +1,12 @@
+# [23.2.0](https://github.com/bigeyedata/terraform-modules/compare/v23.1.2...v23.2.0) (2025-10-03)
+
+
+### Features
+
+* add key encryption key to secrets manager ([#595](https://github.com/bigeyedata/terraform-modules/issues/595)) ([3bbebcc](https://github.com/bigeyedata/terraform-modules/commit/3bbebcc05f2cc9bfce14a479c1e11737496d748a))
+
+
+
 ## [23.1.2](https://github.com/bigeyedata/terraform-modules/compare/v23.1.1...v23.1.2) (2025-09-25)
 
 
