@@ -1684,6 +1684,12 @@ variable "datawatch_base_salt_secret_arn" {
   default     = ""
 }
 
+variable "datawatch_encryption_key_arn" {
+  description = "ARN for secretsmanager secret holding the Datawatch encryption key. If not provided, the secretsmanager secret will be created. The value of the secret will be managed by the Datawatch application."
+  type        = string
+  default     = ""
+}
+
 variable "datawatch_encrypt_secrets_with_kms_enabled" {
   description = "Flag for enabling KMS secret encryption. Setting this value to false after it has been set to true is NOT supported and will break your installation."
   type        = bool
