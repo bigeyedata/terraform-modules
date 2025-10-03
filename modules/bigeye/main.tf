@@ -2337,6 +2337,11 @@ data "aws_secretsmanager_secret" "datawatch_encryption_key" {
   count = local.create_datawatch_encryption_key_secret ? 0 : 1
   arn   = local.datawatch_encryption_key_secret_arn
 }
+data "aws_secretsmanager_secret_version" "datawatch_encryption_key" {
+  count         = local.create_datawatch_encryption_key_secret ? 0 : 1
+  secret_id     = data.aws_secretsmanager_secret.datawatch_encryption_key[0].id
+  version_stage = "AWSCURRENT"
+}
 resource "aws_secretsmanager_secret" "datawatch_encryption_key" {
   count                   = local.create_datawatch_encryption_key_secret ? 1 : 0
   name                    = format("bigeye/%s/datawatch/encryption-key", local.name)
