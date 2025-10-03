@@ -2332,23 +2332,46 @@ resource "aws_secretsmanager_secret_version" "base_salt" {
   secret_string  = random_password.base_salt[0].result
   version_stages = ["AWSCURRENT"]
 }
-resource "aws_kms_alias" "encryption_key_alias" {
-  count         = local.create_kms_key ? 1 : 0
-  name          = format("alias/bigeye/%s/datawatch", local.name)
-  target_key_id = aws_kms_key.datawatch[0].key_id
+
+data "aws_secretsmanager_secret" "key_encryption_key" {
+  count = local.create_key_encryption_key_secret ? 0 : 1
+  arn   = local.key_encryption_key_secret_arn
+}
+resource "aws_secretsmanager_secret" "key_encryption_key" {
+  count                   = local.create_key_encryption_key_secret ? 1 : 0
+  name                    = format("bigeye/%s/datawatch/key-encryption-key", local.name)
+  recovery_window_in_days = local.secret_retention_days
+  tags                    = local.tags
+}
+resource "aws_secretsmanager_secret_version" "key_encryption_key" {
+  count          = local.create_key_encryption_key_secret ? 1 : 0
+  secret_id      = aws_secretsmanager_secret.key_encryption_key[0].id
+  secret_string  = "not_set"
+  version_stages = ["AWSCURRENT"]
+
+  lifecycle {
+    ignore_changes = [
+      secret_string,
+      version_stages,
+    ]
+  }
 }
 
 data "aws_kms_key" "datawatch" {
   count  = local.create_kms_key ? 0 : 1
   key_id = var.datawatch_kms_key_arn
 }
-
 resource "aws_kms_key" "datawatch" {
   count                   = local.create_kms_key ? 1 : 0
   description             = "KMS key that we use to encrypt/decrypt secrets. This will be used for securely storing sensitive information such as connection info. One will be created if not provided."
   enable_key_rotation     = true
   rotation_period_in_days = var.datawatch_kms_key_rotation_days
   tags                    = merge(local.tags, { app = "datawatch" })
+}
+resource "aws_kms_alias" "encryption_key_alias" {
+  count         = local.create_kms_key ? 1 : 0
+  name          = format("alias/bigeye/%s/datawatch", local.name)
+  target_key_id = aws_kms_key.datawatch[0].key_id
 }
 
 locals {
@@ -2497,6 +2520,7 @@ module "datawatch" {
       MAX_RAM_PERCENTAGE           = var.datawatch_jvm_max_ram_pct
       HEAP_DUMP_PATH               = contains(var.efs_volume_enabled_services, "datawatch") ? var.efs_mount_point : ""
       MCP_GATEWAY_LOGS_BUCKET_NAME = module.s3_buckets["mcp-gateway"].id
+      KEY_ENCRYPTION_KEY_SECRET_ID = local.key_encryption_key_secret_name
     },
     var.datawatch_additional_environment_vars,
   )

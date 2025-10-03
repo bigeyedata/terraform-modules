@@ -111,6 +111,9 @@ locals {
   robot_agent_apikey_secret_arn        = local.create_robot_agent_apikey_secret ? aws_secretsmanager_secret.robot_agent_api_key[0].arn : var.datawatch_robot_agent_api_key_secret_arn
   create_base_dw_encryption_secret     = var.datawatch_base_encryption_secret_arn == ""
   base_datawatch_encryption_secret_arn = local.create_base_dw_encryption_secret ? aws_secretsmanager_secret.base_encryption[0].arn : var.datawatch_base_encryption_secret_arn
+  create_key_encryption_key_secret     = var.datawatch_key_encryption_key_arn == ""
+  key_encryption_key_secret_arn        = local.create_key_encryption_key_secret ? aws_secretsmanager_secret.key_encryption_key[0].arn : var.datawatch_key_encryption_key_arn
+  key_encryption_key_secret_name       = local.create_key_encryption_key_secret ? aws_secretsmanager_secret.key_encryption_key[0].name : data.aws_secretsmanager_secret.key_encryption_key[0].name
   create_base_dw_salt_secret           = var.datawatch_base_salt_secret_arn == ""
   base_datawatch_salt_secret_arn       = local.create_base_dw_salt_secret ? aws_secretsmanager_secret.base_salt[0].arn : var.datawatch_base_salt_secret_arn
   create_datawatch_rds_password_secret = var.datawatch_rds_root_user_password_secret_arn == ""
