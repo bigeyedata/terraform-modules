@@ -9,12 +9,9 @@ terraform {
 }
 
 locals {
-  max_port                              = 65535
-  load_balancer_ingress_text            = var.internet_facing ? "anywhere" : "internal"
-  load_balancer_ingress_cidrs           = var.internet_facing ? ["0.0.0.0/0"] : concat([var.vpc_cidr_block], var.lb_additional_ingress_cidrs)
-  efs_volume_enabled                    = var.efs_mount_point != "" && var.efs_access_point_id != ""
-  service_dns_name                      = var.create_dns_records ? aws_route53_record.this[0].name : var.dns_name
-  use_load_balancing_anomaly_mitigation = var.load_balancing_anomaly_mitigation == true && var.lb_stickiness_enabled == false
+  max_port           = 65535
+  efs_volume_enabled = var.efs_mount_point != "" && var.efs_access_point_id != ""
+  service_dns_name   = var.create_dns_records ? aws_route53_record.this[0].name : var.dns_name
 }
 
 

@@ -1,13 +1,12 @@
 module "lineageplus_solr" {
-  count         = var.lineageplus_enabled && length(var.lineageplus_solr_image_tag) > 0 ? 1 : 0
-  source        = "../solr-single-instance"
-  subnet_id     = local.application_subnet_ids[0]
-  lb_subnet_ids = local.public_alb_subnet_ids
-  app           = "lineageplus"
-  instance      = var.instance
-  stack         = local.name
-  name          = "${local.name}-solr"
-  vpc_id        = local.vpc_id
+  count     = var.lineageplus_enabled && length(var.lineageplus_solr_image_tag) > 0 ? 1 : 0
+  source    = "../solr-single-instance"
+  subnet_id = local.application_subnet_ids[0]
+  app       = "lineageplus"
+  instance  = var.instance
+  stack     = local.name
+  name      = "${local.name}-solr"
+  vpc_id    = local.vpc_id
   tags = merge(local.tags,
     { app       = "lineageplus",
       component = "solr"
@@ -17,14 +16,10 @@ module "lineageplus_solr" {
   availability_zone = local.vpc_availability_zones[0]
   instance_type     = var.lineageplus_solr_instance_type
 
-  acm_certificate_arn = local.acm_certificate_arn
-  dns_name            = var.create_dns_records ? local.lineageplus_solr_dns_name : ""
-  route53_zone_id     = var.create_dns_records ? data.aws_route53_zone.this[0].id : ""
-  solr_aliases        = var.create_dns_records ? var.lineageplus_solr_aliases : []
+  dns_name        = var.create_dns_records ? local.lineageplus_solr_dns_name : ""
+  route53_zone_id = var.create_dns_records ? data.aws_route53_zone.this[0].id : ""
+  solr_aliases    = var.create_dns_records ? var.lineageplus_solr_aliases : []
 
-  lb_access_logs_enabled                 = var.elb_access_logs_enabled
-  lb_access_logs_bucket_name             = var.elb_access_logs_bucket
-  lb_access_logs_bucket_prefix           = local.elb_access_logs_prefix
   centralized_lb_arn                     = aws_lb.external_alb.arn
   centralized_lb_https_listener_rule_arn = aws_lb_listener.https_external.arn
   centralized_lb_security_group_ids      = local.external_alb_security_group_ids

@@ -991,7 +991,6 @@ module "haproxy" {
 
   internet_facing               = var.internet_facing
   vpc_id                        = local.vpc_id
-  vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
   task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
@@ -1008,19 +1007,9 @@ module "haproxy" {
   healthcheck_interval                   = 15
   healthcheck_timeout                    = 5
   healthcheck_unhealthy_threshold        = 3
-  ssl_policy                             = var.alb_ssl_policy
-  acm_certificate_arn                    = local.acm_certificate_arn
-  lb_idle_timeout                        = var.lb_timeout
-  lb_subnet_ids                          = var.internet_facing ? local.public_alb_subnet_ids : local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids       = concat(var.haproxy_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
-  lb_additional_ingress_cidrs            = var.additional_ingress_cidrs
   lb_stickiness_enabled                  = true
   lb_deregistration_delay                = 900
   load_balancing_anomaly_mitigation      = false
-
-  lb_access_logs_enabled       = var.elb_access_logs_enabled
-  lb_access_logs_bucket_name   = var.elb_access_logs_bucket
-  lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "haproxy")
 
   # Task settings
   control_desired_count = var.haproxy_autoscaling_config.type == "none"
@@ -1153,7 +1142,6 @@ module "web" {
   tags     = merge(local.tags, { app = "web" })
 
   vpc_id                        = local.vpc_id
-  vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
   task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
@@ -1169,19 +1157,9 @@ module "web" {
   healthcheck_path                       = "/next-status"
   healthcheck_interval                   = 15
   healthcheck_unhealthy_threshold        = 3
-  ssl_policy                             = var.alb_ssl_policy
-  acm_certificate_arn                    = local.acm_certificate_arn
-  lb_idle_timeout                        = 180
-  lb_subnet_ids                          = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids       = concat(var.web_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
-  lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
   lb_stickiness_enabled                  = true
   lb_deregistration_delay                = 30
   load_balancing_anomaly_mitigation      = false
-
-  lb_access_logs_enabled       = var.elb_access_logs_enabled
-  lb_access_logs_bucket_name   = var.elb_access_logs_bucket
-  lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "web")
 
   # Task settings
   control_desired_count     = var.web_autoscaling_config.type == "none"
@@ -1430,7 +1408,6 @@ module "monocle" {
   tags     = merge(local.tags, { app = "monocle" })
 
   vpc_id                        = local.vpc_id
-  vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
   task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
@@ -1451,17 +1428,7 @@ module "monocle" {
   centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
   healthcheck_path                       = "/health"
   healthcheck_unhealthy_threshold        = 5
-  ssl_policy                             = var.alb_ssl_policy
-  acm_certificate_arn                    = local.acm_certificate_arn
-  lb_idle_timeout                        = var.lb_timeout
-  lb_subnet_ids                          = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids       = concat(var.monocle_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
-  lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
   lb_deregistration_delay                = 30
-
-  lb_access_logs_enabled       = var.elb_access_logs_enabled
-  lb_access_logs_bucket_name   = var.elb_access_logs_bucket
-  lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "monocle")
 
   # Task settings
   control_desired_count     = var.monocle_autoscaling_config.type == "none"
@@ -1596,7 +1563,6 @@ module "toretto" {
   tags     = merge(local.tags, { app = "toretto" })
 
   vpc_id                        = local.vpc_id
-  vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
   task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
@@ -1615,16 +1581,6 @@ module "toretto" {
   centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
   centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
   healthcheck_path                       = "/health"
-  ssl_policy                             = var.alb_ssl_policy
-  acm_certificate_arn                    = local.acm_certificate_arn
-  lb_idle_timeout                        = var.lb_timeout
-  lb_subnet_ids                          = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids       = concat(var.toretto_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
-  lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
-
-  lb_access_logs_enabled       = var.elb_access_logs_enabled
-  lb_access_logs_bucket_name   = var.elb_access_logs_bucket
-  lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "toretto")
 
   # Task settings
   control_desired_count     = var.toretto_autoscaling_enabled ? false : true
@@ -1781,7 +1737,6 @@ module "scheduler" {
   tags     = merge(local.tags, { app = "scheduler" })
 
   vpc_id                        = local.vpc_id
-  vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
   task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
@@ -1798,17 +1753,7 @@ module "scheduler" {
   centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
   centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
   healthcheck_path                       = "/health"
-  ssl_policy                             = var.alb_ssl_policy
-  acm_certificate_arn                    = local.acm_certificate_arn
-  lb_idle_timeout                        = var.lb_timeout
-  lb_subnet_ids                          = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids       = concat(var.scheduler_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
-  lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
   lb_deregistration_delay                = 120
-
-  lb_access_logs_enabled       = var.elb_access_logs_enabled
-  lb_access_logs_bucket_name   = var.elb_access_logs_bucket
-  lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "scheduler")
 
   # Task settings
   desired_count = var.scheduler_desired_count
@@ -2451,7 +2396,6 @@ module "datawatch" {
   tags       = merge(local.tags, { app = "datawatch" })
 
   vpc_id                        = local.vpc_id
-  vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
   task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
@@ -2468,17 +2412,7 @@ module "datawatch" {
   healthcheck_path                       = "/health"
   healthcheck_grace_period               = 300
   healthcheck_unhealthy_threshold        = 5
-  ssl_policy                             = var.alb_ssl_policy
-  acm_certificate_arn                    = local.acm_certificate_arn
-  lb_idle_timeout                        = var.lb_timeout
-  lb_subnet_ids                          = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids       = concat(var.datawatch_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
-  lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
   lb_deregistration_delay                = 900
-
-  lb_access_logs_enabled       = var.elb_access_logs_enabled
-  lb_access_logs_bucket_name   = var.elb_access_logs_bucket
-  lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "datawatch")
 
   # Task settings
   control_desired_count = var.datawatch_autoscaling_config.type == "none"
@@ -2590,7 +2524,6 @@ module "datawork" {
   tags       = merge(local.tags, { app = "datawork" })
 
   vpc_id                        = local.vpc_id
-  vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
   task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
@@ -2606,17 +2539,7 @@ module "datawork" {
   centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
   healthcheck_path                       = "/health"
   healthcheck_interval                   = 90
-  ssl_policy                             = var.alb_ssl_policy
-  acm_certificate_arn                    = local.acm_certificate_arn
-  lb_idle_timeout                        = var.lb_timeout
-  lb_subnet_ids                          = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids       = concat(var.datawork_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
-  lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
   lb_deregistration_delay                = 120
-
-  lb_access_logs_enabled       = var.elb_access_logs_enabled
-  lb_access_logs_bucket_name   = var.elb_access_logs_bucket
-  lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "datawork")
 
   # Task settings
   desired_count = var.datawork_desired_count
@@ -2711,7 +2634,6 @@ module "backfillwork" {
   tags       = merge(local.tags, { app = "backfillwork" })
 
   vpc_id                        = local.vpc_id
-  vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
   task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
@@ -2727,16 +2649,6 @@ module "backfillwork" {
   centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
   healthcheck_path                       = "/health"
   healthcheck_interval                   = 90
-  ssl_policy                             = var.alb_ssl_policy
-  acm_certificate_arn                    = local.acm_certificate_arn
-  lb_idle_timeout                        = var.lb_timeout
-  lb_subnet_ids                          = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids       = concat(var.backfillwork_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
-  lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
-
-  lb_access_logs_enabled       = var.elb_access_logs_enabled
-  lb_access_logs_bucket_name   = var.elb_access_logs_bucket
-  lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "backfillwork")
 
   # Task settings
   desired_count             = var.backfillwork_desired_count
@@ -2801,7 +2713,6 @@ module "indexwork" {
   tags       = merge(local.tags, { app = "indexwork" })
 
   vpc_id                        = local.vpc_id
-  vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
   task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
@@ -2817,16 +2728,6 @@ module "indexwork" {
   centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
   healthcheck_path                       = "/health"
   healthcheck_interval                   = 90
-  ssl_policy                             = var.alb_ssl_policy
-  acm_certificate_arn                    = local.acm_certificate_arn
-  lb_idle_timeout                        = var.lb_timeout
-  lb_subnet_ids                          = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids       = concat(var.indexwork_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
-  lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
-
-  lb_access_logs_enabled       = var.elb_access_logs_enabled
-  lb_access_logs_bucket_name   = var.elb_access_logs_bucket
-  lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "indexwork")
 
   # Task settings
   desired_count             = var.indexwork_desired_count
@@ -2894,7 +2795,6 @@ module "lineagework" {
   tags       = merge(local.tags, { app = "lineagework" })
 
   vpc_id                        = local.vpc_id
-  vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
   task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
@@ -2909,17 +2809,7 @@ module "lineagework" {
   centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
   healthcheck_path                       = "/health"
   healthcheck_interval                   = 90
-  ssl_policy                             = var.alb_ssl_policy
-  acm_certificate_arn                    = local.acm_certificate_arn
-  lb_idle_timeout                        = var.lb_timeout
-  lb_subnet_ids                          = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids       = concat(var.lineagework_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
-  lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
   lb_deregistration_delay                = 120
-
-  lb_access_logs_enabled       = var.elb_access_logs_enabled
-  lb_access_logs_bucket_name   = var.elb_access_logs_bucket
-  lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "lineagework")
 
   # Task settings
   desired_count = var.lineagework_desired_count
@@ -2995,7 +2885,6 @@ module "metricwork" {
   tags       = merge(local.tags, { app = "metricwork" })
 
   vpc_id                        = local.vpc_id
-  vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
   task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
@@ -3010,17 +2899,7 @@ module "metricwork" {
   centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
   healthcheck_path                       = "/health"
   healthcheck_interval                   = 90
-  ssl_policy                             = var.alb_ssl_policy
-  acm_certificate_arn                    = local.acm_certificate_arn
-  lb_idle_timeout                        = var.lb_timeout
-  lb_subnet_ids                          = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids       = concat(var.metricwork_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
-  lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
   lb_deregistration_delay                = 120
-
-  lb_access_logs_enabled       = var.elb_access_logs_enabled
-  lb_access_logs_bucket_name   = var.elb_access_logs_bucket
-  lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "metricwork")
 
   # Task settings
   desired_count = var.metricwork_desired_count
@@ -3093,7 +2972,6 @@ module "rootcause" {
   tags       = merge(local.tags, { app = "rootcause" })
 
   vpc_id                        = local.vpc_id
-  vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
   task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
@@ -3108,18 +2986,7 @@ module "rootcause" {
   centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
   healthcheck_path                       = "/health"
   healthcheck_interval                   = 90
-  ssl_policy                             = var.alb_ssl_policy
-  acm_certificate_arn                    = local.acm_certificate_arn
-  # revisit this after we observe the runtime, it likely can be much shorter (~5minute) since temporal respects sigterm and max runtime on API calls
-  lb_idle_timeout                  = var.lb_timeout
-  lb_subnet_ids                    = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids = concat(var.rootcause_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
-  lb_additional_ingress_cidrs      = var.internal_additional_ingress_cidrs
-  lb_deregistration_delay          = 30
-
-  lb_access_logs_enabled       = var.elb_access_logs_enabled
-  lb_access_logs_bucket_name   = var.elb_access_logs_bucket
-  lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "rootcause")
+  lb_deregistration_delay                = 30
 
   # Task settings
   desired_count             = var.rootcause_desired_count
@@ -3187,7 +3054,6 @@ module "internalapi" {
   tags       = merge(local.tags, { app = "internalapi" })
 
   vpc_id                        = local.vpc_id
-  vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
   task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
@@ -3204,17 +3070,7 @@ module "internalapi" {
   healthcheck_path                       = "/health"
   healthcheck_grace_period               = 300
   healthcheck_unhealthy_threshold        = 5
-  ssl_policy                             = var.alb_ssl_policy
-  acm_certificate_arn                    = local.acm_certificate_arn
-  lb_idle_timeout                        = var.lb_timeout
-  lb_subnet_ids                          = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids       = concat(var.internalapi_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
-  lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
   lb_deregistration_delay                = 120
-
-  lb_access_logs_enabled       = var.elb_access_logs_enabled
-  lb_access_logs_bucket_name   = var.elb_access_logs_bucket
-  lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "internalapi")
 
   # Task settings
   control_desired_count     = var.internalapi_autoscaling_config.type == "none"
@@ -3320,7 +3176,6 @@ module "lineageapi" {
   tags       = merge(local.tags, { app = "lineageapi" })
 
   vpc_id                        = local.vpc_id
-  vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
   task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
@@ -3337,17 +3192,7 @@ module "lineageapi" {
   healthcheck_path                       = "/health"
   healthcheck_grace_period               = 300
   healthcheck_unhealthy_threshold        = 5
-  ssl_policy                             = var.alb_ssl_policy
-  acm_certificate_arn                    = local.acm_certificate_arn
-  lb_idle_timeout                        = var.lb_timeout
-  lb_subnet_ids                          = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids       = concat(var.lineageapi_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
-  lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
   lb_deregistration_delay                = 90
-
-  lb_access_logs_enabled       = var.elb_access_logs_enabled
-  lb_access_logs_bucket_name   = var.elb_access_logs_bucket
-  lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "lineageapi")
 
   # Task settings
   control_desired_count     = var.lineageapi_autoscaling_config.type == "none"
