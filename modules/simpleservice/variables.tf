@@ -28,21 +28,10 @@ variable "vpc_id" {
   type        = string
 }
 
-variable "vpc_cidr_block" {
-  description = "The CIDR block for the VPC, used for making security groups"
-  type        = string
-}
-
 variable "create_security_groups" {
   description = "Whether to create security groups"
   type        = bool
   default     = true
-}
-
-variable "lb_additional_ingress_cidrs" {
-  description = "A list of additional cidrs to apply to the load balancer"
-  type        = list(string)
-  default     = []
 }
 
 variable "task_additional_ingress_cidrs" {
@@ -347,51 +336,6 @@ variable "healthcheck_timeout" {
   description = "Timeout in seconds for healthcheck"
   type        = number
   default     = 10
-}
-
-variable "ssl_policy" {
-  description = "The SSL Policy to use for TLS termination"
-  type        = string
-}
-
-variable "acm_certificate_arn" {
-  description = "ARN pointing to the certificate to terminate HTTPS traffic"
-  type        = string
-}
-
-variable "lb_subnet_ids" {
-  description = "A list of subnet IDs to house the load balancer"
-  type        = list(string)
-}
-
-variable "lb_additional_security_group_ids" {
-  description = "A list of additional security group ids to put on the load balancer"
-  type        = list(string)
-  default     = []
-}
-
-variable "lb_access_logs_enabled" {
-  description = "A boolean indicating whether access logs are enabled"
-  type        = bool
-  default     = false
-}
-
-variable "lb_access_logs_bucket_name" {
-  description = "The name of the bucket where ALB access logs will be sent. Required if lb_access_logs_enabled is true"
-  type        = string
-  default     = ""
-}
-
-variable "lb_access_logs_bucket_prefix" {
-  description = "If lb_access_logs_enabled is true, this is the prefix under which access logs will be written"
-  type        = string
-  default     = ""
-}
-
-variable "lb_idle_timeout" {
-  description = "The idle timeout in seconds"
-  type        = number
-  default     = 60
 }
 
 variable "lb_stickiness_enabled" {

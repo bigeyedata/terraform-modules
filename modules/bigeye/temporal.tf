@@ -688,7 +688,6 @@ module "temporalui" {
   tags     = merge(local.tags, { app = "temporalui" })
 
   vpc_id                        = local.vpc_id
-  vpc_cidr_block                = var.vpc_cidr_block
   subnet_ids                    = local.application_subnet_ids
   create_security_groups        = var.create_security_groups
   task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
@@ -704,16 +703,7 @@ module "temporalui" {
   healthcheck_path                       = "/"
   healthcheck_interval                   = 15
   healthcheck_unhealthy_threshold        = 3
-  ssl_policy                             = var.alb_ssl_policy
-  acm_certificate_arn                    = local.acm_certificate_arn
-  lb_subnet_ids                          = local.internal_service_alb_subnet_ids
-  lb_additional_security_group_ids       = concat(var.temporalui_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
-  lb_additional_ingress_cidrs            = var.internal_additional_ingress_cidrs
   lb_deregistration_delay                = 30
-
-  lb_access_logs_enabled       = var.elb_access_logs_enabled
-  lb_access_logs_bucket_name   = var.elb_access_logs_bucket
-  lb_access_logs_bucket_prefix = format("%s-%s", local.elb_access_logs_prefix, "temporalui")
 
   # Task settings
   desired_count             = var.temporalui_desired_count

@@ -3,11 +3,6 @@ variable "subnet_id" {
   type        = string
 }
 
-variable "lb_subnet_ids" {
-  description = "VPC subnets for ALB attachments."
-  type        = list(string)
-}
-
 variable "app" {
   description = "The app name for the service, like datawatch"
   type        = string
@@ -85,11 +80,6 @@ variable "instance_type" {
   default     = "t3.medium"
 }
 
-variable "acm_certificate_arn" {
-  description = "ARN pointing to the certificate to terminate HTTPS traffic"
-  type        = string
-}
-
 variable "solr_traffic_port" {
   description = "Default solr port is 8983, but we run it on 80."
   type        = number
@@ -147,30 +137,6 @@ variable "solr_aliases" {
   description = "Legacy DNS names for solr"
   type        = list(string)
   default     = []
-}
-
-variable "elb_access_logs_bucket_config" {
-  description = "S3 bucket to send ALB logs to."
-  type        = map(string)
-  default     = {}
-}
-
-variable "lb_access_logs_enabled" {
-  description = "A boolean indicating whether access logs are enabled"
-  type        = bool
-  default     = false
-}
-
-variable "lb_access_logs_bucket_name" {
-  description = "The name of the bucket where ALB access logs will be sent. Required if lb_access_logs_enabled is true"
-  type        = string
-  default     = ""
-}
-
-variable "lb_access_logs_bucket_prefix" {
-  description = "If lb_access_logs_enabled is true, this is the prefix under which access logs will be written"
-  type        = string
-  default     = ""
 }
 
 variable "service_discovery_private_dns_namespace_id" {
@@ -235,12 +201,6 @@ variable "docker_labels" {
 variable "cloudwatch_log_group_name" {
   description = "Cloudwatch log group name to write container logs.  If var.awsfirelens_enabled = true, container logs are shipped via AWS firelens and not cloudwatch.  The AWS firelens side car container though is the exception and will continue to send logs to cloudwatch logs even if var.awsfirelens_enabled = true to facilitate debugging firelens issues."
   type        = string
-}
-
-variable "environment_variables" {
-  description = "A map of environment variables to pass into the task"
-  type        = map(string)
-  default     = {}
 }
 
 variable "solr_log_level" {
