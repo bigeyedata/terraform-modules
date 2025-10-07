@@ -32,12 +32,12 @@ locals {
 
   external_alb_security_group_ids = concat(
     var.create_security_groups ? [aws_security_group.external_alb[0].id] : [],
-    var.haproxy_extra_security_group_ids,
+    var.external_additional_security_group_ids,
   )
   internal_alb_ingress_cidrs = concat([var.vpc_cidr_block], var.internal_additional_ingress_cidrs)
   internal_alb_security_group_ids = concat(
     var.create_security_groups ? [aws_security_group.internal_alb[0].id] : [],
-    var.internal_extra_security_group_ids,
+    var.internal_additional_security_group_ids,
   )
 
   # Temporal Task Queues

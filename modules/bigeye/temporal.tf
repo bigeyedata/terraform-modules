@@ -11,7 +11,7 @@ resource "aws_lb" "temporal" {
   load_balancer_type               = "network"
   subnets                          = var.temporal_internet_facing ? local.public_alb_subnet_ids : local.internal_service_alb_subnet_ids
   enable_cross_zone_load_balancing = true
-  security_groups                  = concat(aws_security_group.temporal_lb[*].id, var.temporal_lb_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
+  security_groups                  = concat(aws_security_group.temporal_lb[*].id, var.external_additional_security_group_ids, [module.bigeye_admin.client_security_group_id])
   tags                             = merge(local.tags, { app = "temporal", component = "frontend" })
 
   access_logs {
@@ -219,11 +219,11 @@ resource "aws_security_group" "temporal_lb" {
   })
 
   ingress {
-    description = "Traffic port open to anywhere"
+    description = "Traffic port open from external"
     from_port   = local.temporal_lb_port
     to_port     = local.temporal_lb_port
     protocol    = "TCP"
-    cidr_blocks = var.temporal_internet_facing ? ["0.0.0.0/0"] : concat([var.vpc_cidr_block], var.additional_ingress_cidrs)
+    cidr_blocks = var.temporal_internet_facing ? var.external_ingress_cidrs : concat([var.vpc_cidr_block], var.external_ingress_cidrs)
   }
 
   egress {

@@ -10,12 +10,13 @@ the Bigeye stack into an AWS Environment.
 [Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli#install-terraform)
 
 - at least version 1.0. We find that
-([tfenv](https://github.com/tfutils/tfenv)) is a useful way to install
+  ([tfenv](https://github.com/tfutils/tfenv)) is a useful way to install
   & manage Terraform versions
 
 ### AWS
 
-You need the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+You need
+the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 installed and configured with credentials for your AWS account.
 
 ## Getting Started
@@ -49,6 +50,22 @@ terraform version and application version.
 
 ## Upgrading
 
+### Upgrading to 24.0.0
+
+The following vars have been renamed.
+
+- `var.additional_ingress_cidrs` to `var.external_ingress_cidrs`
+- `var.internal_extra_security_group_ids` to
+  `var.internal_additional_security_group_ids`
+- `var.temporal_lb_extra_security_group_ids` to
+  `var.external_additional_security_group_ids`
+
+Also note that if you have set `var.additional_ingress_cidrs`,
+0.0.0.0/0 will now be removed from external load balancer ingress.
+
+`var.external_additional_security_group_ids` controls access to
+both the external ALB and NLB.
+
 ### Upgrading to 23.0.0
 
 The following vars have been removed from the bigeye module:
@@ -78,7 +95,7 @@ The AWS provider needs to be upgrade to support ALB anomaly mitigation.
 Upgrade your hashicorp/aws provider to 5.100.0 or newer.
 
 (Optional) The following are useful commands to avoid a service interruption
-from ECS replacing services when autoscaling is enabled.  It will also make
+from ECS replacing services when autoscaling is enabled. It will also make
 the terraform apply run much faster.
 
 Run these before running terraform apply with `21.0.0`
@@ -137,11 +154,11 @@ down the road.
 ### Upgrading to 18.0.0
 
 18.0.0 is the first step in a 2 part series to migrate from inline security
-group rules to dedicated rules.  The inline rules do not track AWS rule Ids
-properly which blocks seamless changes.  More can be read on this in the
+group rules to dedicated rules. The inline rules do not track AWS rule Ids
+properly which blocks seamless changes. More can be read on this in the
 [Terraform docs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_security_group_ingress_rule)
 
-> IMPORTANT - Apply this plan 1x only.  Then apply 19.0.0
+> IMPORTANT - Apply this plan 1x only. Then apply 19.0.0
 
 The migration path from inline rules involves setting the inline rules to
 empty lists. But this will fight with the dedicated ingress/egress rules so
@@ -151,7 +168,7 @@ idempotent again.
 ### Upgrading to 17.0.0
 
 The minimum version of the `hashicorp/aws` module has been increased to
-5.68.0.  If your install has the version pinned to something lower,
+5.68.0. If your install has the version pinned to something lower,
 increase the version to at least 5.68.0 and run `terraform init -upgrade`.
 
 ### Upgrading to 16.0.0
@@ -204,7 +221,8 @@ are using them:
 
 ### Upgrading to 10.0.0
 
-All variables with papi in the name need to be globally replaced with internalapi.
+All variables with papi in the name need to be globally replaced with
+internalapi.
 
 ### Upgrading to 1.0.0
 
