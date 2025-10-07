@@ -1,3 +1,29 @@
+# [24.0.0](https://github.com/bigeyedata/terraform-modules/compare/v23.2.1...v24.0.0) (2025-10-07)
+
+
+* fix!: allow removal of 0.0.0.0/0 from ingress cidr range ([564e66b](https://github.com/bigeyedata/terraform-modules/commit/564e66b377f7a175ef08a7b6cffe9ed9d8032000))
+
+
+### BREAKING CHANGES
+
+* The following vars have been renamed.
+
+- `var.additional_ingress_cidrs` to `var.external_ingress_cidrs`
+- `var.internal_extra_security_group_ids` to
+`var.internal_additional_security_group_ids`
+- `var.temporal_lb_extra_security_group_ids` to
+`var.external_additional_security_group_ids`
+
+Also note that if you have set `var.additional_ingress_cidrs`,
+0.0.0.0/0 will now be removed from external load balancer ingress.
+
+`var.external_additional_security_group_ids` controls access to
+both the external ALB and NLB.
+
+Closes SRE-5937
+
+
+
 ## [23.2.1](https://github.com/bigeyedata/terraform-modules/compare/v23.2.0...v23.2.1) (2025-10-07)
 
 
