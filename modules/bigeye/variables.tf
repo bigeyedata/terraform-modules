@@ -72,8 +72,14 @@ variable "create_security_groups" {
   default     = true
 }
 
-variable "additional_ingress_cidrs" {
-  description = "This setting allows additional CIDR blocks to ingress to the load balancers for the application. A common use case here is when the internet_facing is false, and ingress from a VPN must be allowed"
+variable "external_ingress_cidrs" {
+  description = "Setting this variable allows replacing the allowed ingress cidrs to the external load balancers for the application. A common use case here is when the internet_facing is false, and ingress from a VPN must be allowed"
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
+}
+
+variable "external_additional_security_group_ids" {
+  description = "Additional security group ids to attach to internal load balancers"
   type        = list(string)
   default     = []
 }
@@ -84,7 +90,7 @@ variable "internal_additional_ingress_cidrs" {
   default     = []
 }
 
-variable "internal_extra_security_group_ids" {
+variable "internal_additional_security_group_ids" {
   description = "Additional security group ids to attach to internal load balancers"
   type        = list(string)
   default     = []
@@ -1362,12 +1368,6 @@ variable "temporal_additional_secret_arns" {
 
 variable "temporal_extra_security_group_ids" {
   description = "Additional security group IDs to give to temporal"
-  type        = list(string)
-  default     = []
-}
-
-variable "temporal_lb_extra_security_group_ids" {
-  description = "Additional security group IDs to give to temporal LB"
   type        = list(string)
   default     = []
 }

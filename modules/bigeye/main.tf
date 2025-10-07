@@ -186,11 +186,6 @@ data "aws_vpc" "this" {
     }
 
     postcondition {
-      condition     = var.create_security_groups || length(var.temporal_lb_extra_security_group_ids) > 0
-      error_message = "If create_security_groups is false, you must provide a security group for the temporal lb using temporal_lb_extra_security_group_ids (port 443)"
-    }
-
-    postcondition {
       condition     = var.create_security_groups || length(var.scheduler_lb_extra_security_group_ids) > 0
       error_message = "If create_security_groups is false, you must provide a security group for the scheduler lb using scheduler_lb_extra_security_group_ids (ports 80/443)"
     }
@@ -805,7 +800,7 @@ resource "aws_vpc_security_group_egress_rule" "external_alb_egress" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "external_alb_ingress_cidrs_http" {
-  for_each          = var.create_security_groups ? var.internet_facing ? ["0.0.0.0/0"] : toset(concat([var.vpc_cidr_block], var.additional_ingress_cidrs)) : []
+  for_each          = var.create_security_groups ? var.internet_facing ? toset(var.external_ingress_cidrs) : toset(concat([var.vpc_cidr_block], var.external_ingress_cidrs)) : []
   security_group_id = aws_security_group.external_alb[0].id
   from_port         = 80
   to_port           = 80
@@ -814,7 +809,7 @@ resource "aws_vpc_security_group_ingress_rule" "external_alb_ingress_cidrs_http"
 }
 
 resource "aws_vpc_security_group_ingress_rule" "external_alb_ingress_cidrs_https" {
-  for_each          = var.create_security_groups ? var.internet_facing ? ["0.0.0.0/0"] : toset(concat([var.vpc_cidr_block], var.additional_ingress_cidrs)) : []
+  for_each          = var.create_security_groups ? var.internet_facing ? toset(var.external_ingress_cidrs) : toset(concat([var.vpc_cidr_block], var.external_ingress_cidrs)) : []
   security_group_id = aws_security_group.external_alb[0].id
   from_port         = 443
   to_port           = 443
