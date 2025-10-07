@@ -1,3 +1,12 @@
+## [23.2.1](https://github.com/bigeyedata/terraform-modules/compare/v23.2.0...v23.2.1) (2025-10-07)
+
+
+### Bug Fixes
+
+* remove unused internal lb variables ([626bfce](https://github.com/bigeyedata/terraform-modules/commit/626bfce5258b7b91ccb791a985d4be0e6154d2f9))
+
+
+
 # [23.2.0](https://github.com/bigeyedata/terraform-modules/compare/v23.1.2...v23.2.0) (2025-10-03)
 
 
