@@ -1,3 +1,12 @@
+## [24.0.1](https://github.com/bigeyedata/terraform-modules/compare/v24.0.0...v24.0.1) (2025-10-09)
+
+
+### Bug Fixes
+
+* move KEY_ENCRYPTION_KEY_SECRET_ID to datawork ([a85ba7e](https://github.com/bigeyedata/terraform-modules/commit/a85ba7e0a511c81119083bbe2a099427002d7f39))
+
+
+
 # [24.0.0](https://github.com/bigeyedata/terraform-modules/compare/v23.2.1...v24.0.0) (2025-10-07)
 
 
