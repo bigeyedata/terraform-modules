@@ -1,3 +1,12 @@
+## [24.0.2](https://github.com/bigeyedata/terraform-modules/compare/v24.0.1...v24.0.2) (2025-10-09)
+
+
+### Bug Fixes
+
+* include NAT ips in external ingress ([fb85c1e](https://github.com/bigeyedata/terraform-modules/commit/fb85c1eb538f306558b861b34d936b3894c2f511))
+
+
+
 ## [24.0.1](https://github.com/bigeyedata/terraform-modules/compare/v24.0.0...v24.0.1) (2025-10-09)
 
 
