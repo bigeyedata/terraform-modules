@@ -2454,7 +2454,6 @@ module "datawatch" {
       MAX_RAM_PERCENTAGE           = var.datawatch_jvm_max_ram_pct
       HEAP_DUMP_PATH               = contains(var.efs_volume_enabled_services, "datawatch") ? var.efs_mount_point : ""
       MCP_GATEWAY_LOGS_BUCKET_NAME = module.s3_buckets["mcp-gateway"].id
-      KEY_ENCRYPTION_KEY_SECRET_ID = local.datawatch_encryption_key_secret_name
     },
     var.datawatch_additional_environment_vars,
   )
@@ -2592,6 +2591,7 @@ module "datawork" {
       RUN_METRICS_ACT_EXEC_SIZE          = var.temporal_client_run_metrics_act_exec_size
       DELETE_SOURCE_WF_EXEC_SIZE         = var.temporal_client_delete_source_wf_exec_size
       DELETE_SOURCE_ACT_EXEC_SIZE        = var.temporal_client_delete_source_act_exec_size
+      KEY_ENCRYPTION_KEY_SECRET_ID       = local.datawatch_encryption_key_secret_name
       EXTERNAL_TICKET_WF_EXEC_SIZE       = var.temporal_client_external_ticket_wf_exec_size
       EXTERNAL_TICKET_ACT_EXEC_SIZE      = var.temporal_client_external_ticket_act_exec_size
       GET_SAMPLES_WF_EXEC_SIZE           = var.temporal_client_get_samples_wf_exec_size
