@@ -223,7 +223,7 @@ resource "aws_security_group" "temporal_lb" {
     from_port   = local.temporal_lb_port
     to_port     = local.temporal_lb_port
     protocol    = "TCP"
-    cidr_blocks = var.temporal_internet_facing ? var.external_ingress_cidrs : concat([var.vpc_cidr_block], var.external_ingress_cidrs)
+    cidr_blocks = concat(var.external_ingress_cidrs, var.temporal_internet_facing ? local.nat_cidrs : [var.vpc_cidr_block])
   }
 
   egress {
