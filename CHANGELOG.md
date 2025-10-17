@@ -1,3 +1,12 @@
+## [25.0.1](https://github.com/bigeyedata/terraform-modules/compare/v25.0.0...v25.0.1) (2025-10-17)
+
+
+### Bug Fixes
+
+* add KEY_ENCRYPTION_KEY_SECRET_ID to all java services ([79cffbe](https://github.com/bigeyedata/terraform-modules/commit/79cffbeff08279c066abad764c9c33daebbe8a77))
+
+
+
 # [25.0.0](https://github.com/bigeyedata/terraform-modules/compare/v24.0.2...v25.0.0) (2025-10-17)
 
 
