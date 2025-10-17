@@ -2237,24 +2237,6 @@ resource "aws_secretsmanager_secret_version" "robot_agent_api_key" {
   version_stages = ["AWSCURRENT"]
 }
 
-resource "random_password" "base_encryption" {
-  count   = local.create_base_dw_encryption_secret ? 1 : 0
-  length  = 32
-  special = false
-}
-resource "aws_secretsmanager_secret" "base_encryption" {
-  count                   = local.create_base_dw_encryption_secret ? 1 : 0
-  name                    = format("bigeye/%s/datawatch/base-encryption", local.name)
-  recovery_window_in_days = local.secret_retention_days
-  tags                    = local.tags
-}
-resource "aws_secretsmanager_secret_version" "base_encryption" {
-  count          = local.create_base_dw_encryption_secret ? 1 : 0
-  secret_id      = aws_secretsmanager_secret.base_encryption[0].id
-  secret_string  = random_password.base_encryption[0].result
-  version_stages = ["AWSCURRENT"]
-}
-
 resource "random_password" "base_salt" {
   count   = local.create_base_dw_salt_secret ? 1 : 0
   length  = 32

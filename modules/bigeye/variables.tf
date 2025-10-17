@@ -1672,12 +1672,6 @@ variable "datawatch_robot_agent_api_key_secret_arn" {
   default     = ""
 }
 
-variable "datawatch_base_encryption_secret_arn" {
-  description = "ARN for secretsmanager secret holding the base encryption secret. This will be used for securely storing sensitive information such as connection info. One will be created if not provided."
-  type        = string
-  default     = ""
-}
-
 variable "datawatch_base_salt_secret_arn" {
   description = "ARN for secretsmanager secret holding the base salt value. This will be used for securely storing sensitive information such as connection info. One will be created if not provided."
   type        = string

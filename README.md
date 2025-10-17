@@ -50,6 +50,12 @@ terraform version and application version.
 
 ## Upgrading
 
+### Upgrading to 25.0.0
+
+The following var has been removed:
+
+- `var.datawatch_base_encryption_secret_arn`
+
 ### Upgrading to 24.0.0
 
 The following vars have been renamed.
