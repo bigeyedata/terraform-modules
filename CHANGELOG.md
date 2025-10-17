@@ -1,3 +1,16 @@
+# [25.0.0](https://github.com/bigeyedata/terraform-modules/compare/v24.0.2...v25.0.0) (2025-10-17)
+
+
+* feat!: remove BASE_ENCRYPTION_SECRET secret ([445de7c](https://github.com/bigeyedata/terraform-modules/commit/445de7c776d7f8dee2f15476ac8f10ff7f480bbf))
+
+
+### BREAKING CHANGES
+
+* var.datawatch_base_encryption_secret_arn has been
+removed.
+
+
+
 ## [24.0.2](https://github.com/bigeyedata/terraform-modules/compare/v24.0.1...v24.0.2) (2025-10-09)
 
 
