@@ -124,9 +124,8 @@ locals {
   temporal_opensearch_password_byo_secret    = var.temporal_opensearch_master_user_password_secret_arn != ""
   create_temporal_opensearch_password_secret = var.temporal_opensearch_enabled && var.temporal_opensearch_master_user_password_secret_arn == ""
   temporal_opensearch_password_secret_arn    = local.create_temporal_opensearch_password_secret ? aws_secretsmanager_secret.temporal_opensearch_password[0].arn : var.temporal_opensearch_master_user_password_secret_arn
-
-  create_adminpages_password_secret = var.adminpages_password_secret_arn == ""
-  adminpages_password_secret_arn    = local.create_adminpages_password_secret ? aws_secretsmanager_secret.adminpages_password[0].arn : var.adminpages_password_secret_arn
+  create_adminpages_password_secret          = var.adminpages_password_secret_arn == ""
+  adminpages_password_secret_arn             = local.create_adminpages_password_secret ? aws_secretsmanager_secret.adminpages_password[0].arn : var.adminpages_password_secret_arn
   # byomailserver
   byomailserver_enabled                   = var.byomailserver_smtp_host != "" && var.byomailserver_smtp_port != "" && var.byomailserver_smtp_user != "" && var.byomailserver_smtp_password_secret_arn != "" && var.byomailserver_smtp_from_address != ""
   byomailserver_smtp_host                 = local.byomailserver_enabled ? var.byomailserver_smtp_host : ""
@@ -269,6 +268,7 @@ locals {
       ROBOT_PASSWORD         = local.robot_password_secret_arn
       ROBOT_AGENT_API_KEY    = local.robot_agent_apikey_secret_arn
       BASE_SALT              = local.base_datawatch_salt_secret_arn
+      ELASTICSEARCH_PASSWORD = local.create_temporal_opensearch_password_secret ? aws_secretsmanager_secret_version.temporal_opensearch_password[0].arn : data.aws_secretsmanager_secret_version.byo_temporal_opensearch_password[0].arn
     },
     var.datawatch_additional_secret_arns,
   )

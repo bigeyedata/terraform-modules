@@ -68,6 +68,11 @@ variable "subnet_ids" {
   type        = list(string)
 }
 
+variable "master_user_name" {
+  description = "User name for the master user"
+  type        = string
+  default     = "temporal"
+}
 variable "master_user_password" {
   description = "the password for the master user"
   sensitive   = true

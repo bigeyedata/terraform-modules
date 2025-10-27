@@ -809,7 +809,7 @@ module "temporal_opensearch" {
   instance_type              = var.temporal_opensearch_instance_type
   instance_count             = var.redundant_infrastructure ? 3 : 1
   subnet_ids                 = local.rabbitmq_subnet_group_ids
-  master_user_password       = local.create_temporal_opensearch_password_secret ? random_password.temporal_opensearch_password[0].result : data.aws_secretsmanager_secret_version.byo_temporal_opensearch_password[0].secret_string
+  master_user_password       = local.create_temporal_opensearch_password_secret ? aws_secretsmanager_secret_version.temporal_opensearch_password[0].secret_string : data.aws_secretsmanager_secret_version.byo_temporal_opensearch_password[0].secret_string
   master_nodes_enabled       = var.redundant_infrastructure ? true : false
   master_node_instance_type  = var.temporal_opensearch_master_instance_type
 }

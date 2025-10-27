@@ -2328,6 +2328,9 @@ locals {
     REDIS_PRIMARY_PORT    = module.redis.port
     REDIS_SSL_ENABLED     = "true"
 
+    ELASTICSEARCH_HOST     = var.temporal_opensearch_enabled ? module.temporal_opensearch[0].dns_name : ""
+    ELASTICSEARCH_USERNAME = var.temporal_opensearch_enabled ? module.temporal_opensearch[0].master_user_name : ""
+
     ACTIONABLE_NOTIFICATION_ENABLED = "false"
     FF_ANALYTICS_LOGGING_ENABLED    = var.datawatch_feature_analytics_logging_enabled
     FF_QUEUE_BACKFILL_ENABLED       = "true"
