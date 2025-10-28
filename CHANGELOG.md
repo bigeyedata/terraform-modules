@@ -1,3 +1,12 @@
+# [25.2.0](https://github.com/bigeyedata/terraform-modules/compare/v25.1.0...v25.2.0) (2025-10-28)
+
+
+### Features
+
+* datawatch encryption key resource policy ([#612](https://github.com/bigeyedata/terraform-modules/issues/612)) ([3790711](https://github.com/bigeyedata/terraform-modules/commit/3790711290eab3b1064065370b3011dd15cb5098))
+
+
+
 # [25.1.0](https://github.com/bigeyedata/terraform-modules/compare/v25.0.1...v25.1.0) (2025-10-28)
 
 
