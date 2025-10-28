@@ -2264,6 +2264,7 @@ data "aws_secretsmanager_secret_version" "datawatch_encryption_key" {
   secret_id     = data.aws_secretsmanager_secret.datawatch_encryption_key[0].id
   version_stage = "AWSCURRENT"
 }
+
 resource "aws_secretsmanager_secret" "datawatch_encryption_key" {
   count                   = local.create_datawatch_encryption_key_secret ? 1 : 0
   name                    = format("bigeye/%s/datawatch/encryption-key", local.name)
@@ -2282,6 +2283,34 @@ resource "aws_secretsmanager_secret_version" "datawatch_encryption_key" {
       version_stages,
     ]
   }
+}
+data "aws_iam_policy_document" "datawatch_encryption_key_resource" {
+  count = var.datawatch_encryption_key_restricted_policy ? 1 : 0
+
+  statement {
+    effect = "Deny"
+    actions = [
+      "secretsmanager:GetSecretValue",
+      "secretsmanager:PutSecretValue",
+    ]
+    resources = ["*"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+
+    condition {
+      test     = "ArnNotEquals"
+      variable = "aws:PrincipalArn"
+      values   = concat([local.datawatch_role_arn], var.datawatch_encryption_key_allowed_principals)
+    }
+  }
+}
+resource "aws_secretsmanager_secret_policy" "datawatch_encryption_key" {
+  count      = var.datawatch_encryption_key_restricted_policy ? 1 : 0
+  secret_arn = local.create_datawatch_encryption_key_secret ? aws_secretsmanager_secret.datawatch_encryption_key[0].arn : data.aws_secretsmanager_secret.datawatch_encryption_key[0].arn
+  policy     = data.aws_iam_policy_document.datawatch_encryption_key_resource[0].json
 }
 
 data "aws_kms_key" "datawatch" {
