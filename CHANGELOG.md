@@ -1,3 +1,12 @@
+# [25.1.0](https://github.com/bigeyedata/terraform-modules/compare/v25.0.1...v25.1.0) (2025-10-28)
+
+
+### Features
+
+* add opensearch environment variables for the internal services ([a3c780f](https://github.com/bigeyedata/terraform-modules/commit/a3c780f8a291494a8e5ca3572114e95f91e9377b))
+
+
+
 ## [25.0.1](https://github.com/bigeyedata/terraform-modules/compare/v25.0.0...v25.0.1) (2025-10-17)
 
 
