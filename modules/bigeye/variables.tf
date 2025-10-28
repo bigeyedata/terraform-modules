@@ -1684,12 +1684,6 @@ variable "datawatch_encryption_key_arn" {
   default     = ""
 }
 
-variable "datawatch_encryption_key_restricted_policy" {
-  description = "Enable a restrictive policy to prevent unauthorized access to the Datawatch encryption key. Defaults to true."
-  type        = bool
-  default     = true
-}
-
 variable "datawatch_encryption_key_allowed_principals" {
   description = "List of ARNs allowed to access the value of the Datawatch encryption key in secretsmanager. The datawatch role is always allowed."
   type        = list(string)
