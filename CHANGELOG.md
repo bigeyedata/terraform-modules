@@ -1,3 +1,12 @@
+## [25.2.1](https://github.com/bigeyedata/terraform-modules/compare/v25.2.0...v25.2.1) (2025-10-29)
+
+
+### Bug Fixes
+
+* add flag for datawatch encryption key policy ([#615](https://github.com/bigeyedata/terraform-modules/issues/615)) ([08da400](https://github.com/bigeyedata/terraform-modules/commit/08da4005a790a09298b81444587f9553d2678da1))
+
+
+
 # [25.2.0](https://github.com/bigeyedata/terraform-modules/compare/v25.1.0...v25.2.0) (2025-10-28)
 
 
