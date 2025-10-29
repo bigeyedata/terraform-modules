@@ -431,8 +431,20 @@ output "s3_buckets" {
 }
 
 #======================================================
+# IAM
+#======================================================
+output "datawatch_role_arn" {
+  description = "ARN of the Datawatch task IAM role"
+  value       = local.datawatch_role_arn
+}
+
+#======================================================
 # Secrets
 #======================================================
+output "datawatch_encryption_key_secret_arn" {
+  value = local.datawatch_encryption_key_secret_arn
+}
+
 output "temporal_rds_password_secret_arn" {
   value = local.temporal_rds_password_secret_arn
 }
