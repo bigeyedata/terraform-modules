@@ -1684,18 +1684,6 @@ variable "datawatch_encryption_key_arn" {
   default     = ""
 }
 
-variable "datawatch_encryption_key_allowed_principals" {
-  description = "List of ARNs allowed to access the value of the Datawatch encryption key in secretsmanager. The datawatch role is always allowed."
-  type        = list(string)
-  default     = []
-}
-
-variable "enable_datawatch_encryption_key_secret_policy" {
-  description = "Enables the restrictive policy preventing principals not explicitly allowed to access the Datawatch encryption key from reading or writing it. Defaults to false."
-  type        = bool
-  default     = false
-}
-
 variable "datawatch_encrypt_secrets_with_kms_enabled" {
   description = "Flag for enabling KMS secret encryption. Setting this value to false after it has been set to true is NOT supported and will break your installation."
   type        = bool

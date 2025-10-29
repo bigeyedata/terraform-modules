@@ -442,7 +442,8 @@ output "datawatch_role_arn" {
 # Secrets
 #======================================================
 output "datawatch_encryption_key_secret_arn" {
-  value = local.datawatch_encryption_key_secret_arn
+  description = "ARN of Datawatch encryption key in Secrets Manager"
+  value       = local.datawatch_encryption_key_secret_arn
 }
 
 output "temporal_rds_password_secret_arn" {
