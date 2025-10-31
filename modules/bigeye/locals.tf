@@ -208,8 +208,6 @@ locals {
   web_image_tag          = coalesce(var.web_image_tag, var.image_tag)
   monocle_image_tag      = coalesce(var.monocle_image_tag, var.image_tag)
   toretto_image_tag      = coalesce(var.toretto_image_tag, var.image_tag)
-  temporalui_image_tag   = coalesce(var.temporalui_image_tag, var.image_tag)
-  temporal_image_tag     = coalesce(var.temporal_image_tag, var.image_tag)
   datawatch_image_tag    = coalesce(var.datawatch_image_tag, var.image_tag)
   datawork_image_tag     = coalesce(var.datawork_image_tag, var.image_tag)
   backfillwork_image_tag = coalesce(var.backfillwork_image_tag, var.image_tag)
