@@ -990,9 +990,9 @@ variable "web_autoscaling_config" {
 # Application Variables - TemporalUI
 #======================================================
 variable "temporalui_image_tag" {
-  description = "The image tag to use for temporalui, defaults to the global `image_tag` if not specified"
+  description = "The image tag to use for temporalui."
   type        = string
-  default     = ""
+  default     = "latest"
 }
 
 variable "temporalui_desired_count" {
@@ -1047,9 +1047,9 @@ variable "temporalui_lb_extra_security_group_ids" {
 # Application Variables - Temporal
 #======================================================
 variable "temporal_image_tag" {
-  description = "The image tag to use for temporal, defaults to the global `image_tag` if not specified"
+  description = "The image tag to use for temporal."
   type        = string
-  default     = ""
+  default     = "latest"
 }
 
 variable "temporal_rds_db_name" {

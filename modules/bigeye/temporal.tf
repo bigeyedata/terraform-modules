@@ -480,7 +480,7 @@ locals {
   } : null
 
   temporal_container_def_general = {
-    image            = format("%s/%s%s:%s", local.image_registry, "temporal", var.image_repository_suffix, local.temporal_image_tag)
+    image            = format("%s/%s%s:%s", local.image_registry, "temporal", var.image_repository_suffix, var.temporal_image_tag)
     logConfiguration = local.log_configuration_def
     portMappings = [
       # Frontend service membership
@@ -714,7 +714,7 @@ module "temporalui" {
   task_role_arn             = null
   image_registry            = local.image_registry
   image_repository          = format("%s%s", "temporalui", var.image_repository_suffix)
-  image_tag                 = local.temporalui_image_tag
+  image_tag                 = var.temporalui_image_tag
   cloudwatch_log_group_name = aws_cloudwatch_log_group.temporal.name
   efs_volume_id             = contains(var.efs_volume_enabled_services, "temporalui") ? aws_efs_file_system.this[0].id : ""
   efs_access_point_id       = contains(var.efs_volume_enabled_services, "temporalui") ? aws_efs_access_point.this["temporalui"].id : ""
