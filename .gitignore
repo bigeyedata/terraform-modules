@@ -3,7 +3,7 @@ node_modules
 
 # Terraform
 .terraform
-modules/**/.terraform.lock.hcl
+.terraform.lock.hcl
 
 # Examples terraform lock files
 examples/**/.terraform.lock.hcl
