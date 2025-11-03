@@ -1,0 +1,91 @@
+name: TF run
+
+on:
+  workflow_call:
+    inputs:
+      name:
+        description: name of the test
+        required: true
+        type: string
+      runs_on:
+        description: self-hosted, unbuntu-latest, etc
+        type: string
+        default: ubuntu-latest
+      timeout:
+        type: number
+        default: 5
+      path:
+        description: path to terraform plans to run
+        required: true
+        type: string
+      aws_access_key_id_secret_name:
+        type: string
+        default: AWS_ACCESS_KEY_ID_CI_ACCOUNT
+      aws_secret_access_key_secret_name:
+        type: string
+        default: AWS_SECRET_ACCESS_KEY_CI_ACCOUNT
+      aws_region_secret_name:
+        type: string
+        default: AWS_DEFAULT_REGION
+      ref:
+        description: optional arg. If specified, checkout the specified branch/ref/sha/tag before running this workflow.  Default will checkout the same ref used by the calling workflow
+        type: string
+      terraform_lock_timeout:
+        description: Time to wait for a terraform lock to be released before failing.  Format is "300s".  "0s" to disable and fail immediately if locked by something else.
+        type: string
+        default: 300s
+
+concurrency:
+  group: ${{ github.workflow }}-${{ inputs.name }}
+  cancel-in-progress: false
+
+jobs:
+  terraform:
+    name: ${{ inputs.name }}
+    runs-on: ${{ inputs.runs_on }}
+    timeout-minutes: ${{ inputs.timeout }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      # v5.0.0
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+        with:
+          ref: ${{ inputs.ref && inputs.ref || github.ref }}
+
+      # v4.2.1
+      - uses: aws-actions/configure-aws-credentials@b47578312673ae6fa5b5096b330d9fbac3d116df
+        with:
+          aws-access-key-id: ${{ secrets[inputs.aws_access_key_id_secret_name] }}
+          aws-secret-access-key: ${{ secrets[inputs.aws_secret_access_key_secret_name] }}
+          aws-region: ${{ secrets[inputs.aws_region_secret_name] }}
+
+      - name: Setup terraform
+        # v3.1.2
+        uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd
+        with:
+          terraform_version: 1.7.5
+          # https://github.com/hashicorp/setup-terraform/issues/373
+          terraform_wrapper: false
+
+      - name: Terraform init
+        run: cd ${{ inputs.path }} && terraform init
+        shell: bash
+
+      - name: Terraform format
+        run: |
+          terraform -chdir=${{ inputs.path }} fmt --check
+        shell: bash
+
+      - name: Terraform validate
+        run: cd ${{ inputs.path }} && terraform validate
+        shell: bash
+
+      - name: Terraform plan
+        if: github.event_name == 'pull_request'
+        # v2.1.0
+        uses: dflook/terraform-plan@b7bf0aabcffd1699464b3ef10c9bff6b265231c0
+        env:
+          TF_VAR_AWS_CI_ACCOUNT_RO_ROLE_ARN: ${{ secrets.AWS_CI_ACCOUNT_RO_ROLE_ARN }}
+        with:
+          path: ${{ inputs.path }}

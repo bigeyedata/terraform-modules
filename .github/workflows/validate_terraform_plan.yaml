@@ -1,0 +1,15 @@
+# Test that a fresh install has a clean plan before allowing a PR to pass
+name: validate_terraform_plan
+on:
+  pull_request:
+    paths:
+      - ./**/*.tf
+      - .github/workflows/validate_terraform_plan.yaml
+
+jobs:
+  terraform:
+    uses: ./.github/workflows/callable_terraform_run.yaml
+    with:
+      name: validate TF plan
+      path: tests/test-tfmodulesci1
+    secrets: inherit
