@@ -1,3 +1,12 @@
+## [25.2.2](https://github.com/bigeyedata/terraform-modules/compare/v25.2.1...v25.2.2) (2025-11-04)
+
+
+### Bug Fixes
+
+* for_each error on fresh installs ([16aa304](https://github.com/bigeyedata/terraform-modules/commit/16aa304baeb1af2083cc5f837a07e6b0ad3fde03))
+
+
+
 ## [25.2.1](https://github.com/bigeyedata/terraform-modules/compare/v25.2.0...v25.2.1) (2025-10-29)
 
 
