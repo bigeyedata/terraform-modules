@@ -50,6 +50,14 @@ terraform version and application version.
 
 ## Upgrading
 
+### Upgrading to 25.3.0
+
+Terraform apply will fail the first time you run it after upgrading to 25.3.0
+due to security group rules being regenerated (duplicate rules conflict).  
+It will succeed on the second terraform apply.
+
+This corrects a bug introduced in 24.0.0 that affected new installs.
+
 ### Upgrading to 25.0.0
 
 The following var has been removed:

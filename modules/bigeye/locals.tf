@@ -23,7 +23,7 @@ locals {
     "${data.aws_region.current.name}c"
   ] : var.vpc_availability_zones
   nat_cidrs              = local.create_vpc ? [for nat_ip in module.vpc[0].nat_public_ips : "${nat_ip}/32"] : []
-  external_ingress_cidrs = concat(var.external_ingress_cidrs, var.internet_facing ? local.nat_cidrs : [var.vpc_cidr_block])
+  external_ingress_cidrs = { for index, cidr in concat(var.external_ingress_cidrs, var.internet_facing ? local.nat_cidrs : [var.vpc_cidr_block]) : index => cidr }
 
   internal_service_alb_subnet_ids = local.create_vpc ? module.vpc[0].intra_subnets : var.byovpc_internal_subnet_ids
   public_alb_subnet_ids           = local.create_vpc ? module.vpc[0].public_subnets : var.byovpc_public_subnet_ids
