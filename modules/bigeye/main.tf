@@ -800,7 +800,7 @@ resource "aws_vpc_security_group_egress_rule" "external_alb_egress" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "external_alb_ingress_cidrs_http" {
-  for_each          = toset(var.create_security_groups ? local.external_ingress_cidrs : [])
+  for_each          = var.create_security_groups ? local.external_ingress_cidrs : {}
   security_group_id = aws_security_group.external_alb[0].id
   from_port         = 80
   to_port           = 80
@@ -809,7 +809,7 @@ resource "aws_vpc_security_group_ingress_rule" "external_alb_ingress_cidrs_http"
 }
 
 resource "aws_vpc_security_group_ingress_rule" "external_alb_ingress_cidrs_https" {
-  for_each          = toset(var.create_security_groups ? local.external_ingress_cidrs : [])
+  for_each          = var.create_security_groups ? local.external_ingress_cidrs : {}
   security_group_id = aws_security_group.external_alb[0].id
   from_port         = 443
   to_port           = 443
