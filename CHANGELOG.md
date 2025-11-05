@@ -1,3 +1,12 @@
+# [25.3.0](https://github.com/bigeyedata/terraform-modules/compare/v25.2.2...v25.3.0) (2025-11-05)
+
+
+### Features
+
+* default to latest tag for temporal and temporalui services ([4df3289](https://github.com/bigeyedata/terraform-modules/commit/4df3289ff5253b2628f9813767d07c477a65161b))
+
+
+
 ## [25.2.2](https://github.com/bigeyedata/terraform-modules/compare/v25.2.1...v25.2.2) (2025-11-04)
 
 
