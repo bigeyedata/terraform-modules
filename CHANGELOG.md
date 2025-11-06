@@ -1,3 +1,12 @@
+# [25.4.0](https://github.com/bigeyedata/terraform-modules/compare/v25.3.0...v25.4.0) (2025-11-06)
+
+
+### Features
+
+* add CI test to ensure a fresh install works ([93dcdc5](https://github.com/bigeyedata/terraform-modules/commit/93dcdc58380058de12c2b70fa390ec6d9d55bf96))
+
+
+
 # [25.3.0](https://github.com/bigeyedata/terraform-modules/compare/v25.2.2...v25.3.0) (2025-11-05)
 
 
