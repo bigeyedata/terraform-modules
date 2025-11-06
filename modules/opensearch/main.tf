@@ -18,16 +18,6 @@ resource "aws_security_group" "this" {
   })
 }
 
-resource "aws_vpc_security_group_ingress_rule" "temporal_http" {
-  count                        = var.create_security_groups ? length(var.ingress_security_group_ids) : 0
-  security_group_id            = aws_security_group.this[0].id
-  from_port                    = 80
-  to_port                      = 80
-  description                  = "Allows port 80 traffic"
-  ip_protocol                  = "TCP"
-  referenced_security_group_id = var.ingress_security_group_ids[count.index]
-}
-
 resource "aws_vpc_security_group_ingress_rule" "temporal_https" {
   count                        = var.create_security_groups ? length(var.ingress_security_group_ids) : 0
   security_group_id            = aws_security_group.this[0].id
@@ -46,16 +36,6 @@ resource "aws_vpc_security_group_egress_rule" "egress" {
   to_port           = local.max_port
   ip_protocol       = "TCP"
   cidr_ipv4         = "0.0.0.0/0"
-}
-
-resource "aws_vpc_security_group_ingress_rule" "temporal_http_additional_cidrs" {
-  count             = var.create_security_groups ? length(var.additional_ingress_cidrs) : 0
-  security_group_id = aws_security_group.this[0].id
-  from_port         = 80
-  to_port           = 80
-  description       = "Allows port 80 traffic from ${var.additional_ingress_cidrs[count.index]}"
-  ip_protocol       = "TCP"
-  cidr_ipv4         = var.additional_ingress_cidrs[count.index]
 }
 
 resource "aws_vpc_security_group_ingress_rule" "temporal_https_additional_cidrs" {
