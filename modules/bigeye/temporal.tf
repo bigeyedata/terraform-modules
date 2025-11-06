@@ -798,18 +798,27 @@ module "temporal_opensearch" {
   count  = var.temporal_opensearch_enabled ? 1 : 0
   source = "../opensearch"
 
-  name                       = local.name
-  vpc_id                     = local.vpc_id
-  tags                       = local.tags
-  create_security_groups     = var.create_security_groups
-  ingress_security_group_ids = var.create_security_groups ? [aws_security_group.temporal[0].id] : []
-  extra_security_group_ids   = var.temporal_opensearch_extra_security_group_ids
-  additional_ingress_cidrs   = var.internal_additional_ingress_cidrs
-  engine_version             = var.temporal_opensearch_engine_version
-  instance_type              = var.temporal_opensearch_instance_type
-  instance_count             = var.redundant_infrastructure ? 3 : 1
-  subnet_ids                 = local.rabbitmq_subnet_group_ids
-  master_user_password       = local.create_temporal_opensearch_password_secret ? aws_secretsmanager_secret_version.temporal_opensearch_password[0].secret_string : data.aws_secretsmanager_secret_version.byo_temporal_opensearch_password[0].secret_string
-  master_nodes_enabled       = var.redundant_infrastructure ? true : false
-  master_node_instance_type  = var.temporal_opensearch_master_instance_type
+  name                   = local.name
+  vpc_id                 = local.vpc_id
+  tags                   = local.tags
+  create_security_groups = var.create_security_groups
+  ingress_security_group_ids = var.create_security_groups ? [
+    aws_security_group.temporal[0].id,
+    module.backfillwork.security_group_id,
+    module.datawatch.security_group_id,
+    module.datawork.security_group_id,
+    module.indexwork.security_group_id,
+    module.lineageapi.security_group_id,
+    module.metricwork.security_group_id,
+    module.rootcause.security_group_id,
+  ] : []
+  extra_security_group_ids  = var.temporal_opensearch_extra_security_group_ids
+  additional_ingress_cidrs  = var.internal_additional_ingress_cidrs
+  engine_version            = var.temporal_opensearch_engine_version
+  instance_type             = var.temporal_opensearch_instance_type
+  instance_count            = var.redundant_infrastructure ? 3 : 1
+  subnet_ids                = local.rabbitmq_subnet_group_ids
+  master_user_password      = local.create_temporal_opensearch_password_secret ? aws_secretsmanager_secret_version.temporal_opensearch_password[0].secret_string : data.aws_secretsmanager_secret_version.byo_temporal_opensearch_password[0].secret_string
+  master_nodes_enabled      = var.redundant_infrastructure ? true : false
+  master_node_instance_type = var.temporal_opensearch_master_instance_type
 }
