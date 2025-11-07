@@ -1,3 +1,12 @@
+## [25.4.1](https://github.com/bigeyedata/terraform-modules/compare/v25.4.0...v25.4.1) (2025-11-07)
+
+
+### Bug Fixes
+
+* update security group rules for opensearch ([baa9b66](https://github.com/bigeyedata/terraform-modules/commit/baa9b660be896a33c1ac8850744036a5296a187e))
+
+
+
 # [25.4.0](https://github.com/bigeyedata/terraform-modules/compare/v25.3.0...v25.4.0) (2025-11-06)
 
 
