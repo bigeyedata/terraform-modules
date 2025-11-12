@@ -20,7 +20,7 @@ module "bigeye" {
   image_registry = "021451147547.dkr.ecr.us-west-2.amazonaws.com"
 
   # Bigeye app version.  You can list the tags available in the image_registry (using the latest is always recommended).
-  image_tag = "2.41.0"
+  image_tag = "2.42.0"
 }
 
 # This can be useful for debugging to print outputs.  Secrets will remain safe (ie passwords and such do not get printed)
