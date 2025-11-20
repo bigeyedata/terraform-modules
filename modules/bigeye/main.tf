@@ -2083,7 +2083,7 @@ module "redis" {
     module.lineageapi.security_group_id,
   ] : []
   auth_token               = local.create_redis_auth_token_secret ? aws_secretsmanager_secret_version.redis_auth_token[0].secret_string : data.aws_secretsmanager_secret_version.byo_redis_auth_token[0].secret_string
-  instance_type            = var.redis_instance_type
+  instance_type            = local.redis_instance_type
   instance_count           = var.redundant_infrastructure ? 2 : 1
   engine_version           = var.redis_engine_version
   maintenance_window       = var.redis_maintenance_window
