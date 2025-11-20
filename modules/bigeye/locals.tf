@@ -96,10 +96,15 @@ locals {
   ])
   metricwork_mq_include_queues_str = join(",", local.metricwork_mq_include_queues)
 
+  # Redis
+  redis_instance_type_default = local.is_govcloud ? "cache.t3.micro" : "cache.t4g.micro"
+  redis_instance_type         = var.redis_instance_type == "" ? local.redis_instance_type_default : var.redis_instance_type
+
   # AWS Account
   aws_account_id = data.aws_caller_identity.current.account_id
   aws_region     = data.aws_region.current.name
   image_registry = var.image_registry == "" ? "${local.aws_account_id}.dkr.ecr.${local.aws_region}.amazonaws.com" : var.image_registry
+  is_govcloud    = data.aws_partition.current.partition == "aws-us-gov"
 
   # Secrets
   secret_retention_days                  = 0

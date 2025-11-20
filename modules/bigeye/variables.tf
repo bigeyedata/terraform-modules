@@ -380,9 +380,9 @@ variable "redis_auth_token_secret_arn" {
 }
 
 variable "redis_instance_type" {
-  description = "Instance type for redis"
+  description = "Instance type for redis.  cache.t4g.micro for standard and cache.t3.micro for govCloud."
   type        = string
-  default     = "cache.t4g.micro"
+  default     = ""
 }
 
 variable "redis_engine_version" {
