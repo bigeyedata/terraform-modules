@@ -21,6 +21,13 @@ module "bigeye" {
 
   # Bigeye app version.  You can list the tags available in the image_registry (using the latest is always recommended).
   image_tag = "2.43.0"
+
+  # Redundant infrastructure is recommended for production installs, but will increase AWS cost by around $500-$1k/month for redundant hardware.
+  redundant_infrastructure = true
+
+  # rabbitmq_instance_type can be omitted if redundant_infrastructure = false as MQ clusters require a minimum hardware size that is larger than most installs require.
+  rabbitmq_instance_type = "mq.m7g.medium"
+
 }
 
 # This can be useful for debugging to print outputs.  Secrets will remain safe (ie passwords and such do not get printed)
