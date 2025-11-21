@@ -1,3 +1,12 @@
+## [25.4.2](https://github.com/bigeyedata/terraform-modules/compare/v25.4.1...v25.4.2) (2025-11-21)
+
+
+### Bug Fixes
+
+* use valid default redis instance type in GovCloud ([b92a128](https://github.com/bigeyedata/terraform-modules/commit/b92a128dbc559f17fc3dbe3d02f4c037262dc03c))
+
+
+
 ## [25.4.1](https://github.com/bigeyedata/terraform-modules/compare/v25.4.0...v25.4.1) (2025-11-07)
 
 
