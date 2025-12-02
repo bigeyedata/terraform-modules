@@ -302,10 +302,10 @@ locals {
     DD_INTEGRATION_JDBC_ENABLED      = "false"
   } : {}
   temporalui_dd_env_vars = var.datadog_agent_enabled ? {
-    DD_VERSION = var.image_tag
+    DD_VERSION = var.temporalui_image_tag
   } : {}
   temporal_dd_env_vars = var.datadog_agent_enabled ? {
-    DD_VERSION      = var.image_tag
+    DD_VERSION      = var.temporal_image_tag
     DD_TAGS         = "app:temporal instance:${var.instance} stack:${local.name}"
     DD_SERVICE      = "temporal"
     DATADOG_ENABLED = "true"
