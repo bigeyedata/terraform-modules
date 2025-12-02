@@ -1,3 +1,12 @@
+## [25.4.4](https://github.com/bigeyedata/terraform-modules/compare/v25.4.3...v25.4.4) (2025-12-02)
+
+
+### Bug Fixes
+
+* fix temporal and temporalui DD_VERSION environment vars ([1d11f65](https://github.com/bigeyedata/terraform-modules/commit/1d11f6599db94c5cd333ca8c6ffdc4c697385784))
+
+
+
 ## [25.4.3](https://github.com/bigeyedata/terraform-modules/compare/v25.4.2...v25.4.3) (2025-12-02)
 
 
