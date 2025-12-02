@@ -29,8 +29,9 @@ locals {
 }
 
 module "cloudfront" {
-  source = "terraform-aws-modules/cloudfront/aws"
-  count  = var.cloudfront_enabled ? 1 : 0
+  count   = var.cloudfront_enabled ? 1 : 0
+  source  = "terraform-aws-modules/cloudfront/aws"
+  version = "5.2.0"
 
   aliases             = [local.static_asset_dns_name]
   comment             = local.name
