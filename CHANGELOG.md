@@ -1,3 +1,12 @@
+## [25.4.3](https://github.com/bigeyedata/terraform-modules/compare/v25.4.2...v25.4.3) (2025-12-02)
+
+
+### Bug Fixes
+
+* pin cloudfront module version to 5.2.0 ([#632](https://github.com/bigeyedata/terraform-modules/issues/632)) ([39488a7](https://github.com/bigeyedata/terraform-modules/commit/39488a795bedd26be8d8f5de10eef5cd87120825))
+
+
+
 ## [25.4.2](https://github.com/bigeyedata/terraform-modules/compare/v25.4.1...v25.4.2) (2025-11-21)
 
 
