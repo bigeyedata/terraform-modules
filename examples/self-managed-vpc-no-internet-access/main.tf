@@ -44,7 +44,7 @@ locals {
   vanity_alias = "bigeye"
 
   # Get this from Bigeye Support.  Typically you will want to install the latest.
-  image_tag = "2.44.0"
+  image_tag = "2.45.0"
   # This will pull images directly from Bigeye's ECR repository.  It is recommended to cache the images in your own local ECR repository.
   # If you receive an error for image unavailable, contact Bigeye support, we likely do not have our images in your region yet and
   # will need to publish them.
