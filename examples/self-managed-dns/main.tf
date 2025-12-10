@@ -19,7 +19,7 @@ module "bigeye" {
   image_registry = "021451147547.dkr.ecr.us-west-2.amazonaws.com"
 
   # Bigeye app version.  You can list the tags available in the image_registry (using the latest is always recommended).
-  image_tag = "2.44.0"
+  image_tag = "2.45.0"
 }
 
 output "bigeye" {
