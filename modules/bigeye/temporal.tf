@@ -808,7 +808,9 @@ module "temporal_opensearch" {
     module.datawatch.security_group_id,
     module.datawork.security_group_id,
     module.indexwork.security_group_id,
+    module.internalapi.security_group_id,
     module.lineageapi.security_group_id,
+    module.lineagework.security_group_id,
     module.metricwork.security_group_id,
     module.rootcause.security_group_id,
   ] : []
