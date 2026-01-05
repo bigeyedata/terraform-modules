@@ -1,3 +1,12 @@
+## [25.4.5](https://github.com/bigeyedata/terraform-modules/compare/v25.4.4...v25.4.5) (2026-01-05)
+
+
+### Bug Fixes
+
+* add opensearch access for internalapi and lineagework ([0344b02](https://github.com/bigeyedata/terraform-modules/commit/0344b0299dcd7e631d9cfd34664be667ae47f5ba))
+
+
+
 ## [25.4.4](https://github.com/bigeyedata/terraform-modules/compare/v25.4.3...v25.4.4) (2025-12-02)
 
 
