@@ -1,3 +1,12 @@
+## [25.4.6](https://github.com/bigeyedata/terraform-modules/compare/v25.4.5...v25.4.6) (2026-01-12)
+
+
+### Bug Fixes
+
+* **mailserver:** self-managed mail server requires from_address ([#643](https://github.com/bigeyedata/terraform-modules/issues/643)) ([3d36654](https://github.com/bigeyedata/terraform-modules/commit/3d3665483af4021b83e838b1db70e1fc8ab2e54d))
+
+
+
 ## [25.4.5](https://github.com/bigeyedata/terraform-modules/compare/v25.4.4...v25.4.5) (2026-01-05)
 
 
