@@ -22,5 +22,6 @@ module "bigeye" {
   byomailserver_smtp_port                = "587"
   byomailserver_smtp_user                = "smtp.user@mail.example.com"
   byomailserver_smtp_password_secret_arn = data.aws_secretsmanager_secret.byomailserver_smtp_password.arn
+  byomailserver_smtp_from_address        = "noreply@example.com"
 }
 

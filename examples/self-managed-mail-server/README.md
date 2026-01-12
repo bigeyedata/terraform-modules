@@ -20,5 +20,6 @@ credential as a string.
 * `byomailserver_smtp_password_secret_arn` - AWS secrets manager ARN containing
 the password for your custom SMTP server.  See [main.tf](./main.tf) for
 implementation
+* `byomailserver_smtp_from_address` - email address of sender of emails
 
 A sample configuration can be found in [main.tf](./main.tf)
