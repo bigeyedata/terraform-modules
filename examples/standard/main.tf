@@ -20,7 +20,7 @@ module "bigeye" {
   image_registry = "021451147547.dkr.ecr.us-west-2.amazonaws.com"
 
   # Bigeye app version.  You can list the tags available in the image_registry (using the latest is always recommended).
-  image_tag = "2.48.0"
+  image_tag = "2.49.0"
 
   # Redundant infrastructure is recommended for production installs, but will increase AWS cost by around $500-$1k/month for redundant hardware.
   redundant_infrastructure = true
