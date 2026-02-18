@@ -1,3 +1,12 @@
+# [25.6.0](https://github.com/bigeyedata/terraform-modules/compare/v25.5.1...v25.6.0) (2026-02-18)
+
+
+### Features
+
+* send in temporal namespace as environment variable ([0f27bc2](https://github.com/bigeyedata/terraform-modules/commit/0f27bc237862d0e44c020999a0942c64f03c8d4e))
+
+
+
 ## [25.5.1](https://github.com/bigeyedata/terraform-modules/compare/v25.5.0...v25.5.1) (2026-02-18)
 
 
