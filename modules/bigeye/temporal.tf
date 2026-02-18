@@ -357,6 +357,7 @@ locals {
 
       NUM_HISTORY_SHARDS                                   = tostring(var.temporal_num_history_shards)
       PROMETHEUS_ENDPOINT                                  = "0.0.0.0:9091"
+      TEMPORAL_NAMESPACE                                   = local.temporal_namespace
       TEMPORAL_TLS_REQUIRE_CLIENT_AUTH                     = "true"
       TEMPORAL_TLS_FRONTEND_DISABLE_HOST_VERIFICATION      = var.temporal_use_default_certificates ? "true" : "false"
       TEMPORAL_TLS_INTERNODE_DISABLE_HOST_VERIFICATION     = var.temporal_use_default_certificates ? "true" : "false"
