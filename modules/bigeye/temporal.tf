@@ -364,7 +364,7 @@ locals {
       TEMPORAL_TLS_FRONTEND_SERVER_NAME                    = local.temporal_dns_name
       TEMPORAL_PER_NAMESPACE_WORKER_COUNT                  = local.temporal_per_namespace_worker_count
       TEMPORAL_MAX_CONCURRENT_WORKFLOW_TASK_POLLERS        = local.temporal_max_concurrent_workflow_task_pollers
-      TEMPORAL_FRONTEND_NAMESPACE_MAX_POLLERS              = local.temporal_frontend_namespace_max_pollers
+      TEMPORAL_FRONTEND_MAX_NAMESPACE_COUNT_PER_INSTANCE   = tostring(local.temporal_frontend_max_namespace_count_per_instance)
       TEMPORAL_FRONTEND_PERSISTENCE_MAX_QPS                = local.temporal_frontend_persistence_max_qps
       TEMPORAL_HISTORY_PERSISTENCE_MAX_QPS                 = local.temporal_history_persistence_max_qps
       TEMPORAL_MATCHING_PERSISTENCE_MAX_QPS                = local.temporal_matching_persistence_max_qps

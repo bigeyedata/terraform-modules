@@ -1402,7 +1402,7 @@ variable "temporal_logging_enabled" {
   default     = true
 }
 
-variable "temporal_frontend_namespace_max_pollers" {
+variable "temporal_frontend_max_namespace_count_per_instance" {
   description = "Maximum number of worker and activity task pollers that can be supported by a single front end instance."
   type        = number
   default     = 1200
