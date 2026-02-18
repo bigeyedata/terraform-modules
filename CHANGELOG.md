@@ -1,3 +1,12 @@
+## [25.5.1](https://github.com/bigeyedata/terraform-modules/compare/v25.5.0...v25.5.1) (2026-02-18)
+
+
+### Bug Fixes
+
+* use the correct variable name ([694f724](https://github.com/bigeyedata/terraform-modules/commit/694f724cecde46b3e6f86a836c7e0817ad3e301d))
+
+
+
 # [25.5.0](https://github.com/bigeyedata/terraform-modules/compare/v25.4.6...v25.5.0) (2026-02-18)
 
 
