@@ -1402,6 +1402,12 @@ variable "temporal_logging_enabled" {
   default     = true
 }
 
+variable "temporal_frontend_namespace_max_pollers" {
+  description = "Maximum number of worker and activity task pollers that can be supported by a single front end instance."
+  type        = number
+  default     = 1200
+}
+
 variable "temporal_frontend_persistence_max_qps" {
   description = "Maximum number queries per second that the Frontend Service host can send to the Persistence store."
   type        = string
