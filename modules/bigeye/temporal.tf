@@ -93,13 +93,15 @@ resource "aws_ecs_service" "temporal" {
   platform_version = var.fargate_version
 
   deployment_circuit_breaker {
-    enable   = false
-    rollback = false
+    enable   = true
+    rollback = true
   }
 
   deployment_controller {
     type = "ECS"
   }
+
+  health_check_grace_period_seconds = 300
 
   propagate_tags = "SERVICE"
 
@@ -188,8 +190,8 @@ resource "aws_ecs_service" "temporal_components" {
   platform_version = var.fargate_version
 
   deployment_circuit_breaker {
-    enable   = false
-    rollback = false
+    enable   = true
+    rollback = true
   }
 
   deployment_controller {
