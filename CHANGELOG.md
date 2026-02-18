@@ -1,3 +1,12 @@
+# [25.5.0](https://github.com/bigeyedata/terraform-modules/compare/v25.4.6...v25.5.0) (2026-02-18)
+
+
+### Features
+
+* ability to specify max frontend namespace concurrent task pollers ([1fdc176](https://github.com/bigeyedata/terraform-modules/commit/1fdc17693f5e8b503f75a53e175cc8c0f3ec2a48))
+
+
+
 ## [25.4.6](https://github.com/bigeyedata/terraform-modules/compare/v25.4.5...v25.4.6) (2026-01-12)
 
 
