@@ -1,3 +1,12 @@
+# [25.7.0](https://github.com/bigeyedata/terraform-modules/compare/v25.6.0...v25.7.0) (2026-02-19)
+
+
+### Features
+
+* use a separate variable for temporal image repository suffix ([0fe7c25](https://github.com/bigeyedata/terraform-modules/commit/0fe7c25c6f4206ab0014645fa6e92c8598a8a87b))
+
+
+
 # [25.6.0](https://github.com/bigeyedata/terraform-modules/compare/v25.5.1...v25.6.0) (2026-02-18)
 
 
