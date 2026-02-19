@@ -1052,6 +1052,12 @@ variable "temporal_image_tag" {
   default     = "latest"
 }
 
+variable "temporal_image_repository_suffix" {
+  description = "The repository suffix for temporal images. For example if the repository is temporal/test, the suffix is /test"
+  type        = string
+  default     = ""
+}
+
 variable "temporal_rds_db_name" {
   description = "The database name for Temporal's application DB"
   type        = string
