@@ -2593,6 +2593,7 @@ module "datawork" {
       REFRESH_SCORECARDS_ACT_EXEC_SIZE   = var.temporal_client_refresh_scorecard_act_exec_size
       MONOCLE_INVALIDATION_WF_EXEC_SIZE  = var.temporal_client_monocle_invalidation_wf_exec_size
       MONOCLE_INVALIDATION_ACT_EXEC_SIZE = var.temporal_client_monocle_invalidation_act_exec_size
+      TEMPORAL_SCHEDULES_CREATE_ON_START = true
     },
     var.datawork_additional_environment_vars,
   )
