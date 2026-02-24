@@ -1,3 +1,12 @@
+# [25.8.0](https://github.com/bigeyedata/terraform-modules/compare/v25.7.0...v25.8.0) (2026-02-24)
+
+
+### Features
+
+* only datawork creates Temporal schedules ([b59869d](https://github.com/bigeyedata/terraform-modules/commit/b59869dd50ab8c37377b61e95c131470b5415801))
+
+
+
 # [25.7.0](https://github.com/bigeyedata/terraform-modules/compare/v25.6.0...v25.7.0) (2026-02-19)
 
 
