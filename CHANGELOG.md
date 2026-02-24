@@ -1,3 +1,12 @@
+## [25.8.1](https://github.com/bigeyedata/terraform-modules/compare/v25.8.0...v25.8.1) (2026-02-24)
+
+
+### Bug Fixes
+
+* move defaulting of create schedules to false to the common env vars ([c3c9a04](https://github.com/bigeyedata/terraform-modules/commit/c3c9a04ccf015dcb9b07ff19a5fd02bf1c56407d))
+
+
+
 # [25.8.0](https://github.com/bigeyedata/terraform-modules/compare/v25.7.0...v25.8.0) (2026-02-24)
 
 
