@@ -2351,6 +2351,7 @@ locals {
     TEMPORAL_NAMESPACE                         = var.temporal_namespace
     TEMPORAL_SSL_HOSTNAME_VERIFICATION_ENABLED = var.temporal_use_default_certificates ? "false" : "true"
     TEMPORAL_LARGE_PAYLOAD_ENABLED             = var.datawatch_temporal_large_payload_enabled
+    TEMPORAL_SCHEDULES_CREATE_ON_START         = false
 
     MAILER_HOST         = local.byomailserver_smtp_host
     MAILER_PORT         = local.byomailserver_smtp_port
