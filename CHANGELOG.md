@@ -1,3 +1,12 @@
+# [25.9.0](https://github.com/bigeyedata/terraform-modules/compare/v25.8.1...v25.9.0) (2026-03-07)
+
+
+### Features
+
+* add per-component datadog agent memory for temporal ([f5ab13c](https://github.com/bigeyedata/terraform-modules/commit/f5ab13c87615c83ebc558479ec08f516c658618c))
+
+
+
 ## [25.8.1](https://github.com/bigeyedata/terraform-modules/compare/v25.8.0...v25.8.1) (2026-02-24)
 
 
