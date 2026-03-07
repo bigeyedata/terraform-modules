@@ -328,6 +328,13 @@ locals {
     "internal-frontend" = coalesce(var.temporal_internal_frontend_memory, var.temporal_memory)
     frontend            = coalesce(var.temporal_frontend_memory, var.temporal_memory)
   }
+  temporal_component_datadog_agent_memory = {
+    history             = var.datadog_agent_memory
+    matching            = coalesce(var.temporal_matching_datadog_agent_memory, var.datadog_agent_memory)
+    worker              = var.datadog_agent_memory
+    "internal-frontend" = var.datadog_agent_memory
+    frontend            = var.datadog_agent_memory
+  }
 
   temporal_docker_labels_general = var.datadog_agent_enabled ? {
     "com.datadoghq.tags.env"      = local.name
@@ -547,7 +554,7 @@ locals {
       {
         name   = "${local.name}-temporal-${local.temporal_svc_override_names[svc]}"
         cpu    = local.temporal_component_cpu[svc] - (var.datadog_agent_enabled ? var.datadog_agent_cpu : 0) - (var.awsfirelens_enabled ? var.awsfirelens_cpu : 0)
-        memory = local.temporal_component_memory[svc] - (var.datadog_agent_enabled ? var.datadog_agent_memory : 0) - (var.awsfirelens_enabled ? var.awsfirelens_memory : 0)
+        memory = local.temporal_component_memory[svc] - (var.datadog_agent_enabled ? local.temporal_component_datadog_agent_memory[svc] : 0) - (var.awsfirelens_enabled ? var.awsfirelens_memory : 0)
         dockerLabels = var.datadog_agent_enabled ? merge(
           local.temporal_docker_labels_general,
           {
@@ -618,6 +625,7 @@ locals {
     for svc in local.temporal_services : svc => merge(
       local.temporal_datadog_container_def_generic,
       {
+        memory = local.temporal_component_datadog_agent_memory[svc]
         dockerLabels = merge(local.temporal_datadog_docker_labels_generic, {
           "com.datadoghq.ad.instances" : "[\n    {\n      \"openmetrics_endpoint\": \"http://localhost:9091/metrics\",\n      \"extra_metrics\": [\n        \"approximate_backlog_count\"\n,        \"approximate_backlog_age_seconds\"\n      ],\n      \"collect_histogram_buckets\": true,\n      \"histogram_buckets_as_distributions\": true,\n      \"collect_counters_with_distributions\": true,\n      \"tags\": [\n        \"app:temporal\"\n,        \"component:${svc}\",\n        \"instance:${var.instance}\",\n        \"stack:${local.name}\"\n      ]\n    }\n  ]\n",
           "com.datadog.tags.app" : "temporal"

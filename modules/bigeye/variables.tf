@@ -1318,6 +1318,12 @@ variable "temporal_matching_memory" {
   default     = null
 }
 
+variable "temporal_matching_datadog_agent_memory" {
+  description = "Amount of Memory in MB to allocate to the datadog agent sidecar for the temporal matching service. Defaults to datadog_agent_memory if not set"
+  type        = number
+  default     = null
+}
+
 variable "temporal_worker_cpu" {
   description = "Amount of CPU to allocate to the temporal worker service. Defaults to temporal_cpu if not set"
   type        = number
