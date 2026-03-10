@@ -1,3 +1,12 @@
+# [25.10.0](https://github.com/bigeyedata/terraform-modules/compare/v25.9.0...v25.10.0) (2026-03-10)
+
+
+### Features
+
+* add per-component datadog agent memory overrides for all temporal services ([#668](https://github.com/bigeyedata/terraform-modules/issues/668)) ([076ff41](https://github.com/bigeyedata/terraform-modules/commit/076ff410013fb2b6c5decd600d5a365ed9616f64))
+
+
+
 # [25.9.0](https://github.com/bigeyedata/terraform-modules/compare/v25.8.1...v25.9.0) (2026-03-07)
 
 
