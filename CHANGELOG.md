@@ -1,3 +1,13 @@
+# [25.11.0](https://github.com/bigeyedata/terraform-modules/compare/v25.10.0...v25.11.0) (2026-03-10)
+
+
+### Features
+
+* add default region to solr-single-instance module for easier migration ([154d963](https://github.com/bigeyedata/terraform-modules/commit/154d963eb30b806b5ef19f2bb11d35946fe9678e))
+* add region variable to solr-single-instance module ([faa7832](https://github.com/bigeyedata/terraform-modules/commit/faa78327fb6963afe0a8a8a5f860d4424c0c5d86))
+
+
+
 # [25.10.0](https://github.com/bigeyedata/terraform-modules/compare/v25.9.0...v25.10.0) (2026-03-10)
 
 
