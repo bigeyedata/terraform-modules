@@ -78,7 +78,7 @@ locals {
       logDriver = "awslogs"
       options = {
         "awslogs-group"         = var.cloudwatch_log_group_name
-        "awslogs-region"        = data.aws_region.current.name
+        "awslogs-region"        = var.region
         "awslogs-stream-prefix" = var.name
       }
     }
@@ -193,4 +193,3 @@ locals {
   )
 }
 
-data "aws_region" "current" {}
