@@ -329,11 +329,11 @@ locals {
     frontend            = coalesce(var.temporal_frontend_memory, var.temporal_memory)
   }
   temporal_component_datadog_agent_memory = {
-    history             = var.datadog_agent_memory
+    history             = coalesce(var.temporal_history_datadog_agent_memory, var.datadog_agent_memory)
     matching            = coalesce(var.temporal_matching_datadog_agent_memory, var.datadog_agent_memory)
-    worker              = var.datadog_agent_memory
-    "internal-frontend" = var.datadog_agent_memory
-    frontend            = var.datadog_agent_memory
+    worker              = coalesce(var.temporal_worker_datadog_agent_memory, var.datadog_agent_memory)
+    "internal-frontend" = coalesce(var.temporal_internal_frontend_datadog_agent_memory, var.datadog_agent_memory)
+    frontend            = coalesce(var.temporal_frontend_datadog_agent_memory, var.datadog_agent_memory)
   }
 
   temporal_docker_labels_general = var.datadog_agent_enabled ? {

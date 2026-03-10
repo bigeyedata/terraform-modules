@@ -1282,6 +1282,12 @@ variable "temporal_frontend_memory" {
   default     = null
 }
 
+variable "temporal_frontend_datadog_agent_memory" {
+  description = "Amount of Memory in MB to allocate to the datadog agent sidecar for the temporal frontend service. Defaults to datadog_agent_memory if not set"
+  type        = number
+  default     = null
+}
+
 variable "temporal_internal_frontend_cpu" {
   description = "Amount of CPU to allocate to the temporal internal-frontend service. Defaults to temporal_cpu if not set"
   type        = number
@@ -1294,6 +1300,12 @@ variable "temporal_internal_frontend_memory" {
   default     = null
 }
 
+variable "temporal_internal_frontend_datadog_agent_memory" {
+  description = "Amount of Memory in MB to allocate to the datadog agent sidecar for the temporal internal-frontend service. Defaults to datadog_agent_memory if not set"
+  type        = number
+  default     = null
+}
+
 variable "temporal_history_cpu" {
   description = "Amount of CPU to allocate to the temporal history service. Defaults to temporal_cpu if not set"
   type        = number
@@ -1302,6 +1314,12 @@ variable "temporal_history_cpu" {
 
 variable "temporal_history_memory" {
   description = "Amount of Memory in MB to allocate to the temporal history service. Defaults to temporal_memory if not set"
+  type        = number
+  default     = null
+}
+
+variable "temporal_history_datadog_agent_memory" {
+  description = "Amount of Memory in MB to allocate to the datadog agent sidecar for the temporal history service. Defaults to datadog_agent_memory if not set"
   type        = number
   default     = null
 }
@@ -1332,6 +1350,12 @@ variable "temporal_worker_cpu" {
 
 variable "temporal_worker_memory" {
   description = "Amount of Memory in MB to allocate to the temporal worker service. Defaults to temporal_memory if not set"
+  type        = number
+  default     = null
+}
+
+variable "temporal_worker_datadog_agent_memory" {
+  description = "Amount of Memory in MB to allocate to the datadog agent sidecar for the temporal worker service. Defaults to datadog_agent_memory if not set"
   type        = number
   default     = null
 }
