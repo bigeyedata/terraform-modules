@@ -1,3 +1,9 @@
+variable "region" {
+  description = "AWS region where resources will be created."
+  type        = string
+  default     = "us-west-2"
+}
+
 variable "subnet_id" {
   description = "VPC subnet where this instance will run."
   type        = string

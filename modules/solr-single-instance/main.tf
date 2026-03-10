@@ -240,7 +240,7 @@ data "aws_iam_policy_document" "solr-instance-role-inline-policy" {
     ]
     sid = "AllowAttachingEBSVolume"
     resources = [
-      "arn:${data.aws_partition.current.partition}:ec2:${data.aws_region.current.name}:${data.aws_caller_identity.this.account_id}:instance/*",
+      "arn:${data.aws_partition.current.partition}:ec2:${var.region}:${data.aws_caller_identity.this.account_id}:instance/*",
       aws_ebs_volume.ebs_volume.arn,
     ]
     condition {

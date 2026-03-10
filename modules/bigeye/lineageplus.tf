@@ -1,6 +1,7 @@
 module "lineageplus_solr" {
   count     = var.lineageplus_enabled && length(var.lineageplus_solr_image_tag) > 0 ? 1 : 0
   source    = "../solr-single-instance"
+  region    = local.aws_region
   subnet_id = local.application_subnet_ids[0]
   app       = "lineageplus"
   instance  = var.instance
