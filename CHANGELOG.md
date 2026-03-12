@@ -1,3 +1,12 @@
+## [25.11.1](https://github.com/bigeyedata/terraform-modules/compare/v25.11.0...v25.11.1) (2026-03-12)
+
+
+### Bug Fixes
+
+* the primary_additional_tags was fixed ([2805e5c](https://github.com/bigeyedata/terraform-modules/commit/2805e5c8ffc3c96fac4b599867e2e213fa2c950e))
+
+
+
 # [25.11.0](https://github.com/bigeyedata/terraform-modules/compare/v25.10.0...v25.11.0) (2026-03-10)
 
 
