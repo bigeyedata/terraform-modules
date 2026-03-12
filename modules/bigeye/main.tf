@@ -1320,7 +1320,7 @@ module "temporal_rds" {
   parameters                            = merge(var.temporal_rds_default_parameters, var.temporal_rds_parameters)
   tags                                  = merge(local.tags, { app = "temporal" }, var.temporal_rds_additional_tags)
   primary_additional_tags               = var.temporal_rds_primary_additional_tags
-  replica_additional_tags               = var.temporal_rds_primary_additional_tags
+  replica_additional_tags               = var.temporal_rds_replica_additional_tags
 }
 
 #======================================================
