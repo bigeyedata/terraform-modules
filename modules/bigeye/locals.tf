@@ -43,7 +43,7 @@ locals {
   )
 
   # Temporal Task Queues
-  catalog_indexing_temporal_queues = ["indexing.v1"]
+  catalog_indexing_temporal_queues = ["indexing.v1", "catalog-indexing.v1"]
   root_cause_temporal_queues       = ["issue-root-cause"]
   lineage_temporal_queues          = ["source-lineage", "metacenter-lineage"]
   metric_run_temporal_queues       = ["trigger-batch-metric-run"]
