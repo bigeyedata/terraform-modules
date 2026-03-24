@@ -2754,8 +2754,10 @@ module "indexwork" {
       INCLUDE_QUEUES         = local.indexwork_temporal_include_queues_str
       MQ_INCLUDE_QUEUES      = local.indexwork_mq_include_queues_str
       HEAP_DUMP_PATH         = contains(var.efs_volume_enabled_services, "indexwork") ? var.efs_mount_point : ""
-      INDEXING_WF_EXEC_SIZE  = var.temporal_client_indexing_wf_exec_size
-      INDEXING_ACT_EXEC_SIZE = var.temporal_client_indexing_act_exec_size
+      INDEXING_WF_EXEC_SIZE          = var.temporal_client_indexing_wf_exec_size
+      INDEXING_ACT_EXEC_SIZE         = var.temporal_client_indexing_act_exec_size
+      CATALOG_INDEXING_WF_EXEC_SIZE  = var.temporal_client_catalog_indexing_wf_exec_size
+      CATALOG_INDEXING_ACT_EXEC_SIZE = var.temporal_client_catalog_indexing_act_exec_size
     },
     var.indexwork_additional_environment_vars,
   )

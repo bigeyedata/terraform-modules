@@ -1567,6 +1567,18 @@ variable "temporal_client_indexing_act_exec_size" {
   default     = 5
 }
 
+variable "temporal_client_catalog_indexing_wf_exec_size" {
+  description = "Controls catalog-indexing.v1 workflow execution thread count"
+  type        = number
+  default     = 2
+}
+
+variable "temporal_client_catalog_indexing_act_exec_size" {
+  description = "Controls catalog-indexing.v1 activity execution thread count"
+  type        = number
+  default     = 5
+}
+
 variable "temporal_client_issue_ai_overview_wf_exec_size" {
   description = "Controls issue-ai-overview workflow execution thread count"
   type        = number
