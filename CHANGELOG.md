@@ -1,3 +1,13 @@
+# [25.12.0](https://github.com/bigeyedata/terraform-modules/compare/v25.11.1...v25.12.0) (2026-03-24)
+
+
+### Features
+
+* [one-12405] add catalog indexing temporal queue ([401671b](https://github.com/bigeyedata/terraform-modules/commit/401671ba5e593fdf53b42415c10b5f17bff86e86))
+* [one-12405] fix terraform fmt alignment ([7148d22](https://github.com/bigeyedata/terraform-modules/commit/7148d220be1823590f78c3f73e1f1921d93c6db4))
+
+
+
 ## [25.11.1](https://github.com/bigeyedata/terraform-modules/compare/v25.11.0...v25.11.1) (2026-03-12)
 
 
