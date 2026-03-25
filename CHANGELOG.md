@@ -1,3 +1,17 @@
+## [25.12.2](https://github.com/bigeyedata/terraform-modules/compare/v25.12.1...v25.12.2) (2026-03-25)
+
+
+### Bug Fixes
+
+* disable hibernate search when temporal_opensearch_enabled is false ([#678](https://github.com/bigeyedata/terraform-modules/issues/678)) ([0dbc52c](https://github.com/bigeyedata/terraform-modules/commit/0dbc52ce7521fd8690fb4d8f7a802b76945c05e6))
+
+
+### Reverts
+
+* Revert "fix: disable hibernate search when temporal_opensearch is disabled" ([44ecc30](https://github.com/bigeyedata/terraform-modules/commit/44ecc304c0ee2c28e4105459a09aec8e68453244))
+
+
+
 ## [25.12.1](https://github.com/bigeyedata/terraform-modules/compare/v25.12.0...v25.12.1) (2026-03-25)
 
 
