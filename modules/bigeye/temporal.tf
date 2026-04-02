@@ -373,6 +373,9 @@ locals {
       TEMPORAL_PER_NAMESPACE_WORKER_COUNT                  = local.temporal_per_namespace_worker_count
       TEMPORAL_MAX_CONCURRENT_WORKFLOW_TASK_POLLERS        = local.temporal_max_concurrent_workflow_task_pollers
       TEMPORAL_FRONTEND_MAX_NAMESPACE_COUNT_PER_INSTANCE   = tostring(local.temporal_frontend_max_namespace_count_per_instance)
+      TEMPORAL_FRONTEND_RPS                                = tostring(local.temporal_frontend_rps)
+      TEMPORAL_FRONTEND_NAMESPACE_RPS                      = tostring(local.temporal_frontend_namespace_rps)
+      TEMPORAL_FRONTEND_BURST_RATIO                        = tostring(local.temporal_frontend_burst_ratio)
       TEMPORAL_FRONTEND_PERSISTENCE_MAX_QPS                = local.temporal_frontend_persistence_max_qps
       TEMPORAL_HISTORY_PERSISTENCE_MAX_QPS                 = local.temporal_history_persistence_max_qps
       TEMPORAL_MATCHING_PERSISTENCE_MAX_QPS                = local.temporal_matching_persistence_max_qps

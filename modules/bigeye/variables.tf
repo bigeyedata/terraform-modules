@@ -1438,6 +1438,24 @@ variable "temporal_logging_enabled" {
   default     = true
 }
 
+variable "temporal_frontend_rps" {
+  description = "FrontendRPS is workflow rate limit per second per-instance"
+  type        = number
+  default     = 2400
+}
+
+variable "temporal_frontend_namespace_rps" {
+  description = "FrontendMaxNamespaceRPSPerInstance is workflow namespace rate limit per second"
+  type        = number
+  default     = 2400
+}
+
+variable "temporal_frontend_burst_ratio" {
+  description = "FrontendMaxNamespaceBurstRatioPerInstance is workflow namespace burst limit as a ratio of namespace RPS. The RPS used here will be the effective RPS from global and per-instance limits. The value must be 1 or higher."
+  type        = number
+  default     = 2
+}
+
 variable "temporal_frontend_max_namespace_count_per_instance" {
   description = "Maximum number of worker and activity task pollers that can be supported by a single front end instance."
   type        = number
