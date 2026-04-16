@@ -1474,6 +1474,12 @@ variable "temporal_history_persistence_max_qps" {
   default     = 9000
 }
 
+variable "temporal_matching_rps" {
+  description = "Maximum number of requests per second per matching service instance."
+  type        = string
+  default     = 1200
+}
+
 variable "temporal_matching_persistence_max_qps" {
   description = "Maximum number queries per second that the Matching Service host can send to the Persistence store."
   type        = string

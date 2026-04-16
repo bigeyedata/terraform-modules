@@ -287,6 +287,7 @@ locals {
   temporal_frontend_burst_ratio                        = var.temporal_frontend_burst_ratio
   temporal_frontend_persistence_max_qps                = var.temporal_frontend_persistence_max_qps
   temporal_history_persistence_max_qps                 = var.temporal_history_persistence_max_qps
+  temporal_matching_rps                                = var.temporal_matching_rps
   temporal_matching_persistence_max_qps                = var.temporal_matching_persistence_max_qps
   temporal_worker_persistence_max_qps                  = var.temporal_worker_persistence_max_qps
   temporal_system_visibility_persistence_max_read_qps  = var.temporal_system_visibility_persistence_max_read_qps

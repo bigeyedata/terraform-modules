@@ -378,6 +378,7 @@ locals {
       TEMPORAL_FRONTEND_BURST_RATIO                        = tostring(local.temporal_frontend_burst_ratio)
       TEMPORAL_FRONTEND_PERSISTENCE_MAX_QPS                = local.temporal_frontend_persistence_max_qps
       TEMPORAL_HISTORY_PERSISTENCE_MAX_QPS                 = local.temporal_history_persistence_max_qps
+      TEMPORAL_MATCHING_RPS                                = local.temporal_matching_rps
       TEMPORAL_MATCHING_PERSISTENCE_MAX_QPS                = local.temporal_matching_persistence_max_qps
       TEMPORAL_WORKER_PERSISTENCE_MAX_QPS                  = local.temporal_worker_persistence_max_qps
       TEMPORAL_SYSTEM_VISIBILITY_PERSISTENCE_MAX_READ_QPS  = local.temporal_system_visibility_persistence_max_read_qps
