@@ -1,3 +1,17 @@
+# [25.15.0](https://github.com/bigeyedata/terraform-modules/compare/v25.14.0...v25.15.0) (2026-05-14)
+
+
+### Bug Fixes
+
+* bump static-assets retention to 30d to survive deploy skips ([3993491](https://github.com/bigeyedata/terraform-modules/commit/3993491c42c145fa54a18e5133314e86f1447d23))
+
+
+### Features
+
+* add optional static-assets bucket to bigeye module ([187816c](https://github.com/bigeyedata/terraform-modules/commit/187816cd524c7b545ebf85d30473287940e16d09))
+
+
+
 # [25.14.0](https://github.com/bigeyedata/terraform-modules/compare/v25.13.0...v25.14.0) (2026-04-16)
 
 
