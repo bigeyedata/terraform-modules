@@ -207,7 +207,7 @@ locals {
     }
     ], var.static_asset_bucket_enabled ? [{
       "type" : "static-assets"
-      "retention_days" : 7
+      "retention_days" : 30
   }] : [])
   datawatch_buckets = ["large-payload", "mcp-gateway"]
 
