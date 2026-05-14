@@ -190,7 +190,7 @@ locals {
   # Models bucket random name
   models_bucket_has_name_override = var.ml_models_s3_bucket_name_override == "" ? false : true
   models_bucket_name              = local.models_bucket_has_name_override ? var.ml_models_s3_bucket_name_override : "${local.name}-models"
-  s3_buckets = [
+  s3_buckets = concat([
     {
       # Used to store trained models for Authresholds
       "type" : "models"
@@ -205,7 +205,10 @@ locals {
       "type" : "mcp-gateway"
       "retention_days" : 30
     }
-  ]
+    ], var.static_asset_bucket_enabled ? [{
+      "type" : "static-assets"
+      "retention_days" : 30
+  }] : [])
   datawatch_buckets = ["large-payload", "mcp-gateway"]
 
   # Docker image tags

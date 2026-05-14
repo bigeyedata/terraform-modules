@@ -2975,3 +2975,15 @@ variable "cloudfront_origin_read_timeout" {
   type        = number
   default     = 60
 }
+
+variable "static_asset_bucket_enabled" {
+  description = <<EOT
+Controls whether an S3 bucket is provisioned to hold versioned static assets. When enabled, the
+bucket is intended to be populated by the deploy pipeline (one prefix per build SHA) so that
+Cloudfront can serve old and new asset hashes simultaneously across rolling ECS deploys, avoiding
+the 404 window caused by origin-task hash drift. The bucket name/arn is exposed via the
+s3_buckets output under the "static-assets" key.
+EOT
+  type        = bool
+  default     = false
+}
