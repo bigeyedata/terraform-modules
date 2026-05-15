@@ -594,6 +594,24 @@ variable "spot_instance_config" {
   }
 }
 
+variable "hibernate_search_coordination" {
+  description = "algorithm to use for hibernate search coordination"
+  type        = string
+  default     = "none"
+}
+
+variable "hibernate_search_event_processor_enabled" {
+  description = "enable background threads for processing hibernate search events"
+  type        = bool
+  default     = false
+}
+
+variable "hibernate_search_event_processor_interval" {
+  description = "interval in milliseconds that hibernate search event processor will check for events"
+  type        = number
+  default     = 1000
+}
+
 #======================================================
 # Application Variables - Monocle
 #======================================================
