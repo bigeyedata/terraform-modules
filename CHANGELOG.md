@@ -1,3 +1,12 @@
+# [25.17.0](https://github.com/bigeyedata/terraform-modules/compare/v25.16.0...v25.17.0) (2026-05-15)
+
+
+### Features
+
+* new environment variables for configuring hibernate search ([db284ef](https://github.com/bigeyedata/terraform-modules/commit/db284ef4c047f558794d983b6060b01b515b9764))
+
+
+
 # [25.16.0](https://github.com/bigeyedata/terraform-modules/compare/v25.15.0...v25.16.0) (2026-05-15)
 
 
