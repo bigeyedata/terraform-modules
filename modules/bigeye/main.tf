@@ -2316,6 +2316,10 @@ locals {
     MYSQL_MAXSIZE               = var.datawatch_mysql_maxsize
     MYSQL_TRANSACTION_ISOLATION = "read-committed"
 
+    HIBERNATE_SEARCH_COORDINATION             = local.hibernate_search_coordination
+    HIBERNATE_SEARCH_EVENT_PROCESSOR_ENABLED  = local.hibernate_search_event_processor_enabled
+    HIBERNATE_SEARCH_EVENT_PROCESSOR_INTERVAL = local.hibernate_search_event_processor_interval
+
     MONOCLE_ADDRESS   = "https://${module.monocle.dns_name}"
     REDIRECT_ADDRESS  = "https://${local.vanity_dns_name}"
     SCHEDULER_ADDRESS = "https://${module.scheduler.dns_name}"

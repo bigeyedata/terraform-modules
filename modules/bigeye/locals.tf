@@ -296,6 +296,9 @@ locals {
   temporal_system_visibility_persistence_max_read_qps  = var.temporal_system_visibility_persistence_max_read_qps
   temporal_system_visibility_persistence_max_write_qps = var.temporal_system_visibility_persistence_max_write_qps
 
+  hibernate_search_coordination             = var.hibernate_search_coordination
+  hibernate_search_event_processor_enabled  = var.hibernate_search_event_processor_enabled
+  hibernate_search_event_processor_interval = var.hibernate_search_event_processor_interval
 
   #======================================================
   # Datadog specs
