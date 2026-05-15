@@ -2987,3 +2987,15 @@ EOT
   type        = bool
   default     = false
 }
+
+variable "cloudfront_static_asset_serve_from_s3" {
+  description = <<EOT
+Controls whether Cloudfront serves static assets from the S3 bucket created by
+static_asset_bucket_enabled (instead of from the ALB/ECS origin). When true, an Origin Access
+Control is created, the bucket gets a read policy scoped to this distribution, and the static
+asset cache behaviors route to S3. Requires static_asset_bucket_enabled = true and
+cloudfront_enabled = true.
+EOT
+  type        = bool
+  default     = false
+}

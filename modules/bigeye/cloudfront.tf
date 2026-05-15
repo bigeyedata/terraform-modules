@@ -10,10 +10,11 @@ locals {
     "/*.webp",
     "/*.woff2",
   ]
+  static_asset_target_origin_id = var.cloudfront_static_asset_serve_from_s3 ? "s3-static-assets" : "bigeye"
   cloudfront_ordered_cache_behavior_defaults = {
-    target_origin_id             = "bigeye"
+    target_origin_id             = local.static_asset_target_origin_id
     cache_policy_name            = "Managed-CachingOptimized"
-    origin_request_policy_name   = "Managed-CORS-CustomOrigin"
+    origin_request_policy_name   = var.cloudfront_static_asset_serve_from_s3 ? "Managed-CORS-S3Origin" : "Managed-CORS-CustomOrigin"
     response_headers_policy_name = "Managed-CORS-With-Preflight"
     viewer_protocol_policy       = "redirect-to-https"
     compress                     = true
@@ -26,6 +27,37 @@ locals {
       { path_pattern = path_pattern }, local.cloudfront_ordered_cache_behavior_defaults
     )
   ]
+}
+
+resource "aws_cloudfront_origin_access_control" "static_assets" {
+  count = var.cloudfront_enabled && var.cloudfront_static_asset_serve_from_s3 ? 1 : 0
+
+  name                              = "${local.name}-static-assets"
+  description                       = "OAC for ${local.name} static assets bucket"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
+}
+
+resource "aws_s3_bucket_policy" "static_assets_cloudfront_read" {
+  count = var.cloudfront_enabled && var.cloudfront_static_asset_serve_from_s3 ? 1 : 0
+
+  bucket = module.s3_buckets["static-assets"].id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Sid       = "AllowCloudFrontReadViaOAC"
+      Effect    = "Allow"
+      Principal = { Service = "cloudfront.amazonaws.com" }
+      Action    = "s3:GetObject"
+      Resource  = "${module.s3_buckets["static-assets"].arn}/*"
+      Condition = {
+        StringEquals = {
+          "AWS:SourceArn" = module.cloudfront[0].cloudfront_distribution_arn
+        }
+      }
+    }]
+  })
 }
 
 module "cloudfront" {
@@ -45,21 +77,29 @@ module "cloudfront" {
     prefix = "bigeye.com"
   } : {}
 
-  origin = {
-    bigeye = {
-      domain_name         = local.vanity_dns_name
-      connection_attempts = 3
-      connection_timeout  = 10
-      custom_origin_config = {
-        http_port                = 80
-        https_port               = 443
-        origin_keepalive_timeout = 5
-        origin_protocol_policy   = "https-only"
-        origin_read_timeout      = var.cloudfront_origin_read_timeout
-        origin_ssl_protocols     = ["TLSv1.2"]
+  origin = merge(
+    {
+      bigeye = {
+        domain_name         = local.vanity_dns_name
+        connection_attempts = 3
+        connection_timeout  = 10
+        custom_origin_config = {
+          http_port                = 80
+          https_port               = 443
+          origin_keepalive_timeout = 5
+          origin_protocol_policy   = "https-only"
+          origin_read_timeout      = var.cloudfront_origin_read_timeout
+          origin_ssl_protocols     = ["TLSv1.2"]
+        }
       }
-    }
-  }
+    },
+    var.cloudfront_static_asset_serve_from_s3 ? {
+      s3-static-assets = {
+        domain_name              = module.s3_buckets["static-assets"].bucket_regional_domain_name
+        origin_access_control_id = aws_cloudfront_origin_access_control.static_assets[0].id
+      }
+    } : {}
+  )
 
   ordered_cache_behavior = local.cloudfront_ordered_cache_behavior
 
