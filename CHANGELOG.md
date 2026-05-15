@@ -1,3 +1,12 @@
+# [25.16.0](https://github.com/bigeyedata/terraform-modules/compare/v25.15.0...v25.16.0) (2026-05-15)
+
+
+### Features
+
+* optional S3 origin for static-asset CDN behaviors ([84e75a2](https://github.com/bigeyedata/terraform-modules/commit/84e75a27f6d3c1e915ef016ff7f2171c7d8580a3))
+
+
+
 # [25.15.0](https://github.com/bigeyedata/terraform-modules/compare/v25.14.0...v25.15.0) (2026-05-14)
 
 
