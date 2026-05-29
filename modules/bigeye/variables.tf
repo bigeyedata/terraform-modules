@@ -2178,6 +2178,12 @@ variable "datawatch_max_request_size" {
   type        = string
 }
 
+variable "datawatch_max_signup_companies" {
+  description = "Maximum number of companies allowed to sign up. Set to 0 for unlimited."
+  default     = 0
+  type        = number
+}
+
 variable "datawatch_temporal_large_payload_enabled" {
   description = "Controls if datawatch common services have the temporal large payload converter enabled.  It is not common to deviate from the default setting."
   type        = bool
