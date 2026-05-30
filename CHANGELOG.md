@@ -1,3 +1,12 @@
+# [25.18.0](https://github.com/bigeyedata/terraform-modules/compare/v25.17.0...v25.18.0) (2026-05-30)
+
+
+### Features
+
+* add MAX_SIGNUP_COMPANIES env var for datawatch instances ([#699](https://github.com/bigeyedata/terraform-modules/issues/699)) ([f6d136b](https://github.com/bigeyedata/terraform-modules/commit/f6d136bfb0f6b130700fe22a4879b28c056481f8))
+
+
+
 # [25.17.0](https://github.com/bigeyedata/terraform-modules/compare/v25.16.0...v25.17.0) (2026-05-15)
 
 
