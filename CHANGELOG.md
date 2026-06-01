@@ -1,3 +1,12 @@
+# [25.19.0](https://github.com/bigeyedata/terraform-modules/compare/v25.18.0...v25.19.0) (2026-06-01)
+
+
+### Features
+
+* derive mysql parameter group family from engine_version ([c296b14](https://github.com/bigeyedata/terraform-modules/commit/c296b14f1405786819faf0e24f2ee5e8e496cecd))
+
+
+
 # [25.18.0](https://github.com/bigeyedata/terraform-modules/compare/v25.17.0...v25.18.0) (2026-05-30)
 
 
