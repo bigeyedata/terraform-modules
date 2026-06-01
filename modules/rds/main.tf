@@ -9,6 +9,10 @@ terraform {
 }
 
 locals {
+  major_engine_version             = join(".", slice(split(".", var.engine_version), 0, 2))
+  replica_engine_version_effective = var.replica_engine_version != "" ? var.replica_engine_version : var.engine_version
+  replica_major_engine_version     = join(".", slice(split(".", local.replica_engine_version_effective), 0, 2))
+
   general_log_param = {
     general_log = {
       value = contains(var.enabled_logs, "general") ? 1 : 0
@@ -20,7 +24,7 @@ locals {
     }
   }
   create_option_group = length(var.options) > 0
-  option_group_name   = local.create_option_group ? var.option_group_name : "default:mysql-8-0"
+  option_group_name   = local.create_option_group ? var.option_group_name : "default:mysql-${replace(local.major_engine_version, ".", "-")}"
   parameters_object = merge(
     local.general_log_param,
     local.slow_log_param,
@@ -34,7 +38,7 @@ locals {
     }
   ]
   replica_create_option_group = length(var.replica_options) > 0
-  replica_option_group_name   = local.replica_create_option_group ? var.replica_option_group_name : "default:mysql-8-0"
+  replica_option_group_name   = local.replica_create_option_group ? var.replica_option_group_name : "default:mysql-${replace(local.replica_major_engine_version, ".", "-")}"
   replica_parameters_object = merge(
     local.general_log_param,
     local.slow_log_param,
@@ -198,9 +202,9 @@ module "this" {
   create_db_option_group = local.create_option_group
   option_group_name      = local.option_group_name
   options                = var.options
-  major_engine_version   = "8.0"
+  major_engine_version   = local.major_engine_version
 
-  family                      = "mysql8.0"
+  family                      = "mysql${local.major_engine_version}"
   create_db_parameter_group   = var.create_parameter_group
   parameter_group_name        = var.parameter_group_name
   parameter_group_description = "Bigeye RDS parameter group with recommendations"
@@ -252,9 +256,9 @@ module "replica" {
   create_db_option_group = local.replica_create_option_group
   option_group_name      = local.replica_option_group_name
   options                = var.replica_options
-  major_engine_version   = "8.0"
+  major_engine_version   = local.replica_major_engine_version
 
-  family                      = "mysql8.0"
+  family                      = "mysql${local.replica_major_engine_version}"
   create_db_parameter_group   = var.replica_create_parameter_group
   parameter_group_name        = var.replica_parameter_group_name == "" ? module.this.db_parameter_group_id : var.replica_parameter_group_name
   parameter_group_description = var.replica_create_parameter_group ? "Parameter group for ${var.name}" : ""
