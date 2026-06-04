@@ -1937,6 +1937,10 @@ variable "datawatch_rds_default_parameters" {
       value        = 1
       apply_method = "pending-reboot"
     }
+    sql_mode = {
+      value        = "ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION"
+      apply_method = "immediate"
+    }
   }
 }
 
@@ -2015,6 +2019,10 @@ variable "datawatch_rds_replica_default_parameters" {
     skip_name_resolve = {
       value        = 1
       apply_method = "pending-reboot"
+    }
+    sql_mode = {
+      value        = "ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION"
+      apply_method = "immediate"
     }
   }
 }
