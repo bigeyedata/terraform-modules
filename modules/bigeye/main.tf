@@ -2319,6 +2319,7 @@ locals {
     HIBERNATE_SEARCH_COORDINATION             = local.hibernate_search_coordination
     HIBERNATE_SEARCH_EVENT_PROCESSOR_ENABLED  = local.hibernate_search_event_processor_enabled
     HIBERNATE_SEARCH_EVENT_PROCESSOR_INTERVAL = local.hibernate_search_event_processor_interval
+    ENABLE_SEARCH_INDEXING                    = local.hibernate_search_indexing_enabled
 
     MONOCLE_ADDRESS   = "https://${module.monocle.dns_name}"
     REDIRECT_ADDRESS  = "https://${local.vanity_dns_name}"
