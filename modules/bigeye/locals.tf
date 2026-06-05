@@ -299,6 +299,7 @@ locals {
   hibernate_search_coordination             = var.hibernate_search_coordination
   hibernate_search_event_processor_enabled  = var.hibernate_search_event_processor_enabled
   hibernate_search_event_processor_interval = var.hibernate_search_event_processor_interval
+  hibernate_search_indexing_enabled         = var.hibernate_search_indexing_enabled
 
   #======================================================
   # Datadog specs

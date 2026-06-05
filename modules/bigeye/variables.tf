@@ -612,6 +612,12 @@ variable "hibernate_search_event_processor_interval" {
   default     = 1000
 }
 
+variable "hibernate_search_indexing_enabled" {
+  description = "enabled scheduled search indexing workflow"
+  type        = bool
+  default     = false
+}
+
 #======================================================
 # Application Variables - Monocle
 #======================================================
