@@ -1,3 +1,12 @@
+# [25.20.0](https://github.com/bigeyedata/terraform-modules/compare/v25.19.0...v25.20.0) (2026-06-05)
+
+
+### Features
+
+* new Bigeye environment variable to enable search indexing ([#705](https://github.com/bigeyedata/terraform-modules/issues/705)) ([04cb8ef](https://github.com/bigeyedata/terraform-modules/commit/04cb8ef8aa31831f77802712db39ec57104e3cb5))
+
+
+
 # [25.19.0](https://github.com/bigeyedata/terraform-modules/compare/v25.18.0...v25.19.0) (2026-06-01)
 
 
