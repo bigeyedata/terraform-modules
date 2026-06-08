@@ -23,8 +23,8 @@ locals {
       value = contains(var.enabled_logs, "slowquery") ? 1 : 0
     }
   }
-  create_option_group = length(var.options) > 0
-  option_group_name   = local.create_option_group ? var.option_group_name : "default:mysql-${replace(local.major_engine_version, ".", "-")}"
+  create_option_group = var.create_db_option_group != null ? var.create_db_option_group : length(var.options) > 0
+  option_group_name   = local.create_option_group ? var.option_group_name : (var.create_db_option_group == false && var.option_group_name != "" ? var.option_group_name : "default:mysql-${replace(local.major_engine_version, ".", "-")}")
   parameters_object = merge(
     local.general_log_param,
     local.slow_log_param,
@@ -37,8 +37,8 @@ locals {
       apply_method = lookup(v, "apply_method", null)
     }
   ]
-  replica_create_option_group = length(var.replica_options) > 0
-  replica_option_group_name   = local.replica_create_option_group ? var.replica_option_group_name : "default:mysql-${replace(local.replica_major_engine_version, ".", "-")}"
+  replica_create_option_group = var.replica_create_db_option_group != null ? var.replica_create_db_option_group : length(var.replica_options) > 0
+  replica_option_group_name   = local.replica_create_option_group ? var.replica_option_group_name : (var.replica_create_db_option_group == false && var.replica_option_group_name != "" ? var.replica_option_group_name : "default:mysql-${replace(local.replica_major_engine_version, ".", "-")}")
   replica_parameters_object = merge(
     local.general_log_param,
     local.slow_log_param,
@@ -168,6 +168,7 @@ module "this" {
   identifier                          = var.name
   engine                              = "mysql"
   engine_version                      = var.engine_version
+  allow_major_version_upgrade         = var.allow_major_version_upgrade
   auto_minor_version_upgrade          = false
   instance_class                      = var.instance_class
   db_name                             = var.db_name
@@ -225,6 +226,7 @@ module "replica" {
   identifier                          = "${var.name}-ro"
   engine                              = "mysql"
   engine_version                      = var.replica_engine_version != "" ? var.replica_engine_version : var.engine_version
+  allow_major_version_upgrade         = var.allow_major_version_upgrade
   auto_minor_version_upgrade          = false
   instance_class                      = var.replica_instance_class
   deletion_protection                 = var.deletion_protection
