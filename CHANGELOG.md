@@ -1,3 +1,12 @@
+# [25.21.0](https://github.com/bigeyedata/terraform-modules/compare/v25.20.0...v25.21.0) (2026-06-08)
+
+
+### Features
+
+* expose allow_major_version_upgrade and external param/option groups on rds module ([433153d](https://github.com/bigeyedata/terraform-modules/commit/433153d679dc3ae8c910220512460e7c7127ecfe))
+
+
+
 # [25.20.0](https://github.com/bigeyedata/terraform-modules/compare/v25.19.0...v25.20.0) (2026-06-05)
 
 
