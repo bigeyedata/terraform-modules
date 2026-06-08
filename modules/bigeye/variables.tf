@@ -1130,6 +1130,36 @@ variable "temporal_rds_engine_version" {
   default     = "8.0.40"
 }
 
+variable "temporal_rds_allow_major_version_upgrade" {
+  description = "Allow a major engine version upgrade on the temporal RDS when changing temporal_rds_engine_version across major versions (e.g. 8.0 -> 8.4)."
+  type        = bool
+  default     = false
+}
+
+variable "temporal_rds_create_parameter_group" {
+  description = "Whether the module creates the temporal RDS parameter group. Set false to attach an externally-managed group via temporal_rds_parameter_group_name (e.g. a Blue/Green target group)."
+  type        = bool
+  default     = true
+}
+
+variable "temporal_rds_parameter_group_name" {
+  description = "Name of an existing DB parameter group to attach to the temporal RDS. Empty string keeps the module-managed default. Used with temporal_rds_create_parameter_group = false."
+  type        = string
+  default     = ""
+}
+
+variable "temporal_rds_create_db_option_group" {
+  description = "Whether the module creates the temporal RDS option group. null derives it from whether options are set. Set false to attach an externally-managed group via temporal_rds_option_group_name (e.g. a Blue/Green target group)."
+  type        = bool
+  default     = null
+}
+
+variable "temporal_rds_option_group_name" {
+  description = "Name of an existing option group to attach to the temporal RDS. Empty string keeps the module-managed default. Used with temporal_rds_create_db_option_group = false."
+  type        = string
+  default     = ""
+}
+
 variable "temporal_rds_enable_performance_insights" {
   description = "Whether to enable performance insights. Default to true if the database type supports it"
   type        = bool
@@ -1862,6 +1892,60 @@ variable "datawatch_rds_engine_version" {
   description = "The mysql engine version"
   type        = string
   default     = "8.0.40"
+}
+
+variable "datawatch_rds_allow_major_version_upgrade" {
+  description = "Allow a major engine version upgrade on the datawatch RDS (primary and replica) when changing datawatch_rds_engine_version across major versions (e.g. 8.0 -> 8.4)."
+  type        = bool
+  default     = false
+}
+
+variable "datawatch_rds_create_parameter_group" {
+  description = "Whether the module creates the datawatch RDS parameter group. Set false to attach an externally-managed group via datawatch_rds_parameter_group_name (e.g. a Blue/Green target group)."
+  type        = bool
+  default     = true
+}
+
+variable "datawatch_rds_parameter_group_name" {
+  description = "Name of an existing DB parameter group to attach to the datawatch RDS primary. Empty string keeps the module-managed default. Used with datawatch_rds_create_parameter_group = false."
+  type        = string
+  default     = ""
+}
+
+variable "datawatch_rds_replica_create_parameter_group" {
+  description = "Whether the module creates the datawatch replica RDS parameter group. Set false to attach an externally-managed group via datawatch_rds_replica_parameter_group_name."
+  type        = bool
+  default     = true
+}
+
+variable "datawatch_rds_replica_parameter_group_name" {
+  description = "Name of an existing DB parameter group to attach to the datawatch replica. Empty string keeps the module-managed default. Used with datawatch_rds_replica_create_parameter_group = false."
+  type        = string
+  default     = ""
+}
+
+variable "datawatch_rds_create_db_option_group" {
+  description = "Whether the module creates the datawatch RDS option group. null derives it from whether options are set. Set false to attach an externally-managed group via datawatch_rds_option_group_name (e.g. a Blue/Green target group)."
+  type        = bool
+  default     = null
+}
+
+variable "datawatch_rds_option_group_name" {
+  description = "Name of an existing option group to attach to the datawatch RDS primary. Empty string keeps the module-managed default. Used with datawatch_rds_create_db_option_group = false."
+  type        = string
+  default     = ""
+}
+
+variable "datawatch_rds_replica_create_db_option_group" {
+  description = "Whether the module creates the datawatch replica option group. null derives it from whether replica options are set. Set false to attach an externally-managed group via datawatch_rds_replica_option_group_name."
+  type        = bool
+  default     = null
+}
+
+variable "datawatch_rds_replica_option_group_name" {
+  description = "Name of an existing option group to attach to the datawatch replica. Empty string keeps the module-managed default. Used with datawatch_rds_replica_create_db_option_group = false."
+  type        = string
+  default     = ""
 }
 
 variable "datawatch_rds_enable_performance_insights" {

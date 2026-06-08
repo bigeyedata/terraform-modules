@@ -1296,6 +1296,7 @@ module "temporal_rds" {
   snapshot_identifier                   = var.temporal_rds_snapshot_identifier
   vpc_id                                = local.vpc_id
   engine_version                        = var.temporal_rds_engine_version
+  allow_major_version_upgrade           = var.temporal_rds_allow_major_version_upgrade
   allocated_storage                     = var.temporal_rds_allocated_storage
   max_allocated_storage                 = var.temporal_rds_max_allocated_storage
   storage_type                          = "gp3"
@@ -1313,10 +1314,11 @@ module "temporal_rds" {
   performance_insights_retention_period = var.rds_performance_insights_retention_period
   enabled_logs                          = var.temporal_rds_enabled_logs
   enable_multi_az                       = var.redundant_infrastructure ? true : false
-  option_group_name                     = "${local.name}-temporal"
+  option_group_name                     = var.temporal_rds_option_group_name != "" ? var.temporal_rds_option_group_name : "${local.name}-temporal"
+  create_db_option_group                = var.temporal_rds_create_db_option_group
   options                               = var.temporal_rds_options
-  create_parameter_group                = true
-  parameter_group_name                  = "${local.name}-temporal"
+  create_parameter_group                = var.temporal_rds_create_parameter_group
+  parameter_group_name                  = var.temporal_rds_parameter_group_name != "" ? var.temporal_rds_parameter_group_name : "${local.name}-temporal"
   parameters                            = merge(var.temporal_rds_default_parameters, var.temporal_rds_parameters)
   tags                                  = merge(local.tags, { app = "temporal" }, var.temporal_rds_additional_tags)
   primary_additional_tags               = var.temporal_rds_primary_additional_tags
@@ -2151,8 +2153,9 @@ module "datawatch_rds" {
   ] : []
 
   # Settings
-  instance_class = var.datawatch_rds_instance_type
-  engine_version = var.datawatch_rds_engine_version
+  instance_class              = var.datawatch_rds_instance_type
+  engine_version              = var.datawatch_rds_engine_version
+  allow_major_version_upgrade = var.datawatch_rds_allow_major_version_upgrade
 
   # Storage
   allocated_storage     = var.datawatch_rds_allocated_storage
@@ -2172,10 +2175,11 @@ module "datawatch_rds" {
   enhanced_monitoring_role_arn          = var.datawatch_rds_enhanced_monitoring_role_arn
   enabled_logs                          = var.datawatch_rds_enabled_logs
 
-  option_group_name      = "${local.name}-datawatch"
+  option_group_name      = var.datawatch_rds_option_group_name != "" ? var.datawatch_rds_option_group_name : "${local.name}-datawatch"
+  create_db_option_group = var.datawatch_rds_create_db_option_group
   options                = var.datawatch_rds_options
-  create_parameter_group = true
-  parameter_group_name   = "${local.name}-datawatch"
+  create_parameter_group = var.datawatch_rds_create_parameter_group
+  parameter_group_name   = var.datawatch_rds_parameter_group_name != "" ? var.datawatch_rds_parameter_group_name : "${local.name}-datawatch"
   parameters             = merge(var.datawatch_rds_default_parameters, var.datawatch_rds_parameters)
 
   # Replica
@@ -2187,10 +2191,11 @@ module "datawatch_rds" {
   replica_performance_insights_retention_period = var.replica_rds_performance_insights_retention_period
   replica_iops                                  = var.datawatch_rds_replica_iops
 
-  replica_option_group_name      = "${local.name}-datawatch-replica"
+  replica_option_group_name      = var.datawatch_rds_replica_option_group_name != "" ? var.datawatch_rds_replica_option_group_name : "${local.name}-datawatch-replica"
+  replica_create_db_option_group = var.datawatch_rds_replica_create_db_option_group
   replica_options                = var.datawatch_replica_rds_options
-  replica_create_parameter_group = true
-  replica_parameter_group_name   = "${local.name}-datawatch-replica"
+  replica_create_parameter_group = var.datawatch_rds_replica_create_parameter_group
+  replica_parameter_group_name   = var.datawatch_rds_replica_parameter_group_name != "" ? var.datawatch_rds_replica_parameter_group_name : "${local.name}-datawatch-replica"
   replica_parameters             = merge(var.datawatch_rds_replica_default_parameters, var.datawatch_rds_replica_parameters)
 
   tags                    = merge(local.tags, { app = "datawatch" }, var.datawatch_rds_additional_tags)

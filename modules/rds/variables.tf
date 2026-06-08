@@ -73,6 +73,12 @@ variable "engine_version" {
   default     = "8.0.32"
 }
 
+variable "allow_major_version_upgrade" {
+  description = "Allow major engine version upgrades when changing engine_version across major versions (e.g. 8.0 -> 8.4). Applies to both the primary and replica."
+  type        = bool
+  default     = false
+}
+
 variable "instance_class" {
   description = "The instance class size to use"
   type        = string
@@ -146,9 +152,21 @@ variable "enabled_logs" {
 }
 
 variable "option_group_name" {
-  description = "Name for the option group"
+  description = "Name for the option group. When create_db_option_group is false, this is the name of an existing option group to attach."
   type        = string
   default     = ""
+}
+
+variable "create_db_option_group" {
+  description = "Whether to create the option group. null derives it from whether options are set (back-compatible default). Set false to attach an existing option_group_name (e.g. a Blue/Green target group)."
+  type        = bool
+  default     = null
+}
+
+variable "replica_create_db_option_group" {
+  description = "Whether to create the replica option group. null derives it from whether replica_options are set. Set false to attach an existing replica_option_group_name."
+  type        = bool
+  default     = null
 }
 
 variable "options" {
