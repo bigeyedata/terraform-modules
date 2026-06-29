@@ -45,7 +45,7 @@ locals {
   # Temporal Task Queues
   catalog_indexing_temporal_queues = ["indexing.v1", "catalog-indexing.v1"]
   root_cause_temporal_queues       = ["issue-root-cause"]
-  lineage_temporal_queues          = ["source-lineage", "metacenter-lineage"]
+  lineage_temporal_queues          = ["source-lineage", "metacenter-lineage", "lineage-csv-generation"]
   metric_run_temporal_queues       = ["trigger-batch-metric-run"]
 
   datawork_temporal_exclude_queues_str = join(",",
