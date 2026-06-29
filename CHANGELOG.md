@@ -1,3 +1,12 @@
+# [25.22.0](https://github.com/bigeyedata/terraform-modules/compare/v25.21.0...v25.22.0) (2026-06-29)
+
+
+### Features
+
+* route lineage CSV generation queue to lineagework only ([cc9a397](https://github.com/bigeyedata/terraform-modules/commit/cc9a39758c31e5ca5b2ff252fcf9d9bc87c4ec00))
+
+
+
 # [25.21.0](https://github.com/bigeyedata/terraform-modules/compare/v25.20.0...v25.21.0) (2026-06-08)
 
 
