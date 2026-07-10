@@ -60,6 +60,19 @@ resource "aws_s3_bucket_policy" "static_assets_cloudfront_read" {
   })
 }
 
+resource "aws_s3_bucket_cors_configuration" "static_assets" {
+  count = var.cloudfront_enabled && var.cloudfront_static_asset_serve_from_s3 ? 1 : 0
+
+  bucket = module.s3_buckets["static-assets"].id
+
+  cors_rule {
+    allowed_methods = ["GET", "HEAD"]
+    allowed_origins = ["*"]
+    allowed_headers = ["*"]
+    max_age_seconds = 3000
+  }
+}
+
 module "cloudfront" {
   count   = var.cloudfront_enabled ? 1 : 0
   source  = "terraform-aws-modules/cloudfront/aws"
