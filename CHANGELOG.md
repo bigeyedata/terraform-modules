@@ -1,3 +1,12 @@
+## [25.22.1](https://github.com/bigeyedata/terraform-modules/compare/v25.22.0...v25.22.1) (2026-07-10)
+
+
+### Bug Fixes
+
+* let the static-assets bucket answer CORS preflight for cross-origin asset reads ([7a9f5ba](https://github.com/bigeyedata/terraform-modules/commit/7a9f5baee386ee29a15136bd355ebbf7343a0a87))
+
+
+
 # [25.22.0](https://github.com/bigeyedata/terraform-modules/compare/v25.21.0...v25.22.0) (2026-06-29)
 
 
