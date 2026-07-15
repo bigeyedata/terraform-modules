@@ -1,3 +1,12 @@
+## [25.22.2](https://github.com/bigeyedata/terraform-modules/compare/v25.22.1...v25.22.2) (2026-07-15)
+
+
+### Bug Fixes
+
+* enable caching_sha2 cold-auth for datawatch on MySQL 8.4 ([4882658](https://github.com/bigeyedata/terraform-modules/commit/488265886909276b3da90b66f88d043c6c3ff096))
+
+
+
 ## [25.22.1](https://github.com/bigeyedata/terraform-modules/compare/v25.22.0...v25.22.1) (2026-07-10)
 
 
