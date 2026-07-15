@@ -2316,7 +2316,7 @@ locals {
     AWS_REGION                      = local.aws_region
     DEPLOY_TYPE                     = "AWS"
 
-    MYSQL_JDBC                  = "jdbc:mysql://${local.datawatch_mysql_dns_name}:3306/${local.datawatch_jdbc_database_name}?serverTimezone=UTC"
+    MYSQL_JDBC                  = "jdbc:mysql://${local.datawatch_mysql_dns_name}:3306/${local.datawatch_jdbc_database_name}?serverTimezone=UTC&allowPublicKeyRetrieval=true"
     MYSQL_USER                  = var.datawatch_rds_root_user_name
     MYSQL_MAXSIZE               = var.datawatch_mysql_maxsize
     MYSQL_TRANSACTION_ISOLATION = "read-committed"
