@@ -1,3 +1,12 @@
+# [25.23.0](https://github.com/bigeyedata/terraform-modules/compare/v25.22.2...v25.23.0) (2026-07-20)
+
+
+### Features
+
+* wire up Temporal connection settings for monocle and toretto ([#722](https://github.com/bigeyedata/terraform-modules/issues/722)) ([8cf731c](https://github.com/bigeyedata/terraform-modules/commit/8cf731c2912306a9e3455f1a38eec5b3352fc1d4))
+
+
+
 ## [25.22.2](https://github.com/bigeyedata/terraform-modules/compare/v25.22.1...v25.22.2) (2026-07-15)
 
 
