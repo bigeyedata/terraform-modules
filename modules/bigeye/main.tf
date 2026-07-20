@@ -1472,6 +1472,8 @@ module "monocle" {
       WORKERS                    = var.monocle_worker_count == 0 ? var.monocle_cpu * 2 / 1024 : 2
       TIMEOUT                    = "900"
       DATAWATCH_ADDRESS          = "https://${module.internalapi.dns_name}"
+      TEMPORAL_ADDRESS           = "${local.temporal_dns_name}:${local.temporal_lb_port}"
+      TEMPORAL_NAMESPACE         = var.temporal_namespace
     },
     local.sentry_event_level_env_variable,
     var.datadog_agent_enabled ? {
@@ -1491,8 +1493,9 @@ module "monocle" {
     local.sentry_dsn_secret_map,
     local.stitch_secrets_map,
     {
-      MQ_BROKER_PASSWORD = local.rabbitmq_user_password_secret_arn
-      ROBOT_PASSWORD     = local.robot_password_secret_arn
+      MQ_BROKER_PASSWORD  = local.rabbitmq_user_password_secret_arn
+      ROBOT_PASSWORD      = local.robot_password_secret_arn
+      ROBOT_AGENT_API_KEY = local.robot_agent_apikey_secret_arn
     },
     var.datadog_agent_enabled ? {
       DATADOG_API_KEY = var.datadog_agent_api_key_secret_arn
@@ -1627,6 +1630,8 @@ module "toretto" {
       WORKERS                    = "1"
       TIMEOUT                    = "900"
       DATAWATCH_ADDRESS          = "https://${module.internalapi.dns_name}"
+      TEMPORAL_ADDRESS           = "${local.temporal_dns_name}:${local.temporal_lb_port}"
+      TEMPORAL_NAMESPACE         = var.temporal_namespace
     },
     local.sentry_event_level_env_variable,
     var.toretto_additional_environment_vars,
@@ -1636,8 +1641,9 @@ module "toretto" {
     local.sentry_dsn_secret_map,
     local.stitch_secrets_map,
     {
-      MQ_BROKER_PASSWORD = local.rabbitmq_user_password_secret_arn
-      ROBOT_PASSWORD     = local.robot_password_secret_arn
+      MQ_BROKER_PASSWORD  = local.rabbitmq_user_password_secret_arn
+      ROBOT_PASSWORD      = local.robot_password_secret_arn
+      ROBOT_AGENT_API_KEY = local.robot_agent_apikey_secret_arn
     },
     var.datadog_agent_enabled ? { DATADOG_API_KEY = var.datadog_agent_api_key_secret_arn } : {},
     var.toretto_additional_secret_arns,
