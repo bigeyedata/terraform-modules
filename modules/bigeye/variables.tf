@@ -3113,3 +3113,19 @@ EOT
   type        = bool
   default     = false
 }
+
+variable "cpu_architecture" {
+  description = "Default CPU architecture for all Fargate services (X86_64 or ARM64). Set to ARM64 to run the fleet on Graviton (~20% cheaper)."
+  type        = string
+  default     = "X86_64"
+  validation {
+    condition     = contains(["X86_64", "ARM64"], var.cpu_architecture)
+    error_message = "cpu_architecture must be X86_64 or ARM64."
+  }
+}
+
+variable "cpu_architecture_overrides" {
+  description = "Per-service CPU architecture overrides keyed by service name (e.g. { toretto = \"ARM64\" }). Falls back to var.cpu_architecture. For phased Graviton rollout."
+  type        = map(string)
+  default     = {}
+}
