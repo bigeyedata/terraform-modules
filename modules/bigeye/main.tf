@@ -976,13 +976,14 @@ resource "aws_secretsmanager_secret_version" "adminpages_password" {
 }
 
 module "haproxy" {
-  depends_on = [aws_secretsmanager_secret_version.adminpages_password]
-  source     = "../simpleservice"
-  app        = "haproxy"
-  instance   = var.instance
-  stack      = local.name
-  name       = "${local.name}-haproxy"
-  tags       = merge(local.tags, { app = "haproxy" })
+  depends_on       = [aws_secretsmanager_secret_version.adminpages_password]
+  source           = "../simpleservice"
+  cpu_architecture = lookup(var.cpu_architecture_overrides, "haproxy", var.cpu_architecture)
+  app              = "haproxy"
+  instance         = var.instance
+  stack            = local.name
+  name             = "${local.name}-haproxy"
+  tags             = merge(local.tags, { app = "haproxy" })
 
   internet_facing               = var.internet_facing
   vpc_id                        = local.vpc_id
@@ -1129,12 +1130,13 @@ resource "aws_appautoscaling_policy" "haproxy_request_count_per_target" {
 # Web
 #======================================================
 module "web" {
-  source   = "../simpleservice"
-  app      = "web"
-  instance = var.instance
-  stack    = local.name
-  name     = "${local.name}-web"
-  tags     = merge(local.tags, { app = "web" })
+  source           = "../simpleservice"
+  cpu_architecture = lookup(var.cpu_architecture_overrides, "web", var.cpu_architecture)
+  app              = "web"
+  instance         = var.instance
+  stack            = local.name
+  name             = "${local.name}-web"
+  tags             = merge(local.tags, { app = "web" })
 
   vpc_id                        = local.vpc_id
   subnet_ids                    = local.application_subnet_ids
@@ -1397,12 +1399,13 @@ resource "aws_iam_role_policy" "monocle_ecs_exec" {
 }
 
 module "monocle" {
-  source   = "../simpleservice"
-  app      = "monocle"
-  instance = var.instance
-  stack    = local.name
-  name     = "${local.name}-monocle"
-  tags     = merge(local.tags, { app = "monocle" })
+  source           = "../simpleservice"
+  cpu_architecture = lookup(var.cpu_architecture_overrides, "monocle", var.cpu_architecture)
+  app              = "monocle"
+  instance         = var.instance
+  stack            = local.name
+  name             = "${local.name}-monocle"
+  tags             = merge(local.tags, { app = "monocle" })
 
   vpc_id                        = local.vpc_id
   subnet_ids                    = local.application_subnet_ids
@@ -1555,12 +1558,13 @@ resource "aws_appautoscaling_policy" "monocle_request_count_per_target" {
 # Toretto
 #======================================================
 module "toretto" {
-  source   = "../simpleservice"
-  app      = "toretto"
-  instance = var.instance
-  stack    = local.name
-  name     = "${local.name}-toretto"
-  tags     = merge(local.tags, { app = "toretto" })
+  source           = "../simpleservice"
+  cpu_architecture = lookup(var.cpu_architecture_overrides, "toretto", var.cpu_architecture)
+  app              = "toretto"
+  instance         = var.instance
+  stack            = local.name
+  name             = "${local.name}-toretto"
+  tags             = merge(local.tags, { app = "toretto" })
 
   vpc_id                        = local.vpc_id
   subnet_ids                    = local.application_subnet_ids
@@ -1732,12 +1736,13 @@ resource "aws_cloudwatch_metric_alarm" "toretto" {
 # Scheduler
 #======================================================
 module "scheduler" {
-  source   = "../simpleservice"
-  app      = "scheduler"
-  instance = var.instance
-  stack    = local.name
-  name     = "${local.name}-scheduler"
-  tags     = merge(local.tags, { app = "scheduler" })
+  source           = "../simpleservice"
+  cpu_architecture = lookup(var.cpu_architecture_overrides, "scheduler", var.cpu_architecture)
+  app              = "scheduler"
+  instance         = var.instance
+  stack            = local.name
+  name             = "${local.name}-scheduler"
+  tags             = merge(local.tags, { app = "scheduler" })
 
   vpc_id                        = local.vpc_id
   subnet_ids                    = local.application_subnet_ids
@@ -2388,13 +2393,14 @@ locals {
 }
 
 module "datawatch" {
-  depends_on = [aws_secretsmanager_secret_version.robot_password]
-  source     = "../simpleservice"
-  app        = "datawatch"
-  instance   = var.instance
-  stack      = local.name
-  name       = "${local.name}-datawatch"
-  tags       = merge(local.tags, { app = "datawatch" })
+  depends_on       = [aws_secretsmanager_secret_version.robot_password]
+  source           = "../simpleservice"
+  cpu_architecture = lookup(var.cpu_architecture_overrides, "datawatch", var.cpu_architecture)
+  app              = "datawatch"
+  instance         = var.instance
+  stack            = local.name
+  name             = "${local.name}-datawatch"
+  tags             = merge(local.tags, { app = "datawatch" })
 
   vpc_id                        = local.vpc_id
   subnet_ids                    = local.application_subnet_ids
@@ -2515,13 +2521,14 @@ resource "aws_appautoscaling_policy" "datawatch_request_count_per_target" {
 }
 
 module "datawork" {
-  depends_on = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
-  source     = "../simpleservice"
-  app        = "datawork"
-  instance   = var.instance
-  stack      = local.name
-  name       = "${local.name}-datawork"
-  tags       = merge(local.tags, { app = "datawork" })
+  depends_on       = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
+  source           = "../simpleservice"
+  cpu_architecture = lookup(var.cpu_architecture_overrides, "datawork", var.cpu_architecture)
+  app              = "datawork"
+  instance         = var.instance
+  stack            = local.name
+  name             = "${local.name}-datawork"
+  tags             = merge(local.tags, { app = "datawork" })
 
   vpc_id                        = local.vpc_id
   subnet_ids                    = local.application_subnet_ids
@@ -2626,13 +2633,14 @@ module "datawork" {
 }
 
 module "backfillwork" {
-  depends_on = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
-  source     = "../simpleservice"
-  app        = "backfillwork"
-  instance   = var.instance
-  stack      = local.name
-  name       = "${local.name}-backfillwork"
-  tags       = merge(local.tags, { app = "backfillwork" })
+  depends_on       = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
+  source           = "../simpleservice"
+  cpu_architecture = lookup(var.cpu_architecture_overrides, "backfillwork", var.cpu_architecture)
+  app              = "backfillwork"
+  instance         = var.instance
+  stack            = local.name
+  name             = "${local.name}-backfillwork"
+  tags             = merge(local.tags, { app = "backfillwork" })
 
   vpc_id                        = local.vpc_id
   subnet_ids                    = local.application_subnet_ids
@@ -2705,13 +2713,14 @@ module "backfillwork" {
 }
 
 module "indexwork" {
-  depends_on = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
-  source     = "../simpleservice"
-  app        = "indexwork"
-  instance   = var.instance
-  stack      = local.name
-  name       = "${local.name}-indexwork"
-  tags       = merge(local.tags, { app = "indexwork" })
+  depends_on       = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
+  source           = "../simpleservice"
+  cpu_architecture = lookup(var.cpu_architecture_overrides, "indexwork", var.cpu_architecture)
+  app              = "indexwork"
+  instance         = var.instance
+  stack            = local.name
+  name             = "${local.name}-indexwork"
+  tags             = merge(local.tags, { app = "indexwork" })
 
   vpc_id                        = local.vpc_id
   subnet_ids                    = local.application_subnet_ids
@@ -2789,13 +2798,14 @@ module "indexwork" {
 }
 
 module "lineagework" {
-  depends_on = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
-  source     = "../simpleservice"
-  app        = "lineagework"
-  instance   = var.instance
-  stack      = local.name
-  name       = "${local.name}-lineagework"
-  tags       = merge(local.tags, { app = "lineagework" })
+  depends_on       = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
+  source           = "../simpleservice"
+  cpu_architecture = lookup(var.cpu_architecture_overrides, "lineagework", var.cpu_architecture)
+  app              = "lineagework"
+  instance         = var.instance
+  stack            = local.name
+  name             = "${local.name}-lineagework"
+  tags             = merge(local.tags, { app = "lineagework" })
 
   vpc_id                        = local.vpc_id
   subnet_ids                    = local.application_subnet_ids
@@ -2879,13 +2889,14 @@ module "lineagework" {
 }
 
 module "metricwork" {
-  depends_on = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
-  source     = "../simpleservice"
-  app        = "metricwork"
-  instance   = var.instance
-  stack      = local.name
-  name       = "${local.name}-metricwork"
-  tags       = merge(local.tags, { app = "metricwork" })
+  depends_on       = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
+  source           = "../simpleservice"
+  cpu_architecture = lookup(var.cpu_architecture_overrides, "metricwork", var.cpu_architecture)
+  app              = "metricwork"
+  instance         = var.instance
+  stack            = local.name
+  name             = "${local.name}-metricwork"
+  tags             = merge(local.tags, { app = "metricwork" })
 
   vpc_id                        = local.vpc_id
   subnet_ids                    = local.application_subnet_ids
@@ -2966,13 +2977,14 @@ module "metricwork" {
 }
 
 module "rootcause" {
-  depends_on = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
-  source     = "../simpleservice"
-  app        = "rootcause"
-  instance   = var.instance
-  stack      = local.name
-  name       = "${local.name}-rootcause"
-  tags       = merge(local.tags, { app = "rootcause" })
+  depends_on       = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
+  source           = "../simpleservice"
+  cpu_architecture = lookup(var.cpu_architecture_overrides, "rootcause", var.cpu_architecture)
+  app              = "rootcause"
+  instance         = var.instance
+  stack            = local.name
+  name             = "${local.name}-rootcause"
+  tags             = merge(local.tags, { app = "rootcause" })
 
   vpc_id                        = local.vpc_id
   subnet_ids                    = local.application_subnet_ids
@@ -3048,13 +3060,14 @@ module "rootcause" {
 }
 
 module "internalapi" {
-  depends_on = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
-  source     = "../simpleservice"
-  app        = "internalapi"
-  instance   = var.instance
-  stack      = local.name
-  name       = "${local.name}-internalapi"
-  tags       = merge(local.tags, { app = "internalapi" })
+  depends_on       = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
+  source           = "../simpleservice"
+  cpu_architecture = lookup(var.cpu_architecture_overrides, "internalapi", var.cpu_architecture)
+  app              = "internalapi"
+  instance         = var.instance
+  stack            = local.name
+  name             = "${local.name}-internalapi"
+  tags             = merge(local.tags, { app = "internalapi" })
 
   vpc_id                        = local.vpc_id
   subnet_ids                    = local.application_subnet_ids
@@ -3170,13 +3183,14 @@ resource "aws_appautoscaling_policy" "internalapi_request_count_per_target" {
 }
 
 module "lineageapi" {
-  depends_on = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
-  source     = "../simpleservice"
-  app        = "lineageapi"
-  instance   = var.instance
-  stack      = local.name
-  name       = "${local.name}-lineageapi"
-  tags       = merge(local.tags, { app = "lineageapi" })
+  depends_on       = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
+  source           = "../simpleservice"
+  cpu_architecture = lookup(var.cpu_architecture_overrides, "lineageapi", var.cpu_architecture)
+  app              = "lineageapi"
+  instance         = var.instance
+  stack            = local.name
+  name             = "${local.name}-lineageapi"
+  tags             = merge(local.tags, { app = "lineageapi" })
 
   vpc_id                        = local.vpc_id
   subnet_ids                    = local.application_subnet_ids
