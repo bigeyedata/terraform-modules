@@ -1,3 +1,12 @@
+# [25.24.0](https://github.com/bigeyedata/terraform-modules/compare/v25.23.0...v25.24.0) (2026-07-28)
+
+
+### Features
+
+* add cpu_architecture (ARM64/Graviton) support to simpleservice ([a26da76](https://github.com/bigeyedata/terraform-modules/commit/a26da76e7594b3f4b6792c4716d3b34c8809af35))
+
+
+
 # [25.23.0](https://github.com/bigeyedata/terraform-modules/compare/v25.22.2...v25.23.0) (2026-07-20)
 
 
