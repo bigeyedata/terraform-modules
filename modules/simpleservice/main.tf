@@ -122,6 +122,10 @@ resource "aws_ecs_task_definition" "this" {
   execution_role_arn       = var.execution_role_arn
   task_role_arn            = var.task_role_arn
   container_definitions    = jsonencode(local.container_definitions)
+  runtime_platform {
+    cpu_architecture        = var.cpu_architecture
+    operating_system_family = "LINUX"
+  }
   dynamic "volume" {
     for_each = local.efs_volume_enabled ? ["this"] : []
     content {

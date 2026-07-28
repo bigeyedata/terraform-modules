@@ -86,6 +86,16 @@ variable "memory" {
   type        = number
 }
 
+variable "cpu_architecture" {
+  description = "CPU architecture for the Fargate task. Set to ARM64 to run on Graviton (~20% cheaper). Defaults to X86_64."
+  type        = string
+  default     = "X86_64"
+  validation {
+    condition     = contains(["X86_64", "ARM64"], var.cpu_architecture)
+    error_message = "cpu_architecture must be X86_64 or ARM64."
+  }
+}
+
 variable "stop_timeout" {
   description = "Duration in seconds to wait before container is killed if it doesn't exit on its own. Max is 120"
   type        = number
