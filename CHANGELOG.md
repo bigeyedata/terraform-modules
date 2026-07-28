@@ -1,3 +1,12 @@
+# [25.25.0](https://github.com/bigeyedata/terraform-modules/compare/v25.24.0...v25.25.0) (2026-07-28)
+
+
+### Features
+
+* thread cpu_architecture through bigeye services for Graviton ([8f608ce](https://github.com/bigeyedata/terraform-modules/commit/8f608ce24149f38d299fa933597388e2bfc53052))
+
+
+
 # [25.24.0](https://github.com/bigeyedata/terraform-modules/compare/v25.23.0...v25.24.0) (2026-07-28)
 
 
