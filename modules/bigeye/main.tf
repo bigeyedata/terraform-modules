@@ -1377,6 +1377,28 @@ resource "aws_iam_role_policy" "monocle" {
   })
 }
 
+resource "aws_iam_role_policy" "monocle_secrets" {
+  count = local.create_monocle_role ? 1 : 0
+  role  = aws_iam_role.monocle[0].id
+  name  = "AllowReadAgentSecrets"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "AllowReadSecrets"
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:DescribeSecret",
+          "secretsmanager:GetSecretValue"
+        ]
+        Resource = [
+          "arn:${data.aws_partition.current.partition}:secretsmanager:${local.aws_region}:${local.aws_account_id}:secret:bigeye/${local.name}/agent/*"
+        ]
+      }
+    ]
+  })
+}
+
 resource "aws_iam_role_policy" "monocle_ecs_exec" {
   count = local.create_monocle_role && (var.monocle_enable_ecs_exec || var.toretto_enable_ecs_exec) ? 1 : 0
   role  = aws_iam_role.monocle[0].id
