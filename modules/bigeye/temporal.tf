@@ -376,6 +376,7 @@ locals {
       TEMPORAL_FRONTEND_RPS                                = tostring(local.temporal_frontend_rps)
       TEMPORAL_FRONTEND_NAMESPACE_RPS                      = tostring(local.temporal_frontend_namespace_rps)
       TEMPORAL_FRONTEND_BURST_RATIO                        = tostring(local.temporal_frontend_burst_ratio)
+      TEMPORAL_FRONTEND_NAMESPACE_VISIBILITY_RPS           = tostring(local.temporal_frontend_namespace_visibility_rps)
       TEMPORAL_FRONTEND_PERSISTENCE_MAX_QPS                = local.temporal_frontend_persistence_max_qps
       TEMPORAL_HISTORY_PERSISTENCE_MAX_QPS                 = local.temporal_history_persistence_max_qps
       TEMPORAL_MATCHING_RPS                                = local.temporal_matching_rps

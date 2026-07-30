@@ -288,6 +288,7 @@ locals {
   temporal_frontend_rps                                = var.temporal_frontend_rps
   temporal_frontend_namespace_rps                      = var.temporal_frontend_namespace_rps
   temporal_frontend_burst_ratio                        = var.temporal_frontend_burst_ratio
+  temporal_frontend_namespace_visibility_rps           = var.temporal_frontend_namespace_visibility_rps
   temporal_frontend_persistence_max_qps                = var.temporal_frontend_persistence_max_qps
   temporal_history_persistence_max_qps                 = var.temporal_history_persistence_max_qps
   temporal_matching_rps                                = var.temporal_matching_rps

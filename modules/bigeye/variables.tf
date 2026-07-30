@@ -1504,6 +1504,12 @@ variable "temporal_frontend_namespace_rps" {
   default     = 2400
 }
 
+variable "temporal_frontend_namespace_visibility_rps" {
+  description = "FrontendMaxNamespaceVisibilityRPSPerInstance is namespace rate limit per second for visibility APIs. This config is EXPERIMENTAL and may be changed or removed in a later release."
+  type        = number
+  default     = 10
+}
+
 variable "temporal_frontend_burst_ratio" {
   description = "FrontendMaxNamespaceBurstRatioPerInstance is workflow namespace burst limit as a ratio of namespace RPS. The RPS used here will be the effective RPS from global and per-instance limits. The value must be 1 or higher."
   type        = number
