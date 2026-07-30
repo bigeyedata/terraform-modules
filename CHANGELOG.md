@@ -1,3 +1,12 @@
+## [25.25.1](https://github.com/bigeyedata/terraform-modules/compare/v25.25.0...v25.25.1) (2026-07-30)
+
+
+### Bug Fixes
+
+* grant monocle/toretto task role read access to agent secrets ([#730](https://github.com/bigeyedata/terraform-modules/issues/730)) ([c3267c7](https://github.com/bigeyedata/terraform-modules/commit/c3267c7598f4f4e3e8aa12ca95fc5c56d02bc5ff))
+
+
+
 # [25.25.0](https://github.com/bigeyedata/terraform-modules/compare/v25.24.0...v25.25.0) (2026-07-28)
 
 
