@@ -1,3 +1,12 @@
+# [25.26.0](https://github.com/bigeyedata/terraform-modules/compare/v25.25.1...v25.26.0) (2026-07-30)
+
+
+### Features
+
+* new Temporal environment variable ([#733](https://github.com/bigeyedata/terraform-modules/issues/733)) ([f38da6c](https://github.com/bigeyedata/terraform-modules/commit/f38da6c6592372fedef64ba5f8a9df8f7930fd39))
+
+
+
 ## [25.25.1](https://github.com/bigeyedata/terraform-modules/compare/v25.25.0...v25.25.1) (2026-07-30)
 
 
