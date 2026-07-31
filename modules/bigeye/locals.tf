@@ -116,6 +116,8 @@ locals {
   robot_password_secret_arn              = local.create_robot_password_secret ? aws_secretsmanager_secret.robot_password[0].arn : var.datawatch_robot_password_secret_arn
   create_robot_agent_apikey_secret       = var.datawatch_robot_agent_api_key_secret_arn == ""
   robot_agent_apikey_secret_arn          = local.create_robot_agent_apikey_secret ? aws_secretsmanager_secret.robot_agent_api_key[0].arn : var.datawatch_robot_agent_api_key_secret_arn
+  create_remember_me_cipher_key_secret   = var.datawatch_remember_me_cipher_key_secret_arn == ""
+  remember_me_cipher_key_secret_arn      = local.create_remember_me_cipher_key_secret ? aws_secretsmanager_secret.remember_me_cipher_key[0].arn : var.datawatch_remember_me_cipher_key_secret_arn
   create_datawatch_encryption_key_secret = var.datawatch_encryption_key_arn == ""
   datawatch_encryption_key_secret_arn    = local.create_datawatch_encryption_key_secret ? aws_secretsmanager_secret.datawatch_encryption_key[0].arn : var.datawatch_encryption_key_arn
   datawatch_encryption_key_secret_name   = local.create_datawatch_encryption_key_secret ? aws_secretsmanager_secret.datawatch_encryption_key[0].name : data.aws_secretsmanager_secret.datawatch_encryption_key[0].name
@@ -273,6 +275,7 @@ locals {
       MYSQL_PASSWORD         = local.datawatch_rds_password_secret_arn
       ROBOT_PASSWORD         = local.robot_password_secret_arn
       ROBOT_AGENT_API_KEY    = local.robot_agent_apikey_secret_arn
+      REMEMBER_ME_CIPHER_KEY = local.remember_me_cipher_key_secret_arn
       BASE_SALT              = local.base_datawatch_salt_secret_arn
       ELASTICSEARCH_PASSWORD = local.create_temporal_opensearch_password_secret ? aws_secretsmanager_secret_version.temporal_opensearch_password[0].arn : data.aws_secretsmanager_secret_version.byo_temporal_opensearch_password[0].arn
     },

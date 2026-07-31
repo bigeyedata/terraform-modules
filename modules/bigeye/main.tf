@@ -2257,6 +2257,23 @@ resource "aws_secretsmanager_secret_version" "robot_password" {
   version_stages = ["AWSCURRENT"]
 }
 
+resource "random_id" "remember_me_cipher_key" {
+  count       = local.create_remember_me_cipher_key_secret ? 1 : 0
+  byte_length = 16
+}
+resource "aws_secretsmanager_secret" "remember_me_cipher_key" {
+  count                   = local.create_remember_me_cipher_key_secret ? 1 : 0
+  name                    = format("bigeye/%s/datawatch/remember-me-cipher-key", local.name)
+  recovery_window_in_days = local.secret_retention_days
+  tags                    = local.tags
+}
+resource "aws_secretsmanager_secret_version" "remember_me_cipher_key" {
+  count          = local.create_remember_me_cipher_key_secret ? 1 : 0
+  secret_id      = aws_secretsmanager_secret.remember_me_cipher_key[0].id
+  secret_string  = random_id.remember_me_cipher_key[0].b64_std
+  version_stages = ["AWSCURRENT"]
+}
+
 resource "random_password" "robot_agent_api_key" {
   count   = local.create_robot_agent_apikey_secret ? 1 : 0
   length  = 40
@@ -2415,7 +2432,7 @@ locals {
 }
 
 module "datawatch" {
-  depends_on       = [aws_secretsmanager_secret_version.robot_password]
+  depends_on       = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.remember_me_cipher_key]
   source           = "../simpleservice"
   cpu_architecture = lookup(var.cpu_architecture_overrides, "datawatch", var.cpu_architecture)
   app              = "datawatch"
@@ -2543,7 +2560,7 @@ resource "aws_appautoscaling_policy" "datawatch_request_count_per_target" {
 }
 
 module "datawork" {
-  depends_on       = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
+  depends_on       = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key, aws_secretsmanager_secret_version.remember_me_cipher_key]
   source           = "../simpleservice"
   cpu_architecture = lookup(var.cpu_architecture_overrides, "datawork", var.cpu_architecture)
   app              = "datawork"
@@ -2655,7 +2672,7 @@ module "datawork" {
 }
 
 module "backfillwork" {
-  depends_on       = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
+  depends_on       = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key, aws_secretsmanager_secret_version.remember_me_cipher_key]
   source           = "../simpleservice"
   cpu_architecture = lookup(var.cpu_architecture_overrides, "backfillwork", var.cpu_architecture)
   app              = "backfillwork"
@@ -2735,7 +2752,7 @@ module "backfillwork" {
 }
 
 module "indexwork" {
-  depends_on       = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
+  depends_on       = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key, aws_secretsmanager_secret_version.remember_me_cipher_key]
   source           = "../simpleservice"
   cpu_architecture = lookup(var.cpu_architecture_overrides, "indexwork", var.cpu_architecture)
   app              = "indexwork"
@@ -2820,7 +2837,7 @@ module "indexwork" {
 }
 
 module "lineagework" {
-  depends_on       = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
+  depends_on       = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key, aws_secretsmanager_secret_version.remember_me_cipher_key]
   source           = "../simpleservice"
   cpu_architecture = lookup(var.cpu_architecture_overrides, "lineagework", var.cpu_architecture)
   app              = "lineagework"
@@ -2911,7 +2928,7 @@ module "lineagework" {
 }
 
 module "metricwork" {
-  depends_on       = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
+  depends_on       = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key, aws_secretsmanager_secret_version.remember_me_cipher_key]
   source           = "../simpleservice"
   cpu_architecture = lookup(var.cpu_architecture_overrides, "metricwork", var.cpu_architecture)
   app              = "metricwork"
@@ -2999,7 +3016,7 @@ module "metricwork" {
 }
 
 module "rootcause" {
-  depends_on       = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
+  depends_on       = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key, aws_secretsmanager_secret_version.remember_me_cipher_key]
   source           = "../simpleservice"
   cpu_architecture = lookup(var.cpu_architecture_overrides, "rootcause", var.cpu_architecture)
   app              = "rootcause"
@@ -3082,7 +3099,7 @@ module "rootcause" {
 }
 
 module "internalapi" {
-  depends_on       = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
+  depends_on       = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key, aws_secretsmanager_secret_version.remember_me_cipher_key]
   source           = "../simpleservice"
   cpu_architecture = lookup(var.cpu_architecture_overrides, "internalapi", var.cpu_architecture)
   app              = "internalapi"
@@ -3205,7 +3222,7 @@ resource "aws_appautoscaling_policy" "internalapi_request_count_per_target" {
 }
 
 module "lineageapi" {
-  depends_on       = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key]
+  depends_on       = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key, aws_secretsmanager_secret_version.remember_me_cipher_key]
   source           = "../simpleservice"
   cpu_architecture = lookup(var.cpu_architecture_overrides, "lineageapi", var.cpu_architecture)
   app              = "lineageapi"

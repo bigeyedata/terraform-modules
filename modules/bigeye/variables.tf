@@ -1810,6 +1810,12 @@ variable "datawatch_robot_agent_api_key_secret_arn" {
   default     = ""
 }
 
+variable "datawatch_remember_me_cipher_key_secret_arn" {
+  description = "ARN for the secretsmanager secret holding the Shiro remember-me cipher key. Must be a base64-encoded 128-bit (16 byte) value. One will be created if not provided"
+  type        = string
+  default     = ""
+}
+
 variable "datawatch_base_salt_secret_arn" {
   description = "ARN for secretsmanager secret holding the base salt value. This will be used for securely storing sensitive information such as connection info. One will be created if not provided."
   type        = string
