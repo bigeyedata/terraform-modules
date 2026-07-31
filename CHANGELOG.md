@@ -1,3 +1,12 @@
+# [25.27.0](https://github.com/bigeyedata/terraform-modules/compare/v25.26.0...v25.27.0) (2026-07-31)
+
+
+### Features
+
+* add REMEMBER_ME_CIPHER_KEY to datawatch envs ([#735](https://github.com/bigeyedata/terraform-modules/issues/735)) ([fa29a7d](https://github.com/bigeyedata/terraform-modules/commit/fa29a7df55870f259600f9a96d2be3657e349294))
+
+
+
 # [25.26.0](https://github.com/bigeyedata/terraform-modules/compare/v25.25.1...v25.26.0) (2026-07-30)
 
 
