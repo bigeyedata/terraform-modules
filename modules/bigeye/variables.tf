@@ -1816,6 +1816,12 @@ variable "datawatch_remember_me_cipher_key_secret_arn" {
   default     = ""
 }
 
+variable "datawatch_remember_me_old_cipher_key_secret_arn" {
+  description = "ARN for the secretsmanager secret holding the previous Shiro remember-me cipher key, used only as a decrypt fallback while rotating REMEMBER_ME_CIPHER_KEY. Leave empty (default) when not rotating -- REMEMBER_ME_OLD_CIPHER_KEY will not be injected. Unlike the other secrets here, none is auto-created since its value must be operator-controlled during rotation."
+  type        = string
+  default     = ""
+}
+
 variable "datawatch_base_salt_secret_arn" {
   description = "ARN for secretsmanager secret holding the base salt value. This will be used for securely storing sensitive information such as connection info. One will be created if not provided."
   type        = string

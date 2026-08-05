@@ -262,6 +262,10 @@ locals {
     MC_PASSWORD = var.datawatch_lineageplus_password_secret_arn
   } : {}
 
+  remember_me_old_cipher_key_secrets_map = var.datawatch_remember_me_old_cipher_key_secret_arn != "" ? {
+    REMEMBER_ME_OLD_CIPHER_KEY = var.datawatch_remember_me_old_cipher_key_secret_arn
+  } : {}
+
   datawatch_secret_arns = merge(
     local.auth0_secrets_map,
     local.slack_secrets_map,
@@ -269,6 +273,7 @@ locals {
     local.sentry_dsn_secret_map,
     local.byomailserver_smtp_password_secrets_map,
     local.datawatch_lineageplus_secrets_map,
+    local.remember_me_old_cipher_key_secrets_map,
     {
       REDIS_PRIMARY_PASSWORD = local.redis_auth_token_secret_arn
       MQ_BROKER_PASSWORD     = local.rabbitmq_user_password_secret_arn
