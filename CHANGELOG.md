@@ -1,3 +1,12 @@
+# [25.28.0](https://github.com/bigeyedata/terraform-modules/compare/v25.27.0...v25.28.0) (2026-08-10)
+
+
+### Features
+
+* add REMEMBER_ME_OLD_CIPHER_KEY for cipher key rotation ([#739](https://github.com/bigeyedata/terraform-modules/issues/739)) ([7637fe2](https://github.com/bigeyedata/terraform-modules/commit/7637fe2c1b415d94fb4f904bbdd599dbc61fe19b))
+
+
+
 # [25.27.0](https://github.com/bigeyedata/terraform-modules/compare/v25.26.0...v25.27.0) (2026-07-31)
 
 
