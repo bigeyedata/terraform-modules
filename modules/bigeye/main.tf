@@ -221,11 +221,6 @@ data "aws_vpc" "this" {
     }
 
     postcondition {
-      condition     = var.create_security_groups || length(var.rootcause_lb_extra_security_group_ids) > 0
-      error_message = "If create_security_groups is false, you must provide a security group for the rootcause lb using rootcause_lb_extra_security_group_ids (ports 80/443)"
-    }
-
-    postcondition {
       condition     = var.create_security_groups || length(var.internalapi_lb_extra_security_group_ids) > 0
       error_message = "If create_security_groups is false, you must provide a security group for the internalapi lb using internalapi_lb_extra_security_group_ids (ports 80/443)"
     }
@@ -298,11 +293,6 @@ data "aws_vpc" "this" {
     postcondition {
       condition     = var.create_security_groups || length(var.metricwork_extra_security_group_ids) > 0
       error_message = "If create_security_groups is false, you must provide a security group for the metricwork ECS tasks using metricwork_extra_security_group_ids (port ${var.metricwork_port})"
-    }
-
-    postcondition {
-      condition     = var.create_security_groups || length(var.rootcause_extra_security_group_ids) > 0
-      error_message = "If create_security_groups is false, you must provide a security group for the rootcause ECS tasks using rootcause_extra_security_group_ids (port ${var.rootcause_port})"
     }
 
     postcondition {
@@ -666,7 +656,6 @@ module "bigeye_admin" {
   indexwork_domain_name    = module.indexwork.dns_name
   lineagework_domain_name  = module.lineagework.dns_name
   metricwork_domain_name   = module.metricwork.dns_name
-  rootcause_domain_name    = module.rootcause.dns_name
   internalapi_domain_name  = module.internalapi.dns_name
   lineageapi_domain_name   = module.lineageapi.dns_name
   scheduler_domain_name    = module.scheduler.dns_name
@@ -683,7 +672,6 @@ module "bigeye_admin" {
   indexwork_resource_name    = "${local.name}-indexwork"
   lineagework_resource_name  = "${local.name}-lineagework"
   metricwork_resource_name   = "${local.name}-metricwork"
-  rootcause_resource_name    = "${local.name}-rootcause"
   internalapi_resource_name  = "${local.name}-internalapi"
   lineageapi_resource_name   = "${local.name}-lineageapi"
   scheduler_resource_name    = "${local.name}-scheduler"
@@ -1998,7 +1986,7 @@ resource "aws_iam_role_policy" "datawatch_secrets" {
 }
 
 resource "aws_iam_role_policy" "datawatch_ecs_exec" {
-  count = local.create_datawatch_role && (var.datawatch_enable_ecs_exec || var.backfillwork_enable_ecs_exec || var.datawork_enable_ecs_exec || var.indexwork_enable_ecs_exec || var.lineagework_enable_ecs_exec || var.metricwork_enable_ecs_exec || var.rootcause_enable_ecs_exec || var.internalapi_enable_ecs_exec || var.lineageapi_enable_ecs_exec) ? 1 : 0
+  count = local.create_datawatch_role && (var.datawatch_enable_ecs_exec || var.backfillwork_enable_ecs_exec || var.datawork_enable_ecs_exec || var.indexwork_enable_ecs_exec || var.lineagework_enable_ecs_exec || var.metricwork_enable_ecs_exec || var.internalapi_enable_ecs_exec || var.lineageapi_enable_ecs_exec) ? 1 : 0
   role  = aws_iam_role.datawatch[0].id
   name  = "AllowECSExec"
   policy = jsonencode({
@@ -2114,7 +2102,6 @@ module "redis" {
     module.internalapi.security_group_id,
     module.indexwork.security_group_id,
     module.backfillwork.security_group_id,
-    module.rootcause.security_group_id,
     module.lineageapi.security_group_id,
   ] : []
   auth_token               = local.create_redis_auth_token_secret ? aws_secretsmanager_secret_version.redis_auth_token[0].secret_string : data.aws_secretsmanager_secret_version.byo_redis_auth_token[0].secret_string
@@ -2181,7 +2168,6 @@ module "datawatch_rds" {
     module.internalapi.security_group_id,
     module.indexwork.security_group_id,
     module.backfillwork.security_group_id,
-    module.rootcause.security_group_id,
     module.lineageapi.security_group_id,
   ] : []
 
@@ -2651,6 +2637,8 @@ module "datawork" {
       ISSUE_AI_OVERVIEW_ACT_EXEC_SIZE    = var.temporal_client_issue_ai_overview_act_exec_size
       ISSUE_NOTIFY_WF_EXEC_SIZE          = var.temporal_client_issue_notify_wf_exec_size
       ISSUE_NOTIFY_ACT_EXEC_SIZE         = var.temporal_client_issue_notify_act_exec_size
+      ISSUE_ROOT_CAUSE_WF_EXEC_SIZE      = var.temporal_client_issue_root_cause_wf_exec_size
+      ISSUE_ROOT_CAUSE_ACT_EXEC_SIZE     = var.temporal_client_issue_root_cause_act_exec_size
       ISSUE_UPDATE_WF_EXEC_SIZE          = var.temporal_client_issue_update_wf_exec_size
       ISSUE_UPDATE_ACT_EXEC_SIZE         = var.temporal_client_issue_update_act_exec_size
       RECONCILIATION_WF_EXEC_SIZE        = var.temporal_client_reconciliation_wf_exec_size
@@ -3013,89 +3001,6 @@ module "metricwork" {
   create_dns_records = var.create_dns_records
   route53_zone_id    = data.aws_route53_zone.this[0].zone_id
   dns_name           = "${local.base_dns_alias}-metricwork.${var.top_level_dns_name}"
-}
-
-module "rootcause" {
-  depends_on       = [aws_secretsmanager_secret_version.robot_password, aws_secretsmanager_secret_version.robot_agent_api_key, aws_secretsmanager_secret_version.remember_me_cipher_key]
-  source           = "../simpleservice"
-  cpu_architecture = lookup(var.cpu_architecture_overrides, "rootcause", var.cpu_architecture)
-  app              = "rootcause"
-  instance         = var.instance
-  stack            = local.name
-  name             = "${local.name}-rootcause"
-  tags             = merge(local.tags, { app = "rootcause" })
-
-  vpc_id                        = local.vpc_id
-  subnet_ids                    = local.application_subnet_ids
-  create_security_groups        = var.create_security_groups
-  task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
-  additional_security_group_ids = concat(local.datawatch_additional_security_groups, var.rootcause_extra_security_group_ids)
-  traffic_port                  = var.rootcause_port
-  ecs_cluster_id                = aws_ecs_cluster.this.id
-  enable_execute_command        = var.rootcause_enable_ecs_exec
-
-  # Load balancer
-  centralized_lb_arn                     = aws_lb.internal_alb.arn
-  centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
-  centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
-  healthcheck_path                       = "/health"
-  healthcheck_interval                   = 90
-  lb_deregistration_delay                = 30
-
-  # Task settings
-  desired_count             = var.rootcause_desired_count
-  spot_instance_config      = var.spot_instance_config
-  cpu                       = var.rootcause_cpu
-  memory                    = var.rootcause_memory
-  execution_role_arn        = local.ecs_role_arn
-  task_role_arn             = local.datawatch_role_arn
-  image_registry            = local.image_registry
-  image_repository          = format("%s%s", "datawatch", var.image_repository_suffix)
-  image_tag                 = local.rootcause_image_tag
-  cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
-  stop_timeout              = 120
-  efs_volume_id             = contains(var.efs_volume_enabled_services, "rootcause") ? aws_efs_file_system.this[0].id : ""
-  efs_access_point_id       = contains(var.efs_volume_enabled_services, "rootcause") ? aws_efs_access_point.this["rootcause"].id : ""
-  efs_mount_point           = var.efs_mount_point
-
-  # Datadog
-  datadog_agent_enabled            = var.datadog_agent_enabled
-  datadog_agent_image              = var.datadog_agent_image
-  datadog_agent_cpu                = var.datadog_agent_cpu
-  datadog_agent_memory             = var.datadog_agent_memory
-  datadog_agent_api_key_secret_arn = var.datadog_agent_api_key_secret_arn
-
-  # aws firelens
-  awsfirelens_cpu     = var.awsfirelens_cpu
-  awsfirelens_memory  = var.awsfirelens_memory
-  awsfirelens_enabled = var.awsfirelens_enabled
-  awsfirelens_host    = var.awsfirelens_host
-  awsfirelens_image   = var.awsfirelens_image
-  awsfirelens_uri     = var.awsfirelens_uri
-
-  environment_variables = merge(
-    local.datawatch_dd_env_vars,
-    local.datawatch_common_env_vars,
-    {
-      APP                            = "rootcause"
-      DATAWATCH_ADDRESS              = "http://localhost:${var.rootcause_port}"
-      WORKERS_ENABLED                = "true"
-      MAX_RAM_PERCENTAGE             = var.rootcause_jvm_max_ram_pct
-      METRIC_RUN_WORKERS             = "0"
-      INCLUDE_QUEUES                 = local.rootcause_temporal_include_queues_str
-      MQ_WORKERS_ENABLED             = "false"
-      HEAP_DUMP_PATH                 = contains(var.efs_volume_enabled_services, "rootcause") ? var.efs_mount_point : ""
-      ISSUE_ROOT_CAUSE_WF_EXEC_SIZE  = var.temporal_client_issue_root_cause_wf_exec_size
-      ISSUE_ROOT_CAUSE_ACT_EXEC_SIZE = var.temporal_client_issue_root_cause_act_exec_size
-    },
-    var.rootcause_additional_environment_vars,
-  )
-
-  secret_arns = local.datawatch_secret_arns
-
-  create_dns_records = var.create_dns_records
-  route53_zone_id    = data.aws_route53_zone.this[0].zone_id
-  dns_name           = "${local.base_dns_alias}-rootcause.${var.top_level_dns_name}"
 }
 
 module "internalapi" {

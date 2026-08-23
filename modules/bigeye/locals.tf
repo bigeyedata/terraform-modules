@@ -44,14 +44,12 @@ locals {
 
   # Temporal Task Queues
   catalog_indexing_temporal_queues = ["indexing.v1", "catalog-indexing.v1"]
-  root_cause_temporal_queues       = ["issue-root-cause"]
   lineage_temporal_queues          = ["source-lineage", "metacenter-lineage", "lineage-csv-generation"]
   metric_run_temporal_queues       = ["trigger-batch-metric-run"]
 
   datawork_temporal_exclude_queues_str = join(",",
     concat(
       local.catalog_indexing_temporal_queues,
-      local.root_cause_temporal_queues,
       local.lineage_temporal_queues,
       local.metric_run_temporal_queues
     )
@@ -59,7 +57,6 @@ locals {
   indexwork_temporal_include_queues_str   = join(",", local.catalog_indexing_temporal_queues)
   lineagework_temporal_include_queues_str = join(",", local.lineage_temporal_queues)
   metricwork_temporal_include_queues_str  = join(",", local.metric_run_temporal_queues)
-  rootcause_temporal_include_queues_str   = join(",", local.root_cause_temporal_queues)
 
   # Rabbit MQ
   create_rabbitmq               = var.byo_rabbitmq_endpoint == ""
@@ -224,7 +221,6 @@ locals {
   indexwork_image_tag    = coalesce(var.indexwork_image_tag, var.image_tag)
   lineagework_image_tag  = coalesce(var.lineagework_image_tag, var.image_tag)
   metricwork_image_tag   = coalesce(var.metricwork_image_tag, var.image_tag)
-  rootcause_image_tag    = coalesce(var.rootcause_image_tag, var.image_tag)
   internalapi_image_tag  = coalesce(var.internalapi_image_tag, var.image_tag)
   lineageapi_image_tag   = coalesce(var.lineageapi_image_tag, var.image_tag)
   scheduler_image_tag    = coalesce(var.scheduler_image_tag, var.image_tag)

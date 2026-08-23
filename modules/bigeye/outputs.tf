@@ -179,21 +179,6 @@ output "metricwork_load_balancer_zone_id" {
   value       = module.metricwork.zone_id
 }
 
-output "rootcause_dns_name" {
-  description = "DNS name for the rootcause service"
-  value       = module.rootcause.dns_name
-}
-
-output "rootcause_load_balancer_dns_name" {
-  description = "The dns name of the rootcause load balancer"
-  value       = module.rootcause.lb_dns_name
-}
-
-output "rootcause_load_balancer_zone_id" {
-  description = "The Route53 Zone ID of the rootcause load balancer"
-  value       = module.rootcause.zone_id
-}
-
 output "monocle_dns_name" {
   description = "DNS name for the monocle service"
   value       = module.monocle.dns_name
