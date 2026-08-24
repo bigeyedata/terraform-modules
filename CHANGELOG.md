@@ -1,3 +1,12 @@
+## [26.0.1](https://github.com/bigeyedata/terraform-modules/compare/v26.0.0...v26.0.1) (2026-08-24)
+
+
+### Bug Fixes
+
+* skip the ELB alarm lookups when every alarm is disabled ([e723a1e](https://github.com/bigeyedata/terraform-modules/commit/e723a1eb9caa2fc0d70526e5615e6186f971ee37))
+
+
+
 # [26.0.0](https://github.com/bigeyedata/terraform-modules/compare/v25.28.0...v26.0.0) (2026-08-24)
 
 
