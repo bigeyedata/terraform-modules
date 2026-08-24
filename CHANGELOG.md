@@ -1,3 +1,18 @@
+# [26.0.0](https://github.com/bigeyedata/terraform-modules/compare/v25.28.0...v26.0.0) (2026-08-24)
+
+
+* feat!: retire the rootcause service ([970326d](https://github.com/bigeyedata/terraform-modules/commit/970326d600d67c9c234a3dc3328442838b66ce34))
+
+
+### BREAKING CHANGES
+
+* The rootcause service and its bigeye/alarms module variables
+and outputs have been removed. See README "Upgrading to 26.0.0".
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+
+
 # [25.28.0](https://github.com/bigeyedata/terraform-modules/compare/v25.27.0...v25.28.0) (2026-08-10)
 
 
