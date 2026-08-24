@@ -50,6 +50,46 @@ terraform version and application version.
 
 ## Upgrading
 
+### Upgrading to 26.0.0
+
+The dedicated `rootcause` service has been removed. Its Temporal task queue
+(`issue-root-cause`) is now handled by the `datawork` service, so no separate
+service, load balancer, or target group is needed. No action is required to
+move the queue — `datawork` picks it up automatically once applied.
+
+The following `bigeye` module variables have been removed (they were only used
+by the retired service):
+
+- `var.rootcause_image_tag`
+- `var.rootcause_desired_count`
+- `var.rootcause_cpu`
+- `var.rootcause_memory`
+- `var.rootcause_port`
+- `var.rootcause_additional_environment_vars`
+- `var.rootcause_extra_security_group_ids`
+- `var.rootcause_lb_extra_security_group_ids`
+- `var.rootcause_jvm_max_ram_pct`
+- `var.rootcause_enable_ecs_exec`
+
+The `var.temporal_client_issue_root_cause_wf_exec_size` and
+`var.temporal_client_issue_root_cause_act_exec_size` variables are retained;
+they now tune the `issue-root-cause` workers running inside `datawork`.
+
+The following `bigeye` module outputs have been removed:
+
+- `output.rootcause_dns_name`
+- `output.rootcause_load_balancer_dns_name`
+- `output.rootcause_load_balancer_zone_id`
+
+The following `alarms` module variables have been removed:
+
+- `var.elb_rootcause_host_count_*`
+- `var.ecs_rootcause_mem_*`
+
+Note: because the `rootcause` security group was removed from the ordered lists
+feeding the Redis and RDS `allowed_client_security_group_ids`, the `lineageapi`
+ingress rule on those resources will be recreated on the next apply.
+
 ### Upgrading to 25.3.0
 
 Terraform apply will fail the first time you run it after upgrading to 25.3.0

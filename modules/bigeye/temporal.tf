@@ -827,7 +827,6 @@ module "temporal_opensearch" {
     module.lineageapi.security_group_id,
     module.lineagework.security_group_id,
     module.metricwork.security_group_id,
-    module.rootcause.security_group_id,
   ] : []
   extra_security_group_ids  = var.temporal_opensearch_extra_security_group_ids
   additional_ingress_cidrs  = var.internal_additional_ingress_cidrs
