@@ -10,16 +10,20 @@ terraform {
 }
 
 locals {
-  cloudwatch_load_balancer_value = data.aws_lb.this.arn_suffix
-  cloudwatch_target_group_value  = data.aws_lb_target_group.this.arn_suffix
+  any_alarm_enabled = !(var.host_count_disabled && var.response_time_disabled && var.error_rate_disabled)
+
+  cloudwatch_load_balancer_value = one(data.aws_lb.this[*].arn_suffix)
+  cloudwatch_target_group_value  = one(data.aws_lb_target_group.this[*].arn_suffix)
 }
 
 data "aws_lb" "this" {
-  name = var.lb_name
+  count = local.any_alarm_enabled ? 1 : 0
+  name  = var.lb_name
 }
 
 data "aws_lb_target_group" "this" {
-  name = var.target_group_name
+  count = local.any_alarm_enabled ? 1 : 0
+  name  = var.target_group_name
 }
 
 resource "aws_cloudwatch_metric_alarm" "error_rate" {
