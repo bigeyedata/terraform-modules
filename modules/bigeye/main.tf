@@ -186,11 +186,6 @@ data "aws_vpc" "this" {
     }
 
     postcondition {
-      condition     = var.create_security_groups || length(var.scheduler_lb_extra_security_group_ids) > 0
-      error_message = "If create_security_groups is false, you must provide a security group for the scheduler lb using scheduler_lb_extra_security_group_ids (ports 80/443)"
-    }
-
-    postcondition {
       condition     = var.create_security_groups || length(var.datawatch_lb_extra_security_group_ids) > 0
       error_message = "If create_security_groups is false, you must provide a security group for the datawatch lb using datawatch_lb_extra_security_group_ids (ports 80/443)"
     }
@@ -258,11 +253,6 @@ data "aws_vpc" "this" {
     postcondition {
       condition     = var.create_security_groups || length(var.temporal_extra_security_group_ids) > 0
       error_message = "If create_security_groups is false, you must provide a security group for the temporal ECS tasks using temporal_extra_security_group_ids (port 7233)"
-    }
-
-    postcondition {
-      condition     = var.create_security_groups || length(var.scheduler_extra_security_group_ids) > 0
-      error_message = "If create_security_groups is false, you must provide a security group for the scheduler ECS tasks using scheduler_extra_security_group_ids (ports ${var.scheduler_port})"
     }
 
     postcondition {
@@ -658,7 +648,6 @@ module "bigeye_admin" {
   metricwork_domain_name   = module.metricwork.dns_name
   internalapi_domain_name  = module.internalapi.dns_name
   lineageapi_domain_name   = module.lineageapi.dns_name
-  scheduler_domain_name    = module.scheduler.dns_name
 
   haproxy_resource_name      = "${local.name}-haproxy"
   web_resource_name          = "${local.name}-web"
@@ -674,7 +663,6 @@ module "bigeye_admin" {
   metricwork_resource_name   = "${local.name}-metricwork"
   internalapi_resource_name  = "${local.name}-internalapi"
   lineageapi_resource_name   = "${local.name}-lineageapi"
-  scheduler_resource_name    = "${local.name}-scheduler"
 
   datawatch_rds_identifier          = module.datawatch_rds.identifier
   datawatch_rds_hostname            = module.datawatch_rds.primary_dns_name
@@ -1743,102 +1731,6 @@ resource "aws_cloudwatch_metric_alarm" "toretto" {
 }
 
 #======================================================
-# Scheduler
-#======================================================
-module "scheduler" {
-  source           = "../simpleservice"
-  cpu_architecture = lookup(var.cpu_architecture_overrides, "scheduler", var.cpu_architecture)
-  app              = "scheduler"
-  instance         = var.instance
-  stack            = local.name
-  name             = "${local.name}-scheduler"
-  tags             = merge(local.tags, { app = "scheduler" })
-
-  vpc_id                        = local.vpc_id
-  subnet_ids                    = local.application_subnet_ids
-  create_security_groups        = var.create_security_groups
-  task_additional_ingress_cidrs = var.internal_additional_ingress_cidrs
-  additional_security_group_ids = concat(
-    var.scheduler_extra_security_group_ids,
-    [module.bigeye_admin.client_security_group_id],
-  )
-  traffic_port    = var.scheduler_port
-  ecs_cluster_id  = aws_ecs_cluster.this.id
-  fargate_version = var.fargate_version
-
-  # Load balancer
-  centralized_lb_arn                     = aws_lb.internal_alb.arn
-  centralized_lb_security_group_ids      = local.internal_alb_security_group_ids
-  centralized_lb_https_listener_rule_arn = aws_lb_listener.https_internal.arn
-  healthcheck_path                       = "/health"
-  lb_deregistration_delay                = 120
-
-  # Task settings
-  desired_count = var.scheduler_desired_count
-  # this service frequently processes jobs that are > than the 2 min spot warning time so we cannot use spot instances here
-  # without work being lost
-  spot_instance_config = {
-    on_demand_weight = 1
-    spot_weight      = 0
-  }
-  cpu                       = var.scheduler_cpu
-  memory                    = var.scheduler_memory
-  execution_role_arn        = local.ecs_role_arn
-  task_role_arn             = null
-  image_registry            = local.image_registry
-  image_repository          = format("%s%s", "scheduler", var.image_repository_suffix)
-  image_tag                 = local.scheduler_image_tag
-  cloudwatch_log_group_name = aws_cloudwatch_log_group.bigeye.name
-  efs_volume_id             = contains(var.efs_volume_enabled_services, "scheduler") ? aws_efs_file_system.this[0].id : ""
-  efs_access_point_id       = contains(var.efs_volume_enabled_services, "scheduler") ? aws_efs_access_point.this["scheduler"].id : ""
-  efs_mount_point           = var.efs_mount_point
-
-  # Datadog
-  datadog_agent_enabled            = var.datadog_agent_enabled
-  datadog_agent_image              = var.datadog_agent_image
-  datadog_agent_cpu                = var.datadog_agent_cpu
-  datadog_agent_memory             = var.datadog_agent_memory
-  datadog_agent_api_key_secret_arn = var.datadog_agent_api_key_secret_arn
-
-  # aws firelens
-  awsfirelens_cpu     = var.awsfirelens_cpu
-  awsfirelens_memory  = var.awsfirelens_memory
-  awsfirelens_enabled = var.awsfirelens_enabled
-  awsfirelens_host    = var.awsfirelens_host
-  awsfirelens_image   = var.awsfirelens_image
-  awsfirelens_uri     = var.awsfirelens_uri
-
-  environment_variables = merge(
-    {
-      ENVIRONMENT           = var.environment
-      INSTANCE              = var.instance
-      PORT                  = var.scheduler_port
-      DEPLOY_TYPE           = "AWS"
-      DATAWATCH_ADDRESS     = "https://${module.internalapi.dns_name}"
-      MAX_RAM_PERCENTAGE    = "85"
-      SCHEDULER_ADDRESS     = "http://localhost:${var.scheduler_port}"
-      SCHEDULER_THREADS     = var.scheduler_threads
-      REDIS_PRIMARY_ADDRESS = module.redis.primary_endpoint_dns_name
-      REDIS_PRIMARY_PORT    = module.redis.port
-    },
-    var.scheduler_additional_environment_vars,
-  )
-
-  secret_arns = merge(
-    {
-      REDIS_PRIMARY_PASSWORD = local.redis_auth_token_secret_arn
-      ROBOT_PASSWORD         = local.robot_password_secret_arn
-    },
-    local.sentry_dsn_secret_map,
-    var.scheduler_additional_secret_arns,
-  )
-
-  create_dns_records = var.create_dns_records
-  route53_zone_id    = data.aws_route53_zone.this[0].zone_id
-  dns_name           = "${local.base_dns_alias}-scheduler.${var.top_level_dns_name}"
-}
-
-#======================================================
 # Datawatch - IAM
 #======================================================
 resource "aws_iam_role" "datawatch" {
@@ -2094,7 +1986,6 @@ module "redis" {
   # Be mindful of the order when changing the membership of this var.  It is used in a count since the input is not known
   # plan time, so can't be a for_each, thus changing ordering will cause resource destroy/recreate.
   allowed_client_security_group_ids = var.create_security_groups ? [
-    module.scheduler.security_group_id,
     module.datawatch.security_group_id,
     module.datawork.security_group_id,
     module.lineagework.security_group_id,
@@ -2362,10 +2253,9 @@ locals {
     HIBERNATE_SEARCH_EVENT_PROCESSOR_INTERVAL = local.hibernate_search_event_processor_interval
     ENABLE_SEARCH_INDEXING                    = local.hibernate_search_indexing_enabled
 
-    MONOCLE_ADDRESS   = "https://${module.monocle.dns_name}"
-    REDIRECT_ADDRESS  = "https://${local.vanity_dns_name}"
-    SCHEDULER_ADDRESS = "https://${module.scheduler.dns_name}"
-    TORETTO_ADDRESS   = "https://${module.toretto.dns_name}"
+    MONOCLE_ADDRESS  = "https://${module.monocle.dns_name}"
+    REDIRECT_ADDRESS = "https://${local.vanity_dns_name}"
+    TORETTO_ADDRESS  = "https://${module.toretto.dns_name}"
 
     MQ_BROKER_HOST     = local.rabbitmq_endpoint
     MQ_BROKER_USERNAME = var.rabbitmq_user_name

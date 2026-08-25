@@ -2819,69 +2819,6 @@ variable "lineageapi_autoscaling_config" {
 }
 
 #======================================================
-# Application Variables - Scheduler
-#======================================================
-variable "scheduler_image_tag" {
-  description = "The image tag to use for scheduler, defaults to the global `image_tag` if not specified"
-  type        = string
-  default     = ""
-}
-
-variable "scheduler_desired_count" {
-  description = "The desired number of replicas"
-  type        = number
-  default     = 1
-}
-
-variable "scheduler_cpu" {
-  description = "Amount of CPU to allocate"
-  type        = number
-  default     = 1024
-}
-
-variable "scheduler_memory" {
-  description = "Amount of Memory in MB to allocate"
-  type        = number
-  default     = 2048
-}
-
-variable "scheduler_port" {
-  description = "The port to listen on"
-  type        = number
-  default     = 80
-}
-
-variable "scheduler_threads" {
-  description = "The number of threads for scheduler"
-  type        = number
-  default     = 10
-}
-
-variable "scheduler_additional_environment_vars" {
-  description = "Additional enviromnent variables to give the application"
-  type        = map(string)
-  default     = {}
-}
-
-variable "scheduler_additional_secret_arns" {
-  description = "Additional secret arns to give the application"
-  type        = map(string)
-  default     = {}
-}
-
-variable "scheduler_extra_security_group_ids" {
-  description = "Additional security group ids to scheduler"
-  type        = list(string)
-  default     = []
-}
-
-variable "scheduler_lb_extra_security_group_ids" {
-  description = "Additional security group ids to scheduler ALB"
-  type        = list(string)
-  default     = []
-}
-
-#======================================================
 # Application Variables - Bigeye Admin
 #======================================================
 variable "bigeye_admin_image_tag" {

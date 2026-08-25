@@ -34,12 +34,6 @@ variable "metricwork_domain_name" {
 variable "metricwork_load_balancer_domain_name" {
   type = string
 }
-variable "scheduler_domain_name" {
-  type = string
-}
-variable "scheduler_load_balancer_domain_name" {
-  type = string
-}
 variable "monocle_domain_name" {
   type = string
 }

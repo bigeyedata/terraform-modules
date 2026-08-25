@@ -61,16 +61,6 @@ resource "aws_cloudformation_stack" "dns" {
           ResourceRecords = [var.metricwork_load_balancer_domain_name]
         }
       }
-      SchedulerRecord = {
-        Type = "AWS::Route53::RecordSet"
-        Properties = {
-          HostedZoneId    = var.zone_id
-          Type            = "CNAME"
-          TTL             = 300
-          Name            = var.scheduler_domain_name
-          ResourceRecords = [var.scheduler_load_balancer_domain_name]
-        }
-      }
       MonocleRecord = {
         Type = "AWS::Route53::RecordSet"
         Properties = {

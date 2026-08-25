@@ -147,7 +147,6 @@ module "bigeye" {
   toretto_lb_extra_security_group_ids     = [module.bringyourown.http_security_group_id]
   temporalui_lb_extra_security_group_ids  = [module.bringyourown.http_security_group_id]
   temporal_lb_extra_security_group_ids    = [module.bringyourown.http_security_group_id]
-  scheduler_lb_extra_security_group_ids   = [module.bringyourown.http_security_group_id]
   datawatch_lb_extra_security_group_ids   = [module.bringyourown.http_security_group_id]
   datawork_lb_extra_security_group_ids    = [module.bringyourown.http_security_group_id]
   lineagework_lb_extra_security_group_ids = [module.bringyourown.http_security_group_id]
@@ -160,7 +159,6 @@ module "bigeye" {
   toretto_extra_security_group_ids     = [module.bringyourown.services_security_group_id]
   temporalui_extra_security_group_ids  = [module.bringyourown.services_security_group_id]
   temporal_extra_security_group_ids    = [module.bringyourown.temporal_security_group_id]
-  scheduler_extra_security_group_ids   = [module.bringyourown.services_security_group_id]
   datawatch_extra_security_group_ids   = [module.bringyourown.services_security_group_id]
   datawork_extra_security_group_ids    = [module.bringyourown.services_security_group_id]
   lineagework_extra_security_group_ids = [module.bringyourown.services_security_group_id]
@@ -191,8 +189,6 @@ module "dns" {
   lineagework_load_balancer_domain_name = module.bigeye.lineagework_load_balancer_dns_name
   metricwork_domain_name                = module.bigeye.metricwork_dns_name
   metricwork_load_balancer_domain_name  = module.bigeye.metricwork_load_balancer_dns_name
-  scheduler_domain_name                 = module.bigeye.scheduler_dns_name
-  scheduler_load_balancer_domain_name   = module.bigeye.scheduler_load_balancer_dns_name
   monocle_domain_name                   = module.bigeye.monocle_dns_name
   monocle_load_balancer_domain_name     = module.bigeye.monocle_load_balancer_dns_name
   toretto_domain_name                   = module.bigeye.toretto_dns_name

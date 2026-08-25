@@ -33,7 +33,6 @@ locals {
     METRICWORK_DOMAIN_NAME   = var.metricwork_domain_name
     INTERNALAPI_DOMAIN_NAME  = var.internalapi_domain_name
     LINEAGEAPI_DOMAIN_NAME   = var.lineageapi_domain_name
-    SCHEDULER_DOMAIN_NAME    = var.scheduler_domain_name
 
     HAPROXY_ELB_NAME      = var.haproxy_resource_name
     WEB_ELB_NAME          = var.web_resource_name
@@ -49,7 +48,6 @@ locals {
     METRICWORK_ELB_NAME   = var.metricwork_resource_name
     INTERNALAPI_ELB_NAME  = var.internalapi_resource_name
     LINEAGEAPI_ELB_NAME   = var.lineageapi_resource_name
-    SCHEDULER_ELB_NAME    = var.scheduler_resource_name
 
     HAPROXY_ECS_NAME      = var.haproxy_resource_name
     WEB_ECS_NAME          = var.web_resource_name
@@ -65,7 +63,6 @@ locals {
     METRICWORK_ECS_NAME   = var.metricwork_resource_name
     INTERNALAPI_ECS_NAME  = var.internalapi_resource_name
     LINEAGEAPI_ECS_NAME   = var.lineageapi_resource_name
-    SCHEDULER_ECS_NAME    = var.scheduler_resource_name
 
     DATAWATCH_RDS_IDENTIFIER = var.datawatch_rds_identifier
     DATAWATCH_RDS_HOST       = var.datawatch_rds_hostname

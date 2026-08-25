@@ -74,14 +74,6 @@ resource "aws_route53_record" "toretto" {
   records = [module.bigeye.toretto_load_balancer_dns_name]
 }
 
-resource "aws_route53_record" "scheduler" {
-  zone_id = data.aws_route53_zone.parent.zone_id
-  name    = module.bigeye.scheduler_dns_name
-  type    = "CNAME"
-  ttl     = 300
-  records = [module.bigeye.scheduler_load_balancer_dns_name]
-}
-
 resource "aws_route53_record" "temporalui" {
   zone_id = data.aws_route53_zone.parent.zone_id
   name    = module.bigeye.temporalui_dns_name

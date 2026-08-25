@@ -224,21 +224,6 @@ output "lineageapi_load_balancer_zone_id" {
   value       = module.lineageapi.zone_id
 }
 
-output "scheduler_dns_name" {
-  description = "DNS name for the scheduler service"
-  value       = module.scheduler.dns_name
-}
-
-output "scheduler_load_balancer_dns_name" {
-  description = "The dns name of the scheduler load balancer"
-  value       = module.scheduler.lb_dns_name
-}
-
-output "scheduler_load_balancer_zone_id" {
-  description = "The Route53 Zone ID of the scheduler load balancer"
-  value       = module.scheduler.zone_id
-}
-
 output "temporal_dns_name" {
   description = "DNS name for the temporal service"
   value       = local.temporal_dns_name
