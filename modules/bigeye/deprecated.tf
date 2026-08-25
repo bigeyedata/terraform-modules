@@ -57,3 +57,133 @@ moved {
   from = random_string.large_payload
   to   = module.s3_buckets["large-payload"].random_string.this[0]
 }
+
+moved {
+  from = module.redis.aws_vpc_security_group_ingress_rule.other_sgs[0]
+  to   = module.redis.aws_vpc_security_group_ingress_rule.other_sgs["scheduler"]
+}
+
+moved {
+  from = module.redis.aws_vpc_security_group_ingress_rule.other_sgs[1]
+  to   = module.redis.aws_vpc_security_group_ingress_rule.other_sgs["datawatch"]
+}
+
+moved {
+  from = module.redis.aws_vpc_security_group_ingress_rule.other_sgs[2]
+  to   = module.redis.aws_vpc_security_group_ingress_rule.other_sgs["datawork"]
+}
+
+moved {
+  from = module.redis.aws_vpc_security_group_ingress_rule.other_sgs[3]
+  to   = module.redis.aws_vpc_security_group_ingress_rule.other_sgs["lineagework"]
+}
+
+moved {
+  from = module.redis.aws_vpc_security_group_ingress_rule.other_sgs[4]
+  to   = module.redis.aws_vpc_security_group_ingress_rule.other_sgs["metricwork"]
+}
+
+moved {
+  from = module.redis.aws_vpc_security_group_ingress_rule.other_sgs[5]
+  to   = module.redis.aws_vpc_security_group_ingress_rule.other_sgs["internalapi"]
+}
+
+moved {
+  from = module.redis.aws_vpc_security_group_ingress_rule.other_sgs[6]
+  to   = module.redis.aws_vpc_security_group_ingress_rule.other_sgs["indexwork"]
+}
+
+moved {
+  from = module.redis.aws_vpc_security_group_ingress_rule.other_sgs[7]
+  to   = module.redis.aws_vpc_security_group_ingress_rule.other_sgs["backfillwork"]
+}
+
+moved {
+  from = module.redis.aws_vpc_security_group_ingress_rule.other_sgs[9]
+  to   = module.redis.aws_vpc_security_group_ingress_rule.other_sgs["lineageapi"]
+}
+
+moved {
+  from = module.datawatch_rds.aws_vpc_security_group_ingress_rule.other_sgs[0]
+  to   = module.datawatch_rds.aws_vpc_security_group_ingress_rule.other_sgs["datawatch"]
+}
+
+moved {
+  from = module.datawatch_rds.aws_vpc_security_group_ingress_rule.other_sgs[1]
+  to   = module.datawatch_rds.aws_vpc_security_group_ingress_rule.other_sgs["datawork"]
+}
+
+moved {
+  from = module.datawatch_rds.aws_vpc_security_group_ingress_rule.other_sgs[2]
+  to   = module.datawatch_rds.aws_vpc_security_group_ingress_rule.other_sgs["lineagework"]
+}
+
+moved {
+  from = module.datawatch_rds.aws_vpc_security_group_ingress_rule.other_sgs[3]
+  to   = module.datawatch_rds.aws_vpc_security_group_ingress_rule.other_sgs["metricwork"]
+}
+
+moved {
+  from = module.datawatch_rds.aws_vpc_security_group_ingress_rule.other_sgs[4]
+  to   = module.datawatch_rds.aws_vpc_security_group_ingress_rule.other_sgs["internalapi"]
+}
+
+moved {
+  from = module.datawatch_rds.aws_vpc_security_group_ingress_rule.other_sgs[5]
+  to   = module.datawatch_rds.aws_vpc_security_group_ingress_rule.other_sgs["indexwork"]
+}
+
+moved {
+  from = module.datawatch_rds.aws_vpc_security_group_ingress_rule.other_sgs[6]
+  to   = module.datawatch_rds.aws_vpc_security_group_ingress_rule.other_sgs["backfillwork"]
+}
+
+moved {
+  from = module.datawatch_rds.aws_vpc_security_group_ingress_rule.other_sgs[8]
+  to   = module.datawatch_rds.aws_vpc_security_group_ingress_rule.other_sgs["lineageapi"]
+}
+
+moved {
+  from = module.temporal_rds.aws_vpc_security_group_ingress_rule.other_sgs[0]
+  to   = module.temporal_rds.aws_vpc_security_group_ingress_rule.other_sgs["temporal"]
+}
+
+moved {
+  from = module.datawatch_rds.aws_vpc_security_group_ingress_rule.replica_other_sgs[0]
+  to   = module.datawatch_rds.aws_vpc_security_group_ingress_rule.replica_other_sgs["datawatch"]
+}
+
+moved {
+  from = module.datawatch_rds.aws_vpc_security_group_ingress_rule.replica_other_sgs[1]
+  to   = module.datawatch_rds.aws_vpc_security_group_ingress_rule.replica_other_sgs["datawork"]
+}
+
+moved {
+  from = module.datawatch_rds.aws_vpc_security_group_ingress_rule.replica_other_sgs[2]
+  to   = module.datawatch_rds.aws_vpc_security_group_ingress_rule.replica_other_sgs["lineagework"]
+}
+
+moved {
+  from = module.datawatch_rds.aws_vpc_security_group_ingress_rule.replica_other_sgs[3]
+  to   = module.datawatch_rds.aws_vpc_security_group_ingress_rule.replica_other_sgs["metricwork"]
+}
+
+moved {
+  from = module.datawatch_rds.aws_vpc_security_group_ingress_rule.replica_other_sgs[4]
+  to   = module.datawatch_rds.aws_vpc_security_group_ingress_rule.replica_other_sgs["internalapi"]
+}
+
+moved {
+  from = module.datawatch_rds.aws_vpc_security_group_ingress_rule.replica_other_sgs[5]
+  to   = module.datawatch_rds.aws_vpc_security_group_ingress_rule.replica_other_sgs["indexwork"]
+}
+
+moved {
+  from = module.datawatch_rds.aws_vpc_security_group_ingress_rule.replica_other_sgs[6]
+  to   = module.datawatch_rds.aws_vpc_security_group_ingress_rule.replica_other_sgs["backfillwork"]
+}
+
+moved {
+  from = module.datawatch_rds.aws_vpc_security_group_ingress_rule.replica_other_sgs[8]
+  to   = module.datawatch_rds.aws_vpc_security_group_ingress_rule.replica_other_sgs["lineageapi"]
+}
