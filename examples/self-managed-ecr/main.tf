@@ -19,7 +19,6 @@ locals {
     "datawatch",
     "haproxy",
     "monocle",
-    "scheduler",
     "temporal",
     "temporalui",
     "toretto",

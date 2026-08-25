@@ -91,7 +91,6 @@ in the module output.
 | monocle_dns_name | monocle_load_balancer_dns_name  |
 | web_dns_name | web_load_balancer_dns_name  |
 | toretto_dns_name | toretto_load_balancer_dns_name  |
-| scheduler_dns_name | scheduler_load_balancer_dns_name  |
 | temporalui_dns_name | temporalui_load_balancer_dns_name  |
 | temporal_dns_name | temporal_load_balancer_dns_name  |
 

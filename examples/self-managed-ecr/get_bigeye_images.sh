@@ -23,7 +23,7 @@ function set_defaults {
   source_registry="021451147547.dkr.ecr.us-west-2.amazonaws.com"
   destination_registry=""
   version=""
-  bigeye_repos=("datawatch" "haproxy" "monocle" "scheduler" "temporal" "temporalui" "toretto" "web")
+  bigeye_repos=("datawatch" "haproxy" "monocle" "temporal" "temporalui" "toretto" "web")
 }
 
 function aws_ecr_login {

@@ -613,34 +613,6 @@ module "elb_lineageapi" {
   error_rate_threshold           = var.elb_lineageapi_error_rate_threshold
 }
 
-module "elb_scheduler" {
-  source                         = "./elb"
-  stack                          = var.stack
-  app                            = "scheduler"
-  lb_name                        = "${var.stack}-internal"
-  target_group_name              = "${var.stack}-scheduler2"
-  host_count_disabled            = var.elb_scheduler_host_count_disabled
-  host_count_datapoints_to_alarm = var.elb_scheduler_host_count_datapoints_to_alarm
-  host_count_evaluation_periods  = var.elb_scheduler_host_count_evaluation_periods
-  host_count_period              = var.elb_scheduler_host_count_period
-  host_count_sns_arns            = coalesce(var.elb_scheduler_host_count_sns_arns, [local.high_urgency_sns_topic_arn])
-  host_count_threshold           = var.elb_scheduler_host_count_threshold
-
-  response_time_disabled            = var.elb_scheduler_response_time_disabled
-  response_time_datapoints_to_alarm = var.elb_scheduler_response_time_datapoints_to_alarm
-  response_time_evaluation_periods  = var.elb_scheduler_response_time_evaluation_periods
-  response_time_period              = var.elb_scheduler_response_time_period
-  response_time_sns_arns            = coalesce(var.elb_scheduler_response_time_sns_arns, [local.low_urgency_sns_topic_arn])
-  response_time_threshold           = var.elb_scheduler_response_time_threshold
-
-  error_rate_disabled            = var.elb_scheduler_error_rate_disabled
-  error_rate_datapoints_to_alarm = var.elb_scheduler_error_rate_datapoints_to_alarm
-  error_rate_evaluation_periods  = var.elb_scheduler_error_rate_evaluation_periods
-  error_rate_period              = var.elb_scheduler_error_rate_period
-  error_rate_sns_arns            = coalesce(var.elb_scheduler_error_rate_sns_arns, [local.low_urgency_sns_topic_arn])
-  error_rate_threshold           = var.elb_scheduler_error_rate_threshold
-}
-
 module "elb_web" {
   source                         = "./elb"
   stack                          = var.stack
@@ -807,18 +779,6 @@ module "ecs_lineageapi" {
   mem_period              = var.ecs_lineageapi_mem_period
   mem_sns_arns            = coalesce(var.ecs_lineageapi_mem_sns_arns, [local.low_urgency_sns_topic_arn])
   mem_threshold           = var.ecs_lineageapi_mem_threshold
-}
-
-module "ecs_scheduler" {
-  source                  = "./ecs"
-  stack                   = var.stack
-  app                     = "scheduler"
-  mem_disabled            = var.ecs_scheduler_mem_disabled
-  mem_datapoints_to_alarm = var.ecs_scheduler_mem_datapoints_to_alarm
-  mem_evaluation_periods  = var.ecs_scheduler_mem_evaluation_periods
-  mem_period              = var.ecs_scheduler_mem_period
-  mem_sns_arns            = coalesce(var.ecs_scheduler_mem_sns_arns, [local.low_urgency_sns_topic_arn])
-  mem_threshold           = var.ecs_scheduler_mem_threshold
 }
 
 module "ecs_toretto" {

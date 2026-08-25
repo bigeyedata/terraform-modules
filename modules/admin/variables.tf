@@ -139,11 +139,6 @@ variable "lineageapi_domain_name" {
   type        = string
 }
 
-variable "scheduler_domain_name" {
-  description = "scheduler domain name"
-  type        = string
-}
-
 variable "haproxy_resource_name" {
   description = "haproxy resource name"
   type        = string
@@ -211,11 +206,6 @@ variable "internalapi_resource_name" {
 
 variable "lineageapi_resource_name" {
   description = "lineageapi resource name"
-  type        = string
-}
-
-variable "scheduler_resource_name" {
-  description = "scheduler resource name"
   type        = string
 }
 

@@ -50,6 +50,44 @@ terraform version and application version.
 
 ## Upgrading
 
+### Upgrading to 27.0.0
+
+The `scheduler` service has been decommissioned and removed. Its scheduled jobs
+have been migrated to Temporal schedules run by the other services, so no
+separate service, load balancer, or target group is needed. No action is
+required — the remaining services pick up the work automatically once applied.
+
+The following `bigeye` module variables have been removed (they were only used
+by the retired service):
+
+- `var.scheduler_image_tag`
+- `var.scheduler_desired_count`
+- `var.scheduler_cpu`
+- `var.scheduler_memory`
+- `var.scheduler_port`
+- `var.scheduler_threads`
+- `var.scheduler_additional_environment_vars`
+- `var.scheduler_additional_secret_arns`
+- `var.scheduler_extra_security_group_ids`
+- `var.scheduler_lb_extra_security_group_ids`
+
+The following `bigeye` module outputs have been removed:
+
+- `output.scheduler_dns_name`
+- `output.scheduler_load_balancer_dns_name`
+- `output.scheduler_load_balancer_zone_id`
+
+The following `alarms` module variables have been removed:
+
+- `var.elb_scheduler_host_count_*`
+- `var.elb_scheduler_response_time_*`
+- `var.elb_scheduler_error_rate_*`
+- `var.ecs_scheduler_mem_*`
+
+Note: because the `scheduler` security group was removed from the ordered list
+feeding the Redis `allowed_client_security_group_ids`, the trailing ingress
+rules on that resource will be recreated on the next apply.
+
 ### Upgrading to 26.0.0
 
 The dedicated `rootcause` service has been removed. Its Temporal task queue
