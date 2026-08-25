@@ -1,3 +1,18 @@
+# [27.0.0](https://github.com/bigeyedata/terraform-modules/compare/v26.0.2...v27.0.0) (2026-08-25)
+
+
+* feat!: retire the scheduler service ([4f3a2fc](https://github.com/bigeyedata/terraform-modules/commit/4f3a2fc36786ce5d67371318ec83ca3e1f4df41d))
+
+
+### BREAKING CHANGES
+
+* The scheduler service and its bigeye/admin/alarms module
+variables and outputs have been removed. See README "Upgrading to 27.0.0".
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+
+
 ## [26.0.2](https://github.com/bigeyedata/terraform-modules/compare/v26.0.1...v26.0.2) (2026-08-25)
 
 
