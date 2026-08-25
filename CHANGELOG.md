@@ -1,3 +1,12 @@
+## [26.0.2](https://github.com/bigeyedata/terraform-modules/compare/v26.0.1...v26.0.2) (2026-08-25)
+
+
+### Bug Fixes
+
+* key redis and rds client SG rules by app instead of position ([97561b3](https://github.com/bigeyedata/terraform-modules/commit/97561b379bbe59863b21d868e0124378573a6fd8))
+
+
+
 ## [26.0.1](https://github.com/bigeyedata/terraform-modules/compare/v26.0.0...v26.0.1) (2026-08-24)
 
 
