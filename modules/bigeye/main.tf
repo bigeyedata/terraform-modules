@@ -1295,7 +1295,7 @@ module "temporal_rds" {
   create_security_groups                = var.create_security_groups
   additional_ingress_cidrs              = var.internal_additional_ingress_cidrs
   extra_security_group_ids              = concat(var.temporal_rds_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
-  allowed_client_security_group_ids     = var.create_security_groups ? [aws_security_group.temporal[0].id] : []
+  allowed_client_security_group_ids     = var.create_security_groups ? { temporal = aws_security_group.temporal[0].id } : {}
   instance_class                        = var.temporal_rds_instance_type
   backup_window                         = var.rds_backup_window
   backup_retention_period               = var.temporal_rds_backup_retention_period
@@ -2091,19 +2091,17 @@ module "redis" {
   subnet_group_name        = local.elasticache_subnet_group_name
   extra_security_group_ids = concat(var.redis_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
 
-  # Be mindful of the order when changing the membership of this var.  It is used in a count since the input is not known
-  # plan time, so can't be a for_each, thus changing ordering will cause resource destroy/recreate.
-  allowed_client_security_group_ids = var.create_security_groups ? [
-    module.scheduler.security_group_id,
-    module.datawatch.security_group_id,
-    module.datawork.security_group_id,
-    module.lineagework.security_group_id,
-    module.metricwork.security_group_id,
-    module.internalapi.security_group_id,
-    module.indexwork.security_group_id,
-    module.backfillwork.security_group_id,
-    module.lineageapi.security_group_id,
-  ] : []
+  allowed_client_security_group_ids = var.create_security_groups ? {
+    scheduler    = module.scheduler.security_group_id
+    datawatch    = module.datawatch.security_group_id
+    datawork     = module.datawork.security_group_id
+    lineagework  = module.lineagework.security_group_id
+    metricwork   = module.metricwork.security_group_id
+    internalapi  = module.internalapi.security_group_id
+    indexwork    = module.indexwork.security_group_id
+    backfillwork = module.backfillwork.security_group_id
+    lineageapi   = module.lineageapi.security_group_id
+  } : {}
   auth_token               = local.create_redis_auth_token_secret ? aws_secretsmanager_secret_version.redis_auth_token[0].secret_string : data.aws_secretsmanager_secret_version.byo_redis_auth_token[0].secret_string
   instance_type            = local.redis_instance_type
   instance_count           = var.redundant_infrastructure ? 2 : 1
@@ -2158,18 +2156,16 @@ module "datawatch_rds" {
   extra_security_group_ids = concat(var.datawatch_rds_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
   enable_multi_az          = var.redundant_infrastructure ? true : false
 
-  # Be mindful of the order when changing the membership of this var.  It is used in a count since the input is not known
-  # plan time, so can't be a for_each, thus changing ordering will cause resource destroy/recreate.
-  allowed_client_security_group_ids = var.create_security_groups ? [
-    module.datawatch.security_group_id,
-    module.datawork.security_group_id,
-    module.lineagework.security_group_id,
-    module.metricwork.security_group_id,
-    module.internalapi.security_group_id,
-    module.indexwork.security_group_id,
-    module.backfillwork.security_group_id,
-    module.lineageapi.security_group_id,
-  ] : []
+  allowed_client_security_group_ids = var.create_security_groups ? {
+    datawatch    = module.datawatch.security_group_id
+    datawork     = module.datawork.security_group_id
+    lineagework  = module.lineagework.security_group_id
+    metricwork   = module.metricwork.security_group_id
+    internalapi  = module.internalapi.security_group_id
+    indexwork    = module.indexwork.security_group_id
+    backfillwork = module.backfillwork.security_group_id
+    lineageapi   = module.lineageapi.security_group_id
+  } : {}
 
   # Settings
   instance_class              = var.datawatch_rds_instance_type

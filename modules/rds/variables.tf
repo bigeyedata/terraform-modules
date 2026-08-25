@@ -290,9 +290,9 @@ variable "additional_ingress_cidrs" {
 }
 
 variable "allowed_client_security_group_ids" {
-  description = "A list of security groups to allow ingress from"
-  type        = list(string)
-  default     = []
+  description = "Security groups to allow ingress from, keyed by the app they belong to"
+  type        = map(string)
+  default     = {}
 }
 
 variable "vpc_id" {
