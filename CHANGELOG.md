@@ -1,3 +1,12 @@
+## [27.0.1](https://github.com/bigeyedata/terraform-modules/compare/v27.0.0...v27.0.1) (2026-08-26)
+
+
+### Bug Fixes
+
+* point the lineageapi moved blocks at the deployed rule indices ([71fe197](https://github.com/bigeyedata/terraform-modules/commit/71fe1975573b88a8bc646de48420c5ce83589f60))
+
+
+
 # [27.0.0](https://github.com/bigeyedata/terraform-modules/compare/v26.0.2...v27.0.0) (2026-08-25)
 
 
