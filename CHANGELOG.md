@@ -1,3 +1,12 @@
+# [27.1.0](https://github.com/bigeyedata/terraform-modules/compare/v27.0.1...v27.1.0) (2026-09-03)
+
+
+### Features
+
+* route custom repository sync queue to lineagework only ([da4ac04](https://github.com/bigeyedata/terraform-modules/commit/da4ac04a1743ab8c34a11f42cd4552b1f41295c2))
+
+
+
 ## [27.0.1](https://github.com/bigeyedata/terraform-modules/compare/v27.0.0...v27.0.1) (2026-08-26)
 
 
