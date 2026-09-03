@@ -7,7 +7,7 @@ locals {
 }
 
 module "bigeye" {
-  source      = "git::https://github.com/bigeyedata/terraform-modules//modules/bigeye?ref=v27.0.1"
+  source      = "git::https://github.com/bigeyedata/terraform-modules//modules/bigeye?ref=v27.1.0"
   environment = local.environment
   instance    = local.instance
 
