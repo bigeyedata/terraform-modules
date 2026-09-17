@@ -209,21 +209,6 @@ output "internalapi_load_balancer_zone_id" {
   value       = module.internalapi.zone_id
 }
 
-output "lineageapi_dns_name" {
-  description = "DNS name for the lineageapi service"
-  value       = module.lineageapi.dns_name
-}
-
-output "lineageapi_load_balancer_dns_name" {
-  description = "The dns name of the lineageapi load balancer"
-  value       = module.lineageapi.lb_dns_name
-}
-
-output "lineageapi_load_balancer_zone_id" {
-  description = "The Route53 Zone ID of the lineageapi load balancer"
-  value       = module.lineageapi.zone_id
-}
-
 output "temporal_dns_name" {
   description = "DNS name for the temporal service"
   value       = local.temporal_dns_name

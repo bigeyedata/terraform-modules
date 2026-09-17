@@ -42,6 +42,7 @@ terraform version and application version.
 
 | terraform-modules Version | Application Version | Comment                                                                                  |
 |---------------------------|---------------------|------------------------------------------------------------------------------------------|
+| >= 28.0.0                 | 2.94.0              | `lineageapi` service removed; the bigeye-admin CLI must no longer require its env vars   |
 | >= 12.0.0                 | 1.73.0              | dedicated indexwork service for catalog indexing operations                              |
 | >= 11.4.0                 | 1.71.0              | migrate queue membership to "include" list that became available in app version `1.71.0` |
 | >= 9.2.0                  | 1.65.0              | mTLS support in datawatch services removed, requires TF settings introduced in `9.2.0`   |
@@ -49,6 +50,58 @@ terraform version and application version.
 | >= 3.12.0                 | 1.48.0              | Application 1.48.0 requires at least terraform-modules version 3.12.0                    |
 
 ## Upgrading
+
+### Upgrading to 28.0.0
+
+The dedicated `lineageapi` service has been removed. It ran the datawatch image
+with `WORKERS_ENABLED=false` and served only the `/api/v?/lineage/` routes that
+HAProxy split off to it; those requests are now served by `datawatch` like every
+other API route. No Temporal queues or scheduled work were attached to it, so
+nothing needs to be migrated.
+
+Before upgrading, make sure the stack is on application version `2.94.0`
+or newer. The bigeye-admin CLI reads `LINEAGEAPI_DOMAIN_NAME`,
+`LINEAGEAPI_ELB_NAME` and `LINEAGEAPI_ECS_NAME` as required environment
+variables, and this release stops setting them; on an older image every
+bigeye-admin command fails with `KeyError`. HAProxy itself needs no minimum
+version — it falls back to routing lineage traffic to `datawatch` when
+`LINEAGEAPI_HOST` is unset.
+
+The following `bigeye` module variables have been removed (they were only used
+by the retired service):
+
+- `var.lineageapi_image_tag`
+- `var.lineageapi_desired_count`
+- `var.lineageapi_cpu`
+- `var.lineageapi_memory`
+- `var.lineageapi_port`
+- `var.lineageapi_jvm_max_ram_pct`
+- `var.lineageapi_enable_ecs_exec`
+- `var.lineageapi_autoscaling_config`
+- `var.lineageapi_additional_environment_vars`
+- `var.lineageapi_extra_security_group_ids`
+- `var.lineageapi_lb_extra_security_group_ids`
+
+The following `bigeye` module outputs have been removed:
+
+- `output.lineageapi_dns_name`
+- `output.lineageapi_load_balancer_dns_name`
+- `output.lineageapi_load_balancer_zone_id`
+
+The following `alarms` module variables have been removed:
+
+- `var.elb_lineageapi_host_count_*`
+- `var.elb_lineageapi_response_time_*`
+- `var.elb_lineageapi_error_rate_*`
+- `var.ecs_lineageapi_mem_*`
+
+Upgrade the `alarms` module in the same apply as the `bigeye` module. The
+`alarms` module looks the `<stack>-lineageapi2` target group up with a data
+source, so an older `alarms` version fails to plan once this release deletes
+that target group.
+
+If `lineageapi` appears in `var.cpu_architecture_overrides` or
+`var.efs_volume_enabled_services`, remove the entry; it is now ignored.
 
 ### Upgrading to 27.0.0
 
