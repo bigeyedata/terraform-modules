@@ -1,3 +1,20 @@
+# [28.0.0](https://github.com/bigeyedata/terraform-modules/compare/v27.1.0...v28.0.0) (2026-09-20)
+
+
+* feat!: retire the lineageapi service ([0b8fc99](https://github.com/bigeyedata/terraform-modules/commit/0b8fc9922bc595ce1016b34ce1cda8569449a6fb)), closes [semantic-data-platform#28941](https://github.com/semantic-data-platform/issues/28941)
+
+
+### BREAKING CHANGES
+
+* The lineageapi service and its bigeye/alarms/admin module
+variables and outputs have been removed. Stacks must be on application version
+2.94.0 or newer first, since the bigeye-admin CLI requires the LINEAGEAPI_*
+env vars that the admin module no longer sets. See README "Upgrading to 28.0.0".
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>
+
+
+
 # [27.1.0](https://github.com/bigeyedata/terraform-modules/compare/v27.0.1...v27.1.0) (2026-09-03)
 
 
