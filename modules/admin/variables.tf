@@ -134,11 +134,6 @@ variable "internalapi_domain_name" {
   type        = string
 }
 
-variable "lineageapi_domain_name" {
-  description = "lineageapi domain name"
-  type        = string
-}
-
 variable "haproxy_resource_name" {
   description = "haproxy resource name"
   type        = string
@@ -201,11 +196,6 @@ variable "metricwork_resource_name" {
 
 variable "internalapi_resource_name" {
   description = "internalapi resource name"
-  type        = string
-}
-
-variable "lineageapi_resource_name" {
-  description = "lineageapi resource name"
   type        = string
 }
 

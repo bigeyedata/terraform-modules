@@ -99,11 +99,6 @@ moved {
 }
 
 moved {
-  from = module.redis.aws_vpc_security_group_ingress_rule.other_sgs[8]
-  to   = module.redis.aws_vpc_security_group_ingress_rule.other_sgs["lineageapi"]
-}
-
-moved {
   from = module.datawatch_rds.aws_vpc_security_group_ingress_rule.other_sgs[0]
   to   = module.datawatch_rds.aws_vpc_security_group_ingress_rule.other_sgs["datawatch"]
 }
@@ -136,11 +131,6 @@ moved {
 moved {
   from = module.datawatch_rds.aws_vpc_security_group_ingress_rule.other_sgs[6]
   to   = module.datawatch_rds.aws_vpc_security_group_ingress_rule.other_sgs["backfillwork"]
-}
-
-moved {
-  from = module.datawatch_rds.aws_vpc_security_group_ingress_rule.other_sgs[7]
-  to   = module.datawatch_rds.aws_vpc_security_group_ingress_rule.other_sgs["lineageapi"]
 }
 
 moved {
@@ -181,9 +171,4 @@ moved {
 moved {
   from = module.datawatch_rds.aws_vpc_security_group_ingress_rule.replica_other_sgs[6]
   to   = module.datawatch_rds.aws_vpc_security_group_ingress_rule.replica_other_sgs["backfillwork"]
-}
-
-moved {
-  from = module.datawatch_rds.aws_vpc_security_group_ingress_rule.replica_other_sgs[7]
-  to   = module.datawatch_rds.aws_vpc_security_group_ingress_rule.replica_other_sgs["lineageapi"]
 }

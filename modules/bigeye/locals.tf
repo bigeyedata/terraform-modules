@@ -222,7 +222,6 @@ locals {
   lineagework_image_tag  = coalesce(var.lineagework_image_tag, var.image_tag)
   metricwork_image_tag   = coalesce(var.metricwork_image_tag, var.image_tag)
   internalapi_image_tag  = coalesce(var.internalapi_image_tag, var.image_tag)
-  lineageapi_image_tag   = coalesce(var.lineageapi_image_tag, var.image_tag)
   bigeye_admin_image_tag = coalesce(var.bigeye_admin_image_tag, var.image_tag)
 
   auth0_secrets_map = var.auth0_client_id_secretsmanager_arn == "" ? {} : {
