@@ -1,3 +1,12 @@
+## [28.0.1](https://github.com/bigeyedata/terraform-modules/compare/v28.0.0...v28.0.1) (2026-09-21)
+
+
+### Bug Fixes
+
+* key temporal opensearch ingress rules by app name ([23770f2](https://github.com/bigeyedata/terraform-modules/commit/23770f2d264bc5bb5e3196a2062ada10f5a710cd))
+
+
+
 # [28.0.0](https://github.com/bigeyedata/terraform-modules/compare/v27.1.0...v28.0.0) (2026-09-20)
 
 
