@@ -2771,6 +2771,12 @@ variable "lineageplus_solr_image_tag" {
   default     = ""
 }
 
+variable "lineageplus_solr_security_json_secret_arn" {
+  description = "ARN of a Secrets Manager secret holding the rendered Solr security.json. When set, it is written to SOLR_HOME/security.json on every container start, so credential changes survive restarts. Empty keeps the security.json baked into the image."
+  type        = string
+  default     = ""
+}
+
 variable "lineageplus_solr_opts" {
   description = "Additional options to pass to solr startup script."
   type        = list(string)
