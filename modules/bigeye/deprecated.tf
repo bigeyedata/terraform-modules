@@ -172,3 +172,50 @@ moved {
   from = module.datawatch_rds.aws_vpc_security_group_ingress_rule.replica_other_sgs[6]
   to   = module.datawatch_rds.aws_vpc_security_group_ingress_rule.replica_other_sgs["backfillwork"]
 }
+
+# The temporal opensearch ingress rules were keyed by position until v28.0.1.
+# Removing an app from the middle of that list shifted every rule after it,
+# which turned a delete into a replace and let the retired app's security group
+# deletion race its own ingress rule (see the v28.0.0 lineageapi removal).
+# Index 6 (lineageapi) is deliberately not mapped: leaving it unmoved makes it a
+# genuine destroy, which terraform orders ahead of the security group deletion.
+
+moved {
+  from = module.temporal_opensearch[0].aws_vpc_security_group_ingress_rule.temporal_https[0]
+  to   = module.temporal_opensearch[0].aws_vpc_security_group_ingress_rule.temporal_https["temporal"]
+}
+
+moved {
+  from = module.temporal_opensearch[0].aws_vpc_security_group_ingress_rule.temporal_https[1]
+  to   = module.temporal_opensearch[0].aws_vpc_security_group_ingress_rule.temporal_https["backfillwork"]
+}
+
+moved {
+  from = module.temporal_opensearch[0].aws_vpc_security_group_ingress_rule.temporal_https[2]
+  to   = module.temporal_opensearch[0].aws_vpc_security_group_ingress_rule.temporal_https["datawatch"]
+}
+
+moved {
+  from = module.temporal_opensearch[0].aws_vpc_security_group_ingress_rule.temporal_https[3]
+  to   = module.temporal_opensearch[0].aws_vpc_security_group_ingress_rule.temporal_https["datawork"]
+}
+
+moved {
+  from = module.temporal_opensearch[0].aws_vpc_security_group_ingress_rule.temporal_https[4]
+  to   = module.temporal_opensearch[0].aws_vpc_security_group_ingress_rule.temporal_https["indexwork"]
+}
+
+moved {
+  from = module.temporal_opensearch[0].aws_vpc_security_group_ingress_rule.temporal_https[5]
+  to   = module.temporal_opensearch[0].aws_vpc_security_group_ingress_rule.temporal_https["internalapi"]
+}
+
+moved {
+  from = module.temporal_opensearch[0].aws_vpc_security_group_ingress_rule.temporal_https[7]
+  to   = module.temporal_opensearch[0].aws_vpc_security_group_ingress_rule.temporal_https["lineagework"]
+}
+
+moved {
+  from = module.temporal_opensearch[0].aws_vpc_security_group_ingress_rule.temporal_https[8]
+  to   = module.temporal_opensearch[0].aws_vpc_security_group_ingress_rule.temporal_https["metricwork"]
+}

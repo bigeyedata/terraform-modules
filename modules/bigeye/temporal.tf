@@ -817,16 +817,16 @@ module "temporal_opensearch" {
   vpc_id                 = local.vpc_id
   tags                   = local.tags
   create_security_groups = var.create_security_groups
-  ingress_security_group_ids = var.create_security_groups ? [
-    aws_security_group.temporal[0].id,
-    module.backfillwork.security_group_id,
-    module.datawatch.security_group_id,
-    module.datawork.security_group_id,
-    module.indexwork.security_group_id,
-    module.internalapi.security_group_id,
-    module.lineagework.security_group_id,
-    module.metricwork.security_group_id,
-  ] : []
+  ingress_security_group_ids = var.create_security_groups ? {
+    temporal     = aws_security_group.temporal[0].id
+    backfillwork = module.backfillwork.security_group_id
+    datawatch    = module.datawatch.security_group_id
+    datawork     = module.datawork.security_group_id
+    indexwork    = module.indexwork.security_group_id
+    internalapi  = module.internalapi.security_group_id
+    lineagework  = module.lineagework.security_group_id
+    metricwork   = module.metricwork.security_group_id
+  } : {}
   extra_security_group_ids  = var.temporal_opensearch_extra_security_group_ids
   additional_ingress_cidrs  = var.internal_additional_ingress_cidrs
   engine_version            = var.temporal_opensearch_engine_version
