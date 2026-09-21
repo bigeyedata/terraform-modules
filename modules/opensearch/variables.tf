@@ -21,9 +21,9 @@ variable "create_security_groups" {
 }
 
 variable "ingress_security_group_ids" {
-  description = "The list of security group ids to grant ingress to"
-  type        = list(string)
-  default     = []
+  description = "Map of app name to security group id to grant ingress to. Keyed by app name so that removing one app does not shift the others' rule addresses."
+  type        = map(string)
+  default     = {}
 }
 
 variable "extra_security_group_ids" {

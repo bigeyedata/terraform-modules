@@ -19,13 +19,13 @@ resource "aws_security_group" "this" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "temporal_https" {
-  count                        = var.create_security_groups ? length(var.ingress_security_group_ids) : 0
+  for_each                     = var.create_security_groups ? var.ingress_security_group_ids : {}
   security_group_id            = aws_security_group.this[0].id
   from_port                    = 443
   to_port                      = 443
   description                  = "Allows port 443 traffic"
   ip_protocol                  = "TCP"
-  referenced_security_group_id = var.ingress_security_group_ids[count.index]
+  referenced_security_group_id = each.value
 }
 
 resource "aws_vpc_security_group_egress_rule" "egress" {
