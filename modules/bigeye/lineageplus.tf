@@ -65,7 +65,12 @@ module "lineageplus_solr" {
   awsfirelens_image   = var.awsfirelens_image
   awsfirelens_uri     = var.awsfirelens_uri
 
-  secret_arns = var.datadog_agent_enabled ? {
-    DATADOG_API_KEY = var.datadog_agent_api_key_secret_arn
-  } : {}
+  secret_arns = merge(
+    var.datadog_agent_enabled ? {
+      DATADOG_API_KEY = var.datadog_agent_api_key_secret_arn
+    } : {},
+    length(var.lineageplus_solr_security_json_secret_arn) > 0 ? {
+      SOLR_SECURITY_JSON = var.lineageplus_solr_security_json_secret_arn
+    } : {},
+  )
 }
