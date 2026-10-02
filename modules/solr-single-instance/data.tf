@@ -3,3 +3,5 @@ data "aws_lb" "external" {
 }
 
 data "aws_partition" "current" {}
+
+data "aws_default_tags" "this" {}
