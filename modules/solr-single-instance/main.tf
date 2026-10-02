@@ -122,28 +122,13 @@ resource "aws_autoscaling_group" "solr" {
     propagate_at_launch = true
   }
 
-  tag {
-    key                 = "app"
-    value               = var.app
-    propagate_at_launch = true
-  }
-
-  tag {
-    key                 = "component"
-    value               = "solr"
-    propagate_at_launch = true
-  }
-
-  tag {
-    key                 = "instance"
-    value               = var.instance
-    propagate_at_launch = true
-  }
-
-  tag {
-    key                 = "stack"
-    value               = var.stack
-    propagate_at_launch = true
+  dynamic "tag" {
+    for_each = local.solr_instance_tags
+    content {
+      key                 = tag.key
+      value               = tag.value
+      propagate_at_launch = true
+    }
   }
 }
 
@@ -285,6 +270,12 @@ locals {
     app       = var.app
     component = "solr"
   })
+  solr_instance_tags = {
+    for k, v in merge(data.aws_default_tags.this.tags, local.solr_tags, {
+      instance = var.instance
+      stack    = var.stack
+    }) : k => v if !contains(["Name", "AmazonECSManaged"], k)
+  }
   all_solr_dns_names = compact(concat([var.dns_name], var.solr_aliases))
 }
 
