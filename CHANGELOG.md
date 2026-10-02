@@ -1,3 +1,12 @@
+## [28.0.2](https://github.com/bigeyedata/terraform-modules/compare/v28.0.1...v28.0.2) (2026-10-02)
+
+
+### Bug Fixes
+
+* **solr:** propagate default and module tags to ASG-launched instances ([63c69d4](https://github.com/bigeyedata/terraform-modules/commit/63c69d4905ea40b17c87e0684900d1d284fd3f33))
+
+
+
 ## [28.0.1](https://github.com/bigeyedata/terraform-modules/compare/v28.0.0...v28.0.1) (2026-09-21)
 
 
