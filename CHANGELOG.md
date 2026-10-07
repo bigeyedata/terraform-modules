@@ -1,3 +1,12 @@
+# [28.1.0](https://github.com/bigeyedata/terraform-modules/compare/v28.0.2...v28.1.0) (2026-10-07)
+
+
+### Features
+
+* optional security.json secret for lineageplus solr ([20b90a6](https://github.com/bigeyedata/terraform-modules/commit/20b90a6f6afca1c8505f67e57f73988eb5de00fb))
+
+
+
 ## [28.0.2](https://github.com/bigeyedata/terraform-modules/compare/v28.0.1...v28.0.2) (2026-10-02)
 
 
