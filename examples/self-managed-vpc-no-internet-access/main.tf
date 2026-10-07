@@ -113,7 +113,7 @@ module "bigeye" {
   # byovpc_public_subnet_ids          = module.vpc.intra_subnets
   byovpc_application_subnet_ids     = module.bringyourown.private_subnet_ids
   byovpc_internal_subnet_ids        = module.bringyourown.internal_subnet_ids
-  byovpc_rabbitmq_subnet_ids        = module.bringyourown.elasticache_subnet_ids
+  byovpc_opensearch_subnet_ids      = module.bringyourown.elasticache_subnet_ids
   byovpc_redis_subnet_group_name    = module.bringyourown.redis_subnet_group_name
   byovpc_database_subnet_group_name = module.bringyourown.database_subnet_group_name
 
@@ -127,14 +127,9 @@ module "bigeye" {
   datawatch_task_role_arn           = module.bringyourown.datawatch_iam_role_arn
   monocle_task_role_arn             = module.bringyourown.monocle_iam_role_arn
 
-  # BYO Rabbit
-  byo_rabbitmq_endpoint             = module.bringyourown.rabbitmq_endpoint
-  rabbitmq_user_password_secret_arn = module.bringyourown.rabbitmq_password_secret_arn
-
   datawatch_rds_extra_security_group_ids = [module.bringyourown.rds_security_group_id]
   temporal_rds_extra_security_group_ids  = [module.bringyourown.rds_security_group_id]
   redis_extra_security_group_ids         = [module.bringyourown.redis_security_group_id]
-  rabbitmq_extra_security_group_ids      = [module.bringyourown.rabbitmq_security_group_id]
 
   temporal_opensearch_enabled = false
   create_dns_records          = false

@@ -25,34 +25,9 @@ resource "aws_sns_topic" "high_urgency" {
 }
 
 locals {
-  rabbitmq_message_count_sns_arns = coalesce(var.rabbitmq_message_count_sns_arns, [local.low_urgency_sns_topic_arn])
-  redis_cpu_sns_arns              = coalesce(var.redis_cpu_sns_arns, [local.low_urgency_sns_topic_arn])
-  redis_burst_balance_sns_arns    = coalesce(var.redis_burst_balance_sns_arns, [local.low_urgency_sns_topic_arn])
-  redis_memory_sns_arns           = coalesce(var.redis_memory_sns_arns, [local.low_urgency_sns_topic_arn])
-}
-
-resource "aws_cloudwatch_metric_alarm" "rabbitmq_message_count" {
-  count               = var.rabbitmq_message_count_disabled ? 0 : 1
-  alarm_name          = "${var.stack} - MQ total message count too high"
-  ok_actions          = local.rabbitmq_message_count_sns_arns
-  alarm_actions       = local.rabbitmq_message_count_sns_arns
-  actions_enabled     = length(local.rabbitmq_message_count_sns_arns) > 0
-  evaluation_periods  = coalesce(var.rabbitmq_message_count_evaluation_periods, 1)
-  datapoints_to_alarm = coalesce(var.rabbitmq_message_count_datapoints_to_alarm, 1)
-  threshold           = var.rabbitmq_message_count_threshold
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  treat_missing_data  = "missing"
-  metric_query {
-    id          = "q1"
-    label       = "${var.stack}_mq_message_count"
-    period      = coalesce(var.rabbitmq_message_count_period, 300)
-    return_data = "true"
-    expression  = <<EOF
-SELECT AVG(MessageCount) FROM SCHEMA("AWS/AmazonMQ", Broker) WHERE Broker = '${var.rabbitmq_name}'
-and Queue != 'dataset_index_op_v2'
-and Queue != 'backfill'
-EOF
-  }
+  redis_cpu_sns_arns           = coalesce(var.redis_cpu_sns_arns, [local.low_urgency_sns_topic_arn])
+  redis_burst_balance_sns_arns = coalesce(var.redis_burst_balance_sns_arns, [local.low_urgency_sns_topic_arn])
+  redis_memory_sns_arns        = coalesce(var.redis_memory_sns_arns, [local.low_urgency_sns_topic_arn])
 }
 
 resource "aws_cloudwatch_metric_alarm" "redis_cpu" {

@@ -111,8 +111,8 @@ data "aws_vpc" "this" {
   id = local.create_vpc ? module.vpc[0].vpc_id : var.byovpc_vpc_id
   lifecycle {
     postcondition {
-      condition     = (!local.create_vpc && length(var.byovpc_rabbitmq_subnet_ids) > 0) || (local.create_vpc && length(var.byovpc_rabbitmq_subnet_ids) == 0)
-      error_message = "if byovpc_vpc_id is specified, byovpc_rabbitmq_subnet_ids must not be empty, otherwise it must be empty"
+      condition     = (!local.create_vpc && length(var.byovpc_opensearch_subnet_ids) > 0) || (local.create_vpc && length(var.byovpc_opensearch_subnet_ids) == 0)
+      error_message = "if byovpc_vpc_id is specified, byovpc_opensearch_subnet_ids must not be empty, otherwise it must be empty"
     }
 
     postcondition {
@@ -138,11 +138,6 @@ data "aws_vpc" "this" {
     postcondition {
       condition     = (!local.create_vpc && length(var.byovpc_database_subnet_group_name) > 0) || (local.create_vpc && length(var.byovpc_database_subnet_group_name) == 0)
       error_message = "if byovpc_vpc_id is specified, byovpc_database_subnet_group_name must be specified, otherwise it must be empty"
-    }
-
-    postcondition {
-      condition     = var.create_security_groups || length(var.rabbitmq_extra_security_group_ids) > 0
-      error_message = "If create_security_groups is false, you must provide RabbitMQ a security group using rabbitmq_extra_security_group_ids (port 5671)"
     }
 
     postcondition {
@@ -669,10 +664,6 @@ module "bigeye_admin" {
 
   temporal_port = local.temporal_lb_port
 
-  rabbitmq_endpoint            = local.rabbitmq_endpoint
-  rabbitmq_username            = var.rabbitmq_user_name
-  rabbitmq_password_secret_arn = local.rabbitmq_user_password_secret_arn
-
   # aws firelens
   awsfirelens_cpu     = var.awsfirelens_cpu
   awsfirelens_memory  = var.awsfirelens_memory
@@ -680,55 +671,6 @@ module "bigeye_admin" {
   awsfirelens_host    = var.awsfirelens_host
   awsfirelens_image   = var.awsfirelens_image
   awsfirelens_uri     = var.awsfirelens_uri
-}
-
-#======================================================
-# RabbitMQ
-#======================================================
-resource "random_password" "rabbitmq_user_password" {
-  count   = local.create_rabbitmq_user_password_secret ? 1 : 0
-  length  = 16
-  special = false
-}
-
-resource "aws_secretsmanager_secret" "rabbitmq_user_password" {
-  count                   = local.create_rabbitmq_user_password_secret ? 1 : 0
-  name                    = format("bigeye/%s/datawatch/rabbitmq/password", local.name)
-  recovery_window_in_days = local.secret_retention_days
-  tags                    = local.tags
-}
-
-resource "aws_secretsmanager_secret_version" "rabbitmq_user_password" {
-  count          = local.create_rabbitmq_user_password_secret ? 1 : 0
-  secret_id      = aws_secretsmanager_secret.rabbitmq_user_password[0].id
-  secret_string  = random_password.rabbitmq_user_password[0].result
-  version_stages = ["AWSCURRENT"]
-}
-
-data "aws_secretsmanager_secret_version" "byo_rabbitmq_user_password" {
-  count         = local.create_rabbitmq_user_password_secret ? 0 : 1
-  secret_id     = var.rabbitmq_user_password_secret_arn
-  version_stage = "AWSCURRENT"
-}
-
-module "rabbitmq" {
-  count                     = local.create_rabbitmq ? 1 : 0
-  depends_on                = [aws_secretsmanager_secret_version.rabbitmq_user_password]
-  source                    = "../rabbitmq"
-  name                      = local.name
-  vpc_id                    = local.vpc_id
-  deployment_mode           = local.rabbitmq_cluster_mode_enabled ? "CLUSTER_MULTI_AZ" : "SINGLE_INSTANCE"
-  create_security_groups    = var.create_security_groups
-  extra_security_groups     = concat(var.rabbitmq_extra_security_group_ids, [module.bigeye_admin.client_security_group_id])
-  extra_ingress_cidr_blocks = concat(var.rabbitmq_extra_ingress_cidr_blocks, var.internal_additional_ingress_cidrs)
-  subnet_ids                = local.rabbitmq_subnet_group_ids
-  instance_type             = var.rabbitmq_instance_type
-  engine_version            = var.rabbitmq_engine_version
-  maintenance_day           = var.rabbitmq_maintenance_day
-  maintenance_time          = var.rabbitmq_maintenance_time
-  user_name                 = var.rabbitmq_user_name
-  user_password             = local.create_rabbitmq_user_password_secret ? aws_secretsmanager_secret_version.rabbitmq_user_password[0].secret_string : data.aws_secretsmanager_secret_version.byo_rabbitmq_user_password[0].secret_string
-  tags                      = merge(local.tags, { app = "datawatch" })
 }
 
 #======================================================
@@ -1398,7 +1340,6 @@ module "monocle" {
   additional_security_group_ids = concat(
     var.monocle_extra_security_group_ids,
     [module.bigeye_admin.client_security_group_id],
-    var.create_security_groups && local.create_rabbitmq ? [module.rabbitmq[0].client_security_group_id] : [],
 
   )
   traffic_port           = var.monocle_port
@@ -1447,20 +1388,17 @@ module "monocle" {
 
   environment_variables = merge(
     {
-      ENVIRONMENT                = var.environment
-      INSTANCE                   = var.instance
-      PORT                       = var.monocle_port
-      MQ_BROKER_HOST             = local.rabbitmq_endpoint
-      MQ_BROKER_USERNAME         = var.rabbitmq_user_name
-      ML_MODELS_S3_BUCKET        = module.s3_buckets["models"].id
-      DEPLOY_TYPE                = "AWS"
-      QUEUE_CONNECTION_HEARTBEAT = "1000"
-      BACKLOG                    = "512"
-      WORKERS                    = var.monocle_worker_count == 0 ? var.monocle_cpu * 2 / 1024 : 2
-      TIMEOUT                    = "900"
-      DATAWATCH_ADDRESS          = "https://${module.internalapi.dns_name}"
-      TEMPORAL_ADDRESS           = "${local.temporal_dns_name}:${local.temporal_lb_port}"
-      TEMPORAL_NAMESPACE         = var.temporal_namespace
+      ENVIRONMENT         = var.environment
+      INSTANCE            = var.instance
+      PORT                = var.monocle_port
+      ML_MODELS_S3_BUCKET = module.s3_buckets["models"].id
+      DEPLOY_TYPE         = "AWS"
+      BACKLOG             = "512"
+      WORKERS             = var.monocle_worker_count == 0 ? var.monocle_cpu * 2 / 1024 : 2
+      TIMEOUT             = "900"
+      DATAWATCH_ADDRESS   = "https://${module.internalapi.dns_name}"
+      TEMPORAL_ADDRESS    = "${local.temporal_dns_name}:${local.temporal_lb_port}"
+      TEMPORAL_NAMESPACE  = var.temporal_namespace
     },
     local.sentry_event_level_env_variable,
     var.datadog_agent_enabled ? {
@@ -1480,7 +1418,6 @@ module "monocle" {
     local.sentry_dsn_secret_map,
     local.stitch_secrets_map,
     {
-      MQ_BROKER_PASSWORD  = local.rabbitmq_user_password_secret_arn
       ROBOT_PASSWORD      = local.robot_password_secret_arn
       ROBOT_AGENT_API_KEY = local.robot_agent_apikey_secret_arn
     },
@@ -1557,7 +1494,6 @@ module "toretto" {
   additional_security_group_ids = concat(
     var.toretto_extra_security_group_ids,
     [module.bigeye_admin.client_security_group_id],
-    var.create_security_groups && local.create_rabbitmq ? [module.rabbitmq[0].client_security_group_id] : [],
   )
   traffic_port           = var.toretto_port
   ecs_cluster_id         = aws_ecs_cluster.this.id
@@ -1571,7 +1507,7 @@ module "toretto" {
   healthcheck_path                       = "/health"
 
   # Task settings
-  control_desired_count     = var.toretto_autoscaling_enabled ? false : true
+  control_desired_count     = true
   desired_count             = var.toretto_desired_count
   spot_instance_config      = var.spot_instance_config
   cpu                       = var.toretto_cpu
@@ -1606,20 +1542,17 @@ module "toretto" {
 
   environment_variables = merge(
     {
-      ENVIRONMENT                = var.environment
-      INSTANCE                   = var.instance
-      MQ_BROKER_HOST             = local.rabbitmq_endpoint
-      MQ_BROKER_USERNAME         = var.rabbitmq_user_name
-      ML_MODELS_S3_BUCKET        = module.s3_buckets["models"].id
-      DEPLOY_TYPE                = "AWS"
-      QUEUE_CONNECTION_HEARTBEAT = "1000"
-      PORT                       = var.toretto_port
-      BACKLOG                    = "512"
-      WORKERS                    = "1"
-      TIMEOUT                    = "900"
-      DATAWATCH_ADDRESS          = "https://${module.internalapi.dns_name}"
-      TEMPORAL_ADDRESS           = "${local.temporal_dns_name}:${local.temporal_lb_port}"
-      TEMPORAL_NAMESPACE         = var.temporal_namespace
+      ENVIRONMENT         = var.environment
+      INSTANCE            = var.instance
+      ML_MODELS_S3_BUCKET = module.s3_buckets["models"].id
+      DEPLOY_TYPE         = "AWS"
+      PORT                = var.toretto_port
+      BACKLOG             = "512"
+      WORKERS             = "1"
+      TIMEOUT             = "900"
+      DATAWATCH_ADDRESS   = "https://${module.internalapi.dns_name}"
+      TEMPORAL_ADDRESS    = "${local.temporal_dns_name}:${local.temporal_lb_port}"
+      TEMPORAL_NAMESPACE  = var.temporal_namespace
     },
     local.sentry_event_level_env_variable,
     var.toretto_additional_environment_vars,
@@ -1629,7 +1562,6 @@ module "toretto" {
     local.sentry_dsn_secret_map,
     local.stitch_secrets_map,
     {
-      MQ_BROKER_PASSWORD  = local.rabbitmq_user_password_secret_arn
       ROBOT_PASSWORD      = local.robot_password_secret_arn
       ROBOT_AGENT_API_KEY = local.robot_agent_apikey_secret_arn
     },
@@ -1640,80 +1572,6 @@ module "toretto" {
   create_dns_records = var.create_dns_records
   route53_zone_id    = data.aws_route53_zone.this[0].zone_id
   dns_name           = "${local.base_dns_alias}-toretto.${var.top_level_dns_name}"
-}
-
-resource "aws_appautoscaling_target" "toretto" {
-  count              = var.toretto_autoscaling_enabled ? 1 : 0
-  depends_on         = [module.toretto]
-  min_capacity       = 1
-  max_capacity       = 100
-  resource_id        = format("service/%s/%s-toretto", local.name, local.name)
-  scalable_dimension = "ecs:service:DesiredCount"
-  service_namespace  = "ecs"
-}
-
-locals {
-  toretto_desired_count_step1 = coalesce(var.toretto_desired_count_step1, var.datawatch_desired_count * 2)
-  toretto_desired_count_step2 = coalesce(var.toretto_desired_count_step2, var.datawatch_desired_count * 3)
-  toretto_desired_count_step3 = coalesce(var.toretto_desired_count_step3, var.datawatch_desired_count * 4)
-}
-
-resource "aws_appautoscaling_policy" "toretto" {
-  count              = var.toretto_autoscaling_enabled ? 1 : 0
-  depends_on         = [aws_appautoscaling_target.toretto]
-  name               = format("%s-toretto-autoscaling", local.name)
-  policy_type        = "StepScaling"
-  resource_id        = aws_appautoscaling_target.toretto[0].resource_id
-  scalable_dimension = aws_appautoscaling_target.toretto[0].scalable_dimension
-  service_namespace  = aws_appautoscaling_target.toretto[0].service_namespace
-  step_scaling_policy_configuration {
-    adjustment_type         = "ExactCapacity"
-    cooldown                = 600
-    metric_aggregation_type = "Average"
-
-    step_adjustment {
-      scaling_adjustment          = var.toretto_desired_count
-      metric_interval_upper_bound = var.toretto_autoscaling_threshold_step1
-    }
-
-    step_adjustment {
-      scaling_adjustment          = local.toretto_desired_count_step1
-      metric_interval_lower_bound = var.toretto_autoscaling_threshold_step1
-      metric_interval_upper_bound = var.toretto_autoscaling_threshold_step2
-    }
-
-    step_adjustment {
-      scaling_adjustment          = local.toretto_desired_count_step2
-      metric_interval_lower_bound = var.toretto_autoscaling_threshold_step2
-      metric_interval_upper_bound = var.toretto_autoscaling_threshold_step3
-    }
-
-    step_adjustment {
-      scaling_adjustment          = local.toretto_desired_count_step3
-      metric_interval_lower_bound = var.toretto_autoscaling_threshold_step3
-    }
-  }
-}
-
-resource "aws_cloudwatch_metric_alarm" "toretto" {
-  count           = var.toretto_autoscaling_enabled && local.create_rabbitmq ? 1 : 0
-  alarm_name      = format("%s-toretto autoscaling", local.name)
-  actions_enabled = true
-  alarm_actions   = [aws_appautoscaling_policy.toretto[0].arn]
-  metric_name     = "MessageCount"
-  namespace       = "AWS/AmazonMQ"
-  statistic       = "Average"
-  dimensions = {
-    Broker      = module.rabbitmq[0].name
-    VirtualHost = "/"
-    Queue       = "ml_training_task_queue"
-  }
-  period              = 300
-  evaluation_periods  = 1
-  datapoints_to_alarm = 1
-  threshold           = 0
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  treat_missing_data  = "missing"
 }
 
 #======================================================
@@ -2237,8 +2095,6 @@ locals {
     REDIRECT_ADDRESS = "https://${local.vanity_dns_name}"
     TORETTO_ADDRESS  = "https://${module.toretto.dns_name}"
 
-    MQ_BROKER_HOST     = local.rabbitmq_endpoint
-    MQ_BROKER_USERNAME = var.rabbitmq_user_name
 
     REDIS_PRIMARY_ADDRESS = module.redis.primary_endpoint_dns_name
     REDIS_PRIMARY_PORT    = module.redis.port
@@ -2489,7 +2345,6 @@ module "datawork" {
       MAX_RAM_PERCENTAGE                 = var.datawork_jvm_max_ram_pct
       METRIC_RUN_WORKERS                 = "0"
       EXCLUDE_QUEUES                     = local.datawork_temporal_exclude_queues_str
-      MQ_EXCLUDE_QUEUES                  = local.datawork_mq_exclude_queues
       HEAP_DUMP_PATH                     = contains(var.efs_volume_enabled_services, "datawork") ? var.efs_mount_point : ""
       AGENT_HEARTBEAT_WF_EXEC_SIZE       = var.temporal_client_agent_heartbeat_wf_exec_size
       AGENT_HEARTBEAT_ACT_EXEC_SIZE      = var.temporal_client_agent_heartbeat_act_exec_size
@@ -2596,7 +2451,6 @@ module "backfillwork" {
       WORKERS_ENABLED          = "true"
       MAX_RAM_PERCENTAGE       = var.backfillwork_jvm_max_ram_pct
       METRIC_RUN_WORKERS       = "0"
-      MQ_INCLUDE_QUEUES        = local.backfillwork_mq_include_queues_str
       HEAP_DUMP_PATH           = contains(var.efs_volume_enabled_services, "backfillwork") ? var.efs_mount_point : ""
       TEMPORAL_WORKERS_ENABLED = "false"
     },
@@ -2677,7 +2531,6 @@ module "indexwork" {
       MAX_RAM_PERCENTAGE             = var.indexwork_jvm_max_ram_pct
       METRIC_RUN_WORKERS             = "0"
       INCLUDE_QUEUES                 = local.indexwork_temporal_include_queues_str
-      MQ_INCLUDE_QUEUES              = local.indexwork_mq_include_queues_str
       HEAP_DUMP_PATH                 = contains(var.efs_volume_enabled_services, "indexwork") ? var.efs_mount_point : ""
       INDEXING_WF_EXEC_SIZE          = var.temporal_client_indexing_wf_exec_size
       INDEXING_ACT_EXEC_SIZE         = var.temporal_client_indexing_act_exec_size
@@ -2767,8 +2620,6 @@ module "lineagework" {
       MAX_RAM_PERCENTAGE           = var.lineagework_jvm_max_ram_pct
       METRIC_RUN_WORKERS           = "0"
       INCLUDE_QUEUES               = local.lineagework_temporal_include_queues_str
-      MQ_WORKERS_ENABLED           = "true"
-      MQ_INCLUDE_QUEUES            = local.lineagework_mq_include_queues_str
       HEAP_DUMP_PATH               = contains(var.efs_volume_enabled_services, "lineagework") ? var.efs_mount_point : ""
       SOURCE_LINEAGE_WF_EXEC_SIZE  = var.temporal_client_source_lineage_wf_exec_size
       SOURCE_LINEAGE_ACT_EXEC_SIZE = var.temporal_client_source_lineage_act_exec_size
@@ -2858,7 +2709,6 @@ module "metricwork" {
       MAX_RAM_PERCENTAGE                     = var.metricwork_jvm_max_ram_pct
       METRIC_RUN_WORKERS                     = "1"
       INCLUDE_QUEUES                         = local.metricwork_temporal_include_queues_str
-      MQ_INCLUDE_QUEUES                      = local.metricwork_mq_include_queues_str
       HEAP_DUMP_PATH                         = contains(var.efs_volume_enabled_services, "metricwork") ? var.efs_mount_point : ""
       TRIGGER_BATCH_METRIC_RUN_WF_EXEC_SIZE  = var.temporal_client_trigger_batch_metric_run_wf_exec_size
       TRIGGER_BATCH_METRIC_RUN_ACT_EXEC_SIZE = var.temporal_client_trigger_batch_metric_run_act_exec_size

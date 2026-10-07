@@ -159,8 +159,8 @@ variable "byovpc_vpc_id" {
   default     = ""
 }
 
-variable "byovpc_rabbitmq_subnet_ids" {
-  description = "List of subnet IDs to launch RabbitMQ in. These do not need internet access."
+variable "byovpc_opensearch_subnet_ids" {
+  description = "List of subnet IDs to launch Temporal's OpenSearch cluster in. These do not need internet access."
   type        = list(string)
   default     = []
 }
@@ -397,69 +397,6 @@ variable "redis_maintenance_window" {
   default     = "wed:01:00-wed:02:00"
 }
 
-
-#======================================================
-# RabbitMQ
-#======================================================
-variable "byo_rabbitmq_endpoint" {
-  description = "If managing your own RabbitMQ broker, use this variable to specify its endpoint (e.g. amqps://<host>:port). An Amazon MQ RabbitMQ broker will be managed in this module if byo_rabbitmq_endpoint is not set"
-  type        = string
-  default     = ""
-}
-
-variable "rabbitmq_user_name" {
-  description = "The user name to log into RabbitMQ with"
-  type        = string
-  default     = "bigeye"
-}
-
-variable "rabbitmq_user_password_secret_arn" {
-  description = "The ARN holding the password to log into RabbitMQ with. One will be created if not provided"
-  type        = string
-  default     = ""
-}
-
-variable "rabbitmq_extra_security_group_ids" {
-  description = "A list of additional security group IDs to apply to the RabbitMQ broker.  See also rabbitmq_extra_ingress_cidr_blocks"
-  type        = list(string)
-  default     = []
-}
-
-variable "rabbitmq_extra_ingress_cidr_blocks" {
-  description = "A list of additional ingress cidrs to allow access to both the AMQPS port and the HTTPS admin port.  This is necessary to use in cases where it is required to grant access to RabbitMQ externally as AWS MQ does not allow modifying security groups after MQ creation."
-  type        = list(string)
-  default     = []
-}
-
-variable "rabbitmq_instance_type" {
-  description = "The instance type of the RabbitMQ broker"
-  type        = string
-  default     = "mq.t3.micro"
-}
-
-variable "rabbitmq_cluster_enabled" {
-  description = "Whether to use the Multi-AZ Cluster mode. If unset, it will defer to the redundant_infrastructure variable"
-  type        = bool
-  default     = null
-}
-
-variable "rabbitmq_engine_version" {
-  description = "Engine version for RabbitMQ. See - https://docs.aws.amazon.com/amazon-mq/latest/developer-guide/rabbitmq-version-management.html"
-  type        = string
-  default     = "3.13"
-}
-
-variable "rabbitmq_maintenance_day" {
-  description = "The day of week to schedule maintenance, e.g. WEDNESDAY"
-  type        = string
-  default     = "WEDNESDAY"
-}
-
-variable "rabbitmq_maintenance_time" {
-  description = "The time of day, in UTC, to schedule maintenance, e.g. 22:00"
-  type        = string
-  default     = "22:00"
-}
 
 #======================================================
 # Security
@@ -772,48 +709,6 @@ variable "toretto_lb_extra_security_group_ids" {
   description = "Additional security group ids to toretto ALB"
   type        = list(string)
   default     = []
-}
-
-variable "toretto_autoscaling_enabled" {
-  description = "Whether toretto autoscaling is enabled. Note - if you change this variable, it changes the terraform resource that is created. You must run 'terraform state mv' in order to gracefully make this change"
-  type        = bool
-  default     = false
-}
-
-variable "toretto_autoscaling_threshold_step1" {
-  description = "The first autothreshold metric step"
-  type        = number
-  default     = 20
-}
-
-variable "toretto_autoscaling_threshold_step2" {
-  description = "The second autothreshold metric step"
-  type        = number
-  default     = 500
-}
-
-variable "toretto_autoscaling_threshold_step3" {
-  description = "The third and final autothreshold metric step"
-  type        = number
-  default     = 1000
-}
-
-variable "toretto_desired_count_step1" {
-  description = "How many toretto tasks to run after reaching the first autoscaling step, if not specified it will be twice the toretto_desired_count"
-  type        = number
-  default     = null
-}
-
-variable "toretto_desired_count_step2" {
-  description = "How many toretto tasks to run after reaching the second autoscaling step, if not specified it will be three times the toretto_desired_count"
-  type        = number
-  default     = null
-}
-
-variable "toretto_desired_count_step3" {
-  description = "How many toretto tasks to run after reaching the third and final autoscaling step, if not specified it will be four times the toretto_desired_count"
-  type        = number
-  default     = null
 }
 
 variable "toretto_enable_ecs_exec" {

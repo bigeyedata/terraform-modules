@@ -17,7 +17,6 @@ module "alarms" {
   datawatch_rds_identifier         = module.bigeye.datawatch_rds_identifier
   datawatch_rds_replica_identifier = module.bigeye.datawatch_rds_replica_identifier
   temporal_rds_identifier          = module.bigeye.temporal_rds_identifier
-  rabbitmq_name                    = module.bigeye.rabbitmq_name
   redis_cluster_id                 = module.bigeye.redis_cluster_id
 }
 

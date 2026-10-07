@@ -12,7 +12,6 @@ The module includes:
 * IAM Roles (create and manage ECS roles)
 * Opensearch
 * RDS databases
-* RabbitMQ Broker (Amazon MQ)
 * Secrets Manager
 * Security Groups
 * S3 buckets

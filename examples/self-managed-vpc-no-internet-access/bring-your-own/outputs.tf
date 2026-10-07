@@ -13,12 +13,6 @@ output "datawatch_iam_role_arn" {
 output "monocle_iam_role_arn" {
   value = aws_cloudformation_stack.iam.outputs["MonocleRoleArn"]
 }
-output "rabbitmq_endpoint" {
-  value = split(",", aws_cloudformation_stack.mq.outputs["Endpoints"])[0]
-}
-output "rabbitmq_password_secret_arn" {
-  value = aws_secretsmanager_secret.rabbitmq_user_password.arn
-}
 output "rds_security_group_id" {
   value = aws_security_group.rds.id
 }
@@ -33,9 +27,6 @@ output "services_security_group_id" {
 }
 output "temporal_security_group_id" {
   value = aws_security_group.temporal.id
-}
-output "rabbitmq_security_group_id" {
-  value = aws_security_group.rabbitmq.id
 }
 output "ses_hostname" {
   value = format("email-smtp.%s.amazonaws.com", var.aws_region)

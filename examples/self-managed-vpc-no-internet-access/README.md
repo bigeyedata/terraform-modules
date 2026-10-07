@@ -225,7 +225,6 @@ resources are configured in this step:
 * Security groups
 * IAM Roles for the services
 * An SMTP server (SES)
-* RabbitMQ Broker (Amazon MQ)
 
 This step sets up the VPC for the Bigeye application. The application
 will be installed in subnets with no internet access. A bastion can
@@ -241,7 +240,7 @@ different SMTP server, and that's fine.
 Additionally, the sample VPC configuration is effective for demonstration purposes, but
 you may have completely different networking requirements.
 
-Note: The AWS API endpoints for IAM, Amazon Certificate Manager, Route53, and Amazon MQ
+Note: The AWS API endpoints for IAM, Amazon Certificate Manager, and Route53
 are not available as private VPC endpoints. In order to install these from the
 internet-disconnected bastion, they are deployed as CloudFormation stacks, managed
 by terraform.
