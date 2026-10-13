@@ -18,8 +18,8 @@ Follow all the configuration steps in the standard install,
 and then add the following variables:
 
 * `byovpc_vpc_id` - get this from the VPC you're installing within
-* `byovpc_rabbitmq_subnet_ids` - a list of subnet IDs to install the RabbitMQ
-broker. These do not need internet access.
+* `byovpc_opensearch_subnet_ids` - a list of subnet IDs to install Temporal's
+OpenSearch cluster. These do not need internet access.
 * `byovpc_internal_subnet_ids` - a list of subnet IDs to create internal
 service load balancers. These do not need internet access.
 * `byovpc_application_subnet_ids` - a list of subnet IDs to launch ECS tasks.

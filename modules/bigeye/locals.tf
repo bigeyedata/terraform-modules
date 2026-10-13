@@ -30,7 +30,7 @@ locals {
   application_subnet_ids          = local.create_vpc ? module.vpc[0].private_subnets : var.byovpc_application_subnet_ids
   database_subnet_group_name      = local.create_vpc ? module.vpc[0].database_subnet_group_name : var.byovpc_database_subnet_group_name
   elasticache_subnet_group_name   = local.create_vpc ? module.vpc[0].elasticache_subnet_group_name : var.byovpc_redis_subnet_group_name
-  rabbitmq_subnet_group_ids       = local.create_vpc ? module.vpc[0].elasticache_subnets : var.byovpc_rabbitmq_subnet_ids
+  opensearch_subnet_ids           = local.create_vpc ? module.vpc[0].elasticache_subnets : var.byovpc_opensearch_subnet_ids
 
   external_alb_security_group_ids = concat(
     var.create_security_groups ? [aws_security_group.external_alb[0].id] : [],
@@ -58,41 +58,6 @@ locals {
   lineagework_temporal_include_queues_str = join(",", local.lineage_temporal_queues)
   metricwork_temporal_include_queues_str  = join(",", local.metric_run_temporal_queues)
 
-  # Rabbit MQ
-  create_rabbitmq               = var.byo_rabbitmq_endpoint == ""
-  rabbitmq_endpoint             = local.create_rabbitmq ? module.rabbitmq[0].endpoint : var.byo_rabbitmq_endpoint
-  rabbitmq_cluster_mode_enabled = var.rabbitmq_cluster_enabled == null ? var.redundant_infrastructure : var.rabbitmq_cluster_enabled
-  # compact() will strip the empty elements
-  backfillwork_mq_include_queues = compact([
-    "backfill",
-    "posthoc",
-  ])
-  backfillwork_mq_include_queues_str = join(",", local.backfillwork_mq_include_queues)
-
-  datawork_mq_exclude_queues = join(",",
-    concat(
-      local.backfillwork_mq_include_queues,
-      local.indexwork_mq_include_queues,
-      local.lineagework_mq_include_queues,
-      local.metricwork_mq_include_queues,
-    )
-  )
-
-  indexwork_mq_include_queues = compact([
-    "dataset_index_op_v2",
-    "catalog_index_v2",
-  ])
-  indexwork_mq_include_queues_str = join(",", local.indexwork_mq_include_queues)
-
-  lineagework_mq_include_queues = compact([
-    "lineage"
-  ])
-  lineagework_mq_include_queues_str = join(",", local.lineagework_mq_include_queues)
-  metricwork_mq_include_queues = compact([
-    "metric_batch"
-  ])
-  metricwork_mq_include_queues_str = join(",", local.metricwork_mq_include_queues)
-
   # Redis
   redis_instance_type_default = local.is_govcloud ? "cache.t3.micro" : "cache.t4g.micro"
   redis_instance_type         = var.redis_instance_type == "" ? local.redis_instance_type_default : var.redis_instance_type
@@ -105,8 +70,6 @@ locals {
 
   # Secrets
   secret_retention_days                  = 0
-  create_rabbitmq_user_password_secret   = var.rabbitmq_user_password_secret_arn == ""
-  rabbitmq_user_password_secret_arn      = local.create_rabbitmq_user_password_secret ? aws_secretsmanager_secret.rabbitmq_user_password[0].arn : var.rabbitmq_user_password_secret_arn
   create_redis_auth_token_secret         = var.redis_auth_token_secret_arn == ""
   redis_auth_token_secret_arn            = local.create_redis_auth_token_secret ? aws_secretsmanager_secret.redis_auth_token[0].arn : var.redis_auth_token_secret_arn
   create_robot_password_secret           = var.datawatch_robot_password_secret_arn == ""
@@ -249,7 +212,6 @@ locals {
   datawatch_jdbc_database_name = coalesce(var.datawatch_db_name, var.datawatch_rds_db_name)
   datawatch_additional_security_groups = var.create_security_groups ? concat(
     [module.bigeye_admin.client_security_group_id],
-    local.create_rabbitmq ? [module.rabbitmq[0].client_security_group_id] : [],
   ) : []
 
   datawatch_lineageplus_secrets_map = var.datawatch_lineageplus_password_secret_arn != "" ? {
@@ -270,7 +232,6 @@ locals {
     local.remember_me_old_cipher_key_secrets_map,
     {
       REDIS_PRIMARY_PASSWORD = local.redis_auth_token_secret_arn
-      MQ_BROKER_PASSWORD     = local.rabbitmq_user_password_secret_arn
       MYSQL_PASSWORD         = local.datawatch_rds_password_secret_arn
       ROBOT_PASSWORD         = local.robot_password_secret_arn
       ROBOT_AGENT_API_KEY    = local.robot_agent_apikey_secret_arn

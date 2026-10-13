@@ -42,6 +42,7 @@ terraform version and application version.
 
 | terraform-modules Version | Application Version | Comment                                                                                  |
 |---------------------------|---------------------|------------------------------------------------------------------------------------------|
+| >= 29.0.0                 | 2.100.0             | RabbitMQ removed; the application must no longer expect a broker or MQ_BROKER_* env vars |
 | >= 28.0.0                 | 2.94.0              | `lineageapi` service removed; the bigeye-admin CLI must no longer require its env vars   |
 | >= 12.0.0                 | 1.73.0              | dedicated indexwork service for catalog indexing operations                              |
 | >= 11.4.0                 | 1.71.0              | migrate queue membership to "include" list that became available in app version `1.71.0` |
@@ -50,6 +51,85 @@ terraform version and application version.
 | >= 3.12.0                 | 1.48.0              | Application 1.48.0 requires at least terraform-modules version 3.12.0                    |
 
 ## Upgrading
+
+### Upgrading to 29.0.0
+
+RabbitMQ has been removed. The application moved all of its queues to Temporal,
+so the Amazon MQ broker, its password secret, its security groups and every
+`MQ_BROKER_*` environment variable are gone, along with the queue-membership
+settings (`MQ_INCLUDE_QUEUES`, `MQ_EXCLUDE_QUEUES`, `MQ_WORKERS_ENABLED`) that
+split work between the `datawork`, `backfillwork`, `indexwork`, `lineagework`
+and `metricwork` services. Those services remain; they are now driven entirely
+by their Temporal task queues.
+
+**Apply this only after the stack is running application version `2.100.0` or
+newer.** Older images still read `MQ_BROKER_HOST` and will fail to start without
+it. Because this release destroys the broker, there is no safe way back once
+applied — roll the application forward first, confirm it is healthy, and apply
+this in a later release.
+
+The broker is destroyed by this apply. Confirm the `catalog_index_v2`,
+`dataset_index_op_v2` and `integration_index` queues are empty first; anything
+still in them is lost.
+
+The following `bigeye` module variables have been removed:
+
+- `var.byo_rabbitmq_endpoint`
+- `var.rabbitmq_user_name`
+- `var.rabbitmq_user_password_secret_arn`
+- `var.rabbitmq_extra_security_group_ids`
+- `var.rabbitmq_extra_ingress_cidr_blocks`
+- `var.rabbitmq_instance_type`
+- `var.rabbitmq_cluster_enabled`
+- `var.rabbitmq_engine_version`
+- `var.rabbitmq_maintenance_day`
+- `var.rabbitmq_maintenance_time`
+
+`var.byovpc_rabbitmq_subnet_ids` is **renamed** to
+`var.byovpc_opensearch_subnet_ids`. The subnets themselves are unchanged -
+Temporal's OpenSearch cluster is what sits in them now - so BYO-VPC deployments
+need only rename the argument, with no resource churn.
+
+The following `bigeye` module output has been removed:
+
+- `output.rabbitmq_name`
+
+The following `alarms` module variables have been removed:
+
+- `var.rabbitmq_name`
+- `var.rabbitmq_message_count_disabled`
+- `var.rabbitmq_message_count_threshold`
+- `var.rabbitmq_message_count_period`
+- `var.rabbitmq_message_count_evaluation_periods`
+- `var.rabbitmq_message_count_datapoints_to_alarm`
+- `var.rabbitmq_message_count_sns_arns`
+
+Upgrade the `alarms` module in the same apply as the `bigeye` module, since it
+takes `rabbitmq_name` from the `bigeye` module's removed output.
+
+The following `admin` module variables have been removed:
+
+- `var.rabbitmq_endpoint`
+- `var.rabbitmq_username`
+- `var.rabbitmq_password_secret_arn`
+
+The `self-managed-rabbitmq` example has been removed.
+
+Toretto autoscaling has been removed. The CloudWatch alarm that drove it
+watched the RabbitMQ `ml_training_task_queue` depth; that queue stopped
+receiving messages when ML training moved to Temporal, so the alarm has been
+inert and toretto has not actually scaled since. The scaling target, the step
+scaling policy and these variables are gone:
+
+- `var.toretto_autoscaling_enabled`
+- `var.toretto_autoscaling_threshold_step1` / `_step2` / `_step3`
+- `var.toretto_desired_count_step1` / `_step2` / `_step3`
+
+**Terraform now owns toretto's desired count again**, so this apply sets it to
+`var.toretto_desired_count` (default `1`). If the service is currently running
+more tasks than that - a scale-out that never scaled back in once the alarm went
+quiet - this scales it down. Check the running count first and raise
+`var.toretto_desired_count` in the same change if toretto needs it.
 
 ### Upgrading to 28.0.0
 

@@ -264,21 +264,6 @@ variable "temporal_port" {
   type        = number
 }
 
-variable "rabbitmq_endpoint" {
-  description = "RabbitMQ endpoint"
-  type        = string
-}
-
-variable "rabbitmq_username" {
-  description = "RabbitMQ user name"
-  type        = string
-}
-
-variable "rabbitmq_password_secret_arn" {
-  description = "RabbitMQ password secret ARN"
-  type        = string
-}
-
 variable "task_iam_role_arn" {
   description = "The ECS Task IAM Role, will create if not specified"
   type        = string

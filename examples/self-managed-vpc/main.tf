@@ -15,7 +15,7 @@ module "bigeye" {
 
   # BYOVPC
   byovpc_vpc_id                     = "vpc-XXXXXXXXXXX"
-  byovpc_rabbitmq_subnet_ids        = ["subnet-01****", "subnet-02****", "subnet-03****"]
+  byovpc_opensearch_subnet_ids      = ["subnet-01****", "subnet-02****", "subnet-03****"]
   byovpc_internal_subnet_ids        = ["subnet-11****", "subnet-12****", "subnet-13****"]
   byovpc_application_subnet_ids     = ["subnet-21****", "subnet-22****", "subnet-23****"]
   byovpc_public_subnet_ids          = ["subnet-31****", "subnet-32****", "subnet-33****"]

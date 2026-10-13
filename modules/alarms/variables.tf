@@ -15,11 +15,6 @@ variable "high_urgency_sns_topic_arn" {
   type        = string
 }
 
-variable "rabbitmq_name" {
-  description = "The name of the rabbitmq broker"
-  type        = string
-}
-
 variable "redis_cluster_id" {
   description = "The redis cluster ID"
   type        = string
@@ -147,42 +142,6 @@ variable "redis_memory_threshold" {
   description = "Alarms when the metric is above this value"
   type        = number
   default     = 60
-}
-
-variable "rabbitmq_message_count_datapoints_to_alarm" {
-  description = "The number of datapoints breaching threshold to alarm"
-  type        = number
-  default     = 3
-}
-
-variable "rabbitmq_message_count_disabled" {
-  description = "Whether to disable the specific alarm"
-  type        = bool
-  default     = false
-}
-
-variable "rabbitmq_message_count_evaluation_periods" {
-  description = "The number of periods over which the metric is evaluated"
-  type        = number
-  default     = 3
-}
-
-variable "rabbitmq_message_count_period" {
-  description = "The number of seconds over which the metric is evaluated"
-  type        = number
-  default     = 300
-}
-
-variable "rabbitmq_message_count_sns_arns" {
-  description = "The SNS topic arns to notify when the alarm fires"
-  type        = list(string)
-  default     = null
-}
-
-variable "rabbitmq_message_count_threshold" {
-  description = "Alarms when the metric is above this value"
-  type        = number
-  default     = 100000
 }
 
 variable "rds_datawatch_burst_balance_datapoints_to_alarm" {

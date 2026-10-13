@@ -75,16 +75,12 @@ locals {
 
     TEMPORAL_PORT = tostring(var.temporal_port)
 
-    RABBITMQ_ENDPOINT    = var.rabbitmq_endpoint
-    RABBITMQ_USERNAME    = var.rabbitmq_username
-    RABBITMQ_TLS_ENABLED = "true"
   }
 
   secret_arns = {
     DATAWATCH_RDS_PASSWORD = var.datawatch_rds_password_secret_arn
     TEMPORAL_RDS_PASSWORD  = var.temporal_rds_password_secret_arn
     REDIS_PASSWORD         = var.redis_password_secret_arn
-    RABBITMQ_PASSWORD      = var.rabbitmq_password_secret_arn
   }
 
   create_iam_role    = var.task_iam_role_arn == ""

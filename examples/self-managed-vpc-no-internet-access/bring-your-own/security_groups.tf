@@ -1,24 +1,3 @@
-resource "aws_security_group" "rabbitmq" {
-  vpc_id      = module.vpc.vpc_id
-  name        = format("%s-rabbitmq", local.name)
-  description = "Allows ingress to rabbitmq"
-  ingress {
-    from_port   = 5671
-    to_port     = 5671
-    protocol    = "TCP"
-    cidr_blocks = [var.cidr_block]
-    description = "Allow RabbitMQ traffic"
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 65535
-    protocol    = "TCP"
-    cidr_blocks = [var.cidr_block]
-    description = "Allows egress"
-  }
-}
-
 resource "aws_security_group" "temporal" {
   vpc_id      = module.vpc.vpc_id
   name        = format("%s-temporal", local.name)
