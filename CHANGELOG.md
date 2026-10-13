@@ -1,3 +1,27 @@
+# [29.0.0](https://github.com/bigeyedata/terraform-modules/compare/v28.1.0...v29.0.0) (2026-10-13)
+
+
+* feat!: decommission the RabbitMQ broker ([96467f1](https://github.com/bigeyedata/terraform-modules/commit/96467f12bb1703250e71436ef081ea4b5b6e54cf)), closes [semantic-data-platform#29370](https://github.com/semantic-data-platform/issues/29370)
+
+
+### BREAKING CHANGES
+
+* The RabbitMQ broker and every rabbitmq_* variable on the
+bigeye, alarms and admin modules have been removed, and applying this destroys
+the broker. var.byovpc_rabbitmq_subnet_ids is renamed to
+var.byovpc_opensearch_subnet_ids; the subnets are unchanged, so BYO-VPC stacks
+need only rename the argument. Toretto autoscaling and its variables are gone,
+and Terraform now owns toretto's desired count again - check the running count
+before applying. Stacks must already be running application version 2.100.0 or
+newer, which no longer expects a broker; on an older image datawatch fails to
+start without MQ_BROKER_HOST. Confirm the catalog_index_v2,
+dataset_index_op_v2 and integration_index queues are empty before applying. See
+README "Upgrading to 29.0.0".
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>
+
+
+
 # [28.1.0](https://github.com/bigeyedata/terraform-modules/compare/v28.0.2...v28.1.0) (2026-10-07)
 
 
