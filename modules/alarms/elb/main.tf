@@ -11,18 +11,19 @@ terraform {
 
 locals {
   any_alarm_enabled = !(var.host_count_disabled && var.response_time_disabled && var.error_rate_disabled)
+  lookup_by_name    = local.any_alarm_enabled && var.lookup_by_name
 
-  cloudwatch_load_balancer_value = one(data.aws_lb.this[*].arn_suffix)
-  cloudwatch_target_group_value  = one(data.aws_lb_target_group.this[*].arn_suffix)
+  cloudwatch_load_balancer_value = var.lookup_by_name ? one(data.aws_lb.this[*].arn_suffix) : var.lb_arn_suffix
+  cloudwatch_target_group_value  = var.lookup_by_name ? one(data.aws_lb_target_group.this[*].arn_suffix) : var.target_group_arn_suffix
 }
 
 data "aws_lb" "this" {
-  count = local.any_alarm_enabled ? 1 : 0
+  count = local.lookup_by_name ? 1 : 0
   name  = var.lb_name
 }
 
 data "aws_lb_target_group" "this" {
-  count = local.any_alarm_enabled ? 1 : 0
+  count = local.lookup_by_name ? 1 : 0
   name  = var.target_group_name
 }
 

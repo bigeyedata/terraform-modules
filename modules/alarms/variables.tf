@@ -2447,3 +2447,15 @@ variable "ecs_web_mem_threshold" {
   type        = number
   default     = 70
 }
+
+variable "lb_arn_suffixes" {
+  description = "arn_suffix of the stack's load balancers keyed internal, external and temporal, usually the bigeye module's lb_arn_suffixes output. Load balancers missing from the map are looked up by name, which fails to plan on a stack that has never been applied"
+  type        = map(string)
+  default     = {}
+}
+
+variable "target_group_arn_suffixes" {
+  description = "arn_suffix of the stack's target groups keyed by service, usually the bigeye module's target_group_arn_suffixes output. Target groups missing from the map are looked up by name, which fails to plan on a stack that has never been applied"
+  type        = map(string)
+  default     = {}
+}
