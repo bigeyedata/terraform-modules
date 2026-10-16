@@ -1,3 +1,12 @@
+# [29.1.0](https://github.com/bigeyedata/terraform-modules/compare/v29.0.0...v29.1.0) (2026-10-16)
+
+
+### Features
+
+* optionally create the first datawatch company and administrator on greenfield stacks ([6b2c6d0](https://github.com/bigeyedata/terraform-modules/commit/6b2c6d0eea276c671fb10c052f612c47e61fd7c7))
+
+
+
 # [29.0.0](https://github.com/bigeyedata/terraform-modules/compare/v28.1.0...v29.0.0) (2026-10-13)
 
 
