@@ -1,3 +1,12 @@
+# [29.2.0](https://github.com/bigeyedata/terraform-modules/compare/v29.1.0...v29.2.0) (2026-10-16)
+
+
+### Features
+
+* pass load balancer and target group arn_suffix to alarms so a new stack can be planned ([157f70e](https://github.com/bigeyedata/terraform-modules/commit/157f70e6ae4189870f8546aeda4ab33999fef0b0))
+
+
+
 # [29.1.0](https://github.com/bigeyedata/terraform-modules/compare/v29.0.0...v29.1.0) (2026-10-16)
 
 
