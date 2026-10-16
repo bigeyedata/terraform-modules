@@ -409,3 +409,31 @@ output "datawatch_initial_admin_password_secret_arn" {
   description = "ARN of the secret holding the initial administrator's password, or null when datawatch_initial_admin_enabled is false"
   value       = var.datawatch_initial_admin_enabled ? aws_secretsmanager_secret.initial_admin_password[0].arn : null
 }
+
+output "lb_arn_suffixes" {
+  description = "arn_suffix of the stack's load balancers keyed internal, external and temporal, for the alarms module's lb_arn_suffixes"
+  value = {
+    internal = aws_lb.internal_alb.arn_suffix
+    external = aws_lb.external_alb.arn_suffix
+    temporal = aws_lb.temporal.arn_suffix
+  }
+}
+
+output "target_group_arn_suffixes" {
+  description = "arn_suffix of the stack's target groups keyed by service, for the alarms module's target_group_arn_suffixes"
+  value = {
+    temporalui   = module.temporalui.target_group_full_name
+    temporal     = aws_lb_target_group.temporal.arn_suffix
+    monocle      = module.monocle.target_group_full_name
+    toretto      = module.toretto.target_group_full_name
+    datawatch    = module.datawatch.target_group_full_name
+    backfillwork = module.backfillwork.target_group_full_name
+    datawork     = module.datawork.target_group_full_name
+    indexwork    = module.indexwork.target_group_full_name
+    lineagework  = module.lineagework.target_group_full_name
+    metricwork   = module.metricwork.target_group_full_name
+    internalapi  = module.internalapi.target_group_full_name
+    web          = module.web.target_group_full_name
+    haproxy      = module.haproxy.target_group_full_name
+  }
+}

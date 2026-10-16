@@ -14,6 +14,31 @@ locals {
   high_urgency_sns_topic_arn = var.high_urgency_sns_topic_arn == "" ? aws_sns_topic.high_urgency[0].arn : var.high_urgency_sns_topic_arn
 }
 
+locals {
+  elb_alarm_load_balancers = {
+    temporalui   = "internal"
+    temporal     = "temporal"
+    monocle      = "internal"
+    toretto      = "internal"
+    datawatch    = "internal"
+    backfillwork = "internal"
+    datawork     = "internal"
+    indexwork    = "internal"
+    lineagework  = "internal"
+    metricwork   = "internal"
+    internalapi  = "internal"
+    web          = "internal"
+    haproxy      = "external"
+  }
+  elb_alarm_arn_suffixes = {
+    for app, lb in local.elb_alarm_load_balancers : app => {
+      lookup_by_name          = !(contains(keys(var.lb_arn_suffixes), lb) && contains(keys(var.target_group_arn_suffixes), app))
+      lb_arn_suffix           = lookup(var.lb_arn_suffixes, lb, null)
+      target_group_arn_suffix = lookup(var.target_group_arn_suffixes, app, null)
+    }
+  }
+}
+
 resource "aws_sns_topic" "low_urgency" {
   count = var.low_urgency_sns_topic_arn == "" ? 1 : 0
   name  = "${var.stack}-low-urgency-cloudwatch-alarm"
@@ -324,6 +349,9 @@ module "elb_temporalui" {
   app                            = "temporalui"
   lb_name                        = "${var.stack}-internal"
   target_group_name              = "${var.stack}-temporalui2"
+  lookup_by_name                 = local.elb_alarm_arn_suffixes["temporalui"].lookup_by_name
+  lb_arn_suffix                  = local.elb_alarm_arn_suffixes["temporalui"].lb_arn_suffix
+  target_group_arn_suffix        = local.elb_alarm_arn_suffixes["temporalui"].target_group_arn_suffix
   host_count_disabled            = var.elb_temporalui_host_count_disabled
   host_count_datapoints_to_alarm = var.elb_temporalui_host_count_datapoints_to_alarm
   host_count_evaluation_periods  = var.elb_temporalui_host_count_evaluation_periods
@@ -352,6 +380,9 @@ module "elb_temporal" {
   app                            = "temporal"
   lb_name                        = "${var.stack}-temporal"
   target_group_name              = "${var.stack}-temporal"
+  lookup_by_name                 = local.elb_alarm_arn_suffixes["temporal"].lookup_by_name
+  lb_arn_suffix                  = local.elb_alarm_arn_suffixes["temporal"].lb_arn_suffix
+  target_group_arn_suffix        = local.elb_alarm_arn_suffixes["temporal"].target_group_arn_suffix
   host_count_disabled            = var.elb_temporal_host_count_disabled
   host_count_datapoints_to_alarm = var.elb_temporal_host_count_datapoints_to_alarm
   host_count_evaluation_periods  = var.elb_temporal_host_count_evaluation_periods
@@ -369,6 +400,9 @@ module "elb_monocle" {
   app                            = "monocle"
   lb_name                        = "${var.stack}-internal"
   target_group_name              = "${var.stack}-monocle2"
+  lookup_by_name                 = local.elb_alarm_arn_suffixes["monocle"].lookup_by_name
+  lb_arn_suffix                  = local.elb_alarm_arn_suffixes["monocle"].lb_arn_suffix
+  target_group_arn_suffix        = local.elb_alarm_arn_suffixes["monocle"].target_group_arn_suffix
   host_count_disabled            = var.elb_monocle_host_count_disabled
   host_count_datapoints_to_alarm = var.elb_monocle_host_count_datapoints_to_alarm
   host_count_evaluation_periods  = var.elb_monocle_host_count_evaluation_periods
@@ -397,6 +431,9 @@ module "elb_toretto" {
   app                            = "toretto"
   lb_name                        = "${var.stack}-internal"
   target_group_name              = "${var.stack}-toretto2"
+  lookup_by_name                 = local.elb_alarm_arn_suffixes["toretto"].lookup_by_name
+  lb_arn_suffix                  = local.elb_alarm_arn_suffixes["toretto"].lb_arn_suffix
+  target_group_arn_suffix        = local.elb_alarm_arn_suffixes["toretto"].target_group_arn_suffix
   host_count_disabled            = var.elb_toretto_host_count_disabled
   host_count_datapoints_to_alarm = var.elb_toretto_host_count_datapoints_to_alarm
   host_count_evaluation_periods  = var.elb_toretto_host_count_evaluation_periods
@@ -425,6 +462,9 @@ module "elb_datawatch" {
   app                            = "datawatch"
   lb_name                        = "${var.stack}-internal"
   target_group_name              = "${var.stack}-datawatch2"
+  lookup_by_name                 = local.elb_alarm_arn_suffixes["datawatch"].lookup_by_name
+  lb_arn_suffix                  = local.elb_alarm_arn_suffixes["datawatch"].lb_arn_suffix
+  target_group_arn_suffix        = local.elb_alarm_arn_suffixes["datawatch"].target_group_arn_suffix
   host_count_disabled            = var.elb_datawatch_host_count_disabled
   host_count_datapoints_to_alarm = var.elb_datawatch_host_count_datapoints_to_alarm
   host_count_evaluation_periods  = var.elb_datawatch_host_count_evaluation_periods
@@ -453,6 +493,9 @@ module "elb_backfillwork" {
   app                            = "backfillwork"
   lb_name                        = "${var.stack}-internal"
   target_group_name              = "${var.stack}-backfillwork2"
+  lookup_by_name                 = local.elb_alarm_arn_suffixes["backfillwork"].lookup_by_name
+  lb_arn_suffix                  = local.elb_alarm_arn_suffixes["backfillwork"].lb_arn_suffix
+  target_group_arn_suffix        = local.elb_alarm_arn_suffixes["backfillwork"].target_group_arn_suffix
   host_count_disabled            = var.elb_backfillwork_host_count_disabled
   host_count_datapoints_to_alarm = var.elb_backfillwork_host_count_datapoints_to_alarm
   host_count_evaluation_periods  = var.elb_backfillwork_host_count_evaluation_periods
@@ -470,6 +513,9 @@ module "elb_datawork" {
   app                            = "datawork"
   lb_name                        = "${var.stack}-internal"
   target_group_name              = "${var.stack}-datawork2"
+  lookup_by_name                 = local.elb_alarm_arn_suffixes["datawork"].lookup_by_name
+  lb_arn_suffix                  = local.elb_alarm_arn_suffixes["datawork"].lb_arn_suffix
+  target_group_arn_suffix        = local.elb_alarm_arn_suffixes["datawork"].target_group_arn_suffix
   host_count_disabled            = var.elb_datawork_host_count_disabled
   host_count_datapoints_to_alarm = var.elb_datawork_host_count_datapoints_to_alarm
   host_count_evaluation_periods  = var.elb_datawork_host_count_evaluation_periods
@@ -487,6 +533,9 @@ module "elb_indexwork" {
   app                            = "indexwork"
   lb_name                        = "${var.stack}-internal"
   target_group_name              = "${var.stack}-indexwork2"
+  lookup_by_name                 = local.elb_alarm_arn_suffixes["indexwork"].lookup_by_name
+  lb_arn_suffix                  = local.elb_alarm_arn_suffixes["indexwork"].lb_arn_suffix
+  target_group_arn_suffix        = local.elb_alarm_arn_suffixes["indexwork"].target_group_arn_suffix
   host_count_disabled            = var.elb_indexwork_host_count_disabled
   host_count_datapoints_to_alarm = var.elb_indexwork_host_count_datapoints_to_alarm
   host_count_evaluation_periods  = var.elb_indexwork_host_count_evaluation_periods
@@ -504,6 +553,9 @@ module "elb_lineagework" {
   app                            = "lineagework"
   lb_name                        = "${var.stack}-internal"
   target_group_name              = "${var.stack}-lineagework2"
+  lookup_by_name                 = local.elb_alarm_arn_suffixes["lineagework"].lookup_by_name
+  lb_arn_suffix                  = local.elb_alarm_arn_suffixes["lineagework"].lb_arn_suffix
+  target_group_arn_suffix        = local.elb_alarm_arn_suffixes["lineagework"].target_group_arn_suffix
   host_count_disabled            = var.elb_lineagework_host_count_disabled
   host_count_datapoints_to_alarm = var.elb_lineagework_host_count_datapoints_to_alarm
   host_count_evaluation_periods  = var.elb_lineagework_host_count_evaluation_periods
@@ -521,6 +573,9 @@ module "elb_metricwork" {
   app                            = "metricwork"
   lb_name                        = "${var.stack}-internal"
   target_group_name              = "${var.stack}-metricwork2"
+  lookup_by_name                 = local.elb_alarm_arn_suffixes["metricwork"].lookup_by_name
+  lb_arn_suffix                  = local.elb_alarm_arn_suffixes["metricwork"].lb_arn_suffix
+  target_group_arn_suffix        = local.elb_alarm_arn_suffixes["metricwork"].target_group_arn_suffix
   host_count_disabled            = var.elb_metricwork_host_count_disabled
   host_count_datapoints_to_alarm = var.elb_metricwork_host_count_datapoints_to_alarm
   host_count_evaluation_periods  = var.elb_metricwork_host_count_evaluation_periods
@@ -538,6 +593,9 @@ module "elb_internalapi" {
   app                            = "internalapi"
   lb_name                        = "${var.stack}-internal"
   target_group_name              = "${var.stack}-internalapi2"
+  lookup_by_name                 = local.elb_alarm_arn_suffixes["internalapi"].lookup_by_name
+  lb_arn_suffix                  = local.elb_alarm_arn_suffixes["internalapi"].lb_arn_suffix
+  target_group_arn_suffix        = local.elb_alarm_arn_suffixes["internalapi"].target_group_arn_suffix
   host_count_disabled            = var.elb_internalapi_host_count_disabled
   host_count_datapoints_to_alarm = var.elb_internalapi_host_count_datapoints_to_alarm
   host_count_evaluation_periods  = var.elb_internalapi_host_count_evaluation_periods
@@ -566,6 +624,9 @@ module "elb_web" {
   app                            = "web"
   lb_name                        = "${var.stack}-internal"
   target_group_name              = "${var.stack}-web2"
+  lookup_by_name                 = local.elb_alarm_arn_suffixes["web"].lookup_by_name
+  lb_arn_suffix                  = local.elb_alarm_arn_suffixes["web"].lb_arn_suffix
+  target_group_arn_suffix        = local.elb_alarm_arn_suffixes["web"].target_group_arn_suffix
   host_count_disabled            = var.elb_web_host_count_disabled
   host_count_datapoints_to_alarm = var.elb_web_host_count_datapoints_to_alarm
   host_count_evaluation_periods  = var.elb_web_host_count_evaluation_periods
@@ -594,6 +655,9 @@ module "elb_haproxy" {
   app                            = "haproxy"
   lb_name                        = "${var.stack}-external"
   target_group_name              = "${var.stack}-haproxy2"
+  lookup_by_name                 = local.elb_alarm_arn_suffixes["haproxy"].lookup_by_name
+  lb_arn_suffix                  = local.elb_alarm_arn_suffixes["haproxy"].lb_arn_suffix
+  target_group_arn_suffix        = local.elb_alarm_arn_suffixes["haproxy"].target_group_arn_suffix
   host_count_disabled            = var.elb_haproxy_host_count_disabled
   host_count_datapoints_to_alarm = var.elb_haproxy_host_count_datapoints_to_alarm
   host_count_evaluation_periods  = var.elb_haproxy_host_count_evaluation_periods

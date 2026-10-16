@@ -119,3 +119,21 @@ variable "target_group_name" {
   type    = string
   default = ""
 }
+
+variable "lookup_by_name" {
+  description = "Look the load balancer and target group up by lb_name and target_group_name. When false, lb_arn_suffix and target_group_arn_suffix are used, so a stack that has never been applied can still be planned"
+  type        = bool
+  default     = true
+}
+
+variable "lb_arn_suffix" {
+  description = "arn_suffix of the load balancer, used when lookup_by_name is false"
+  type        = string
+  default     = null
+}
+
+variable "target_group_arn_suffix" {
+  description = "arn_suffix of the target group, used when lookup_by_name is false"
+  type        = string
+  default     = null
+}
