@@ -399,3 +399,13 @@ output "datawatch_encryption_key_secret_arn" {
 output "temporal_rds_password_secret_arn" {
   value = local.temporal_rds_password_secret_arn
 }
+
+output "datawatch_initial_admin_email" {
+  description = "Email of the administrator datawatch creates on an empty database, or null when datawatch_initial_admin_enabled is false"
+  value       = var.datawatch_initial_admin_enabled ? local.initial_admin_email : null
+}
+
+output "datawatch_initial_admin_password_secret_arn" {
+  description = "ARN of the secret holding the initial administrator's password, or null when datawatch_initial_admin_enabled is false"
+  value       = var.datawatch_initial_admin_enabled ? aws_secretsmanager_secret.initial_admin_password[0].arn : null
+}

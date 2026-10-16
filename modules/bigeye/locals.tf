@@ -291,3 +291,14 @@ locals {
 
   elb_access_logs_prefix = var.elb_access_logs_prefix == "" ? local.name : format("%s/%s", var.elb_access_logs_prefix, local.name)
 }
+
+locals {
+  initial_admin_email = coalesce(var.datawatch_initial_admin_email, "admin@${local.name}.bigeye.internal")
+  datawatch_initial_admin_env_vars = var.datawatch_initial_admin_enabled ? {
+    INITIAL_ADMIN_EMAIL  = local.initial_admin_email
+    INITIAL_COMPANY_NAME = coalesce(var.datawatch_initial_company_name, local.name)
+  } : {}
+  datawatch_initial_admin_secrets_map = var.datawatch_initial_admin_enabled ? {
+    INITIAL_ADMIN_PASSWORD = aws_secretsmanager_secret.initial_admin_password[0].arn
+  } : {}
+}

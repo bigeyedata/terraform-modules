@@ -1972,6 +1972,29 @@ resource "aws_secretsmanager_secret_version" "robot_password" {
   version_stages = ["AWSCURRENT"]
 }
 
+resource "random_password" "initial_admin" {
+  count            = var.datawatch_initial_admin_enabled ? 1 : 0
+  length           = 32
+  override_special = "!#%*-_=+"
+  min_upper        = 2
+  min_lower        = 2
+  min_numeric      = 2
+  min_special      = 2
+}
+resource "aws_secretsmanager_secret" "initial_admin_password" {
+  count                   = var.datawatch_initial_admin_enabled ? 1 : 0
+  name                    = format("bigeye/%s/datawatch/initial-admin-password", local.name)
+  description             = "Password for ${local.initial_admin_email}, the administrator datawatch creates on ${local.name} when its database has no companies"
+  recovery_window_in_days = local.secret_retention_days
+  tags                    = local.tags
+}
+resource "aws_secretsmanager_secret_version" "initial_admin_password" {
+  count          = var.datawatch_initial_admin_enabled ? 1 : 0
+  secret_id      = aws_secretsmanager_secret.initial_admin_password[0].id
+  secret_string  = random_password.initial_admin[0].result
+  version_stages = ["AWSCURRENT"]
+}
+
 resource "random_id" "remember_me_cipher_key" {
   count       = local.create_remember_me_cipher_key_secret ? 1 : 0
   byte_length = 16
@@ -2218,10 +2241,11 @@ module "datawatch" {
       HEAP_DUMP_PATH               = contains(var.efs_volume_enabled_services, "datawatch") ? var.efs_mount_point : ""
       MCP_GATEWAY_LOGS_BUCKET_NAME = module.s3_buckets["mcp-gateway"].id
     },
+    local.datawatch_initial_admin_env_vars,
     var.datawatch_additional_environment_vars,
   )
 
-  secret_arns = local.datawatch_secret_arns
+  secret_arns = merge(local.datawatch_secret_arns, local.datawatch_initial_admin_secrets_map)
 
   create_dns_records = var.create_dns_records
   route53_zone_id    = data.aws_route53_zone.this[0].zone_id

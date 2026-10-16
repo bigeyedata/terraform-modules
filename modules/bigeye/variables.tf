@@ -1699,6 +1699,24 @@ variable "datawatch_robot_password_secret_arn" {
   default     = ""
 }
 
+variable "datawatch_initial_admin_enabled" {
+  description = "Generate a password and pass INITIAL_ADMIN_EMAIL, INITIAL_COMPANY_NAME and INITIAL_ADMIN_PASSWORD to datawatch, which creates the first company and administrator at startup when its database has no companies. Requires an application version newer than 2.101.0; older versions ignore the settings"
+  type        = bool
+  default     = false
+}
+
+variable "datawatch_initial_admin_email" {
+  description = "Email of the administrator datawatch creates when datawatch_initial_admin_enabled is true. Defaults to admin@<environment>-<instance>.bigeye.internal; set it to an address you control"
+  type        = string
+  default     = ""
+}
+
+variable "datawatch_initial_company_name" {
+  description = "Name of the company datawatch creates when datawatch_initial_admin_enabled is true. Defaults to <environment>-<instance>"
+  type        = string
+  default     = ""
+}
+
 variable "datawatch_robot_agent_api_key_secret_arn" {
   description = "ARN for the secretsmanager secret holding the Robot Agent API Key. If providing it yourself, format it with 'bigeye_agent_' followed by 40 random alphanumeric characters. One will be created if not provided"
   type        = string
