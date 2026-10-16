@@ -42,6 +42,7 @@ terraform version and application version.
 
 | terraform-modules Version | Application Version | Comment                                                                                  |
 |---------------------------|---------------------|------------------------------------------------------------------------------------------|
+| >= 29.1.0                 | > 2.101.0           | `datawatch_initial_admin_enabled` needs an app that reads INITIAL_ADMIN_* at startup     |
 | >= 29.0.0                 | 2.100.0             | RabbitMQ removed; the application must no longer expect a broker or MQ_BROKER_* env vars |
 | >= 28.0.0                 | 2.94.0              | `lineageapi` service removed; the bigeye-admin CLI must no longer require its env vars   |
 | >= 12.0.0                 | 1.73.0              | dedicated indexwork service for catalog indexing operations                              |
