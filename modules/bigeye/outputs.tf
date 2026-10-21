@@ -302,6 +302,17 @@ output "all_route_table_ids" {
   )
 }
 
+output "route_table_ids_by_key" {
+  description = "The same route tables as all_route_table_ids, keyed by tier and position (e.g. private-0) so the keys are known before the VPC exists. Use it as a for_each source on a stack that has never been applied."
+  value = one(module.vpc) == null ? {} : merge(
+    { for i in range(length(module.vpc[0].database_route_table_ids)) : "database-${i}" => module.vpc[0].database_route_table_ids[i] },
+    { "elasticache-0" = module.vpc[0].elasticache_route_table_ids[0] },
+    { for i in range(length(module.vpc[0].intra_route_table_ids)) : "intra-${i}" => module.vpc[0].intra_route_table_ids[i] },
+    { for i in range(length(module.vpc[0].private_route_table_ids)) : "private-${i}" => module.vpc[0].private_route_table_ids[i] },
+    { for i in range(length(module.vpc[0].public_route_table_ids)) : "public-${i}" => module.vpc[0].public_route_table_ids[i] },
+  )
+}
+
 output "public_alb_subnet_ids" {
   description = "List of subnet IDs where public load balancers live"
   value       = local.public_alb_subnet_ids
