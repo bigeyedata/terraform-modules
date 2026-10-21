@@ -1,3 +1,12 @@
+# [29.3.0](https://github.com/bigeyedata/terraform-modules/compare/v29.2.0...v29.3.0) (2026-10-21)
+
+
+### Features
+
+* output route tables keyed by tier so a new stack can plan its transit gateway routes ([0bc4d06](https://github.com/bigeyedata/terraform-modules/commit/0bc4d062401126c0e42f2a723f7e41e60486ab2c))
+
+
+
 # [29.2.0](https://github.com/bigeyedata/terraform-modules/compare/v29.1.0...v29.2.0) (2026-10-16)
 
 
