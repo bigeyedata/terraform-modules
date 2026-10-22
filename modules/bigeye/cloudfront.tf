@@ -10,17 +10,25 @@ locals {
     "/*.webp",
     "/*.woff2",
   ]
+  cloudfront_managed_policy_ids = {
+    "Managed-AllViewer"            = "216adef6-5c7f-47e4-b989-5492eafa07d3"
+    "Managed-CORS-CustomOrigin"    = "59781a5b-3903-41f3-afcb-af62929ccde1"
+    "Managed-CORS-S3Origin"        = "88a5eaf4-2fd4-4709-b370-b4c650ea3fcf"
+    "Managed-CORS-With-Preflight"  = "5cc3b908-e619-4b99-88e5-2cf7f45965bd"
+    "Managed-CachingOptimized"     = "658327ea-f89d-4fab-a63d-7e88639e58f6"
+    "UseOriginCacheControlHeaders" = "83da9c7e-98b4-4e11-a168-04f0df8e2c65"
+  }
   static_asset_target_origin_id = var.cloudfront_static_asset_serve_from_s3 ? "s3-static-assets" : "bigeye"
   cloudfront_ordered_cache_behavior_defaults = {
-    target_origin_id             = local.static_asset_target_origin_id
-    cache_policy_name            = "Managed-CachingOptimized"
-    origin_request_policy_name   = var.cloudfront_static_asset_serve_from_s3 ? "Managed-CORS-S3Origin" : "Managed-CORS-CustomOrigin"
-    response_headers_policy_name = "Managed-CORS-With-Preflight"
-    viewer_protocol_policy       = "redirect-to-https"
-    compress                     = true
-    use_forwarded_values         = false
-    allowed_methods              = ["GET", "HEAD", "OPTIONS"]
-    cached_methods               = ["GET", "HEAD", "OPTIONS"]
+    target_origin_id           = local.static_asset_target_origin_id
+    cache_policy_id            = local.cloudfront_managed_policy_ids["Managed-CachingOptimized"]
+    origin_request_policy_id   = local.cloudfront_managed_policy_ids[var.cloudfront_static_asset_serve_from_s3 ? "Managed-CORS-S3Origin" : "Managed-CORS-CustomOrigin"]
+    response_headers_policy_id = local.cloudfront_managed_policy_ids["Managed-CORS-With-Preflight"]
+    viewer_protocol_policy     = "redirect-to-https"
+    compress                   = true
+    use_forwarded_values       = false
+    allowed_methods            = ["GET", "HEAD", "OPTIONS"]
+    cached_methods             = ["GET", "HEAD", "OPTIONS"]
   }
   cloudfront_ordered_cache_behavior = [
     for path_pattern in local.static_object_path_patterns : merge(
@@ -117,12 +125,12 @@ module "cloudfront" {
   ordered_cache_behavior = local.cloudfront_ordered_cache_behavior
 
   default_cache_behavior = {
-    target_origin_id           = "bigeye"
-    viewer_protocol_policy     = "redirect-to-https"
-    compress                   = var.cloudfront_compression_enabled
-    use_forwarded_values       = false
-    cache_policy_name          = "UseOriginCacheControlHeaders"
-    origin_request_policy_name = "Managed-AllViewer"
+    target_origin_id         = "bigeye"
+    viewer_protocol_policy   = "redirect-to-https"
+    compress                 = var.cloudfront_compression_enabled
+    use_forwarded_values     = false
+    cache_policy_id          = local.cloudfront_managed_policy_ids["UseOriginCacheControlHeaders"]
+    origin_request_policy_id = local.cloudfront_managed_policy_ids["Managed-AllViewer"]
 
     allowed_methods = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods  = ["GET", "HEAD", "OPTIONS"]
