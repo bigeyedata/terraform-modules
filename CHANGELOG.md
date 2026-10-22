@@ -1,3 +1,12 @@
+## [29.4.1](https://github.com/bigeyedata/terraform-modules/compare/v29.4.0...v29.4.1) (2026-10-22)
+
+
+### Bug Fixes
+
+* [SRE-7724] Use fixed IDs for AWS managed CloudFront policies ([fab59c0](https://github.com/bigeyedata/terraform-modules/commit/fab59c0c9f9e3333d2c66361ac39bc5b35dec3f6))
+
+
+
 # [29.4.0](https://github.com/bigeyedata/terraform-modules/compare/v29.3.0...v29.4.0) (2026-10-22)
 
 
