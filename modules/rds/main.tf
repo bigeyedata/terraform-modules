@@ -176,6 +176,7 @@ module "this" {
   password                            = var.root_user_password
   manage_master_user_password         = false
   deletion_protection                 = var.deletion_protection
+  skip_final_snapshot                 = var.skip_final_snapshot
   iam_database_authentication_enabled = true
 
   publicly_accessible    = false

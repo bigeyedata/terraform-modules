@@ -1198,6 +1198,7 @@ module "temporal_rds" {
   root_user_name                        = "bigeye"
   root_user_password                    = local.create_temporal_rds_password_secret ? aws_secretsmanager_secret_version.temporal_rds_password[0].secret_string : data.aws_secretsmanager_secret_version.byo_temporal_rds_password[0].secret_string
   deletion_protection                   = var.deletion_protection
+  skip_final_snapshot                   = !var.deletion_protection
   apply_immediately                     = var.rds_apply_immediately
   snapshot_identifier                   = var.temporal_rds_snapshot_identifier
   vpc_id                                = local.vpc_id
@@ -1914,6 +1915,7 @@ module "datawatch_rds" {
   # Ops
   apply_immediately                     = var.rds_apply_immediately
   deletion_protection                   = var.deletion_protection
+  skip_final_snapshot                   = !var.deletion_protection
   backup_window                         = var.rds_backup_window
   backup_retention_period               = var.datawatch_rds_backup_retention_period
   maintenance_window                    = var.rds_maintenance_window
