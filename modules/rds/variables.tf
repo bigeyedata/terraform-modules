@@ -15,6 +15,12 @@ variable "apply_immediately" {
   default     = false
 }
 
+variable "skip_final_snapshot" {
+  description = "Delete the database without taking a final snapshot. Only for throwaway stacks: a final snapshot also keeps the option group in use until it's deleted."
+  type        = bool
+  default     = false
+}
+
 variable "deletion_protection" {
   description = "Whether to enable deletion protection on the database"
   type        = bool
