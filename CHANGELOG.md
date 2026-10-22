@@ -1,3 +1,12 @@
+# [29.4.0](https://github.com/bigeyedata/terraform-modules/compare/v29.3.0...v29.4.0) (2026-10-22)
+
+
+### Features
+
+* skip the final RDS snapshot on stacks without deletion protection ([d24becb](https://github.com/bigeyedata/terraform-modules/commit/d24becb3e96a562739f4077c316c94ac4f52dec3))
+
+
+
 # [29.3.0](https://github.com/bigeyedata/terraform-modules/compare/v29.2.0...v29.3.0) (2026-10-21)
 
 
