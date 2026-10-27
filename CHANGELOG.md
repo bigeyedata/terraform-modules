@@ -1,3 +1,12 @@
+## [29.4.2](https://github.com/bigeyedata/terraform-modules/compare/v29.4.1...v29.4.2) (2026-10-27)
+
+
+### Bug Fixes
+
+* **solr:** [SRE-7341] trim CloudWatch Agent metrics to total CPU, disk % and memory % ([c4ad652](https://github.com/bigeyedata/terraform-modules/commit/c4ad652898c0470ef6816c85721fd9843866574c))
+
+
+
 ## [29.4.1](https://github.com/bigeyedata/terraform-modules/compare/v29.4.0...v29.4.1) (2026-10-22)
 
 
