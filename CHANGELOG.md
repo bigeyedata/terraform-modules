@@ -1,3 +1,17 @@
+# [29.5.0](https://github.com/bigeyedata/terraform-modules/compare/v29.4.2...v29.5.0) (2026-11-16)
+
+
+### Bug Fixes
+
+* check restricted path count in a precondition for older terraform ([fa23f14](https://github.com/bigeyedata/terraform-modules/commit/fa23f14094d2178c3130abb6e23332589efdeb36))
+
+
+### Features
+
+* let a stack restrict external paths to allowed cidrs, so prod signup can be vpn-only ([142d3fd](https://github.com/bigeyedata/terraform-modules/commit/142d3fd3553b9b8b66cfda014060e88d9af11338))
+
+
+
 ## [29.4.2](https://github.com/bigeyedata/terraform-modules/compare/v29.4.1...v29.4.2) (2026-10-27)
 
 
