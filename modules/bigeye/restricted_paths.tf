@@ -27,6 +27,13 @@ resource "aws_lb_listener_rule" "external_restricted_paths_allow" {
   }
 
   tags = merge({ "Name" = "${local.name}-restricted-paths-allow" }, local.tags)
+
+  lifecycle {
+    precondition {
+      condition     = length(var.external_restricted_paths) + length(var.external_restricted_paths_allowed_cidrs) <= 4
+      error_message = "ALB rules allow 5 condition values; the host header takes one, so external_restricted_paths and external_restricted_paths_allowed_cidrs together can have at most 4"
+    }
+  }
 }
 
 resource "aws_lb_listener_rule" "external_restricted_paths_deny" {
