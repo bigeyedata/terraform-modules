@@ -32,3 +32,8 @@ output "security_group_id" {
   description = "The created security group ID"
   value       = var.create_security_groups ? aws_security_group.this[0].id : ""
 }
+
+output "target_group_arn" {
+  description = "The ARN of the service's target group on the centralized load balancer"
+  value       = aws_lb_target_group.centralized_lb.arn
+}

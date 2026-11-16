@@ -78,6 +78,23 @@ variable "external_ingress_cidrs" {
   default     = ["0.0.0.0/0"]
 }
 
+variable "external_restricted_paths" {
+  description = "Path patterns on the external load balancer that only external_restricted_paths_allowed_cidrs may reach; everyone else gets a 403"
+  type        = list(string)
+  default     = []
+}
+
+variable "external_restricted_paths_allowed_cidrs" {
+  description = "Source CIDRs allowed to reach external_restricted_paths"
+  type        = list(string)
+  default     = []
+
+  validation {
+    condition     = length(var.external_restricted_paths_allowed_cidrs) + length(var.external_restricted_paths) <= 4
+    error_message = "ALB rules allow 5 condition values; the host header takes one, so external_restricted_paths and external_restricted_paths_allowed_cidrs together can have at most 4"
+  }
+}
+
 variable "external_additional_security_group_ids" {
   description = "Additional security group ids to attach to internal load balancers"
   type        = list(string)
