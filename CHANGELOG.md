@@ -1,3 +1,12 @@
+## [29.5.1](https://github.com/bigeyedata/terraform-modules/compare/v29.5.0...v29.5.1) (2026-11-18)
+
+
+### Bug Fixes
+
+* give restricted path rules free listener priorities so the prod-saas apply stops failing ([ec54505](https://github.com/bigeyedata/terraform-modules/commit/ec545050b206af8943926af35d47e24a14b4728f))
+
+
+
 # [29.5.0](https://github.com/bigeyedata/terraform-modules/compare/v29.4.2...v29.5.0) (2026-11-16)
 
 
