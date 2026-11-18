@@ -1,7 +1,7 @@
 resource "aws_lb_listener_rule" "external_restricted_paths_allow" {
   count        = length(var.external_restricted_paths) > 0 && length(var.external_restricted_paths_allowed_cidrs) > 0 ? 1 : 0
   listener_arn = aws_lb_listener.https_external.arn
-  priority     = 1
+  priority     = 10
 
   action {
     type             = "forward"
@@ -39,7 +39,7 @@ resource "aws_lb_listener_rule" "external_restricted_paths_allow" {
 resource "aws_lb_listener_rule" "external_restricted_paths_deny" {
   count        = length(var.external_restricted_paths) > 0 ? 1 : 0
   listener_arn = aws_lb_listener.https_external.arn
-  priority     = 2
+  priority     = 11
 
   action {
     type = "fixed-response"

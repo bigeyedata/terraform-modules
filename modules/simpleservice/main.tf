@@ -47,6 +47,7 @@ resource "aws_lb_target_group" "centralized_lb" {
 
 resource "aws_lb_listener_rule" "centralized_lb" {
   listener_arn = var.centralized_lb_https_listener_rule_arn
+  priority     = var.centralized_lb_listener_rule_priority
   action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.centralized_lb.arn

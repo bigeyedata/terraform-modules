@@ -905,6 +905,7 @@ module "haproxy" {
   centralized_lb_arn                     = aws_lb.external_alb.arn
   centralized_lb_security_group_ids      = local.external_alb_security_group_ids
   centralized_lb_https_listener_rule_arn = aws_lb_listener.https_external.arn
+  centralized_lb_listener_rule_priority  = length(var.external_restricted_paths) > 0 ? 100 : null
   healthcheck_path                       = "/haproxy-health"
   healthcheck_interval                   = 15
   healthcheck_timeout                    = 5

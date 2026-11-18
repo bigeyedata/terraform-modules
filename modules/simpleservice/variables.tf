@@ -307,6 +307,12 @@ variable "centralized_lb_https_listener_rule_arn" {
   default     = ""
 }
 
+variable "centralized_lb_listener_rule_priority" {
+  description = "Priority of the routing rule on the centralized LB listener. Null lets AWS pick the next free one"
+  type        = number
+  default     = null
+}
+
 variable "internet_facing" {
   description = "Whether the load balancer will be internet facing"
   type        = bool
