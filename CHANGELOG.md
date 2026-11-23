@@ -1,3 +1,12 @@
+# [29.6.0](https://github.com/bigeyedata/terraform-modules/compare/v29.5.1...v29.6.0) (2026-11-23)
+
+
+### Features
+
+* tag stack networking with app=network so its cost isn't reported as untagged ([560a586](https://github.com/bigeyedata/terraform-modules/commit/560a5864d817c909f54f17554ed38457d0982b28))
+
+
+
 ## [29.5.1](https://github.com/bigeyedata/terraform-modules/compare/v29.5.0...v29.5.1) (2026-11-18)
 
 
