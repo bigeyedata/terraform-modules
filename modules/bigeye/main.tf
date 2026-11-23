@@ -37,7 +37,7 @@ module "vpc" {
 
   enable_ipv6 = false
 
-  tags = local.tags
+  tags = merge(local.tags, { app = "network" })
 
   # Public subnets
   public_subnets = [
@@ -330,7 +330,7 @@ module "vpc_endpoints" {
 
   vpc_id             = local.vpc_id
   security_group_ids = [aws_security_group.vpc_endpoint[0].id]
-  tags               = local.tags
+  tags               = merge(local.tags, { app = "network" })
 
   endpoints = {
     s3 = {
@@ -730,7 +730,7 @@ resource "aws_lb" "external_alb" {
   subnets            = var.internet_facing ? local.public_alb_subnet_ids : local.internal_service_alb_subnet_ids
   security_groups    = local.external_alb_security_group_ids
   idle_timeout       = 900
-  tags               = local.tags
+  tags               = merge(local.tags, { app = "network" })
 
   access_logs {
     enabled = var.elb_access_logs_enabled
@@ -816,7 +816,7 @@ resource "aws_lb" "internal_alb" {
   subnets            = local.internal_service_alb_subnet_ids
   security_groups    = local.internal_alb_security_group_ids
   idle_timeout       = var.lb_timeout
-  tags               = local.tags
+  tags               = merge(local.tags, { app = "network" })
 
   access_logs {
     enabled = var.elb_access_logs_enabled
