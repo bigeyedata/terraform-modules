@@ -1,3 +1,12 @@
+# [29.7.0](https://github.com/bigeyedata/terraform-modules/compare/v29.6.0...v29.7.0) (2026-11-26)
+
+
+### Features
+
+* stack secrets and buckets have no app tag, so ~510/mo shows up as untagged in the cost report ([35c5a4e](https://github.com/bigeyedata/terraform-modules/commit/35c5a4e91097a280088f43a28909d208f03cd30d))
+
+
+
 # [29.6.0](https://github.com/bigeyedata/terraform-modules/compare/v29.5.1...v29.6.0) (2026-11-23)
 
 
