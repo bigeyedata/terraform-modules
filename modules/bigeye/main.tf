@@ -682,7 +682,7 @@ module "s3_buckets" {
   name                              = each.value["type"] == "models" ? local.models_bucket_name : "${local.name}-${each.value["type"]}"
   retention_days                    = each.value["retention_days"]
   random_bucket_name_suffix_enabled = !(local.models_bucket_has_name_override && each.value["type"] == "models")
-  tags                              = local.tags
+  tags                              = merge(local.tags, { app = each.value["type"] == "static-assets" ? "web" : "datawatch" })
 }
 
 #======================================================
@@ -872,7 +872,7 @@ resource "aws_secretsmanager_secret" "adminpages_password" {
   count                   = local.create_adminpages_password_secret ? 1 : 0
   name                    = format("bigeye/%s/bigeye/adminpages/password", local.name)
   recovery_window_in_days = local.secret_retention_days
-  tags                    = local.tags
+  tags                    = merge(local.tags, { app = "haproxy" })
 }
 resource "aws_secretsmanager_secret_version" "adminpages_password" {
   count          = local.create_adminpages_password_secret ? 1 : 0
@@ -1176,7 +1176,7 @@ resource "aws_secretsmanager_secret" "temporal_rds_password" {
   count                   = local.create_temporal_rds_password_secret ? 1 : 0
   name                    = format("bigeye/%s/temporal/rds/password", local.name)
   recovery_window_in_days = local.secret_retention_days
-  tags                    = local.tags
+  tags                    = merge(local.tags, { app = "temporal" })
 }
 resource "aws_secretsmanager_secret_version" "temporal_rds_password" {
   count          = local.create_temporal_rds_password_secret ? 1 : 0
@@ -1804,7 +1804,7 @@ resource "aws_secretsmanager_secret" "redis_auth_token" {
   count                   = local.create_redis_auth_token_secret ? 1 : 0
   name                    = format("bigeye/%s/datawatch/redis/authtoken", local.name)
   recovery_window_in_days = local.secret_retention_days
-  tags                    = local.tags
+  tags                    = merge(local.tags, { app = "datawatch" })
 }
 resource "aws_secretsmanager_secret_version" "redis_auth_token" {
   count          = local.create_redis_auth_token_secret ? 1 : 0
@@ -1859,7 +1859,7 @@ resource "aws_secretsmanager_secret" "datawatch_rds_password" {
   count                   = local.create_datawatch_rds_password_secret ? 1 : 0
   name                    = format("bigeye/%s/datawatch/rds/password", local.name)
   recovery_window_in_days = local.secret_retention_days
-  tags                    = local.tags
+  tags                    = merge(local.tags, { app = "datawatch" })
 }
 resource "aws_secretsmanager_secret_version" "datawatch_rds_password" {
   count          = local.create_datawatch_rds_password_secret ? 1 : 0
@@ -1966,7 +1966,7 @@ resource "aws_secretsmanager_secret" "robot_password" {
   count                   = local.create_robot_password_secret ? 1 : 0
   name                    = format("bigeye/%s/datawatch/robot-password", local.name)
   recovery_window_in_days = local.secret_retention_days
-  tags                    = local.tags
+  tags                    = merge(local.tags, { app = "datawatch" })
 }
 resource "aws_secretsmanager_secret_version" "robot_password" {
   count          = local.create_robot_password_secret ? 1 : 0
@@ -1989,7 +1989,7 @@ resource "aws_secretsmanager_secret" "initial_admin_password" {
   name                    = format("bigeye/%s/datawatch/initial-admin-password", local.name)
   description             = "Password for ${local.initial_admin_email}, the administrator datawatch creates on ${local.name} when its database has no companies"
   recovery_window_in_days = local.secret_retention_days
-  tags                    = local.tags
+  tags                    = merge(local.tags, { app = "datawatch" })
 }
 resource "aws_secretsmanager_secret_version" "initial_admin_password" {
   count          = var.datawatch_initial_admin_enabled ? 1 : 0
@@ -2006,7 +2006,7 @@ resource "aws_secretsmanager_secret" "remember_me_cipher_key" {
   count                   = local.create_remember_me_cipher_key_secret ? 1 : 0
   name                    = format("bigeye/%s/datawatch/remember-me-cipher-key", local.name)
   recovery_window_in_days = local.secret_retention_days
-  tags                    = local.tags
+  tags                    = merge(local.tags, { app = "datawatch" })
 }
 resource "aws_secretsmanager_secret_version" "remember_me_cipher_key" {
   count          = local.create_remember_me_cipher_key_secret ? 1 : 0
@@ -2024,7 +2024,7 @@ resource "aws_secretsmanager_secret" "robot_agent_api_key" {
   count                   = local.create_robot_agent_apikey_secret ? 1 : 0
   name                    = format("bigeye/%s/datawatch/robot-agent-api-key", local.name)
   recovery_window_in_days = local.secret_retention_days
-  tags                    = local.tags
+  tags                    = merge(local.tags, { app = "datawatch" })
 }
 resource "aws_secretsmanager_secret_version" "robot_agent_api_key" {
   count          = local.create_robot_agent_apikey_secret ? 1 : 0
@@ -2042,7 +2042,7 @@ resource "aws_secretsmanager_secret" "base_salt" {
   count                   = local.create_base_dw_salt_secret ? 1 : 0
   name                    = format("bigeye/%s/datawatch/base-salt", local.name)
   recovery_window_in_days = local.secret_retention_days
-  tags                    = local.tags
+  tags                    = merge(local.tags, { app = "datawatch" })
 }
 resource "aws_secretsmanager_secret_version" "base_salt" {
   count          = local.create_base_dw_salt_secret ? 1 : 0
@@ -2064,7 +2064,7 @@ resource "aws_secretsmanager_secret" "datawatch_encryption_key" {
   count                   = local.create_datawatch_encryption_key_secret ? 1 : 0
   name                    = format("bigeye/%s/datawatch/encryption-key", local.name)
   recovery_window_in_days = local.secret_retention_days
-  tags                    = local.tags
+  tags                    = merge(local.tags, { app = "datawatch" })
 }
 resource "aws_secretsmanager_secret_version" "datawatch_encryption_key" {
   count          = local.create_datawatch_encryption_key_secret ? 1 : 0

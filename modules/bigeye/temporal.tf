@@ -793,7 +793,7 @@ resource "aws_secretsmanager_secret" "temporal_opensearch_password" {
   count                   = local.create_temporal_opensearch_password_secret ? 1 : 0
   name                    = format("bigeye/%s/bigeye/temporal/opensearch-password", local.name)
   recovery_window_in_days = local.secret_retention_days
-  tags                    = local.tags
+  tags                    = merge(local.tags, { app = "temporal" })
 }
 
 resource "aws_secretsmanager_secret_version" "temporal_opensearch_password" {
